@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.billing.dto.MailConfigDTO;
 import com.billing.dto.StatusDTO;
 import com.billing.service.MailConfigurationServices;
-import com.billing.utils.PDFUtils;
+import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
 import com.billing.utils.Utility;
 
@@ -83,7 +83,7 @@ public class BackupMailSettingsController implements TabContent {
     @FXML
     void onCloseCommand(ActionEvent event) {
     	 if (isDirty.get()) {
-             ButtonType buttonType = PDFUtils.shouldSaveUnsavedData(MainWindow);
+             ButtonType buttonType = AppUtils.shouldSaveUnsavedData(MainWindow);
              if (buttonType == ButtonType.CANCEL) {
                  return; // no need to take any further action
              } else if (buttonType == ButtonType.YES) {
@@ -227,7 +227,7 @@ public class BackupMailSettingsController implements TabContent {
 	@Override
 	public boolean shouldClose() {
 		  if (isDirty.get()) {
-	            ButtonType response = PDFUtils.shouldSaveUnsavedData(MainWindow);
+	            ButtonType response = AppUtils.shouldSaveUnsavedData(MainWindow);
 	            if (response == ButtonType.CANCEL) {
 	                return false;
 	            }
@@ -265,7 +265,7 @@ public class BackupMailSettingsController implements TabContent {
 		StatusDTO status = MailConfigurationServices.updateMailConfig(mail);
     	
 		if(status.getStatusCode()==0){
-    		PDFUtils.showInfoAlert(MainWindow, "Settings saved successfully !", "Information");
+    		AppUtils.showInfoAlert(MainWindow, "Settings saved successfully !", "Information");
     	}else {
     		String message = Utility.getDataSaveErrorText();
             Utility.beep();

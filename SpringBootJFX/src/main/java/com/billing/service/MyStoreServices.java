@@ -6,14 +6,17 @@ import java.sql.ResultSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import com.billing.dto.MyStoreDetails;
-import com.billing.starter.Application;
-import com.billing.utils.PDFUtils;
+import com.billing.starter.MyStoreApplication;
+import com.billing.utils.AppUtils;
+import com.billing.utils.DBUtils;
 
+@Service
 public class MyStoreServices {
 	
-	private static final Logger logger = LoggerFactory.getLogger(Application.class);
+	private static final Logger logger = LoggerFactory.getLogger(MyStoreApplication.class);
 	
 	private static final String UPDATE_STORE_DETAILS = "UPDATE MY_STORE_DETAILS SET NAME=?," 
 			+"ADDRESS=?, ADDRESS2=?,CITY=?,DISTRICT=?,STATE=?,PHONE=?,CST_NUMBER=?,PAN_NUMBER=?,VAT_NUMBER=?,ELECTRICITY_NO=?," 
@@ -27,7 +30,7 @@ public class MyStoreServices {
 		PreparedStatement stmt = null;
 		MyStoreDetails myStoreDetails = null;
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(GET_MY_STORE_DETAILS);
 			ResultSet rs = stmt.executeQuery();
 
@@ -55,7 +58,7 @@ public class MyStoreServices {
 			e.printStackTrace();
 			logger.error("getMyStoreDetails --> ",e);
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return myStoreDetails;
 	}
@@ -70,7 +73,7 @@ public class MyStoreServices {
 		
 		try {
 			if(myStoreDetails!=null){
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				if(myStoreDetails.getImagePath()!=null){
 					sb.append(",IMAGE=? WHERE STORE_ID=?");
 					stmt = conn.prepareStatement(sb.toString());
@@ -108,7 +111,7 @@ public class MyStoreServices {
 			e.printStackTrace();
 			logger.error("updateStoreDetails --> ",e);
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return flag;
 	}

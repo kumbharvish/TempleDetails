@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 
 import com.billing.dto.MyStoreDetails;
 import com.billing.service.MyStoreServices;
-import com.billing.starter.Application;
-import com.billing.utils.PDFUtils;
+import com.billing.starter.MyStoreApplication;
+import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
 import com.billing.utils.Utility;
 
@@ -31,7 +31,7 @@ import javafx.stage.Stage;
  */
 public class StoreDetailsController implements TabContent    
 {
-      private static final Logger logger = LoggerFactory.getLogger(Application.class);
+      private static final Logger logger = LoggerFactory.getLogger(MyStoreApplication.class);
 
     public Stage MainWindow = null;
     
@@ -96,7 +96,7 @@ public class StoreDetailsController implements TabContent
     private void onCloseCommand(ActionEvent event) {
         
        if (isDirty.get()) {
-            ButtonType buttonType = PDFUtils.shouldSaveUnsavedData(MainWindow);
+            ButtonType buttonType = AppUtils.shouldSaveUnsavedData(MainWindow);
             if (buttonType == ButtonType.CANCEL) {
                 return; // no need to take any further action
             } else if (buttonType == ButtonType.YES) {
@@ -154,7 +154,7 @@ public class StoreDetailsController implements TabContent
     public boolean shouldClose() {
      
         if (isDirty.get()) {
-            ButtonType response = PDFUtils.shouldSaveUnsavedData(MainWindow);
+            ButtonType response = AppUtils.shouldSaveUnsavedData(MainWindow);
             if (response == ButtonType.CANCEL) {
                 return false;
             }
@@ -195,7 +195,7 @@ public class StoreDetailsController implements TabContent
 		boolean isSuccess = MyStoreServices.updateStoreDetails(myStoreDetails);
     	
     	if(isSuccess) {
-    		PDFUtils.showInfoAlert(MainWindow, "Details saved successfully !", "Information");
+    		AppUtils.showInfoAlert(MainWindow, "Details saved successfully !", "Information");
     	}else {
     		String message = Utility.getDataSaveErrorText();
             Utility.beep();

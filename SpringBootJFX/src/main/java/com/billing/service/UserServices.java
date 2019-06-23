@@ -8,12 +8,16 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.billing.constants.AppConstants;
 import com.billing.dto.Customer;
 import com.billing.dto.StatusDTO;
 import com.billing.dto.UserDetails;
-import com.billing.utils.PDFUtils;
+import com.billing.utils.AppUtils;
+import com.billing.utils.DBUtils;
 
+@Service
 public class UserServices {
 
 	private static final String VALIDATE_USER_SQL = "SELECT FIRST_NAME,LAST_NAME,USER_ID,USERNAME,USER_TYPE FROM "
@@ -56,10 +60,10 @@ public class UserServices {
 		PreparedStatement stmt = null;
 		UserDetails userDetails = null;
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(VALIDATE_USER_SQL);
 			stmt.setString(1, userName);
-			stmt.setString(2, PDFUtils.enc(password));
+			stmt.setString(2, AppUtils.enc(password));
 			ResultSet rs = stmt.executeQuery();
 
 			if (rs.next()) {
@@ -74,7 +78,7 @@ public class UserServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return userDetails;
 	}
@@ -84,7 +88,7 @@ public class UserServices {
 		PreparedStatement stmt = null;
 		UserDetails userDetails = null;
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(GET_USER_DEATILS);
 			stmt.setInt(1, userDtls.getUserId());
 			ResultSet rs = stmt.executeQuery();
@@ -102,7 +106,7 @@ public class UserServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return userDetails;
 	}
@@ -113,7 +117,7 @@ public class UserServices {
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(UPDATE_USERNAME);
 			stmt.setString(1, newUserName);
 			stmt.setString(2, userDetails.getUserName());
@@ -129,7 +133,7 @@ public class UserServices {
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 			
 		}
 		return status;
@@ -141,7 +145,7 @@ public class UserServices {
 		PreparedStatement stmt = null;
 		boolean isPwdChanged=false;
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(UPDATE_USER_PWD);
 			stmt.setString(1, newPassword);
 			stmt.setInt(2, userDetails.getUserId());
@@ -154,7 +158,7 @@ public class UserServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return isPwdChanged;
 	}
@@ -165,7 +169,7 @@ public class UserServices {
 		PreparedStatement stmt = null;
 		boolean isDetailsUpdated=false;
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(UPDATE_USER_DETAILS);
 			stmt.setString(1, userDetails.getFirstName());
 			stmt.setString(2, userDetails.getLastName());
@@ -181,7 +185,7 @@ public class UserServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return isDetailsUpdated;
 	}
@@ -191,7 +195,7 @@ public class UserServices {
 		PreparedStatement stmt = null;
 		Customer customer = null;
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(GET_CUSTOMER);
 			stmt.setLong(1, custMobileNumber);
 			ResultSet rs = stmt.executeQuery();
@@ -210,7 +214,7 @@ public class UserServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return customer;
 	}
@@ -220,7 +224,7 @@ public class UserServices {
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(INS_CUSTOMER);
 			stmt.setLong(1, customer.getCustMobileNumber());
 			stmt.setString(2,customer.getCustName());
@@ -239,7 +243,7 @@ public class UserServices {
 			status.setException(e.getMessage());
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return status;
 	}
@@ -249,7 +253,7 @@ public class UserServices {
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(UPDATE_CUST_BALANCE);
 			stmt.setDouble(1, balance);
 			stmt.setLong(2,custMobileNo);
@@ -264,7 +268,7 @@ public class UserServices {
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return status;
 	}
@@ -275,7 +279,7 @@ public class UserServices {
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();		
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SETTLEUP_CUST_BALANCE);
 			stmt.setDouble(1, amount);
 			stmt.setLong(2,custMobileNo);
@@ -290,7 +294,7 @@ public class UserServices {
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return status;
 	}
@@ -301,7 +305,7 @@ public class UserServices {
 			PreparedStatement stmt = null;
 			boolean isCustDeleted=false;
 			try {
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(DELETE_CUSTOMER);
 				stmt.setLong(1,custMobileNo);
 				
@@ -313,7 +317,7 @@ public class UserServices {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				PDFUtils.closeConnectionAndStatment(conn, stmt);
+				AppUtils.closeConnectionAndStatment(conn, stmt);
 			}
 			return isCustDeleted;
 		}
@@ -323,7 +327,7 @@ public class UserServices {
 			PreparedStatement stmt = null;
 			boolean isCustomerAdded=false;
 			try {
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(UPDATE_CUSTOMER);
 				stmt.setString(1,customer.getCustName());
 				stmt.setString(2,customer.getCustEmail());
@@ -339,7 +343,7 @@ public class UserServices {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				PDFUtils.closeConnectionAndStatment(conn, stmt);
+				AppUtils.closeConnectionAndStatment(conn, stmt);
 			}
 			return isCustomerAdded;
 		}
@@ -350,7 +354,7 @@ public class UserServices {
 			Customer customer = null;
 			List<Customer> customerList = new ArrayList<Customer>();
 			try {
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(SEARCH_CUSTOMER);
 				stmt.setString(1,"%"+searchString+"%");
 				ResultSet rs = stmt.executeQuery();
@@ -371,7 +375,7 @@ public class UserServices {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				PDFUtils.closeConnectionAndStatment(conn, stmt);
+				AppUtils.closeConnectionAndStatment(conn, stmt);
 			}
 			return customerList;
 		}
@@ -382,7 +386,7 @@ public class UserServices {
 			Customer customer = null;
 			List<Customer> customerList = new ArrayList<Customer>();
 			try {
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(GET_ALL_CUSTOMERS);
 				ResultSet rs = stmt.executeQuery();
 
@@ -404,7 +408,7 @@ public class UserServices {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				PDFUtils.closeConnectionAndStatment(conn, stmt);
+				AppUtils.closeConnectionAndStatment(conn, stmt);
 			}
 			return customerList;
 		}
@@ -414,7 +418,7 @@ public class UserServices {
 			PreparedStatement stmt = null;
 			StatusDTO status = new StatusDTO();
 			try {
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(INS_CUSTOMER_PAY_HISTORY);
 				stmt.setLong(1, customerMobile);
 				stmt.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis()));
@@ -441,7 +445,7 @@ public class UserServices {
 				status.setStatusCode(-1);
 				return status;
 			} finally {
-				PDFUtils.closeConnectionAndStatment(conn, stmt);
+				AppUtils.closeConnectionAndStatment(conn, stmt);
 			}
 			return status;
 		}

@@ -7,22 +7,18 @@ package com.billing.controllers;
 
 import java.io.IOException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-
-import javax.swing.JOptionPane;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.billing.dto.UserDetails;
 import com.billing.main.Global;
 import com.billing.service.DBBackupService;
-import com.billing.starter.Application;
-import com.billing.utils.PDFUtils;
+import com.billing.starter.MyStoreApplication;
+import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
 import com.billing.utils.Utility;
 
@@ -53,12 +49,15 @@ import javafx.stage.WindowEvent;
  * @author Vishal
  */
 public class HomeController {
+	
+	@Autowired
+	AppUtils appUtils;
 
     public Stage MainWindow = null;
     
     public UserDetails userDetails = null;
 
-    private static final Logger logger = LoggerFactory.getLogger(Application.class);
+    private static final Logger logger = LoggerFactory.getLogger(MyStoreApplication.class);
     
     private final static String INVOICE_VIEW_FILE_NAME = "Invoice";
 
@@ -237,7 +236,7 @@ public class HomeController {
         toolBar.managedProperty().bind(toolBar.visibleProperty());
         //Take Database Backup
         DBBackupService.createDBDump();
-        PDFUtils.licenseExpiryAlert();
+        appUtils.licenseExpiryAlert();
     }
    
     @FXML

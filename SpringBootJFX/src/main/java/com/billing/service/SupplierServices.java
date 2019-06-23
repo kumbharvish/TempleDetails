@@ -11,15 +11,17 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import com.billing.dto.Product;
 import com.billing.dto.StatusDTO;
 import com.billing.dto.StockItemDetails;
 import com.billing.dto.Supplier;
 import com.billing.dto.SupplierInvoiceDetails;
-import com.billing.starter.Application;
-import com.billing.utils.PDFUtils;
+import com.billing.utils.AppUtils;
+import com.billing.utils.DBUtils;
 
+@Service
 public class SupplierServices {
 
 	private static final String GET_ALL_SUPPLIERS = "SELECT * FROM SUPPLIER_DETAILS WHERE SUPPLIER_ID NOT IN(001)";
@@ -57,7 +59,7 @@ public class SupplierServices {
 		Supplier sp = null;
 		List<Supplier> SupplierList = new ArrayList<Supplier>();
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(GET_ALL_SUPPLIERS);
 			ResultSet rs = stmt.executeQuery();
 
@@ -79,7 +81,7 @@ public class SupplierServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return SupplierList;
 	}
@@ -89,7 +91,7 @@ public class SupplierServices {
 		boolean flag=false;
 		try {
 			if(sp!=null){
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(INS_SUPPLIER);
 				stmt.setString(1,sp.getSupplierName());
 				stmt.setString(2,sp.getEmailId());
@@ -108,7 +110,7 @@ public class SupplierServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return flag;
 	}
@@ -118,7 +120,7 @@ public class SupplierServices {
 		PreparedStatement stmt = null;
 		boolean flag=false;
 		try {
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(DELETE_SUPPLIER);
 				stmt.setInt(1,supplierId);
 				
@@ -129,7 +131,7 @@ public class SupplierServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return flag;
 	}
@@ -140,7 +142,7 @@ public class SupplierServices {
 		boolean flag=false;
 		try {
 			if(sp!=null){
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(UPDATE_SUPPLIER);
 				stmt.setString(1,sp.getSupplierName());
 				stmt.setString(2,sp.getEmailId());
@@ -161,7 +163,7 @@ public class SupplierServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return flag;
 	}
@@ -173,7 +175,7 @@ public class SupplierServices {
 			boolean flag=false;
 			try {
 				if(bill!=null){
-					conn = PDFUtils.getConnection();
+					conn = DBUtils.getConnection();
 					stmt = conn.prepareStatement(INS_STOCK_STOCKS_DETAILS);
 					stmt.setInt(1, bill.getStockNumber());
 					stmt.setString(2, bill.getSupplierName());
@@ -203,7 +205,7 @@ public class SupplierServices {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				PDFUtils.closeConnectionAndStatment(conn, stmt);
+				AppUtils.closeConnectionAndStatment(conn, stmt);
 			}
 			return flag;
 		}
@@ -215,7 +217,7 @@ public class SupplierServices {
 				
 				try {
 					if(!itemList.isEmpty()){
-						conn = PDFUtils.getConnection();
+						conn = DBUtils.getConnection();
 						conn.setAutoCommit(false);
 						stmt = conn.prepareStatement(INS_STOCK_ITEM_DETAILS);
 						for(StockItemDetails item : itemList){
@@ -241,7 +243,7 @@ public class SupplierServices {
 				} catch (Exception e) {
 					e.printStackTrace();
 				} finally {
-					PDFUtils.closeConnectionAndStatment(conn, stmt);
+					AppUtils.closeConnectionAndStatment(conn, stmt);
 				}
 				return flag;
 			}
@@ -254,7 +256,7 @@ public class SupplierServices {
 				
 				try {
 					if(!itemList.isEmpty()){
-						conn = PDFUtils.getConnection();
+						conn = DBUtils.getConnection();
 						conn.setAutoCommit(false);
 						stmt = conn.prepareStatement(UPDATE_PRODUCT_STOCK);
 						for(StockItemDetails item : itemList){
@@ -272,7 +274,7 @@ public class SupplierServices {
 				} catch (Exception e) {
 					e.printStackTrace();
 				} finally {
-					PDFUtils.closeConnectionAndStatment(conn, stmt);
+					AppUtils.closeConnectionAndStatment(conn, stmt);
 				}
 				return flag;
 			}
@@ -297,7 +299,7 @@ public class SupplierServices {
 				}
 					SELECT_STOCK_ENTRY_DETAILS.append(" ORDER BY SID.INVOICE_DATE DESC");
 				try {
-						conn = PDFUtils.getConnection();
+						conn = DBUtils.getConnection();
 						stmt = conn.prepareStatement(SELECT_STOCK_ENTRY_DETAILS.toString());
 						stmt.setInt(1,supplierId);
 						if(invoiceNumberFlag){
@@ -335,7 +337,7 @@ public class SupplierServices {
 				} catch (Exception e) {
 					e.printStackTrace();
 				} finally {
-					PDFUtils.closeConnectionAndStatment(conn, stmt);
+					AppUtils.closeConnectionAndStatment(conn, stmt);
 				}
 				return supplierInvoiceDetailsList;
 			}
@@ -346,7 +348,7 @@ public class SupplierServices {
 				PreparedStatement stmt = null;
 				StockItemDetails stockItemDetails=null;
 				
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				try {
 					stmt = conn.prepareStatement(SELECT_STOCK_ITEM_DETAILS);
 					
@@ -409,7 +411,7 @@ public class SupplierServices {
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO(-1);
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(IS_SUPPLIER_ENTRY_AVAILABLE);
 			stmt.setInt(1, supplierId);
 			ResultSet rs = stmt.executeQuery();
@@ -420,7 +422,7 @@ public class SupplierServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return status;
 	}

@@ -9,10 +9,13 @@ import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
-import com.billing.starter.Application;
-import com.billing.utils.PDFUtils;
+import com.billing.starter.MyStoreApplication;
+import com.billing.utils.AppUtils;
+import com.billing.utils.DBUtils;
 
+@Service
 public class AppLicenseServices {
 	
 	private static final String INS_APP_SECURITY_DATA = "INSERT INTO APP_SECURITY_DATA (SECURITY_DATA) VALUES(?)";
@@ -21,7 +24,7 @@ public class AppLicenseServices {
 	
 	private static final String SELECT_APP_SECURITY_DATA = "SELECT * FROM APP_SECURITY_DATA";
 	
-	private static final Logger logger = LoggerFactory.getLogger(Application.class);
+	private static final Logger logger = LoggerFactory.getLogger(MyStoreApplication.class);
 	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd MM yyyy HH:mm:ss");
 
@@ -30,18 +33,18 @@ public class AppLicenseServices {
 		PreparedStatement stmt = null;
 		String appSecData=null;
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SELECT_APP_SECURITY_DATA);
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				appSecData = PDFUtils.dec(rs.getString("SECURITY_DATA"));
+				appSecData = AppUtils.dec(rs.getString("SECURITY_DATA"));
 			}
 			rs.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return appSecData;
 	}
@@ -52,7 +55,7 @@ public class AppLicenseServices {
 		boolean flag=false;
 		try {
 			if(key!=null){
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(INS_APP_SECURITY_DATA);
 				stmt.setString(1,key);
 				
@@ -64,7 +67,7 @@ public class AppLicenseServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return flag;
 	}
@@ -74,7 +77,7 @@ public class AppLicenseServices {
 		PreparedStatement stmt = null;
 		boolean flag=false;
 		try {
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(DELETE_APP_SECURITY_DATA);
 				
 				int i = stmt.executeUpdate();
@@ -84,7 +87,7 @@ public class AppLicenseServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return flag;
 	}
@@ -97,7 +100,7 @@ public class AppLicenseServices {
 		
 		String lastRun;
 		try {
-			lastRun = PDFUtils.enc(sdf.format(new Date()));
+			lastRun = AppUtils.enc(sdf.format(new Date()));
 			//Insert
 			insertAppSecurityData(lastRun);
 		} catch (Exception e) {

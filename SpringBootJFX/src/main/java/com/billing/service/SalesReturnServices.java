@@ -8,11 +8,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.billing.dto.ItemDetails;
 import com.billing.dto.ReturnDetails;
 import com.billing.dto.StatusDTO;
-import com.billing.utils.PDFUtils;
+import com.billing.utils.AppUtils;
+import com.billing.utils.DBUtils;
 
+@Service
 public class SalesReturnServices {
 	
 	private static final String INS_BILL_DETAILS = "INSERT INTO SALES_RETURN_DETAILS (RETURN_NUMBER,RETURN_DATE,COMMENTS,BILL_NUMBER,CUST_MOB_NO,BILL_DATE," +
@@ -42,7 +46,7 @@ public class SalesReturnServices {
 		StatusDTO status= new StatusDTO();
 		try {
 			if(bill!=null){
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(INS_BILL_DETAILS);
 				stmt.setInt(1, bill.getReturnNumber());
 				stmt.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis()));
@@ -76,7 +80,7 @@ public class SalesReturnServices {
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return status;
 	}
@@ -88,7 +92,7 @@ public class SalesReturnServices {
 		StatusDTO status = new StatusDTO();
 		try {
 			if(!itemList.isEmpty()){
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				conn.setAutoCommit(false);
 				stmt = conn.prepareStatement(UPDATE_PRODUCT_STOCK);
 				for(ItemDetails item : itemList){
@@ -108,7 +112,7 @@ public class SalesReturnServices {
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return status;
 		}
@@ -120,7 +124,7 @@ public class SalesReturnServices {
 		StatusDTO status = new StatusDTO();
 		try {
 			if(!itemList.isEmpty()){
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				conn.setAutoCommit(false);
 				stmt = conn.prepareStatement(INS_BILL_ITEM_DETAILS);
 				for(ItemDetails item : itemList){
@@ -145,7 +149,7 @@ public class SalesReturnServices {
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return status;
 	}
@@ -156,7 +160,7 @@ public class SalesReturnServices {
 		PreparedStatement stmt = null;
 		ReturnDetails returnDetails = null;
 		try {
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(GET_RETURN_DETAILS);
 				stmt.setInt(1,billNumber);
 				ResultSet rs = stmt.executeQuery();
@@ -188,7 +192,7 @@ public class SalesReturnServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return returnDetails;
 	}
@@ -198,7 +202,7 @@ public class SalesReturnServices {
 		PreparedStatement stmt = null;
 		ReturnDetails returnDetails = null;
 		try {
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(GET_RETURN_DETAILS_FOR_RETURN_NUMBER);
 				stmt.setInt(1,returnNumber);
 				ResultSet rs = stmt.executeQuery();
@@ -230,7 +234,7 @@ public class SalesReturnServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return returnDetails;
 	}
@@ -242,7 +246,7 @@ public class SalesReturnServices {
 		StatusDTO status = new StatusDTO();
 		try {
 			if(!itemList.isEmpty()){
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				conn.setAutoCommit(false);
 				stmt = conn.prepareStatement(UPDATE_PRODUCT_STOCK);
 				for(ItemDetails item : itemList){
@@ -262,7 +266,7 @@ public class SalesReturnServices {
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return status;
 		}
@@ -273,7 +277,7 @@ public class SalesReturnServices {
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO(-1);
 		try {
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(IS_SALES_RETURED);
 				stmt.setInt(1,billNumber);
 				ResultSet rs = stmt.executeQuery();
@@ -286,7 +290,7 @@ public class SalesReturnServices {
 			status.setStatusCode(-1);
 			return status;
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return status;
 	}
@@ -298,7 +302,7 @@ public class SalesReturnServices {
 		PreparedStatement stmt = null;
 		ItemDetails itemDetails=null;
 		
-		conn = PDFUtils.getConnection();
+		conn = DBUtils.getConnection();
 		try {
 			stmt = conn.prepareStatement(SELECT_ITEM_DETAILS);
 			
@@ -343,7 +347,7 @@ public class SalesReturnServices {
 				SELECT_BILL_DETAILS.append(CUSTOMER_MOB_QEUERY);
 			}
 				SELECT_BILL_DETAILS.append(ORDER_BY_CLAUSE);
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(SELECT_BILL_DETAILS.toString());
 				stmt.setDate(1,fromDate);
 				stmt.setDate(2, toDate);
@@ -380,7 +384,7 @@ public class SalesReturnServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return returnDetailsList;
 	}

@@ -9,10 +9,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.billing.dto.Product;
 import com.billing.dto.ProductAnalysis;
-import com.billing.utils.PDFUtils;
+import com.billing.utils.AppUtils;
+import com.billing.utils.DBUtils;
 
+@Service
 public class ProductSaleAnalysisServices {
 	
 	private static final String PRODUCT_WISE_PROFIT = "SELECT ITEM_NUMBER ,SUM(ITEM_QTY) AS TOTAL_QTY FROM BILL_ITEM_DETAILS WHERE BILL_NUMBER IN (SELECT BILL_NUMBER FROM CUSTOMER_BILL_DETAILS WHERE DATE(BILL_DATE_TIME) BETWEEN ? AND ?) GROUP BY ITEM_NUMBER ORDER BY SUM(ITEM_QTY) DESC";
@@ -30,7 +34,7 @@ public class ProductSaleAnalysisServices {
 				if(toDate==null){
 					toDate = new Date(System.currentTimeMillis());
 				}
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(PRODUCT_WISE_PROFIT);
 				stmt.setDate(1, fromDate);
 				stmt.setDate(2, toDate);
@@ -46,7 +50,7 @@ public class ProductSaleAnalysisServices {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				PDFUtils.closeConnectionAndStatment(conn, stmt);
+				AppUtils.closeConnectionAndStatment(conn, stmt);
 			}
 			return productAnalysisList;
 		}
@@ -81,7 +85,7 @@ public class ProductSaleAnalysisServices {
 				if(toDate==null){
 					toDate = new Date(System.currentTimeMillis());
 				}
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(PRODUCT_WISE_SALES);
 				stmt.setDate(1, fromDate);
 				stmt.setDate(2, toDate);
@@ -99,7 +103,7 @@ public class ProductSaleAnalysisServices {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				PDFUtils.closeConnectionAndStatment(conn, stmt);
+				AppUtils.closeConnectionAndStatment(conn, stmt);
 			}
 			return productAnalysisList;
 		}

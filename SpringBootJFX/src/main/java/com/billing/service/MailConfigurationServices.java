@@ -6,11 +6,14 @@ import java.sql.ResultSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import com.billing.dto.MailConfigDTO;
 import com.billing.dto.StatusDTO;
-import com.billing.utils.PDFUtils;
+import com.billing.utils.AppUtils;
+import com.billing.utils.DBUtils;
 
+@Service
 public class MailConfigurationServices {
 	
 	private static final Logger logger = LoggerFactory.getLogger(MailConfigurationServices.class);
@@ -26,7 +29,7 @@ public class MailConfigurationServices {
 		PreparedStatement stmt = null;
 		MailConfigDTO mail = null;
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(GET_MAIL_CONFIG);
 			ResultSet rs = stmt.executeQuery();
 
@@ -36,7 +39,7 @@ public class MailConfigurationServices {
 				mail.setHost(rs.getString("HOST"));
 				mail.setPort(rs.getString("PORT"));
 				mail.setMailFrom(rs.getString("MAIL_FROM"));
-				mail.setPassword(PDFUtils.dec(rs.getString("PASSWORD")));
+				mail.setPassword(AppUtils.dec(rs.getString("PASSWORD")));
 				mail.setMailTo(rs.getString("MAIL_TO"));
 				mail.setMailSubject(rs.getString("MAIL_SUBJECT"));
 				mail.setMailMessage(rs.getString("MAIL_MESSAGE"));
@@ -47,7 +50,7 @@ public class MailConfigurationServices {
 			e.printStackTrace();
 			logger.error("MailCofigurationServices getMailConfig -->",e);
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return mail;
 	}
@@ -58,10 +61,10 @@ public class MailConfigurationServices {
 		StatusDTO status = new StatusDTO();
 		try {
 			if(mail!=null){
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(UPDATE_MAIL_CONFIG);
 				stmt.setString(1,mail.getMailFrom());
-				stmt.setString(2,PDFUtils.enc(mail.getPassword()));
+				stmt.setString(2,AppUtils.enc(mail.getPassword()));
 				stmt.setString(3,mail.getMailTo());
 				stmt.setString(4,mail.getMailSubject());
 				stmt.setString(5,mail.getMailMessage());
@@ -79,7 +82,7 @@ public class MailConfigurationServices {
 			status.setStatusCode(-1);
 			logger.error("MailCofigurationServices updateMailConfig -->",e);
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return status;
 	}

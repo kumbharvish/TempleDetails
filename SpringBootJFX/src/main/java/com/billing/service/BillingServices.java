@@ -6,11 +6,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.billing.dto.BillDetails;
 import com.billing.dto.ItemDetails;
 import com.billing.dto.StatusDTO;
-import com.billing.utils.PDFUtils;
+import com.billing.utils.AppUtils;
+import com.billing.utils.DBUtils;
 
+@Service
 public class BillingServices {
 	
 	private static final String UPDATE_BILL_DETAILS = "UPDATE CUSTOMER_BILL_DETAILS SET CUST_MOB_NO=?,CUST_NAME=?,BILL_TAX=?,BILL_DISCOUNT=?,BILL_DISC_AMOUNT =?," +
@@ -38,7 +42,7 @@ public class BillingServices {
 		StatusDTO staus = new StatusDTO();
 		try {
 			if(bill!=null){
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(UPDATE_BILL_DETAILS);
 				stmt.setLong(1, bill.getCustomerMobileNo());
 				stmt.setString(2, bill.getCustomerName());
@@ -59,7 +63,7 @@ public class BillingServices {
 			staus.setStatusCode(-1);
 			staus.setException(e.getMessage());
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return staus;
 	}
@@ -69,7 +73,7 @@ public class BillingServices {
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();
 		try {
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(DELETE_BILL_DETAILS);
 				stmt.setInt(1,billNumber);
 				
@@ -84,7 +88,7 @@ public class BillingServices {
 			status.setStatusCode(-1);
 			return status;
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return status;
 	}
@@ -95,7 +99,7 @@ public class BillingServices {
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();
 		try {
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(DELETE_BILL_ITEM_DETAILS);
 				stmt.setInt(1,billNumber);
 				
@@ -109,7 +113,7 @@ public class BillingServices {
 			status.setStatusCode(-1);
 			return status;
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return status;
 	}
@@ -121,7 +125,7 @@ public class BillingServices {
 		StatusDTO status = new StatusDTO();		
 		try {
 			if(!itemList.isEmpty()){
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				conn.setAutoCommit(false);
 				stmt = conn.prepareStatement(UPDATE_PRODUCT_STOCK);
 				for(ItemDetails item : itemList){
@@ -142,7 +146,7 @@ public class BillingServices {
 			status.setException(e.getMessage());
 			return status;
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return status;
 	}
@@ -155,7 +159,7 @@ public class BillingServices {
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();
 		try {
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(INS_OPENING_CASH);
 				stmt.setDate(1, new java.sql.Date(System.currentTimeMillis()));
 				stmt.setDouble(2, amount);
@@ -169,7 +173,7 @@ public class BillingServices {
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return status;
 	}
@@ -181,7 +185,7 @@ public class BillingServices {
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();
 		try {
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(UPDATE_OPENING_CASH);
 				stmt.setDouble(1, amount);
 				stmt.setDate(2, date);
@@ -195,7 +199,7 @@ public class BillingServices {
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return status;
 	}
@@ -205,7 +209,7 @@ public class BillingServices {
 		PreparedStatement stmt = null;
 		Integer newBillNumber=0;
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(NEW_BILL_NUMBER);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
@@ -218,7 +222,7 @@ public class BillingServices {
 			e.printStackTrace();
 			return -1;
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return newBillNumber;
 	}

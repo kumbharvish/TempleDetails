@@ -13,7 +13,7 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.billing.dto.BillDetails;
 import com.billing.dto.ItemDetails;
-import com.billing.utils.PDFUtils;
+import com.billing.utils.AppUtils;
 
 public class PrintServices {
 	
@@ -39,7 +39,7 @@ public class PrintServices {
 	      		Font billNoFont = new Font(Font.FontFamily.TIMES_ROMAN, 7,Font.BOLD);
 	      		Font seperatorFont = new Font(Font.FontFamily.TIMES_ROMAN, 7,Font.BOLD);
 	      		Font netSalesAmountfont = new Font(Font.FontFamily.TIMES_ROMAN, 8,Font.BOLD);
-	    	  String fileLocation = PDFUtils.getAppDataValues("PRINT_PDF_LOCATION").get(0);
+	    	  String fileLocation = AppUtils.getAppDataValues("PRINT_PDF_LOCATION").get(0);
 	    	  PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(fileLocation+"Bill_"+bill.getBillNumber()+"_"+sdf.format(currentDate)+".pdf"));
 	    	  document.open();
 	    	  //
@@ -82,8 +82,8 @@ public class PrintServices {
 		    	 String srn=String.valueOf(i);
 		    	 String itemName = item.getItemName();
 		    	 String itemQty = String.valueOf(item.getQuantity());
-		    	 String itemRate = PDFUtils.getDecimalFormat(item.getRate());
-		    	 String itemAnmount = PDFUtils.getDecimalFormat(item.getAmount());
+		    	 String itemRate = AppUtils.getDecimalFormat(item.getRate());
+		    	 String itemAnmount = AppUtils.getDecimalFormat(item.getAmount());
 		    		
 		    	 String itemRow = srn+"      "+itemName+"\n";
 		    	 String itemRow2 = "                             "+itemQty+"                "+itemRate+"             "+itemAnmount+"\n";
@@ -94,10 +94,10 @@ public class PrintServices {
 		      document.add(billItemsPara);
 		      //Bottom Header
 		      document.add(seperatorPara);
-		      String totalHeader ="Total Items: "+bill.getNoOfItems()+"  Total Qty: "+bill.getTotalQuanity()+"  Total Amount: "+PDFUtils.getDecimalFormat(bill.getTotalAmount())+"\n";
+		      String totalHeader ="Total Items: "+bill.getNoOfItems()+"  Total Qty: "+bill.getTotalQuanity()+"  Total Amount: "+AppUtils.getDecimalFormat(bill.getTotalAmount())+"\n";
 		      Paragraph totalHeaderPara = new Paragraph(totalHeader,topHeaderFont);
 		      document.add(totalHeaderPara);
-		      String netSalesAmount ="                           Net Amount: "+PDFUtils.getDecimalFormat(bill.getNetSalesAmt())+"\n";
+		      String netSalesAmount ="                           Net Amount: "+AppUtils.getDecimalFormat(bill.getNetSalesAmt())+"\n";
 		      Paragraph netSalesAmountPara = new Paragraph(netSalesAmount,netSalesAmountfont);
 		      document.add(netSalesAmountPara);
 		      document.add(seperatorPara);

@@ -9,12 +9,16 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.billing.dto.BillDetails;
 import com.billing.dto.Customer;
 import com.billing.dto.CustomerPaymentHistory;
 import com.billing.dto.CustomerProfit;
-import com.billing.utils.PDFUtils;
+import com.billing.utils.AppUtils;
+import com.billing.utils.DBUtils;
 
+@Service
 public class CustomerHistoryServices {
 
 	
@@ -30,7 +34,7 @@ public class CustomerHistoryServices {
 			CustomerPaymentHistory customer = null;
 			List<CustomerPaymentHistory> customerList = new ArrayList<CustomerPaymentHistory>();
 			try {
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(GET_ALL_CUSTOMERS_HISTORY);
 				System.out.println("GET_ALL_CUSTOMERS_HISTORY" +GET_ALL_CUSTOMERS_HISTORY);
 				stmt.setLong(1, customerMobile);
@@ -52,7 +56,7 @@ public class CustomerHistoryServices {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				PDFUtils.closeConnectionAndStatment(conn, stmt);
+				AppUtils.closeConnectionAndStatment(conn, stmt);
 			}
 			return customerList;
 		}
@@ -65,7 +69,7 @@ public class CustomerHistoryServices {
 					List<BillDetails> billDetailsList = new ArrayList<BillDetails>();
 					try {
 						if(customerMobile !=null){
-							conn = PDFUtils.getConnection();
+							conn = DBUtils.getConnection();
 							stmt = conn.prepareStatement(GET_ALL_CUST_BILLS);
 							System.out.println("GET_ALL_CUST_BILLS "+GET_ALL_CUST_BILLS);
 							stmt.setLong(1,customerMobile);
@@ -94,7 +98,7 @@ public class CustomerHistoryServices {
 					} catch (Exception e) {
 						e.printStackTrace();
 					} finally {
-						PDFUtils.closeConnectionAndStatment(conn, stmt);
+						AppUtils.closeConnectionAndStatment(conn, stmt);
 					}
 					return billDetailsList;
 				}
@@ -112,7 +116,7 @@ public class CustomerHistoryServices {
 				if(toDate==null){
 					toDate = new Date(System.currentTimeMillis());
 				}
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(CUSTOMER_WISE_PROFIT);
 				stmt.setDate(1, fromDate);
 				stmt.setDate(2, toDate);
@@ -132,7 +136,7 @@ public class CustomerHistoryServices {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				PDFUtils.closeConnectionAndStatment(conn, stmt);
+				AppUtils.closeConnectionAndStatment(conn, stmt);
 			}
 			return customerList;
 		}

@@ -329,14 +329,14 @@ public class ExcelUtils {
 	 	
 	 	public static void createExcelFile(Workbook workbook,String reportFileName)
 				throws FileNotFoundException, IOException {
-			String excelFilePath = PDFUtils.getAppDataValues(AppConstants.MYSTORE_HOME).get(0)+AppConstants.REPORT_EXPORT_FOLDER+"\\";
+			String excelFilePath = AppUtils.getAppDataValues(AppConstants.MYSTORE_HOME).get(0)+AppConstants.REPORT_EXPORT_FOLDER+"\\";
 			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 			String filePath = excelFilePath+reportFileName+"_"+sdf.format(new Date())+".xls";
 			FileOutputStream outputStream = new FileOutputStream(filePath);
 			workbook.write(outputStream);
 			outputStream.close();
 			workbook.close();
-			PDFUtils.openWindowsDocument(filePath);
+			AppUtils.openWindowsDocument(filePath);
 		}
 
 }

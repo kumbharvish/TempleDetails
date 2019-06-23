@@ -11,12 +11,16 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.billing.dto.BillDetails;
 import com.billing.dto.ItemDetails;
 import com.billing.dto.Product;
 import com.billing.dto.StatusDTO;
-import com.billing.utils.PDFUtils;
+import com.billing.utils.AppUtils;
+import com.billing.utils.DBUtils;
 
+@Service
 public class ProductServices {
 
 	private static final String GET_ALL_PRODUCTS = "SELECT  PD.PRODUCT_ID,PD.PRODUCT_NAME,PD.MEASURE,PD.QUANTITY,PD.PURCHASE_PRICE,PD.SELL_PRICE," +
@@ -89,7 +93,7 @@ public class ProductServices {
 		Product pc = null;
 		List<Product> productList = new ArrayList<Product>();
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(GET_ALL_PRODUCTS);
 			ResultSet rs = stmt.executeQuery();
 
@@ -120,7 +124,7 @@ public class ProductServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		
 		return productList;
@@ -131,7 +135,7 @@ public class ProductServices {
 		PreparedStatement stmt = null;
 		Product pc = new Product();
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SELECT_PRODUCT);
 			stmt.setInt(1, productCode);
 			ResultSet rs = stmt.executeQuery();
@@ -159,7 +163,7 @@ public class ProductServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return pc;
 	}
@@ -170,7 +174,7 @@ public class ProductServices {
 		StatusDTO status= new StatusDTO();
 		try {
 			if(product!=null){
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(INS_PRODUCT);
 				stmt.setInt(1,product.getProductCode());
 				stmt.setString(2,product.getProductName());
@@ -201,7 +205,7 @@ public class ProductServices {
 			status.setException(e.getMessage());
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return status;
 	}
@@ -211,7 +215,7 @@ public class ProductServices {
 		PreparedStatement stmt = null;
 		boolean flag=false;
 		try {
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(DELETE_PRODUCT);
 				stmt.setInt(1,prdouctCode);
 				
@@ -222,7 +226,7 @@ public class ProductServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return flag;
 	}
@@ -233,7 +237,7 @@ public class ProductServices {
 		StatusDTO status = new StatusDTO();
 		try {
 			if(product!=null){
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(UPDATE_PRODUCT);
 				stmt.setString(1,product.getProductName());
 				stmt.setString(2, product.getMeasure());
@@ -262,7 +266,7 @@ public class ProductServices {
 			status.setStatusCode(-1);
 			status.setException(e.getMessage());
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return status;
 	}
@@ -273,7 +277,7 @@ public class ProductServices {
 		Product pc = null;
 		List<Product> productList = new ArrayList<Product>();
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SEARCH_PRODUCTS);
 			stmt.setString(1,"%"+searchString+"%");
 			ResultSet rs = stmt.executeQuery();
@@ -301,7 +305,7 @@ public class ProductServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return productList;
 	}
@@ -313,7 +317,7 @@ public class ProductServices {
 		StatusDTO staus = new StatusDTO();
 		try {
 			if(bill!=null){
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(INS_BILL_DETAILS);
 				stmt.setInt(1, bill.getBillNumber());
 				stmt.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis()));
@@ -342,7 +346,7 @@ public class ProductServices {
 			staus.setStatusCode(-1);
 			staus.setException(e.getMessage());
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return staus;
 	}
@@ -354,7 +358,7 @@ public class ProductServices {
 			
 			try {
 				if(!itemList.isEmpty()){
-					conn = PDFUtils.getConnection();
+					conn = DBUtils.getConnection();
 					conn.setAutoCommit(false);
 					stmt = conn.prepareStatement(INS_BILL_ITEM_DETAILS);
 					for(ItemDetails item : itemList){
@@ -378,7 +382,7 @@ public class ProductServices {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				PDFUtils.closeConnectionAndStatment(conn, stmt);
+				AppUtils.closeConnectionAndStatment(conn, stmt);
 			}
 			return flag;
 		}
@@ -391,7 +395,7 @@ public class ProductServices {
 			
 			try {
 				if(!itemList.isEmpty()){
-					conn = PDFUtils.getConnection();
+					conn = DBUtils.getConnection();
 					conn.setAutoCommit(false);
 					stmt = conn.prepareStatement(UPDATE_PRODUCT_STOCK);
 					for(ItemDetails item : itemList){
@@ -409,7 +413,7 @@ public class ProductServices {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				PDFUtils.closeConnectionAndStatment(conn, stmt);
+				AppUtils.closeConnectionAndStatment(conn, stmt);
 			}
 			return flag;
 		}
@@ -435,7 +439,7 @@ public class ProductServices {
 					SELECT_BILL_DETAILS.append(CUSTOMER_MOB_QEUERY);
 				}
 					SELECT_BILL_DETAILS.append(ORDER_BY_CLAUSE);
-					conn = PDFUtils.getConnection();
+					conn = DBUtils.getConnection();
 					stmt = conn.prepareStatement(SELECT_BILL_DETAILS.toString());
 					stmt.setDate(1,fromDate);
 					stmt.setDate(2, toDate);
@@ -467,7 +471,7 @@ public class ProductServices {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				PDFUtils.closeConnectionAndStatment(conn, stmt);
+				AppUtils.closeConnectionAndStatment(conn, stmt);
 			}
 			return billDetailsList;
 		}
@@ -478,7 +482,7 @@ public class ProductServices {
 			PreparedStatement stmt = null;
 			ItemDetails itemDetails=null;
 			
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			try {
 				stmt = conn.prepareStatement(SELECT_ITEM_DETAILS);
 				
@@ -527,7 +531,7 @@ public class ProductServices {
 			Product pc = null;
 			List<Product> productList = new ArrayList<Product>();
 			try {
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(ZERO_STOCK_PRODUCTS);
 				ResultSet rs = stmt.executeQuery();
 
@@ -558,7 +562,7 @@ public class ProductServices {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				PDFUtils.closeConnectionAndStatment(conn, stmt);
+				AppUtils.closeConnectionAndStatment(conn, stmt);
 			}
 			
 			return productList;
@@ -570,7 +574,7 @@ public class ProductServices {
 			Product pc = null;
 			List<Product> productList = new ArrayList<Product>();
 			try {
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(GET_ALL_PRODUCTS_WITH_NO_BARCODE);
 				ResultSet rs = stmt.executeQuery();
 
@@ -601,7 +605,7 @@ public class ProductServices {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				PDFUtils.closeConnectionAndStatment(conn, stmt);
+				AppUtils.closeConnectionAndStatment(conn, stmt);
 			}
 			
 			return productList;
@@ -613,7 +617,7 @@ public class ProductServices {
 			StatusDTO status = new StatusDTO();
 			try {
 				if(product!=null){
-					conn = PDFUtils.getConnection();
+					conn = DBUtils.getConnection();
 					stmt = conn.prepareStatement(SAVE_BARCODE);
 					stmt.setLong(1, product.getProductBarCode());
 					stmt.setInt(2, product.getProductCode());
@@ -628,7 +632,7 @@ public class ProductServices {
 				status.setStatusCode(-1);
 				status.setException(e.getMessage());
 			} finally {
-				PDFUtils.closeConnectionAndStatment(conn, stmt);
+				AppUtils.closeConnectionAndStatment(conn, stmt);
 			}
 			return status;
 		}
@@ -641,7 +645,7 @@ public class ProductServices {
 		
 		try {
 			if(product!=null){
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				
 				stmt = conn.prepareStatement(QUICK_STOCK_CORRECTION);
 				stmt.setInt(2, product.getProductCode());
@@ -655,7 +659,7 @@ public class ProductServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return flag;
 	}
@@ -666,7 +670,7 @@ public class ProductServices {
 		PreparedStatement stmt = null;
 		BillDetails billDetails=null;
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(SELECT_BILL_WITH_BILLNO_AND_DATE);
 				stmt.setInt(1,billNumber);
 				stmt.setDate(2,fromDate);
@@ -692,7 +696,7 @@ public class ProductServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return billDetails;
 	}
@@ -703,7 +707,7 @@ public class ProductServices {
 		PreparedStatement stmt = null;
 		BillDetails billDetails=null;
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(SELECT_BILL_WITH_BILLNO);
 				stmt.setInt(1,billNumber);
 				ResultSet rs = stmt.executeQuery();
@@ -727,7 +731,7 @@ public class ProductServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return billDetails;
 	}
@@ -737,7 +741,7 @@ public class ProductServices {
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(UPDATE_PRODUCT_PURCHASE_HISTORY);
 			conn.setAutoCommit(false);
 			for(Product product:productList){
@@ -759,7 +763,7 @@ public class ProductServices {
 			status.setStatusCode(-1);
 			status.setException(e.getMessage());
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return status;
 	}

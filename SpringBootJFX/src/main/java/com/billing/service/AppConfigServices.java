@@ -1,15 +1,21 @@
 package com.billing.service;
 
 import java.sql.Connection;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.billing.dto.AppConfigurations;
 import com.billing.dto.StatusDTO;
-import com.billing.utils.PDFUtils;
+import com.billing.utils.AppUtils;
+import com.billing.utils.DBUtils;
 
+@Service
 public class AppConfigServices {
 	
 	private static final String GET_APP_CONFIG = "SELECT * FROM APP_CONFIGURATIONS";
@@ -25,7 +31,7 @@ public class AppConfigServices {
 		AppConfigurations config = null;
 		List<AppConfigurations> configList = new ArrayList<AppConfigurations>();
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(GET_APP_CONFIG);
 			ResultSet rs = stmt.executeQuery();
 
@@ -42,7 +48,7 @@ public class AppConfigServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return configList;
 	}
@@ -53,7 +59,7 @@ public class AppConfigServices {
 		StatusDTO status = new StatusDTO();
 		try {
 			if(!configList.isEmpty()){
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				conn.setAutoCommit(false);
 				stmt = conn.prepareStatement(UPDATE_APP_CONFIG);
 				for(AppConfigurations config:configList){
@@ -72,7 +78,7 @@ public class AppConfigServices {
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return status;
 	}
@@ -83,7 +89,7 @@ public class AppConfigServices {
 		PreparedStatement stmt = null;
 		String isEnabled = null;
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(GET_APP_CONFIG_ID);
 			stmt.setString(1, configId);
 			ResultSet rs = stmt.executeQuery();
@@ -95,7 +101,7 @@ public class AppConfigServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return isEnabled;
 

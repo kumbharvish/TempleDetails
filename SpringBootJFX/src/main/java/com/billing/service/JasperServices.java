@@ -13,7 +13,7 @@ import com.billing.dto.ItemDetails;
 import com.billing.dto.Product;
 import com.billing.dto.ProductCategory;
 import com.billing.dto.ReturnDetails;
-import com.billing.utils.PDFUtils;
+import com.billing.utils.AppUtils;
 
 public class JasperServices {
 	
@@ -24,15 +24,15 @@ public class JasperServices {
              Map<String,Object> map = new HashMap<String, Object>();
              map.put("Name", item.getItemName());
              map.put("Qty", String.valueOf(item.getQuantity()));
-             map.put("Rate", PDFUtils.getDecimalFormat(item.getRate()));
-             map.put("Amount", PDFUtils.getDecimalFormat(item.getAmount()));
+             map.put("Rate", AppUtils.getDecimalFormat(item.getRate()));
+             map.put("Amount", AppUtils.getDecimalFormat(item.getAmount()));
              map.put("BillNo",String.valueOf(bill.getBillNumber()));
              map.put("TotalQty", String.valueOf(bill.getTotalQuanity()));
              map.put("NoOfItems", String.valueOf(bill.getNoOfItems()));
-             map.put("TotalAmount", PDFUtils.getDecimalFormat(bill.getTotalAmount()));
-             map.put("NetSalesAmount", PDFUtils.getDecimalFormat(bill.getNetSalesAmt()));
-             map.put("DiscountPer", PDFUtils.getDecimalFormat(bill.getDiscount()));
-             map.put("DiscountAmount", PDFUtils.getDecimalFormat(bill.getDiscountAmt()));
+             map.put("TotalAmount", AppUtils.getDecimalFormat(bill.getTotalAmount()));
+             map.put("NetSalesAmount", AppUtils.getDecimalFormat(bill.getNetSalesAmt()));
+             map.put("DiscountPer", AppUtils.getDecimalFormat(bill.getDiscount()));
+             map.put("DiscountAmount", AppUtils.getDecimalFormat(bill.getDiscountAmt()));
              dataSourceMaps.add(map);
          }  
          return dataSourceMaps;
@@ -44,7 +44,7 @@ public class JasperServices {
             Map<String,Object> map = new HashMap<String, Object>();
             map.put("ProductName", item.getProductName());
             map.put("ProductCode", String.valueOf(item.getProductCode()));
-            map.put("ProductProfitAmt", PDFUtils.getDecimalFormat(item.getProfit()));
+            map.put("ProductProfitAmt", AppUtils.getDecimalFormat(item.getProfit()));
             dataSourceMaps.add(map);
         }  
         return dataSourceMaps;
@@ -57,8 +57,8 @@ public class JasperServices {
            map.put("ProductName", item.getProductName());
            map.put("ProductCode", String.valueOf(item.getProductCode()));
            map.put("Qty", String.valueOf(item.getQuanity()));
-           map.put("ProductMRP", PDFUtils.getDecimalFormat(item.getProductMRP()));
-           map.put("StockValueAmount", PDFUtils.getDecimalFormat(item.getStockValueAmount()));
+           map.put("ProductMRP", AppUtils.getDecimalFormat(item.getProductMRP()));
+           map.put("StockValueAmount", AppUtils.getDecimalFormat(item.getStockValueAmount()));
            dataSourceMaps.add(map);
        }  
        return dataSourceMaps;
@@ -73,7 +73,7 @@ public class JasperServices {
           map.put("Name", cust.getCustName());
           map.put("City", cust.getCustCity());
           map.put("Email", cust.getCustEmail());
-          map.put("BalanceAmt", PDFUtils.getDecimalFormat(cust.getBalanceAmt()));
+          map.put("BalanceAmt", AppUtils.getDecimalFormat(cust.getBalanceAmt()));
           map.put("EntryDate", String.valueOf(sdf.format(cust.getEntryDate())));
           dataSourceMaps.add(map);
       }  
@@ -100,7 +100,7 @@ public class JasperServices {
           map.put("CategoryName", pc.getCategoryName());
           map.put("CategoryCode", String.valueOf(pc.getCategoryCode()));
           map.put("Qty", String.valueOf(pc.getCategoryStockQty()));
-          map.put("StockValueAmount", PDFUtils.getDecimalFormat(pc.getCategoryStockAmount()));
+          map.put("StockValueAmount", AppUtils.getDecimalFormat(pc.getCategoryStockAmount()));
           dataSourceMaps.add(map);
       }  
       return dataSourceMaps;
@@ -118,12 +118,12 @@ public class JasperServices {
            map.put("CustName", bill.getCustomerName());
            map.put("Qty", String.valueOf(bill.getTotalQuanity()));
            map.put("NoOfItems", bill.getNoOfItems());
-           map.put("NetSalesAmt", PDFUtils.getDecimalFormat(bill.getNetSalesAmt()));
+           map.put("NetSalesAmt", AppUtils.getDecimalFormat(bill.getNetSalesAmt()));
            map.put("PaymentMode", bill.getPaymentMode());
-           map.put("BillDate", PDFUtils.getFormattedDate(bill.getTimestamp()));
-           map.put("TotalPendingAmt", PDFUtils.getDecimalFormat(totalPendingAmt));
-           map.put("TotalCashAmt", PDFUtils.getDecimalFormat(totalCashAmt));
-           map.put("TotalAmount", PDFUtils.getDecimalFormat(totalAmt));
+           map.put("BillDate", AppUtils.getFormattedDate(bill.getTimestamp()));
+           map.put("TotalPendingAmt", AppUtils.getDecimalFormat(totalPendingAmt));
+           map.put("TotalCashAmt", AppUtils.getDecimalFormat(totalCashAmt));
+           map.put("TotalAmount", AppUtils.getDecimalFormat(totalAmt));
            map.put("TotalQty", String.valueOf(totalQty));
            map.put("TotalNoOfItems", String.valueOf(totalNoOfItems));
            dataSourceMaps.add(map);
@@ -143,12 +143,12 @@ public class JasperServices {
 	           map.put("CustName", bill.getCustomerName());
 	           map.put("Qty", String.valueOf(bill.getTotalQuanity()));
 	           map.put("NoOfItems", bill.getNoOfItems());
-	           map.put("ReturnTotalAmoount", PDFUtils.getDecimalFormat(bill.getTotalAmount()));
+	           map.put("ReturnTotalAmoount", AppUtils.getDecimalFormat(bill.getTotalAmount()));
 	           map.put("PaymentMode", bill.getReturnpaymentMode());
-	           map.put("ReturnDate", PDFUtils.getFormattedDate(bill.getTimestamp()));
-	           map.put("TotalPendingAmt", PDFUtils.getDecimalFormat(totalPendingAmt));
-	           map.put("TotalCashAmt", PDFUtils.getDecimalFormat(totalCashAmt));
-	           map.put("TotalAmount", PDFUtils.getDecimalFormat(totalAmt));
+	           map.put("ReturnDate", AppUtils.getFormattedDate(bill.getTimestamp()));
+	           map.put("TotalPendingAmt", AppUtils.getDecimalFormat(totalPendingAmt));
+	           map.put("TotalCashAmt", AppUtils.getDecimalFormat(totalCashAmt));
+	           map.put("TotalAmount", AppUtils.getDecimalFormat(totalAmt));
 	           map.put("TotalQty", String.valueOf(totalQty));
 	           map.put("TotalNoOfItems", String.valueOf(totalNoOfItems));
 	           dataSourceMaps.add(map);
@@ -170,7 +170,7 @@ public class JasperServices {
 	        	 Map<String,Object> map = new HashMap<String, Object>();
 	        	 map.put("ProductName", barcode.getProductName());
 		         map.put("Barcode", barcode.getBarcode());
-		         map.put("Price", PDFUtils.getDecimalFormat(barcode.getPrice()));
+		         map.put("Price", AppUtils.getDecimalFormat(barcode.getPrice()));
 		         dataSourceMaps.add(map);
 	        }
 	        /*for(int i=1;i<=noOfLabels;i++) {

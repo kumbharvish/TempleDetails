@@ -7,12 +7,16 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.billing.constants.AppConstants;
 import com.billing.dto.Product;
 import com.billing.dto.StatusDTO;
 import com.billing.dto.StockLedger;
-import com.billing.utils.PDFUtils;
+import com.billing.utils.AppUtils;
+import com.billing.utils.DBUtils;
 
+@Service
 public class ProductHistoryServices {
 	
 	private static final String INS_PRODUCT_PURCHASE_PRICE = "INSERT INTO PRODUCT_PURCHASE_PRICE_HISTORY (PRODUCT_ID,PURCHASE_PRICE,ENTRY_DATE,NARRATION,PURCHASE_RATE,PRODUCT_TAX,SUPPLIER_ID)" +
@@ -36,7 +40,7 @@ public class ProductHistoryServices {
 		PreparedStatement stmt = null;
 		StatusDTO status= new StatusDTO();
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(INS_PRODUCT_PURCHASE_PRICE);
 			conn.setAutoCommit(false);
 			
@@ -63,7 +67,7 @@ public class ProductHistoryServices {
 			status.setException(e.getMessage());
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return status;
 	}
@@ -76,7 +80,7 @@ public class ProductHistoryServices {
 		Product pc = null;
 		List<Product> productList = new ArrayList<Product>();
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(GET_PRODUCT_PURCHASE_PRICE_HIST);
 			stmt.setInt(1, productCode);
 			ResultSet rs = stmt.executeQuery();
@@ -97,7 +101,7 @@ public class ProductHistoryServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		
 		return productList;
@@ -109,7 +113,7 @@ public class ProductHistoryServices {
 		PreparedStatement stmt = null;
 		StatusDTO status= new StatusDTO();
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			conn.setAutoCommit(false);
 			if(stockInOutFlag.equals(AppConstants.STOCK_IN)){
 				stmt = conn.prepareStatement(INS_PRODUCT_STOCK_IN_LEDGER);
@@ -138,7 +142,7 @@ public class ProductHistoryServices {
 			status.setException(e.getMessage());
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return status;
 	}
@@ -150,7 +154,7 @@ public class ProductHistoryServices {
 		StockLedger pc = null;
 		List<StockLedger> stockLedgerList = new ArrayList<StockLedger>();
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(PRODUCT_STOCK_LEDGER);
 			stmt.setInt(1, productCode);
 			stmt.setDate(2, fromDate);
@@ -172,7 +176,7 @@ public class ProductHistoryServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		
 		return stockLedgerList;

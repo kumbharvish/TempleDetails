@@ -1,7 +1,5 @@
 package com.billing.properties;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,49 +12,21 @@ import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import com.billing.starter.Application;
-import com.billing.utils.PDFUtils;
+import com.billing.utils.AppUtils;
 
+@Component
 public class AppProperties {
 	
-	private static final Logger logger = LoggerFactory.getLogger(Application.class);
+	private static final Logger logger = LoggerFactory.getLogger(AppProperties.class);
 	
 	private static final String USER="USER";
 	private static final String COMPUTER="COMPUTER";
 	private static final String MAC_ADDRESS="NAME";
 	private static final String VERSION="VERSION";
 	private static final String IPADDRESS="IPADDRESS";
-	
-	public static Properties getProperties() {
-		Properties prop = new Properties();
-		InputStream input = null;
-
-		try {
-			input = AppProperties.class.getClassLoader().getResourceAsStream(
-				"resources/config.properties");
-
-			if (input == null) {
-				System.out.println("Unable to load properties!!");
-				logger.error("Unable to load properties!!");
-				return prop;
-			}
-
-			prop.load(input);
-
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		} finally {
-			if (input != null) {
-				try {
-					input.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return prop;
-	}
 	
 	public static Map<String,String> getDetails(){
 		Properties p = System.getProperties();
@@ -88,19 +58,19 @@ public class AppProperties {
 			tempString=details.get(s);
 			sysKey=sysKey+tempString;
 		}
-		List<String> appKey = PDFUtils.getAppDataValues("APP_KEY");
-		if(PDFUtils.enc(sysKey).equals(appKey.get(0)))
+		List<String> appKey = AppUtils.getAppDataValues("APP_KEY");
+		if(AppUtils.enc(sysKey).equals(appKey.get(0)))
 			isValidLicense=true;
 		return isValidLicense;
 	}
 	
 	public static boolean doCheck() throws Exception{
 		boolean isValidLicense=true;
-		List<String> appKey = PDFUtils.getAppDataValues("APP_SECURE_KEY");
+		List<String> appKey = AppUtils.getAppDataValues("APP_SECURE_KEY");
 		Date todaysDate = new Date();
 		SimpleDateFormat sdfParseFormat = new SimpleDateFormat("dd MMM yyyy");
 		String todaysDatest = sdfParseFormat.format(todaysDate);
-		Date expriyDate = sdfParseFormat.parse(PDFUtils.dec(appKey.get(0)));
+		Date expriyDate = sdfParseFormat.parse(AppUtils.dec(appKey.get(0)));
 		
 		Date currentDate = sdfParseFormat.parse(todaysDatest);
 		
@@ -127,6 +97,6 @@ public class AppProperties {
 		System.out.println(validateLicense());*/
 		
 		//validateLicensedDays();
-		System.out.println(getProperties());
+		//System.out.println(getProperties());
 	}
 }

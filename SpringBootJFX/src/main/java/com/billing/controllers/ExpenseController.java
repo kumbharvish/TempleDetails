@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import com.billing.dto.Expense;
 import com.billing.dto.StatusDTO;
 import com.billing.service.ExpensesServices;
-import com.billing.utils.PDFUtils;
+import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
 import com.billing.utils.Utility;
 
@@ -63,7 +63,7 @@ public class ExpenseController implements TabContent {
     @FXML
     void onCloseCommand(ActionEvent event) {
     	 if (isDirty.get()) {
-             ButtonType buttonType = PDFUtils.shouldSaveUnsavedData(MainWindow);
+             ButtonType buttonType = AppUtils.shouldSaveUnsavedData(MainWindow);
              if (buttonType == ButtonType.CANCEL) {
                  return; // no need to take any further action
              } else if (buttonType == ButtonType.YES) {
@@ -94,7 +94,7 @@ public class ExpenseController implements TabContent {
 	@Override
 	public boolean shouldClose() {
 		 if (isDirty.get()) {
-	            ButtonType response = PDFUtils.shouldSaveUnsavedData(MainWindow);
+	            ButtonType response = AppUtils.shouldSaveUnsavedData(MainWindow);
 	            if (response == ButtonType.CANCEL) {
 	                return false;
 	            }
@@ -146,7 +146,7 @@ public class ExpenseController implements TabContent {
 		
 		StatusDTO status = ExpensesServices.addExpense(expense);
 		if(status.getStatusCode()==0){
-    		PDFUtils.showInfoAlert(MainWindow, "Expense saved successfully !", "Information");
+    		AppUtils.showInfoAlert(MainWindow, "Expense saved successfully !", "Information");
     	}else {
     		String message = Utility.getDataSaveErrorText();
             Utility.beep();

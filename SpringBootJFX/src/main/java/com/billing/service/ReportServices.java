@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.joda.time.DateTime;
+import org.springframework.stereotype.Service;
 
 import com.billing.constants.AppConstants;
 import com.billing.dto.CashCounter;
@@ -16,8 +17,10 @@ import com.billing.dto.MonthlyReport;
 import com.billing.dto.ProfitLossData;
 import com.billing.dto.ProfitLossDetails;
 import com.billing.dto.StatusDTO;
-import com.billing.utils.PDFUtils;
+import com.billing.utils.AppUtils;
+import com.billing.utils.DBUtils;
 
+@Service
 public class ReportServices {
 	
 	private static final String GET_TOTAL_SALES_CASH_AMOUNT = "SELECT SUM(NET_SALES_AMOUNT) AS TOTAL_SALES_CASH_AMOUNT FROM CUSTOMER_BILL_DETAILS WHERE " +
@@ -75,7 +78,7 @@ public class ReportServices {
 			Double closingBalance=0.00;
 			
 			try {
-					conn = PDFUtils.getConnection();
+					conn = DBUtils.getConnection();
 					//Opening Cash
 					Double openCash = getOpeningCash(fromDate);
 					if(openCash!=null){
@@ -160,7 +163,7 @@ public class ReportServices {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				PDFUtils.closeConnectionAndStatment(conn, stmt);
+				AppUtils.closeConnectionAndStatment(conn, stmt);
 			}
 			return cashCounterList;
 		}
@@ -171,7 +174,7 @@ public class ReportServices {
 			PreparedStatement stmt = null;
 			Double openingCashAmount=null;
 			try {
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(GET_OPENING_CASH);
 				stmt.setDate(1, date);
 				
@@ -184,7 +187,7 @@ public class ReportServices {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				PDFUtils.closeConnectionAndStatment(conn, stmt);
+				AppUtils.closeConnectionAndStatment(conn, stmt);
 			}
 			return openingCashAmount;
 		}
@@ -196,7 +199,7 @@ public class ReportServices {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		int totalQtySold = 0;
-		conn = PDFUtils.getConnection();
+		conn = DBUtils.getConnection();
 		try{
 			//Total Sales Pending Amount
 			stmt = conn.prepareStatement(GET_TOTAL_SALES_CASH_AMOUNT);
@@ -278,7 +281,7 @@ public class ReportServices {
 		} catch(Exception e){
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		System.out.println(report);
 		return report;
@@ -292,7 +295,7 @@ public class ReportServices {
 		ProfitLossDetails report = new ProfitLossDetails();
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		conn = PDFUtils.getConnection();
+		conn = DBUtils.getConnection();
 		double openingStockAmt=0.0;
 		double salesAmt=0.0;
 		double closingStockAmt=0.0;
@@ -374,7 +377,7 @@ public class ReportServices {
 				stmt = conn.prepareStatement(GET_CLOSING_STOCK_VALUE);
 				ResultSet rs7 = stmt.executeQuery();
 				if (rs7.next()) {
-					closingStockValue = PDFUtils.getDecimalRoundUp2Decimal(rs7.getDouble("CLOSING_STOCK_VALUE"));
+					closingStockValue = AppUtils.getDecimalRoundUp2Decimal(rs7.getDouble("CLOSING_STOCK_VALUE"));
 					closingStockAmt = closingStockValue;
 				}
 			}else{
@@ -404,7 +407,7 @@ public class ReportServices {
 		} catch(Exception e){
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return report;
 	}
@@ -418,7 +421,7 @@ public class ReportServices {
 		double totalDebit=0.0;
 		double totalCredit=0.0;
 		try{
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			//Expense Types
 			stmt = conn.prepareStatement(GET_TOTAL_EXP);
 			stmt.setDate(1,fromDate);
@@ -470,7 +473,7 @@ public class ReportServices {
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		
 		return report;
@@ -482,7 +485,7 @@ public class ReportServices {
 		PreparedStatement stmt = null;
 		Double openingCashAmount=0.0;
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(GET_OPENING_STOCK_VALUE);
 			stmt.setDate(1, date);
 			
@@ -495,7 +498,7 @@ public class ReportServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return openingCashAmount;
 	}
@@ -506,7 +509,7 @@ public class ReportServices {
 		PreparedStatement stmt = null;
 		Double stockValueAmt=0.0;
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(GET_CLOSING_STOCK_VALUE);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
@@ -516,7 +519,7 @@ public class ReportServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return stockValueAmt;
 	}
@@ -527,7 +530,7 @@ public class ReportServices {
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();
 		try {
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(INS_OPENING_STOCK_VALUE);
 				stmt.setDate(1, date);
 				stmt.setDouble(2, amount);
@@ -541,7 +544,7 @@ public class ReportServices {
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return status;
 	}
@@ -565,7 +568,7 @@ public class ReportServices {
 		StatusDTO status =  new StatusDTO(-1);
 		double stockValueAmount = getStockValueAmount();
 		System.out.println("Stock Value Amount : "+stockValueAmount);
-		addOpeningStockAmount(new Date(System.currentTimeMillis()),PDFUtils.getDecimalRoundUp2Decimal(stockValueAmount));
+		addOpeningStockAmount(new Date(System.currentTimeMillis()),AppUtils.getDecimalRoundUp2Decimal(stockValueAmount));
 		return status;
 	}
 	
@@ -575,7 +578,7 @@ public class ReportServices {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(SETTLEMENT_CUST_INFO);
 			stmt.setDate(1, date);
 			stmt.setDate(2, date);
@@ -592,7 +595,7 @@ public class ReportServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return customerList;
 	}

@@ -12,14 +12,17 @@ import javax.swing.JComboBox;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import com.billing.dto.Expense;
 import com.billing.dto.ExpenseType;
 import com.billing.dto.StatusDTO;
-import com.billing.utils.PDFUtils;
+import com.billing.utils.AppUtils;
+import com.billing.utils.DBUtils;
 
 import javafx.scene.control.ComboBox;
 
+@Service
 public class ExpensesServices {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesServices.class);
@@ -61,7 +64,7 @@ public class ExpensesServices {
 			}
 			query1.append(ORDER_BY_CLAUSE);
 			
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(query1.toString());
 			stmt.setDate(1,fromDate);
 			stmt.setDate(2,toDate);
@@ -85,7 +88,7 @@ public class ExpensesServices {
 			e.printStackTrace();
 			logger.error("ExpenseServices getExpenses--> ",e);
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return expenseList;
 	}
@@ -96,7 +99,7 @@ public class ExpensesServices {
 		StatusDTO status = new StatusDTO();
 		try {
 			if(expense!=null){
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(ADD_EXPENSE);
 				stmt.setString(1,expense.getCategory());
 				stmt.setString(2,expense.getDescription());
@@ -114,7 +117,7 @@ public class ExpensesServices {
 			status.setStatusCode(-1);
 			logger.error("ExpenseServices addExpense--> ",e);
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return status;
 	}
@@ -124,7 +127,7 @@ public class ExpensesServices {
 		PreparedStatement stmt = null;
 		boolean flag=false;
 		try {
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(DELETE_EXPENSE);
 				stmt.setInt(1,expenseId);
 				
@@ -136,7 +139,7 @@ public class ExpensesServices {
 			e.printStackTrace();
 			logger.error("ExpenseServices deleteExpense--> ",e);
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return flag;
 	}
@@ -147,7 +150,7 @@ public class ExpensesServices {
 		StatusDTO status = new StatusDTO();
 		try {
 			if(expense!=null){
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(UPDATE_EXPENSE);
 				stmt.setString(1,expense.getCategory());
 				stmt.setString(2,expense.getDescription());
@@ -166,7 +169,7 @@ public class ExpensesServices {
 			status.setStatusCode(-1);
 			logger.error("ExpenseServices updateExpense--> ",e);
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return status;
 	}
@@ -176,7 +179,7 @@ public class ExpensesServices {
 		PreparedStatement stmt = null;
 		Expense pc = null;
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(GET_EXPENSE);
 			stmt.setInt(1,id);
 			ResultSet rs = stmt.executeQuery();
@@ -194,7 +197,7 @@ public class ExpensesServices {
 			e.printStackTrace();
 			logger.error("ExpenseServices getExpenseDetails--> ",e);
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return pc;
 	}
@@ -206,7 +209,7 @@ public class ExpensesServices {
 			Connection conn = null;
 			PreparedStatement stmt = null;
 			try {
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(GET_EXPENSE_TYPES);
 				ResultSet rs = stmt.executeQuery();
 
@@ -223,7 +226,7 @@ public class ExpensesServices {
 				e.printStackTrace();
 				logger.error("ExpenseServices getExpenseTypes--> ",e);
 			} finally {
-				PDFUtils.closeConnectionAndStatment(conn, stmt);
+				AppUtils.closeConnectionAndStatment(conn, stmt);
 			}
 			return dataList;
 

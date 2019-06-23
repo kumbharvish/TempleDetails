@@ -3,7 +3,7 @@ import java.util.List;
 
 import com.billing.dto.ProductCategory;
 import com.billing.service.ProductCategoryServices;
-import com.billing.utils.PDFUtils;
+import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
 import com.billing.utils.Utility;
 
@@ -68,7 +68,7 @@ public class ProductCategoryController implements TabContent{
 	@Override
 	public boolean shouldClose() {
 		if (isDirty.get()) {
-            ButtonType response = PDFUtils.shouldSaveUnsavedData(MainWindow);
+            ButtonType response = AppUtils.shouldSaveUnsavedData(MainWindow);
             if (response == ButtonType.CANCEL) {
                 return false;
             }

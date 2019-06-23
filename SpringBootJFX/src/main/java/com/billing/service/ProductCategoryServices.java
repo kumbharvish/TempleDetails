@@ -8,11 +8,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.billing.dto.Product;
 import com.billing.dto.ProductCategory;
 import com.billing.dto.StatusDTO;
-import com.billing.utils.PDFUtils;
+import com.billing.utils.AppUtils;
+import com.billing.utils.DBUtils;
 
+@Service
 public class ProductCategoryServices {
 
 	private static final String GET_ALL_CATEGORIES = "SELECT * FROM PRODUCT_CATEGORY_DETAILS";
@@ -41,7 +45,7 @@ public class ProductCategoryServices {
 		ProductCategory pc = null;
 		List<ProductCategory> productCategoryList = new ArrayList<ProductCategory>();
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(GET_ALL_CATEGORIES);
 			ResultSet rs = stmt.executeQuery();
 
@@ -61,7 +65,7 @@ public class ProductCategoryServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return productCategoryList;
 	}
@@ -72,7 +76,7 @@ public class ProductCategoryServices {
 		StatusDTO status = new StatusDTO();
 		try {
 			if(prodcutCategory!=null){
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(INS_CATEGORY);
 				stmt.setString(1,prodcutCategory.getCategoryName());
 				stmt.setString(2,prodcutCategory.getCategoryDescription());
@@ -88,7 +92,7 @@ public class ProductCategoryServices {
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return status;
 	}
@@ -98,7 +102,7 @@ public class ProductCategoryServices {
 		PreparedStatement stmt = null;
 		boolean flag=false;
 		try {
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(DELETE_CATEGORY);
 				stmt.setInt(1,categoryCode);
 				
@@ -109,7 +113,7 @@ public class ProductCategoryServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return flag;
 	}
@@ -120,7 +124,7 @@ public class ProductCategoryServices {
 		StatusDTO status = new StatusDTO();
 		try {
 			if(prodcutCategory!=null){
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(UPDATE_CATEGORY);
 				stmt.setString(1,prodcutCategory.getCategoryName());
 				stmt.setString(2,prodcutCategory.getCategoryDescription());
@@ -137,7 +141,7 @@ public class ProductCategoryServices {
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return status;
 	}
@@ -148,7 +152,7 @@ public class ProductCategoryServices {
 		Product pc = null;
 		List<Product> productList = new ArrayList<Product>();
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(GET_ALL_PRODUCTS_FOR_CATEGORY);
 			stmt.setInt(1, categoryId);
 			ResultSet rs = stmt.executeQuery();
@@ -180,7 +184,7 @@ public class ProductCategoryServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		
 		return productList;
@@ -192,7 +196,7 @@ public class ProductCategoryServices {
 		ProductCategory pc = null;
 		List<ProductCategory> productCategoryList = new ArrayList<ProductCategory>();
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(CATEGORY_WISE_STOCK_REPORT);
 			ResultSet rs = stmt.executeQuery();
 
@@ -211,7 +215,7 @@ public class ProductCategoryServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return productCategoryList;
 	}

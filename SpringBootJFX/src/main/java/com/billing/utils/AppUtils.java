@@ -1,7 +1,6 @@
 package com.billing.utils;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.Font;
 import java.awt.Image;
@@ -9,7 +8,6 @@ import java.io.File;
 import java.math.RoundingMode;
 import java.security.Key;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,7 +20,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import javax.crypto.Cipher;
@@ -37,12 +34,13 @@ import javax.swing.table.JTableHeader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.billing.constants.AppConstants;
 import com.billing.main.Global;
 import com.billing.service.BillingServices;
-import com.billing.starter.Application;
-import com.billing.properties.AppProperties;
+import com.billing.starter.MyStoreApplication;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -50,12 +48,9 @@ import javafx.stage.Stage;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
-public class PDFUtils {
-
-	private static final String JDBC_DRIVER = "JDBC.DRIVER";
-	private static final String DB_URL = "DB.URL";
-	private static final String USER = "DB.USERNME";
-	private static final String PASS = "DB.PASSWORD";
+@Component
+public class AppUtils {
+	
 	private static final String PDF_CONST = "SLAES";
     private static final String PDF_RANDOM = "Invoice1Hbfh667adfDEJ78";
     private static final int LICENSE_EXPIRY_LIMIT =15;
@@ -63,33 +58,8 @@ public class PDFUtils {
 	private static final String APP_DATA = "SELECT VALUE_STRING FROM "
 			+ "APP_DATA WHERE DATA_NAME=?";
 
-	private static final Logger logger = LoggerFactory.getLogger(Application.class);
+	private static final Logger logger = LoggerFactory.getLogger(MyStoreApplication.class);
 	
-	public static Connection getConnection() {
-		Connection conn = null;
-
-		// load Properties
-		Properties prop = AppProperties.getProperties();
-
-		if (prop != null) {
-			try {
-				// STEP 2: Register JDBC driver
-				Class.forName(prop.getProperty(JDBC_DRIVER));
-				// STEP 3: Open a connection
-				conn = DriverManager.getConnection(prop.getProperty(DB_URL),
-						prop.getProperty(USER), prop.getProperty(PASS));
-			} catch (Exception e) {
-				logger.error("Get Connection Exception :",e);
-				e.printStackTrace();
-			}
-		} else {
-			System.out.println("Please set system properties");
-			logger.error("Please set system properties");
-		}
-
-		return conn;
-	}
-
 	public static int getRecordsCount(ResultSet resultset) throws SQLException {
 		if (resultset.last()) {
 			return resultset.getRow();
@@ -143,7 +113,7 @@ public class PDFUtils {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(APP_DATA);
 			stmt.setString(1, dataName);
 			ResultSet rs = stmt.executeQuery();
@@ -156,7 +126,7 @@ public class PDFUtils {
 			logger.error("Get App Data Values :"+e);
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return dataList;
 
@@ -268,7 +238,7 @@ public class PDFUtils {
 
 	public static String enc(String value) throws Exception {
 		Key params = generate();
-		Cipher cipher = Cipher.getInstance(PDFUtils.PDF_CONST.substring(2));
+		Cipher cipher = Cipher.getInstance(AppUtils.PDF_CONST.substring(2));
 		cipher.init(Cipher.ENCRYPT_MODE, params);
 		byte[] encryptedByteValue = cipher.doFinal(value.getBytes("utf-8"));
 		String encryptedValue64 = new BASE64Encoder()
@@ -279,7 +249,7 @@ public class PDFUtils {
 
 	public static String dec(String value) throws Exception {
 		Key params = generate();
-		Cipher cipher = Cipher.getInstance(PDFUtils.PDF_CONST.substring(2));
+		Cipher cipher = Cipher.getInstance(AppUtils.PDF_CONST.substring(2));
 		cipher.init(Cipher.DECRYPT_MODE, params);
 		byte[] decryptedValue64 = new BASE64Decoder().decodeBuffer(value);
 		byte[] decryptedByteValue = cipher.doFinal(decryptedValue64);
@@ -289,30 +259,10 @@ public class PDFUtils {
 	}
 
 	private static Key generate() throws Exception {
-		Key params = new SecretKeySpec(PDFUtils.PDF_RANDOM.substring(7).getBytes(), PDFUtils.PDF_CONST.substring(2));
+		Key params = new SecretKeySpec(AppUtils.PDF_RANDOM.substring(7).getBytes(), AppUtils.PDF_CONST.substring(2));
 		return params;
 	}
 
-	public static void populateDropdown(JComboBox<String> combobox,String dataName){
-		
-		for(String s :getAppDataValues(dataName)){
-			combobox.addItem(s);
-		}
-	}
-	
-	public static void setEnableRec(Component container, boolean enable){
-	    container.setEnabled(enable);
-
-	    try {
-	        Component[] components= ((Container) container).getComponents();
-	        for (int i = 0; i < components.length; i++) {
-	            setEnableRec(components[i], enable);
-	        }
-	    } catch (ClassCastException e) {
-
-	    }
-	}
-	
 	public static void openWindowsDocument(String filePath){
 		try {
 			if ((new File(filePath)).exists()) {
@@ -348,7 +298,7 @@ public class PDFUtils {
         return image;
     }
 	
-	public static void licenseExpiryAlert(Container panel) {
+	public void licenseExpiryAlert(Container panel) {
 		try {
 			String licenseDateStr =dec(getAppDataValues("APP_SECURE_KEY").get(0));
 			SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
@@ -402,7 +352,7 @@ public class PDFUtils {
          alert.showAndWait();
 	}
 	
-	public static void licenseExpiryAlert() {
+	public void licenseExpiryAlert() {
 		try {
 			String licenseDateStr =dec(getAppDataValues("APP_SECURE_KEY").get(0));
 			SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");

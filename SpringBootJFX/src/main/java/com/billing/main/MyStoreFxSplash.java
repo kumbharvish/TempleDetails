@@ -9,7 +9,7 @@ import com.billing.controllers.LoginController;
 import com.billing.properties.AppProperties;
 import com.billing.service.AppLicenseServices;
 import com.billing.service.DBBackupService;
-import com.billing.utils.PDFUtils;
+import com.billing.utils.AppUtils;
 
 import javafx.animation.FadeTransition;
 import javafx.application.Application;
@@ -47,8 +47,8 @@ public class MyStoreFxSplash extends Application {
 	
 	private Parent parent;
 
-    public static void main(String[] args) throws Exception {
-        launch(args);
+    public static void launch() {
+        launch(null);
     }
 
     @Override
@@ -99,15 +99,15 @@ public class MyStoreFxSplash extends Application {
     private void showLoginStage(Stage initStage){
     	 try {
              if(!AppProperties.check()){
-            	 PDFUtils.showWarningAlert(null, AppConstants.LICENSE_ERROR_1, AppConstants.LICENSE_ERROR);
+            	 AppUtils.showWarningAlert(null, AppConstants.LICENSE_ERROR_1, AppConstants.LICENSE_ERROR);
  				System.exit(0);
  			}else{
  				if(AppLicenseServices.change()){
- 					PDFUtils.showWarningAlert(null, AppConstants.COMP_DATE_ERROR, AppConstants.COMP_DATE);
+ 					AppUtils.showWarningAlert(null, AppConstants.COMP_DATE_ERROR, AppConstants.COMP_DATE);
  					System.exit(0);
  				}else{
  					if(!AppProperties.doCheck()){
- 						PDFUtils.showWarningAlert(null, AppConstants.LICENSE_ERROR_2, AppConstants.LICENSE_EXPIRED);
+ 						AppUtils.showWarningAlert(null, AppConstants.LICENSE_ERROR_2, AppConstants.LICENSE_EXPIRED);
  						System.exit(0);
  					}else{
  						logger.error(" --- Application Check Complete and Started --- ");

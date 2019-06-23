@@ -2,8 +2,11 @@ package com.billing.controllers;
 
 import java.io.IOException;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
@@ -15,8 +18,8 @@ import com.billing.dto.WindowState;
 import com.billing.service.AppLicenseServices;
 import com.billing.service.MyStoreServices;
 import com.billing.service.UserServices;
-import com.billing.starter.Application;
-import com.billing.utils.PDFUtils;
+import com.billing.starter.MyStoreApplication;
+import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
 
 import javafx.event.ActionEvent;
@@ -40,9 +43,13 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+@Component
 public class LoginController {
 
-	private static final Logger logger = LoggerFactory.getLogger(Application.class);
+	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+	
+	@Autowired
+	AppUtils appUtils;
 
 	private final static String APPLICATION_HOME_TITTLE = "My Store";
 	
@@ -155,7 +162,7 @@ public class LoginController {
         }
         
         try {
-			lblLicenseValideUpto.setText(PDFUtils.dec(PDFUtils.getAppDataValues("APP_SECURE_KEY").get(0)));
+			lblLicenseValideUpto.setText(AppUtils.dec(appUtils.getAppDataValues("APP_SECURE_KEY").get(0)));
 		} catch (Exception e) {
 			logger.error("LogginController.show-->"+e);
 			e.printStackTrace();

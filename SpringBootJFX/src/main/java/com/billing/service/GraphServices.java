@@ -7,9 +7,13 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.billing.dto.GraphDTO;
-import com.billing.utils.PDFUtils;
+import org.springframework.stereotype.Service;
 
+import com.billing.dto.GraphDTO;
+import com.billing.utils.AppUtils;
+import com.billing.utils.DBUtils;
+
+@Service
 public class GraphServices {
 
 	private static final String PAYMENT_MODE_AMOUNT ="SELECT PAYMENT_MODE,SUM(NET_SALES_AMOUNT) AS TOTAL_AMT FROM CUSTOMER_BILL_DETAILS WHERE " +
@@ -35,7 +39,7 @@ public class GraphServices {
 				toDate = new Date(System.currentTimeMillis());
 			}
 			
-			conn = PDFUtils.getConnection();
+			conn = DBUtils.getConnection();
 			stmt = conn.prepareStatement(PAYMENT_MODE_AMOUNT);
 			stmt.setDate(1, fromDate);
 			stmt.setDate(2, toDate);
@@ -51,7 +55,7 @@ public class GraphServices {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			PDFUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeConnectionAndStatment(conn, stmt);
 		}
 		return list;
 	}
@@ -63,7 +67,7 @@ public class GraphServices {
 			PreparedStatement stmt = null;
 			GraphDTO graph = null;
 			try {
-				conn = PDFUtils.getConnection();
+				conn = DBUtils.getConnection();
 				stmt = conn.prepareStatement(DAILY_SALES_AMOUNT_REPORT);
 				ResultSet rs = stmt.executeQuery();
 				while (rs.next()) {
@@ -78,7 +82,7 @@ public class GraphServices {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				PDFUtils.closeConnectionAndStatment(conn, stmt);
+				AppUtils.closeConnectionAndStatment(conn, stmt);
 			}
 			return list;
 		}
@@ -90,7 +94,7 @@ public class GraphServices {
 				PreparedStatement stmt = null;
 				GraphDTO graph = null;
 				try {
-					conn = PDFUtils.getConnection();
+					conn = DBUtils.getConnection();
 					stmt = conn.prepareStatement(MONTHLY_SALES_AMOUNT_REPORT);
 					ResultSet rs = stmt.executeQuery();
 					while (rs.next()) {
@@ -105,7 +109,7 @@ public class GraphServices {
 				} catch (Exception e) {
 					e.printStackTrace();
 				} finally {
-					PDFUtils.closeConnectionAndStatment(conn, stmt);
+					AppUtils.closeConnectionAndStatment(conn, stmt);
 				}
 				return list;
 			}

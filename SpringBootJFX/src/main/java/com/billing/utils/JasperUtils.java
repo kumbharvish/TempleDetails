@@ -10,6 +10,8 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.billing.constants.AppConstants;
 import com.billing.dto.Barcode;
@@ -26,14 +28,16 @@ import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.view.JasperViewer;
 
+@Component
 public class JasperUtils {
 
 	private static final Logger logger = LoggerFactory.getLogger(JasperUtils.class);
+	
 
 	public static void createPDFWithJasper(List<Map<String,?>> dataSourceMap,String jasperLoc) {
 	        try {                                           
 	            // load report location
-	        	String homeLocation = PDFUtils.getAppDataValues(AppConstants.MYSTORE_HOME).get(0);
+	        	String homeLocation = AppUtils.getAppDataValues(AppConstants.MYSTORE_HOME).get(0);
 	        	String jrxmlLocation = homeLocation+"\\Jrxml\\"+jasperLoc;
 	        	//With JRXML
 	        	//JasperReport jasperReport = JasperCompileManager.compileReport(jrxmlLocation);
@@ -65,7 +69,7 @@ public class JasperUtils {
 	            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 	            
 	            JasperExportManager.exportReportToPdfFile(jasperPrint, fileLocation+"Bill_"+billNumber+"_"+sdf.format(new Date())+".pdf");
-	            if("Y".equals(PDFUtils.getAppDataValues(AppConstants.IS_THERMAL_PRINTER_SET).get(0))){
+	            if("Y".equals(AppUtils.getAppDataValues(AppConstants.IS_THERMAL_PRINTER_SET).get(0))){
 	            	JasperPrintManager.printReport(jasperPrint, false);
 	            }
 	        } catch (Exception e) {
@@ -79,7 +83,7 @@ public class JasperUtils {
 		boolean isSucess=true;
 		try {       
             // load report location
-			String homeLocation = PDFUtils.getAppDataValues(AppConstants.MYSTORE_HOME).get(0);
+			String homeLocation = AppUtils.getAppDataValues(AppConstants.MYSTORE_HOME).get(0);
         	String jrxmlLocation = homeLocation+"Jrxml\\\\"+JrxmlLoc;
         	//With JRXML
         	//JasperReport jasperReport = JasperCompileManager.compileReport(jrxmlLocation);
@@ -109,7 +113,7 @@ public class JasperUtils {
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
             String filePath=  fileLocation+reportName+"_"+sdf.format(new Date())+".pdf";
             JasperExportManager.exportReportToPdfFile(jasperPrint, filePath);
-            PDFUtils.openWindowsDocument(filePath);
+            AppUtils.openWindowsDocument(filePath);
         } catch (Exception e) {
         	e.printStackTrace();
         	isSucess = false;
@@ -122,7 +126,7 @@ public class JasperUtils {
 		boolean isSucess=true;
 		try {       
             // load report location
-			String homeLocation = PDFUtils.getAppDataValues(AppConstants.MYSTORE_HOME).get(0);
+			String homeLocation = AppUtils.getAppDataValues(AppConstants.MYSTORE_HOME).get(0);
         	String jrxmlLocation = homeLocation+"Jrxml\\\\"+JrxmlName;
         	//With JRXML
         	//JasperReport jasperReport = JasperCompileManager.compileReport(jrxmlLocation);
