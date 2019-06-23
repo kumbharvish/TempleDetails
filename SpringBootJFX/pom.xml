@@ -11,7 +11,7 @@
 	<groupId>com.billing</groupId>
 	<artifactId>MyStore</artifactId>
 	<name>MyStore</name>
-	<description>Billing Application</description>
+	<description>Billing Application With Spring Boot and Java FX</description>
 	<packaging>jar</packaging>
 	<properties>
 		<java.version>1.8</java.version>
