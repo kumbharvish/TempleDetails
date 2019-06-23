@@ -1,0 +1,58 @@
+[2019-06-23T15:54:11.011Z] [org.springframework.boot.StartupInfoLogger] [main] [55] [INFO ] Starting Application on HP with PID 7924 (E:\Billing_Application\Spring_Boot_JavaFx\Boot_FX\target\classes started by VISHAL in E:\Billing_Application\Spring_Boot_JavaFx\Boot_FX)
+[2019-06-23T15:54:11.011Z] [org.springframework.boot.SpringApplication] [main] [652] [INFO ] No active profile set, falling back to default profiles: default
+[2019-06-23T15:54:12.012Z] [org.springframework.data.repository.config.RepositoryConfigurationDelegate] [main] [126] [INFO ] Bootstrapping Spring Data repositories in DEFAULT mode.
+[2019-06-23T15:54:12.012Z] [org.springframework.data.repository.config.RepositoryConfigurationDelegate] [main] [182] [INFO ] Finished Spring Data repository scanning in 16ms. Found 0 repository interfaces.
+[2019-06-23T15:54:13.013Z] [org.hibernate.jpa.internal.util.LogHelper] [main] [31] [INFO ] HHH000204: Processing PersistenceUnitInfo [name: default]
+[2019-06-23T15:54:13.013Z] [org.hibernate.Version] [main] [46] [INFO ] HHH000412: Hibernate Core {5.4.3.Final}
+[2019-06-23T15:54:14.014Z] [org.hibernate.annotations.common.reflection.java.JavaReflectionManager] [main] [49] [INFO ] HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+[2019-06-23T15:54:14.014Z] [com.zaxxer.hikari.HikariDataSource] [main] [110] [INFO ] HikariPool-1 - Starting...
+[2019-06-23T15:54:15.015Z] [com.zaxxer.hikari.HikariDataSource] [main] [123] [INFO ] HikariPool-1 - Start completed.
+[2019-06-23T15:54:15.015Z] [org.hibernate.dialect.Dialect] [main] [158] [INFO ] HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+[2019-06-23T15:54:16.016Z] [org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator] [main] [52] [INFO ] HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+[2019-06-23T15:54:16.016Z] [org.springframework.orm.jpa.AbstractEntityManagerFactoryBean] [main] [415] [INFO ] Initialized JPA EntityManagerFactory for persistence unit 'default'
+[2019-06-23T15:54:16.016Z] [org.springframework.boot.StartupInfoLogger] [main] [61] [INFO ] Started Application in 5.415 seconds (JVM running for 6.31)
+[2019-06-23T15:54:16.016Z] [com.billing.starter.Application] [main] [24] [INFO ] this is a info message
+[2019-06-23T15:54:16.016Z] [com.billing.starter.Application] [main] [25] [WARN ] this is a warn message
+[2019-06-23T15:54:16.016Z] [com.billing.starter.Application] [main] [26] [ERROR] this is a error message
+[2019-06-23T15:54:16.016Z] [org.springframework.orm.jpa.AbstractEntityManagerFactoryBean] [Thread-2] [597] [INFO ] Closing JPA EntityManagerFactory for persistence unit 'default'
+[2019-06-23T15:54:16.016Z] [com.zaxxer.hikari.HikariDataSource] [Thread-2] [350] [INFO ] HikariPool-1 - Shutdown initiated...
+[2019-06-23T15:54:16.016Z] [com.zaxxer.hikari.HikariDataSource] [Thread-2] [352] [INFO ] HikariPool-1 - Shutdown completed.
+[2019-06-23T15:55:30.030Z] [com.billing.starter.Application] [main] [26] [ERROR] this is a error message
+[2019-06-23T15:56:13.013Z] [org.springframework.boot.StartupInfoLogger] [main] [55] [INFO ] Starting Application on HP with PID 5904 (E:\Billing_Application\Spring_Boot_JavaFx\Boot_FX\target\classes started by VISHAL in E:\Billing_Application\Spring_Boot_JavaFx\Boot_FX)
+[2019-06-23T15:56:13.013Z] [org.springframework.boot.SpringApplication] [main] [652] [INFO ] No active profile set, falling back to default profiles: default
+[2019-06-23T15:56:13.013Z] [org.springframework.data.repository.config.RepositoryConfigurationDelegate] [main] [126] [INFO ] Bootstrapping Spring Data repositories in DEFAULT mode.
+[2019-06-23T15:56:13.013Z] [org.springframework.data.repository.config.RepositoryConfigurationDelegate] [main] [182] [INFO ] Finished Spring Data repository scanning in 31ms. Found 0 repository interfaces.
+[2019-06-23T15:56:14.014Z] [org.hibernate.jpa.internal.util.LogHelper] [main] [31] [INFO ] HHH000204: Processing PersistenceUnitInfo [name: default]
+[2019-06-23T15:56:14.014Z] [org.hibernate.Version] [main] [46] [INFO ] HHH000412: Hibernate Core {5.4.3.Final}
+[2019-06-23T15:56:15.015Z] [org.hibernate.annotations.common.reflection.java.JavaReflectionManager] [main] [49] [INFO ] HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+[2019-06-23T15:56:15.015Z] [com.zaxxer.hikari.HikariDataSource] [main] [110] [INFO ] HikariPool-1 - Starting...
+[2019-06-23T15:56:16.016Z] [com.zaxxer.hikari.HikariDataSource] [main] [123] [INFO ] HikariPool-1 - Start completed.
+[2019-06-23T15:56:16.016Z] [org.hibernate.dialect.Dialect] [main] [158] [INFO ] HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+[2019-06-23T15:56:16.016Z] [org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator] [main] [52] [INFO ] HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+[2019-06-23T15:56:16.016Z] [org.springframework.orm.jpa.AbstractEntityManagerFactoryBean] [main] [415] [INFO ] Initialized JPA EntityManagerFactory for persistence unit 'default'
+[2019-06-23T15:56:17.017Z] [org.springframework.boot.StartupInfoLogger] [main] [61] [INFO ] Started Application in 4.921 seconds (JVM running for 5.956)
+[2019-06-23T15:56:17.017Z] [com.billing.starter.Application] [main] [24] [INFO ] this is a info message
+[2019-06-23T15:56:17.017Z] [com.billing.starter.Application] [main] [25] [WARN ] this is a warn message
+[2019-06-23T15:56:17.017Z] [com.billing.starter.Application] [main] [26] [ERROR] this is a error message
+[2019-06-23T15:56:17.017Z] [org.springframework.orm.jpa.AbstractEntityManagerFactoryBean] [Thread-2] [597] [INFO ] Closing JPA EntityManagerFactory for persistence unit 'default'
+[2019-06-23T15:56:17.017Z] [com.zaxxer.hikari.HikariDataSource] [Thread-2] [350] [INFO ] HikariPool-1 - Shutdown initiated...
+[2019-06-23T15:56:17.017Z] [com.zaxxer.hikari.HikariDataSource] [Thread-2] [352] [INFO ] HikariPool-1 - Shutdown completed.
+[2019-06-23T22:22:41.041Z] [org.springframework.boot.StartupInfoLogger] [main] [55] [INFO ] Starting Application on HP with PID 6688 (E:\Billing_Application\Spring_Boot_JavaFx\Boot_FX\target\classes started by VISHAL in E:\Billing_Application\Spring_Boot_JavaFx\Boot_FX)
+[2019-06-23T22:22:41.041Z] [org.springframework.boot.SpringApplication] [main] [652] [INFO ] No active profile set, falling back to default profiles: default
+[2019-06-23T22:22:42.042Z] [org.springframework.data.repository.config.RepositoryConfigurationDelegate] [main] [126] [INFO ] Bootstrapping Spring Data repositories in DEFAULT mode.
+[2019-06-23T22:22:42.042Z] [org.springframework.data.repository.config.RepositoryConfigurationDelegate] [main] [182] [INFO ] Finished Spring Data repository scanning in 19ms. Found 0 repository interfaces.
+[2019-06-23T22:22:43.043Z] [org.hibernate.jpa.internal.util.LogHelper] [main] [31] [INFO ] HHH000204: Processing PersistenceUnitInfo [name: default]
+[2019-06-23T22:22:43.043Z] [org.hibernate.Version] [main] [46] [INFO ] HHH000412: Hibernate Core {5.4.3.Final}
+[2019-06-23T22:22:44.044Z] [org.hibernate.annotations.common.reflection.java.JavaReflectionManager] [main] [49] [INFO ] HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+[2019-06-23T22:22:44.044Z] [com.zaxxer.hikari.HikariDataSource] [main] [110] [INFO ] HikariPool-1 - Starting...
+[2019-06-23T22:22:47.047Z] [com.zaxxer.hikari.HikariDataSource] [main] [123] [INFO ] HikariPool-1 - Start completed.
+[2019-06-23T22:22:47.047Z] [org.hibernate.dialect.Dialect] [main] [158] [INFO ] HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+[2019-06-23T22:22:52.052Z] [org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator] [main] [52] [INFO ] HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+[2019-06-23T22:22:52.052Z] [org.springframework.orm.jpa.AbstractEntityManagerFactoryBean] [main] [415] [INFO ] Initialized JPA EntityManagerFactory for persistence unit 'default'
+[2019-06-23T22:22:52.052Z] [org.springframework.boot.StartupInfoLogger] [main] [61] [INFO ] Started Application in 11.348 seconds (JVM running for 12.728)
+[2019-06-23T22:22:52.052Z] [com.billing.starter.Application] [main] [24] [INFO ] this is a info message
+[2019-06-23T22:22:52.052Z] [com.billing.starter.Application] [main] [25] [WARN ] this is a warn message
+[2019-06-23T22:22:52.052Z] [com.billing.starter.Application] [main] [26] [ERROR] this is a error message
+[2019-06-23T22:22:52.052Z] [org.springframework.orm.jpa.AbstractEntityManagerFactoryBean] [Thread-2] [597] [INFO ] Closing JPA EntityManagerFactory for persistence unit 'default'
+[2019-06-23T22:22:52.052Z] [com.zaxxer.hikari.HikariDataSource] [Thread-2] [350] [INFO ] HikariPool-1 - Shutdown initiated...
+[2019-06-23T22:22:52.052Z] [com.zaxxer.hikari.HikariDataSource] [Thread-2] [352] [INFO ] HikariPool-1 - Shutdown completed.
