@@ -7,6 +7,9 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.billing.constants.AppConstants;
@@ -17,7 +20,12 @@ import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 
 @Service
-public class ProductHistoryServices {
+public class ProductHistoryService {
+	
+	@Autowired
+	DBUtils dbUtils;
+	
+	private static final Logger logger = LoggerFactory.getLogger(ProductCategoryService.class);
 	
 	private static final String INS_PRODUCT_PURCHASE_PRICE = "INSERT INTO PRODUCT_PURCHASE_PRICE_HISTORY (PRODUCT_ID,PURCHASE_PRICE,ENTRY_DATE,NARRATION,PURCHASE_RATE,PRODUCT_TAX,SUPPLIER_ID)" +
 			  " VALUES(?,?,?,?,?,?,?)";
@@ -35,12 +43,12 @@ public class ProductHistoryServices {
 	private static final String PRODUCT_STOCK_LEDGER = "SELECT * FROM PRODUCT_STOCK_LEDGER WHERE PRODUCT_CODE=? AND DATE(TIMESTAMP) BETWEEN ? AND ? ORDER BY TIMESTAMP DESC";
 	
 	//Add Product Purchase Price History
-	public static StatusDTO addProductPurchasePriceHistory(List<Product> productList) {
+	public StatusDTO addProductPurchasePriceHistory(List<Product> productList) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		StatusDTO status= new StatusDTO();
 		try {
-			conn = DBUtils.getConnection();
+			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(INS_PRODUCT_PURCHASE_PRICE);
 			conn.setAutoCommit(false);
 			
@@ -66,21 +74,22 @@ public class ProductHistoryServices {
 			status.setStatusCode(-1);
 			status.setException(e.getMessage());
 			e.printStackTrace();
+			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeStatment(stmt);
 		}
 		return status;
 	}
 	
 
 	//Get Product Purchase Price History 
-	public static List<Product> getProductPurchasePriceHist(int productCode) {
+	public List<Product> getProductPurchasePriceHist(int productCode) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		Product pc = null;
 		List<Product> productList = new ArrayList<Product>();
 		try {
-			conn = DBUtils.getConnection();
+			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(GET_PRODUCT_PURCHASE_PRICE_HIST);
 			stmt.setInt(1, productCode);
 			ResultSet rs = stmt.executeQuery();
@@ -100,20 +109,21 @@ public class ProductHistoryServices {
 			rs.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeStatment(stmt);
 		}
 		
 		return productList;
 	}
 	
 	//Add Product Stock Ledger
-	public static StatusDTO addProductStockLedger(List<Product> productList,String stockInOutFlag,String transactionType) {
+	public StatusDTO addProductStockLedger(List<Product> productList,String stockInOutFlag,String transactionType) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		StatusDTO status= new StatusDTO();
 		try {
-			conn = DBUtils.getConnection();
+			conn = dbUtils.getConnection();
 			conn.setAutoCommit(false);
 			if(stockInOutFlag.equals(AppConstants.STOCK_IN)){
 				stmt = conn.prepareStatement(INS_PRODUCT_STOCK_IN_LEDGER);
@@ -141,20 +151,21 @@ public class ProductHistoryServices {
 			status.setStatusCode(-1);
 			status.setException(e.getMessage());
 			e.printStackTrace();
+			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeStatment(stmt);
 		}
 		return status;
 	}
 	
 	//Get Stock Ledger for Product
-	public static List<StockLedger> getProductStockLedger(int productCode,Date fromDate,Date toDate) {
+	public List<StockLedger> getProductStockLedger(int productCode,Date fromDate,Date toDate) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		StockLedger pc = null;
 		List<StockLedger> stockLedgerList = new ArrayList<StockLedger>();
 		try {
-			conn = DBUtils.getConnection();
+			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(PRODUCT_STOCK_LEDGER);
 			stmt.setInt(1, productCode);
 			stmt.setDate(2, fromDate);
@@ -175,8 +186,9 @@ public class ProductHistoryServices {
 			rs.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeStatment(stmt);
 		}
 		
 		return stockLedgerList;

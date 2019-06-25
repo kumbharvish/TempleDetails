@@ -2,25 +2,22 @@ package com.billing.controllers;
 
 import java.io.IOException;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
-import com.jfoenix.controls.JFXPasswordField;
-import com.jfoenix.controls.JFXTextField;
 import com.billing.dto.MyStoreDetails;
 import com.billing.dto.UserDetails;
-import com.billing.main.Global;
-import com.billing.main.MyStoreFxSplash;
 import com.billing.dto.WindowState;
-import com.billing.service.AppLicenseServices;
-import com.billing.service.MyStoreServices;
-import com.billing.service.UserServices;
-import com.billing.starter.MyStoreApplication;
+import com.billing.main.Global;
+import com.billing.service.AppLicenseService;
+import com.billing.service.MyStoreService;
+import com.billing.service.UserService;
 import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
+import com.jfoenix.controls.JFXPasswordField;
+import com.jfoenix.controls.JFXTextField;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -43,13 +40,22 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-@Component
+@Controller
 public class LoginController {
 
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 	
 	@Autowired
 	AppUtils appUtils;
+	
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	AppLicenseService appLicenseService;
+	
+	@Autowired
+	MyStoreService myStoreService;
 
 	private final static String APPLICATION_HOME_TITTLE = "My Store";
 	
@@ -85,7 +91,7 @@ public class LoginController {
 			if ("".equals(user)|| "".equals(pwd)){
 				errorMessage.setText("Please Enter UserName / Password !");
 			}else{
-				UserDetails userDetails = UserServices.validateUser(user, pwd);
+				UserDetails userDetails = userService.validateUser(user, pwd);
 				if(userDetails!=null){
 					Stage st = (Stage)btnLogin.getScene().getWindow();
 		            st.close();
@@ -154,7 +160,7 @@ public class LoginController {
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/images/shop32X32.png")));
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/images/shop48X48.png")));
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/images/shop64X64.png")));
-        MyStoreDetails mystore = MyStoreServices.getMyStoreDetails();
+        MyStoreDetails mystore = myStoreService.getMyStoreDetails();
         if(mystore!=null) {
         	lblShopName.setText(mystore.getStoreName());
         }else {
@@ -169,7 +175,7 @@ public class LoginController {
 		}
         stage.show();
     	//Update Last Run
-  		AppLicenseServices.updateLastRun();
+  		appLicenseService.updateLastRun();
     }
 
 	 private void addKeyFilter(final Scene scene) {

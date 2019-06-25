@@ -13,14 +13,20 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.billing.constants.AppConstants;
 import com.billing.dto.Customer;
 import com.billing.dto.Product;
 import com.billing.dto.ProductCategory;
 
-
+@Component
 public class ExcelUtils {
+	
+	@Autowired
+	AppUtils appUtils;
+	
 	//Product Profit Report -- [START]
 	 public static void createHeaderRowProdProfit(Sheet sheet) {
 		 
@@ -327,9 +333,9 @@ public class ExcelUtils {
 						}
 					 	//Category Wise Stock Report -- [END]
 	 	
-	 	public static void createExcelFile(Workbook workbook,String reportFileName)
+	 	public void createExcelFile(Workbook workbook,String reportFileName)
 				throws FileNotFoundException, IOException {
-			String excelFilePath = AppUtils.getAppDataValues(AppConstants.MYSTORE_HOME).get(0)+AppConstants.REPORT_EXPORT_FOLDER+"\\";
+			String excelFilePath = appUtils.getAppDataValues(AppConstants.MYSTORE_HOME).get(0)+AppConstants.REPORT_EXPORT_FOLDER+"\\";
 			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 			String filePath = excelFilePath+reportFileName+"_"+sdf.format(new Date())+".xls";
 			FileOutputStream outputStream = new FileOutputStream(filePath);

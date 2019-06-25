@@ -15,9 +15,9 @@ public class DBUtils {
 	private static final Logger logger = LoggerFactory.getLogger(DBUtils.class);
 
 	@Autowired
-	static DataSource dataSource;
+	DataSource dataSource;
 	
-	public static Connection getConnection() {
+	public Connection getConnection() {
 		Connection con = null;
 			try {
 				con = dataSource.getConnection();

@@ -16,7 +16,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
  
-public class BarCodeServices {
+public class BarCodeService {
  
     public static void createPdf(String dest,String barcode,String productName,int noOfPages) throws IOException, DocumentException {
         Document document = new Document();

@@ -1,22 +1,29 @@
 package com.billing.service;
 
 import java.sql.Connection;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.billing.dto.AppConfigurations;
 import com.billing.dto.StatusDTO;
+import com.billing.main.MyStoreFxSplash;
 import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 
 @Service
-public class AppConfigServices {
+public class AppConfigService {
+	
+	@Autowired
+	DBUtils dbUtils;
+	
+	 private static final Logger logger = LoggerFactory.getLogger(AppConfigService.class);
 	
 	private static final String GET_APP_CONFIG = "SELECT * FROM APP_CONFIGURATIONS";
 	
@@ -25,13 +32,13 @@ public class AppConfigServices {
 	private static final String GET_APP_CONFIG_ID = "SELECT IS_ENABLED FROM APP_CONFIGURATIONS WHERE CONFIG_ID=?";
 	
 	//Get All Configurations list
-	public static List<AppConfigurations> getAppConfigList() {
+	public List<AppConfigurations> getAppConfigList() {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		AppConfigurations config = null;
 		List<AppConfigurations> configList = new ArrayList<AppConfigurations>();
 		try {
-			conn = DBUtils.getConnection();
+			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(GET_APP_CONFIG);
 			ResultSet rs = stmt.executeQuery();
 
@@ -47,19 +54,20 @@ public class AppConfigServices {
 			rs.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.info("getAppConfigList : Exception : ",e);
 		} finally {
-			AppUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeStatment(stmt);
 		}
 		return configList;
 	}
 	//Update Configuration 
-	public static StatusDTO updateAppConfig(List<AppConfigurations> configList) {
+	public StatusDTO updateAppConfig(List<AppConfigurations> configList) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();
 		try {
 			if(!configList.isEmpty()){
-				conn = DBUtils.getConnection();
+				conn = dbUtils.getConnection();
 				conn.setAutoCommit(false);
 				stmt = conn.prepareStatement(UPDATE_APP_CONFIG);
 				for(AppConfigurations config:configList){
@@ -77,19 +85,20 @@ public class AppConfigServices {
 			e.printStackTrace();
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
+			logger.info("updateAppConfig : Exception : ",e);
 		} finally {
-			AppUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeStatment(stmt);
 		}
 		return status;
 	}
 	//Get Application Configuration
-	public static String getAppConfig(String configId) {
+	public String getAppConfig(String configId) {
 
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		String isEnabled = null;
 		try {
-			conn = DBUtils.getConnection();
+			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(GET_APP_CONFIG_ID);
 			stmt.setString(1, configId);
 			ResultSet rs = stmt.executeQuery();
@@ -100,8 +109,9 @@ public class AppConfigServices {
 			rs.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.info("getAppConfig : Exception : ",e);
 		} finally {
-			AppUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeStatment(stmt);
 		}
 		return isEnabled;
 

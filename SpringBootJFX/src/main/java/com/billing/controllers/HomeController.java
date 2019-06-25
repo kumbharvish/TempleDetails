@@ -13,6 +13,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import com.billing.dto.UserDetails;
 import com.billing.main.Global;
@@ -48,10 +49,14 @@ import javafx.stage.WindowEvent;
  *
  * @author Vishal
  */
+@Controller
 public class HomeController {
 	
 	@Autowired
 	AppUtils appUtils;
+	
+	@Autowired
+	DBBackupService dbBackupService;
 
     public Stage MainWindow = null;
     
@@ -235,7 +240,7 @@ public class HomeController {
 
         toolBar.managedProperty().bind(toolBar.visibleProperty());
         //Take Database Backup
-        DBBackupService.createDBDump();
+        dbBackupService.createDBDump();
         appUtils.licenseExpiryAlert();
     }
    
@@ -314,7 +319,7 @@ public class HomeController {
     
     @FXML
     void onDataBackupCommand(ActionEvent event) {
-    	DBBackupService.createDBDumpSendOnMail(MainWindow);
+    	dbBackupService.createDBDumpSendOnMail(MainWindow);
     }
 
     @FXML

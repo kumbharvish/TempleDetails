@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.billing.dto.MyStoreDetails;
@@ -14,23 +15,25 @@ import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 
 @Service
-public class MyStoreServices {
-	
+public class MyStoreService {
+
+	@Autowired
+	DBUtils dbUtils;
+
 	private static final Logger logger = LoggerFactory.getLogger(MyStoreApplication.class);
-	
-	private static final String UPDATE_STORE_DETAILS = "UPDATE MY_STORE_DETAILS SET NAME=?," 
-			+"ADDRESS=?, ADDRESS2=?,CITY=?,DISTRICT=?,STATE=?,PHONE=?,CST_NUMBER=?,PAN_NUMBER=?,VAT_NUMBER=?,ELECTRICITY_NO=?," 
-			+" OWNER_NAME=?,MOBILE_NO=?,GST_NO=?";
-	
+
+	private static final String UPDATE_STORE_DETAILS = "UPDATE MY_STORE_DETAILS SET NAME=?,"
+			+ "ADDRESS=?, ADDRESS2=?,CITY=?,DISTRICT=?,STATE=?,PHONE=?,CST_NUMBER=?,PAN_NUMBER=?,VAT_NUMBER=?,ELECTRICITY_NO=?,"
+			+ " OWNER_NAME=?,MOBILE_NO=?,GST_NO=?";
+
 	private static final String GET_MY_STORE_DETAILS = "SELECT * FROM MY_STORE_DETAILS";
-	
-	
-	public static MyStoreDetails getMyStoreDetails() {
+
+	public MyStoreDetails getMyStoreDetails() {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		MyStoreDetails myStoreDetails = null;
 		try {
-			conn = DBUtils.getConnection();
+			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(GET_MY_STORE_DETAILS);
 			ResultSet rs = stmt.executeQuery();
 
@@ -56,35 +59,34 @@ public class MyStoreServices {
 			rs.close();
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.error("getMyStoreDetails --> ",e);
+			logger.error("Exception: ", e);
 		} finally {
-			AppUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeStatment(stmt);
 		}
 		return myStoreDetails;
 	}
-	
-	
-	//Save My Store Details
-	public static boolean updateStoreDetails(MyStoreDetails myStoreDetails) {
+
+	// Save My Store Details
+	public boolean updateStoreDetails(MyStoreDetails myStoreDetails) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		boolean flag=false;
+		boolean flag = false;
 		StringBuilder sb = new StringBuilder(UPDATE_STORE_DETAILS);
-		
+
 		try {
-			if(myStoreDetails!=null){
-				conn = DBUtils.getConnection();
-				if(myStoreDetails.getImagePath()!=null){
+			if (myStoreDetails != null) {
+				conn = dbUtils.getConnection();
+				if (myStoreDetails.getImagePath() != null) {
 					sb.append(",IMAGE=? WHERE STORE_ID=?");
 					stmt = conn.prepareStatement(sb.toString());
-				}else{
+				} else {
 					sb.append(" WHERE STORE_ID=?");
 					stmt = conn.prepareStatement(sb.toString());
 				}
 				stmt.setString(1, myStoreDetails.getStoreName());
 				stmt.setString(2, myStoreDetails.getAddress());
 				stmt.setString(3, myStoreDetails.getAddress2());
-				stmt.setString(4,myStoreDetails.getCity());
+				stmt.setString(4, myStoreDetails.getCity());
 				stmt.setString(5, myStoreDetails.getDistrict());
 				stmt.setString(6, myStoreDetails.getState());
 				stmt.setLong(7, myStoreDetails.getPhone());
@@ -95,23 +97,23 @@ public class MyStoreServices {
 				stmt.setString(12, myStoreDetails.getOwnerName());
 				stmt.setLong(13, myStoreDetails.getMobileNo());
 				stmt.setString(14, myStoreDetails.getGstNo());
-				if(myStoreDetails.getImagePath()!=null){
+				if (myStoreDetails.getImagePath() != null) {
 					stmt.setBlob(15, myStoreDetails.getImagePath());
 					stmt.setInt(16, myStoreDetails.getMyStoreId());
-				}else{
+				} else {
 					stmt.setInt(15, myStoreDetails.getMyStoreId());
 				}
-				
+
 				int i = stmt.executeUpdate();
-				if(i>0){
-					flag=true;
+				if (i > 0) {
+					flag = true;
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.error("updateStoreDetails --> ",e);
+			logger.error("Exception: ", e);
 		} finally {
-			AppUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeStatment(stmt);
 		}
 		return flag;
 	}

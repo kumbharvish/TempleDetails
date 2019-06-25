@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
 import com.billing.constants.AppConstants;
 import com.billing.dto.Barcode;
 import com.billing.dto.MyStoreDetails;
-import com.billing.service.JasperServices;
-import com.billing.service.MyStoreServices;
+import com.billing.service.JasperService;
+import com.billing.service.MyStoreService;
 
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -30,14 +30,20 @@ import net.sf.jasperreports.view.JasperViewer;
 
 @Component
 public class JasperUtils {
+	
+	@Autowired
+	AppUtils appUtils;
+	
+	@Autowired
+	MyStoreService myStoreService;
 
 	private static final Logger logger = LoggerFactory.getLogger(JasperUtils.class);
 	
 
-	public static void createPDFWithJasper(List<Map<String,?>> dataSourceMap,String jasperLoc) {
+	public void createPDFWithJasper(List<Map<String,?>> dataSourceMap,String jasperLoc) {
 	        try {                                           
 	            // load report location
-	        	String homeLocation = AppUtils.getAppDataValues(AppConstants.MYSTORE_HOME).get(0);
+	        	String homeLocation = appUtils.getAppDataValues(AppConstants.MYSTORE_HOME).get(0);
 	        	String jrxmlLocation = homeLocation+"\\Jrxml\\"+jasperLoc;
 	        	//With JRXML
 	        	//JasperReport jasperReport = JasperCompileManager.compileReport(jrxmlLocation);
@@ -51,7 +57,7 @@ public class JasperUtils {
 	             
 	            //Add Report Headers
 	             HashMap<String,Object> headerParamsMap = new HashMap<String, Object>();
-	             MyStoreDetails details =  MyStoreServices.getMyStoreDetails();
+	             MyStoreDetails details =  myStoreService.getMyStoreDetails();
 	             headerParamsMap.put("StoreName", details.getStoreName());
 	             headerParamsMap.put("Address", details.getAddress());
 	             headerParamsMap.put("Address2",details.getAddress2()+","+details.getCity()+",Dist."+details.getDistrict());
@@ -69,7 +75,7 @@ public class JasperUtils {
 	            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 	            
 	            JasperExportManager.exportReportToPdfFile(jasperPrint, fileLocation+"Bill_"+billNumber+"_"+sdf.format(new Date())+".pdf");
-	            if("Y".equals(AppUtils.getAppDataValues(AppConstants.IS_THERMAL_PRINTER_SET).get(0))){
+	            if("Y".equals(appUtils.getAppDataValues(AppConstants.IS_THERMAL_PRINTER_SET).get(0))){
 	            	JasperPrintManager.printReport(jasperPrint, false);
 	            }
 	        } catch (Exception e) {
@@ -79,11 +85,11 @@ public class JasperUtils {
 	        }
 	    }
 	
-	public static boolean createPDF(List<Map<String,?>> dataSourceMap,String JrxmlLoc,String reportName) {
+	public boolean createPDF(List<Map<String,?>> dataSourceMap,String JrxmlLoc,String reportName) {
 		boolean isSucess=true;
 		try {       
             // load report location
-			String homeLocation = AppUtils.getAppDataValues(AppConstants.MYSTORE_HOME).get(0);
+			String homeLocation = appUtils.getAppDataValues(AppConstants.MYSTORE_HOME).get(0);
         	String jrxmlLocation = homeLocation+"Jrxml\\\\"+JrxmlLoc;
         	//With JRXML
         	//JasperReport jasperReport = JasperCompileManager.compileReport(jrxmlLocation);
@@ -97,7 +103,7 @@ public class JasperUtils {
             
              //Add Report Headers
              HashMap<String,Object> headerParamsMap = new HashMap<String, Object>();
-             MyStoreDetails details =  MyStoreServices.getMyStoreDetails();
+             MyStoreDetails details =  myStoreService.getMyStoreDetails();
              headerParamsMap.put("StoreName", details.getStoreName());
              headerParamsMap.put("Address", details.getAddress());
              headerParamsMap.put("Address2",details.getAddress2()+","+details.getCity()+",Dist."+details.getDistrict());
@@ -122,11 +128,11 @@ public class JasperUtils {
         return isSucess;
     }
 	
-	public static boolean createPDFForBarcode(List<Map<String,?>> dataSourceMap,String JrxmlName,String pdfName) {
+	public boolean createPDFForBarcode(List<Map<String,?>> dataSourceMap,String JrxmlName,String pdfName) {
 		boolean isSucess=true;
 		try {       
             // load report location
-			String homeLocation = AppUtils.getAppDataValues(AppConstants.MYSTORE_HOME).get(0);
+			String homeLocation = appUtils.getAppDataValues(AppConstants.MYSTORE_HOME).get(0);
         	String jrxmlLocation = homeLocation+"Jrxml\\\\"+JrxmlName;
         	//With JRXML
         	//JasperReport jasperReport = JasperCompileManager.compileReport(jrxmlLocation);
@@ -140,7 +146,7 @@ public class JasperUtils {
             
              //Add Report Headers
              HashMap<String,Object> headerParamsMap = new HashMap<String, Object>();
-             MyStoreDetails details =  MyStoreServices.getMyStoreDetails();
+             MyStoreDetails details =  myStoreService.getMyStoreDetails();
              headerParamsMap.put("StoreName", details.getStoreName());
              headerParamsMap.put("Address", details.getAddress());
              headerParamsMap.put("Address2",details.getAddress2()+","+details.getCity()+",Dist."+details.getDistrict());
@@ -181,7 +187,7 @@ public class JasperUtils {
 		b.setBarcode("123456789123");
 		b.setProductName("DOODH BISCUITS");
 		b.setPrice(10);
-		List<Map<String,?>> dataSrc = JasperServices.createDataForBarcode(b, 24, 1);
-		createPDFForBarcode(dataSrc,"Barcode_25_Test.jasper", "");
+		//List<Map<String,?>> dataSrc = JasperService.createDataForBarcode(b, 24, 1);
+		//createPDFForBarcode(dataSrc,"Barcode_25_Test.jasper", "");
 	}
 }

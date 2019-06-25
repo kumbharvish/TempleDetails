@@ -20,6 +20,9 @@ import com.billing.utils.AppUtils;
 @Component
 public class AppProperties {
 	
+	@Autowired
+	AppUtils appUtils;
+	
 	private static final Logger logger = LoggerFactory.getLogger(AppProperties.class);
 	
 	private static final String USER="USER";
@@ -42,7 +45,7 @@ public class AppProperties {
 		   return sysProperties;
 	}
 	
-	public static boolean check() throws Exception{
+	public boolean check() throws Exception{
 		List<String> licenseKeys = new ArrayList<String>();
 		licenseKeys.add(COMPUTER+MAC_ADDRESS);
 		licenseKeys.add(USER+MAC_ADDRESS);
@@ -58,15 +61,15 @@ public class AppProperties {
 			tempString=details.get(s);
 			sysKey=sysKey+tempString;
 		}
-		List<String> appKey = AppUtils.getAppDataValues("APP_KEY");
+		List<String> appKey = appUtils.getAppDataValues("APP_KEY");
 		if(AppUtils.enc(sysKey).equals(appKey.get(0)))
 			isValidLicense=true;
 		return isValidLicense;
 	}
 	
-	public static boolean doCheck() throws Exception{
+	public boolean doCheck() throws Exception{
 		boolean isValidLicense=true;
-		List<String> appKey = AppUtils.getAppDataValues("APP_SECURE_KEY");
+		List<String> appKey = appUtils.getAppDataValues("APP_SECURE_KEY");
 		Date todaysDate = new Date();
 		SimpleDateFormat sdfParseFormat = new SimpleDateFormat("dd MMM yyyy");
 		String todaysDatest = sdfParseFormat.format(todaysDate);

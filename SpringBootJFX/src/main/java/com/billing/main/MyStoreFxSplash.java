@@ -1,13 +1,14 @@
 package com.billing.main;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.billing.constants.AppConstants;
 import com.billing.controllers.LoginController;
 import com.billing.properties.AppProperties;
-import com.billing.service.AppLicenseServices;
+import com.billing.service.AppLicenseService;
 import com.billing.service.DBBackupService;
 import com.billing.utils.AppUtils;
 
@@ -35,137 +36,137 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
-
+@Component
 public class MyStoreFxSplash extends Application {
-    private Pane splashLayout;
-    private ProgressBar loadProgress;
-    private Label progressText;
-    private static final int SPLASH_WIDTH = 590;
-    private static final int SPLASH_HEIGHT = 106;
-    
-    private static final Logger logger = LoggerFactory.getLogger(MyStoreFxSplash.class);
-	
+
+	@Autowired
+	AppProperties appProperties;
+
+	@Autowired
+	AppLicenseService appLicenseService;
+
+	@Autowired
+	DBBackupService dbBackupService;
+
+	private Pane splashLayout;
+	private ProgressBar loadProgress;
+	private Label progressText;
+	private static final int SPLASH_WIDTH = 590;
+	private static final int SPLASH_HEIGHT = 106;
+
+	private static final Logger logger = LoggerFactory.getLogger(MyStoreFxSplash.class);
+
 	private Parent parent;
 
-    public static void launch() {
-        launch(null);
-    }
+	public void launchApp() {
+		launch();
+	}
 
-    @Override
-    public void init() {
-        ImageView splash = new ImageView(new Image(MyStoreFxSplash.class.getResourceAsStream("/images/MyStoreSplash.png")));
-        loadProgress = new ProgressBar();
-        loadProgress.setPrefWidth(SPLASH_WIDTH);
-        progressText = new Label("");
-        splashLayout = new VBox();
-        splashLayout.getChildren().addAll(splash, loadProgress, progressText);
-        progressText.setAlignment(Pos.CENTER);
-        splashLayout.setStyle(
-                "-fx-padding: 5; " +
-                "-fx-background-color: cornsilk; " +
-                "-fx-border-width:5; " +
-                "-fx-border-color: " +
-                    "linear-gradient(" +
-                        "to bottom, " +
-                        "chocolate, " +
-                        "derive(chocolate, 50%)" +
-                    ");"
-        );
-        splashLayout.setEffect(new DropShadow());
-    }
+	@Override
+	public void init() {
+		ImageView splash = new ImageView(
+				new Image(MyStoreFxSplash.class.getResourceAsStream("/images/MyStoreSplash.png")));
+		loadProgress = new ProgressBar();
+		loadProgress.setPrefWidth(SPLASH_WIDTH);
+		progressText = new Label("");
+		splashLayout = new VBox();
+		splashLayout.getChildren().addAll(splash, loadProgress, progressText);
+		progressText.setAlignment(Pos.CENTER);
+		splashLayout.setStyle(
+				"-fx-padding: 5; " + "-fx-background-color: cornsilk; " + "-fx-border-width:5; " + "-fx-border-color: "
+						+ "linear-gradient(" + "to bottom, " + "chocolate, " + "derive(chocolate, 50%)" + ");");
+		splashLayout.setEffect(new DropShadow());
+	}
 
-    @Override
-    public void start(final Stage initStage) throws Exception {
-        final Task<ObservableList<String>> tasks = new Task<ObservableList<String>>() {
-            @Override
-            protected ObservableList<String> call() throws InterruptedException {
-                ObservableList<String> loadingStepMsg = FXCollections.observableArrayList(
-                                "Loading","Getting Properties", "Applying Properties", "Starting Application");
-                for (int i = 0; i < loadingStepMsg.size(); i++) {
-                    updateProgress(i + 1, loadingStepMsg.size());
-                    String nextFriend = loadingStepMsg.get(i);
-                    updateMessage(nextFriend + " ...");
-                    Thread.sleep(1000);
-                }
-                Thread.sleep(1000);
-                return loadingStepMsg;
-            }
-        };
+	@Override
+	public void start(final Stage initStage) throws Exception {
+		final Task<ObservableList<String>> tasks = new Task<ObservableList<String>>() {
+			@Override
+			protected ObservableList<String> call() throws InterruptedException {
+				ObservableList<String> loadingStepMsg = FXCollections.observableArrayList("Loading",
+						"Getting Properties", "Applying Properties", "Starting Application");
+				for (int i = 0; i < loadingStepMsg.size(); i++) {
+					updateProgress(i + 1, loadingStepMsg.size());
+					String nextFriend = loadingStepMsg.get(i);
+					updateMessage(nextFriend + " ...");
+					Thread.sleep(1000);
+				}
+				Thread.sleep(1000);
+				return loadingStepMsg;
+			}
+		};
 
-        showSplash(initStage,tasks,() -> showLoginStage(initStage));
-        new Thread(tasks).start();
-    }
+		showSplash(initStage, tasks, () -> showLoginStage(initStage));
+		new Thread(tasks).start();
+	}
 
-    private void showLoginStage(Stage initStage){
-    	 try {
-             if(!AppProperties.check()){
-            	 AppUtils.showWarningAlert(null, AppConstants.LICENSE_ERROR_1, AppConstants.LICENSE_ERROR);
- 				System.exit(0);
- 			}else{
- 				if(AppLicenseServices.change()){
- 					AppUtils.showWarningAlert(null, AppConstants.COMP_DATE_ERROR, AppConstants.COMP_DATE);
- 					System.exit(0);
- 				}else{
- 					if(!AppProperties.doCheck()){
- 						AppUtils.showWarningAlert(null, AppConstants.LICENSE_ERROR_2, AppConstants.LICENSE_EXPIRED);
- 						System.exit(0);
- 					}else{
- 						logger.error(" --- Application Check Complete and Started --- ");
- 						FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/shopbilling/fx/views/LoginScreen.fxml"));
- 						parent = fxmlLoader.load();
- 				        LoginController loginController = fxmlLoader.getController();
- 				        loginController.show(parent);
- 					}
- 				}
- 			}
- 			
- 		} catch (Exception e) {
- 			logger.error("Application Startup Exception --> :" ,e);
- 			e.printStackTrace();
- 		}
-    }
+	private void showLoginStage(Stage initStage) {
+		try {
+			if (!appProperties.check()) {
+				AppUtils.showWarningAlert(null, AppConstants.LICENSE_ERROR_1, AppConstants.LICENSE_ERROR);
+				System.exit(0);
+			} else {
+				if (appLicenseService.change()) {
+					AppUtils.showWarningAlert(null, AppConstants.COMP_DATE_ERROR, AppConstants.COMP_DATE);
+					System.exit(0);
+				} else {
+					if (!appProperties.doCheck()) {
+						AppUtils.showWarningAlert(null, AppConstants.LICENSE_ERROR_2, AppConstants.LICENSE_EXPIRED);
+						System.exit(0);
+					} else {
+						logger.error(" --- Application Check Complete and Started --- ");
+						FXMLLoader fxmlLoader = new FXMLLoader(
+								getClass().getResource("/com/shopbilling/fx/views/LoginScreen.fxml"));
+						parent = fxmlLoader.load();
+						LoginController loginController = fxmlLoader.getController();
+						loginController.show(parent);
+					}
+				}
+			}
 
-    private void showSplash(
-            final Stage initStage,
-            Task<?> task,
-            InitCompletionHandler initCompletionHandler
-    ) {
-        progressText.textProperty().bind(task.messageProperty());
-        loadProgress.progressProperty().bind(task.progressProperty());
-        task.stateProperty().addListener((observableValue, oldState, newState) -> {
-            if (newState == Worker.State.SUCCEEDED) {
-                loadProgress.progressProperty().unbind();
-                loadProgress.setProgress(1);
-                initStage.toFront();
-                FadeTransition fadeSplash = new FadeTransition(Duration.seconds(1.2), splashLayout);
-                fadeSplash.setFromValue(1.0);
-                fadeSplash.setToValue(0.0);
-                fadeSplash.setOnFinished(actionEvent -> initStage.hide());
-                fadeSplash.play();
+		} catch (Exception e) {
+			logger.error("Application Startup Exception --> :", e);
+			e.printStackTrace();
+		}
+	}
 
-                initCompletionHandler.complete();
-            } // todo add code to gracefully handle other task states.
-        });
+	private void showSplash(final Stage initStage, Task<?> task, InitCompletionHandler initCompletionHandler) {
+		progressText.textProperty().bind(task.messageProperty());
+		loadProgress.progressProperty().bind(task.progressProperty());
+		task.stateProperty().addListener((observableValue, oldState, newState) -> {
+			if (newState == Worker.State.SUCCEEDED) {
+				loadProgress.progressProperty().unbind();
+				loadProgress.setProgress(1);
+				initStage.toFront();
+				FadeTransition fadeSplash = new FadeTransition(Duration.seconds(1.2), splashLayout);
+				fadeSplash.setFromValue(1.0);
+				fadeSplash.setToValue(0.0);
+				fadeSplash.setOnFinished(actionEvent -> initStage.hide());
+				fadeSplash.play();
 
-        Scene splashScene = new Scene(splashLayout, Color.TRANSPARENT);
-        final Rectangle2D bounds = Screen.getPrimary().getBounds();
-        initStage.setScene(splashScene);
-        initStage.setX(bounds.getMinX() + bounds.getWidth() / 2 - SPLASH_WIDTH / 2);
-        initStage.setY(bounds.getMinY() + bounds.getHeight() / 2 - SPLASH_HEIGHT / 2);
-        initStage.initStyle(StageStyle.TRANSPARENT);
-        initStage.setAlwaysOnTop(true);
-        initStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop32X32.png")));
-        initStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop48X48.png")));
-        initStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop64X64.png")));
-        initStage.show();
-    }
-    
-    @Override
-    public void stop() throws Exception {
-    	DBBackupService.createDBDump();
-    }
+				initCompletionHandler.complete();
+			} // todo add code to gracefully handle other task states.
+		});
 
-    public interface InitCompletionHandler {
-        void complete();
-    }
+		Scene splashScene = new Scene(splashLayout, Color.TRANSPARENT);
+		final Rectangle2D bounds = Screen.getPrimary().getBounds();
+		initStage.setScene(splashScene);
+		initStage.setX(bounds.getMinX() + bounds.getWidth() / 2 - SPLASH_WIDTH / 2);
+		initStage.setY(bounds.getMinY() + bounds.getHeight() / 2 - SPLASH_HEIGHT / 2);
+		initStage.initStyle(StageStyle.TRANSPARENT);
+		initStage.setAlwaysOnTop(true);
+		initStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop32X32.png")));
+		initStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop48X48.png")));
+		initStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop64X64.png")));
+		initStage.show();
+	}
+
+	@Override
+	public void stop() throws Exception {
+		dbBackupService.createDBDump();
+	}
+
+	public interface InitCompletionHandler {
+		void complete();
+	}
 }

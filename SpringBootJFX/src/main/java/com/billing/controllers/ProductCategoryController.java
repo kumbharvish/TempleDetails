@@ -1,8 +1,11 @@
 package com.billing.controllers;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+
 import com.billing.dto.ProductCategory;
-import com.billing.service.ProductCategoryServices;
+import com.billing.service.ProductCategoryService;
 import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
 import com.billing.utils.Utility;
@@ -24,7 +27,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+@Controller
 public class ProductCategoryController implements TabContent{
+	
+	@Autowired
+	ProductCategoryService productCategoryService;
 
 	public Stage MainWindow = null;
     
@@ -94,7 +101,7 @@ public class ProductCategoryController implements TabContent{
 
 	@Override
 	public boolean loadData() {
-		 List<ProductCategory> list = ProductCategoryServices.getAllCategories();
+		 List<ProductCategory> list = productCategoryService.getAllCategories();
 		 productCategoryTableData.addAll(list);
 	     tableView.setItems(productCategoryTableData);
 	     return true;

@@ -6,16 +6,25 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.billing.dto.BillDetails;
 import com.billing.dto.ItemDetails;
 import com.billing.dto.StatusDTO;
+import com.billing.main.MyStoreFxSplash;
 import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 
 @Service
-public class BillingServices {
+public class BillingService {
+	
+	@Autowired
+	DBUtils dbUtils;
+	
+	 private static final Logger logger = LoggerFactory.getLogger(BillingService.class);
 	
 	private static final String UPDATE_BILL_DETAILS = "UPDATE CUSTOMER_BILL_DETAILS SET CUST_MOB_NO=?,CUST_NAME=?,BILL_TAX=?,BILL_DISCOUNT=?,BILL_DISC_AMOUNT =?," +
 			"PAYMENT_MODE=?,GRAND_TOTAL=?,NET_SALES_AMOUNT=? WHERE BILL_NUMBER=?";
@@ -36,13 +45,13 @@ public class BillingServices {
 	private static final String NEW_BILL_NUMBER = "SELECT (MAX(BILL_NUMBER)+1) AS BILL_NO FROM CUSTOMER_BILL_DETAILS ";
 	
 	//Modify Bill Details
-	public static StatusDTO modifyBillDetails(BillDetails bill) {
+	public StatusDTO modifyBillDetails(BillDetails bill) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		StatusDTO staus = new StatusDTO();
 		try {
 			if(bill!=null){
-				conn = DBUtils.getConnection();
+				conn = dbUtils.getConnection();
 				stmt = conn.prepareStatement(UPDATE_BILL_DETAILS);
 				stmt.setLong(1, bill.getCustomerMobileNo());
 				stmt.setString(2, bill.getCustomerName());
@@ -62,18 +71,19 @@ public class BillingServices {
 			e.printStackTrace();
 			staus.setStatusCode(-1);
 			staus.setException(e.getMessage());
+			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeStatment(stmt);
 		}
 		return staus;
 	}
 	//Delete Bill Details including Items
-	public static StatusDTO deleteBillDetails(int billNumber) {
+	public StatusDTO deleteBillDetails(int billNumber) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();
 		try {
-				conn = DBUtils.getConnection();
+				conn = dbUtils.getConnection();
 				stmt = conn.prepareStatement(DELETE_BILL_DETAILS);
 				stmt.setInt(1,billNumber);
 				
@@ -86,20 +96,21 @@ public class BillingServices {
 			e.printStackTrace();
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
+			logger.info("Exception : ",e);
 			return status;
 		} finally {
-			AppUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeStatment(stmt);
 		}
 		return status;
 	}
 	
 	//Delete bill only Bill Item Details
-	public static StatusDTO deleteBillItemDetails(int billNumber) {
+	public StatusDTO deleteBillItemDetails(int billNumber) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();
 		try {
-				conn = DBUtils.getConnection();
+				conn = dbUtils.getConnection();
 				stmt = conn.prepareStatement(DELETE_BILL_ITEM_DETAILS);
 				stmt.setInt(1,billNumber);
 				
@@ -111,21 +122,22 @@ public class BillingServices {
 			e.printStackTrace();
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
+			logger.info("Exception : ",e);
 			return status;
 		} finally {
-			AppUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeStatment(stmt);
 		}
 		return status;
 	}
 
 	//Update Product Stock
-	public static StatusDTO updateDeletedBillProductStock(List <ItemDetails> itemList) {
+	public StatusDTO updateDeletedBillProductStock(List <ItemDetails> itemList) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();		
 		try {
 			if(!itemList.isEmpty()){
-				conn = DBUtils.getConnection();
+				conn = dbUtils.getConnection();
 				conn.setAutoCommit(false);
 				stmt = conn.prepareStatement(UPDATE_PRODUCT_STOCK);
 				for(ItemDetails item : itemList){
@@ -144,9 +156,10 @@ public class BillingServices {
 			e.printStackTrace();
 			status.setStatusCode(-1);
 			status.setException(e.getMessage());
+			logger.info("Exception : ",e);
 			return status;
 		} finally {
-			AppUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeStatment(stmt);
 		}
 		return status;
 	}
@@ -154,12 +167,12 @@ public class BillingServices {
 	
 	//Add Opening Cash
 	
-	public static StatusDTO addOpeningCash(double amount) {
+	public StatusDTO addOpeningCash(double amount) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();
 		try {
-				conn = DBUtils.getConnection();
+				conn = dbUtils.getConnection();
 				stmt = conn.prepareStatement(INS_OPENING_CASH);
 				stmt.setDate(1, new java.sql.Date(System.currentTimeMillis()));
 				stmt.setDouble(2, amount);
@@ -172,20 +185,21 @@ public class BillingServices {
 			e.printStackTrace();
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
+			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeStatment(stmt);
 		}
 		return status;
 	}
 	
 	//Update Opening Cash
 	
-	public static StatusDTO updateOpeningCash(double amount,Date date) {
+	public StatusDTO updateOpeningCash(double amount,Date date) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();
 		try {
-				conn = DBUtils.getConnection();
+				conn = dbUtils.getConnection();
 				stmt = conn.prepareStatement(UPDATE_OPENING_CASH);
 				stmt.setDouble(1, amount);
 				stmt.setDate(2, date);
@@ -198,18 +212,19 @@ public class BillingServices {
 			e.printStackTrace();
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
+			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeStatment(stmt);
 		}
 		return status;
 	}
 	
-	public static Integer getNewBillNumber() {
+	public Integer getNewBillNumber() {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		Integer newBillNumber=0;
 		try {
-			conn = DBUtils.getConnection();
+			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(NEW_BILL_NUMBER);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
@@ -222,7 +237,7 @@ public class BillingServices {
 			e.printStackTrace();
 			return -1;
 		} finally {
-			AppUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeStatment(stmt);
 		}
 		return newBillNumber;
 	}

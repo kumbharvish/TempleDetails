@@ -39,7 +39,7 @@ import org.springframework.stereotype.Component;
 
 import com.billing.constants.AppConstants;
 import com.billing.main.Global;
-import com.billing.service.BillingServices;
+import com.billing.service.BillingService;
 import com.billing.starter.MyStoreApplication;
 
 import javafx.scene.control.Alert;
@@ -51,6 +51,9 @@ import sun.misc.BASE64Encoder;
 @Component
 public class AppUtils {
 	
+	@Autowired
+	DBUtils dbUtils;
+	
 	private static final String PDF_CONST = "SLAES";
     private static final String PDF_RANDOM = "Invoice1Hbfh667adfDEJ78";
     private static final int LICENSE_EXPIRY_LIMIT =15;
@@ -58,7 +61,7 @@ public class AppUtils {
 	private static final String APP_DATA = "SELECT VALUE_STRING FROM "
 			+ "APP_DATA WHERE DATA_NAME=?";
 
-	private static final Logger logger = LoggerFactory.getLogger(MyStoreApplication.class);
+	private static final Logger logger = LoggerFactory.getLogger(AppUtils.class);
 	
 	public static int getRecordsCount(ResultSet resultset) throws SQLException {
 		if (resultset.last()) {
@@ -68,18 +71,14 @@ public class AppUtils {
 		}
 	}
 
-	public static void closeConnectionAndStatment(Connection conn,
-			Statement stmt) {
+	public static void closeStatment(Statement stmt) {
 
 		try {
 			if (stmt != null) {
 				stmt.close();
 			}
-			if (conn != null) {
-				conn.close();
-			}
-
 		} catch (SQLException se2) {
+			logger.info("closeStatment : Exception : ",se2);
 		}
 	}
 
@@ -107,13 +106,13 @@ public class AppUtils {
 	}
 
 	// This method returns data values from app_data for given data name.
-	public static List<String> getAppDataValues(String dataName) {
+	public List<String> getAppDataValues(String dataName) {
 
 		List<String> dataList = new LinkedList<String>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
-			conn = DBUtils.getConnection();
+			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(APP_DATA);
 			stmt.setString(1, dataName);
 			ResultSet rs = stmt.executeQuery();
@@ -126,7 +125,7 @@ public class AppUtils {
 			logger.error("Get App Data Values :"+e);
 			e.printStackTrace();
 		} finally {
-			AppUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeStatment(stmt);
 		}
 		return dataList;
 
@@ -145,16 +144,6 @@ public class AppUtils {
 		return randonCode;
 	}
 
-	public static int getBillNumber() {
-		/*int min = 1000000;
-		int max = 9999999;
-		int randonCode = (int) Math.floor(Math.random() * (max - min + 1))
-				+ min;
-		return randonCode;*/
-		
-		return BillingServices.getNewBillNumber();
-	}
-	
 	public static long getBarcode() {
 		long min = 700000000000L;
 		long max = 799999999999L;

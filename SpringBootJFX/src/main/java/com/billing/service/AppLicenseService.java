@@ -9,14 +9,17 @@ import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.billing.starter.MyStoreApplication;
 import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 
 @Service
-public class AppLicenseServices {
+public class AppLicenseService {
+	
+	@Autowired
+	DBUtils dbUtils;
 	
 	private static final String INS_APP_SECURITY_DATA = "INSERT INTO APP_SECURITY_DATA (SECURITY_DATA) VALUES(?)";
 	
@@ -24,16 +27,16 @@ public class AppLicenseServices {
 	
 	private static final String SELECT_APP_SECURITY_DATA = "SELECT * FROM APP_SECURITY_DATA";
 	
-	private static final Logger logger = LoggerFactory.getLogger(MyStoreApplication.class);
+	private static final Logger logger = LoggerFactory.getLogger(AppLicenseService.class);
 	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd MM yyyy HH:mm:ss");
 
-	public static String getAppSecurityData() {
+	public String getAppSecurityData() {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		String appSecData=null;
 		try {
-			conn = DBUtils.getConnection();
+			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(SELECT_APP_SECURITY_DATA);
 			ResultSet rs = stmt.executeQuery();
 
@@ -43,19 +46,20 @@ public class AppLicenseServices {
 			rs.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeStatment(stmt);
 		}
 		return appSecData;
 	}
 	
-	public static boolean insertAppSecurityData(String key) {
+	public boolean insertAppSecurityData(String key) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		boolean flag=false;
 		try {
 			if(key!=null){
-				conn = DBUtils.getConnection();
+				conn = dbUtils.getConnection();
 				stmt = conn.prepareStatement(INS_APP_SECURITY_DATA);
 				stmt.setString(1,key);
 				
@@ -66,18 +70,19 @@ public class AppLicenseServices {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeStatment(stmt);
 		}
 		return flag;
 	}
 	
-	public static boolean deleteAppSecurityData() {
+	public boolean deleteAppSecurityData() {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		boolean flag=false;
 		try {
-				conn = DBUtils.getConnection();
+				conn = dbUtils.getConnection();
 				stmt = conn.prepareStatement(DELETE_APP_SECURITY_DATA);
 				
 				int i = stmt.executeUpdate();
@@ -86,14 +91,15 @@ public class AppLicenseServices {
 				}
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeConnectionAndStatment(conn, stmt);
+			AppUtils.closeStatment(stmt);
 		}
 		return flag;
 	}
 	
 	//Update Last run
-	public static boolean updateLastRun(){
+	public boolean updateLastRun(){
 		boolean lastRunSuccess=false;
 		//Delete 
 		deleteAppSecurityData();
@@ -104,14 +110,14 @@ public class AppLicenseServices {
 			//Insert
 			insertAppSecurityData(lastRun);
 		} catch (Exception e) {
-			logger.error("Update Last Run Exception :",e);
+			logger.info("updateLastRun : Exception : ",e);
 			e.printStackTrace();
 		}
 		
 		return lastRunSuccess;
 	}
 	
-	public static boolean change(){
+	public boolean change(){
 		boolean isSystemDateChanged = false;
 		Date currentTime = new Date();
 		String lastRun = getAppSecurityData();

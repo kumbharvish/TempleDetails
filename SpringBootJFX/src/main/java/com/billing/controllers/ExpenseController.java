@@ -2,9 +2,12 @@ package com.billing.controllers;
 
 import java.time.LocalDate;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+
 import com.billing.dto.Expense;
 import com.billing.dto.StatusDTO;
-import com.billing.service.ExpensesServices;
+import com.billing.service.ExpensesService;
 import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
 import com.billing.utils.Utility;
@@ -25,7 +28,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+@Controller
 public class ExpenseController implements TabContent {
+	
+	@Autowired
+	ExpensesService expensesService;
 	
 	public Stage MainWindow = null;
     
@@ -120,7 +127,7 @@ public class ExpenseController implements TabContent {
 
 	@Override
 	public boolean loadData() {
-		ExpensesServices.populateDropdown(cbCategory);
+		expensesService.populateDropdown(cbCategory);
 		cbCategory.getSelectionModel().select(0);
 		dateExpense.setValue(LocalDate.now());
 		return true;
@@ -144,7 +151,7 @@ public class ExpenseController implements TabContent {
 		expense.setAmount(Double.parseDouble(txtAmount.getText()));
 		expense.setDescription(txtDescription.getText());
 		
-		StatusDTO status = ExpensesServices.addExpense(expense);
+		StatusDTO status = expensesService.addExpense(expense);
 		if(status.getStatusCode()==0){
     		AppUtils.showInfoAlert(MainWindow, "Expense saved successfully !", "Information");
     	}else {
