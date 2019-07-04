@@ -1,4 +1,4 @@
-package com.billing.controllers;
+package com.billing.controller;
 
 import java.time.LocalDate;
 

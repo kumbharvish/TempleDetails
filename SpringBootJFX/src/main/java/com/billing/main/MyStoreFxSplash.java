@@ -3,10 +3,13 @@ package com.billing.main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
 
 import com.billing.constants.AppConstants;
-import com.billing.controllers.LoginController;
+import com.billing.controller.LoginController;
 import com.billing.properties.AppProperties;
 import com.billing.service.AppLicenseService;
 import com.billing.service.DBBackupService;
@@ -36,18 +39,15 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
-@Component
+@ComponentScan("com.billing")
+@SpringBootApplication
 public class MyStoreFxSplash extends Application {
-
-	@Autowired
-	AppProperties appProperties;
-
-	@Autowired
-	AppLicenseService appLicenseService;
 
 	@Autowired
 	DBBackupService dbBackupService;
 
+	private ConfigurableApplicationContext springContext;
+	
 	private Pane splashLayout;
 	private ProgressBar loadProgress;
 	private Label progressText;
@@ -57,8 +57,10 @@ public class MyStoreFxSplash extends Application {
 	private static final Logger logger = LoggerFactory.getLogger(MyStoreFxSplash.class);
 
 	private Parent parent;
-
-	public void launchApp() {
+	
+	private FXMLLoader fxmlLoader;
+	
+	public static void main(String[] args) {
 		launch();
 	}
 
@@ -76,6 +78,10 @@ public class MyStoreFxSplash extends Application {
 				"-fx-padding: 5; " + "-fx-background-color: cornsilk; " + "-fx-border-width:5; " + "-fx-border-color: "
 						+ "linear-gradient(" + "to bottom, " + "chocolate, " + "derive(chocolate, 50%)" + ");");
 		splashLayout.setEffect(new DropShadow());
+		
+		springContext = SpringApplication.run(MyStoreFxSplash.class);
+        fxmlLoader = new FXMLLoader();
+        fxmlLoader.setControllerFactory(springContext::getBean);
 	}
 
 	@Override
@@ -101,6 +107,8 @@ public class MyStoreFxSplash extends Application {
 	}
 
 	private void showLoginStage(Stage initStage) {
+		AppProperties appProperties = (AppProperties)springContext.getBean(AppProperties.class);
+		AppLicenseService appLicenseService = (AppLicenseService)springContext.getBean(AppLicenseService.class);
 		try {
 			if (!appProperties.check()) {
 				AppUtils.showWarningAlert(null, AppConstants.LICENSE_ERROR_1, AppConstants.LICENSE_ERROR);
@@ -115,8 +123,7 @@ public class MyStoreFxSplash extends Application {
 						System.exit(0);
 					} else {
 						logger.error(" --- Application Check Complete and Started --- ");
-						FXMLLoader fxmlLoader = new FXMLLoader(
-								getClass().getResource("/com/shopbilling/fx/views/LoginScreen.fxml"));
+						fxmlLoader.setLocation(getClass().getResource("/com/billing/gui/LoginScreen.fxml"));
 						parent = fxmlLoader.load();
 						LoginController loginController = fxmlLoader.getController();
 						loginController.show(parent);
@@ -163,6 +170,7 @@ public class MyStoreFxSplash extends Application {
 
 	@Override
 	public void stop() throws Exception {
+		DBBackupService dbBackupService = (DBBackupService)springContext.getBean(DBBackupService.class);
 		dbBackupService.createDBDump();
 	}
 

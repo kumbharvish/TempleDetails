@@ -39,8 +39,6 @@ import org.springframework.stereotype.Component;
 
 import com.billing.constants.AppConstants;
 import com.billing.main.Global;
-import com.billing.service.BillingService;
-import com.billing.starter.MyStoreApplication;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;

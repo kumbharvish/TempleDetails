@@ -552,7 +552,7 @@ public abstract class Global {
 //     }
      
      public static void styleAlertDialog(final Alert alert) {
-        final String styleSheetPath = "/resources/stylesheets/alertDialog.css";
+        final String styleSheetPath = "/css/alertDialog.css";
         final DialogPane dialogPane = alert.getDialogPane();
         dialogPane.getStylesheets().add(
                 Global.class.getResource(styleSheetPath).toExternalForm());

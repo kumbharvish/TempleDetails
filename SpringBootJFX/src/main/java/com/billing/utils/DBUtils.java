@@ -18,6 +18,7 @@ public class DBUtils {
 	DataSource dataSource;
 	
 	public Connection getConnection() {
+		System.out.println(" #################### Get Connection ##############");
 		Connection con = null;
 			try {
 				con = dataSource.getConnection();

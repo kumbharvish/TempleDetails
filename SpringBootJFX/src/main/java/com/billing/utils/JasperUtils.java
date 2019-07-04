@@ -17,7 +17,7 @@ import com.billing.constants.AppConstants;
 import com.billing.dto.Barcode;
 import com.billing.dto.MyStoreDetails;
 import com.billing.service.JasperService;
-import com.billing.service.MyStoreService;
+import com.billing.service.StoreDetailsService;
 
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -35,7 +35,7 @@ public class JasperUtils {
 	AppUtils appUtils;
 	
 	@Autowired
-	MyStoreService myStoreService;
+	StoreDetailsService myStoreService;
 
 	private static final Logger logger = LoggerFactory.getLogger(JasperUtils.class);
 	

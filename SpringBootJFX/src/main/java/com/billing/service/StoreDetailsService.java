@@ -10,17 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.billing.dto.MyStoreDetails;
-import com.billing.starter.MyStoreApplication;
 import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 
 @Service
-public class MyStoreService {
+public class StoreDetailsService {
 
 	@Autowired
 	DBUtils dbUtils;
 
-	private static final Logger logger = LoggerFactory.getLogger(MyStoreApplication.class);
+	private static final Logger logger = LoggerFactory.getLogger(StoreDetailsService.class);
 
 	private static final String UPDATE_STORE_DETAILS = "UPDATE MY_STORE_DETAILS SET NAME=?,"
 			+ "ADDRESS=?, ADDRESS2=?,CITY=?,DISTRICT=?,STATE=?,PHONE=?,CST_NUMBER=?,PAN_NUMBER=?,VAT_NUMBER=?,ELECTRICITY_NO=?,"

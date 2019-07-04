@@ -1,4 +1,4 @@
-package com.billing.controllers;
+package com.billing.controller;
 
 import java.io.IOException;
 
@@ -12,7 +12,7 @@ import com.billing.dto.UserDetails;
 import com.billing.dto.WindowState;
 import com.billing.main.Global;
 import com.billing.service.AppLicenseService;
-import com.billing.service.MyStoreService;
+import com.billing.service.StoreDetailsService;
 import com.billing.service.UserService;
 import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
@@ -55,7 +55,7 @@ public class LoginController {
 	AppLicenseService appLicenseService;
 	
 	@Autowired
-	MyStoreService myStoreService;
+	StoreDetailsService myStoreService;
 
 	private final static String APPLICATION_HOME_TITTLE = "My Store";
 	
@@ -96,7 +96,7 @@ public class LoginController {
 					Stage st = (Stage)btnLogin.getScene().getWindow();
 		            st.close();
 		            // Open Home Window
-		            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/billing/fx/views/Home.fxml"));
+		            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/billing/gui/Home.fxml"));
 				        Parent root = null;
 				        try {
 				            root = fxmlLoader.<BorderPane>load();
@@ -157,9 +157,9 @@ public class LoginController {
         stage.setScene(scene);
         stage.setTitle(APPLICATION_LOGIN_TITTLE);
         stage.setResizable(false);
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/images/shop32X32.png")));
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/images/shop48X48.png")));
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/images/shop64X64.png")));
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop32X32.png")));
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop48X48.png")));
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop64X64.png")));
         MyStoreDetails mystore = myStoreService.getMyStoreDetails();
         if(mystore!=null) {
         	lblShopName.setText(mystore.getStoreName());

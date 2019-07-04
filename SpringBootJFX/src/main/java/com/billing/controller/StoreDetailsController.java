@@ -1,4 +1,4 @@
-package com.billing.controllers;
+package com.billing.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,8 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.billing.dto.MyStoreDetails;
-import com.billing.service.MyStoreService;
-import com.billing.starter.MyStoreApplication;
+import com.billing.service.StoreDetailsService;
 import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
 import com.billing.utils.Utility;
@@ -35,7 +34,7 @@ import javafx.stage.Stage;
 public class StoreDetailsController implements TabContent {
 	
 	@Autowired
-	MyStoreService myStoreService;
+	StoreDetailsService myStoreService;
 
 	private static final Logger logger = LoggerFactory.getLogger(StoreDetailsController.class);
 

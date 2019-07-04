@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<HBox alignment="TOP_CENTER" fillHeight="false" styleClass="rootNode" stylesheets="@../../../../resources/stylesheets/storedetails.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.StoreDetailsController">
+   <children>
+      <GridPane fx:id="gridPane" hgap="20.0" vgap="15.0">
+        <children>
+            <Text fx:id="heading" strokeType="OUTSIDE" strokeWidth="0.0" text="Store Details" GridPane.columnSpan="2" GridPane.halignment="CENTER" />
+            <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="requiredInput" text="Store Name :" textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+            <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="nodeLabel" text="Address :" textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+            <Label alignment="TOP_RIGHT" styleClass="nodeLabel" text="Address 2 :" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+            <Label alignment="TOP_RIGHT" styleClass="requiredInput" text="City :" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+            <Label alignment="TOP_RIGHT" styleClass="nodeLabel" text="District :" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
+            <VBox spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.vgrow="NEVER">
+               <children>
+                  <TextField fx:id="txtStoreName" promptText="3 to 35 characters" VBox.vgrow="NEVER" />
+                  <Text fx:id="txtStoreNameErrorMsg" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="errorLabel" visible="false" VBox.vgrow="NEVER" />
+               </children>
+            </VBox>
+            <Label alignment="TOP_RIGHT" styleClass="nodeLabel" text="State :" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
+            <TextField fx:id="txtAddress" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="txtAddress2" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <VBox spacing="3.0" styleClass="parent" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.vgrow="NEVER">
+               <children>
+                  <TextField fx:id="txtCity" promptText="3 to 20 characters" VBox.vgrow="NEVER" />
+                  <Text fx:id="txtCityErrorMsg" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="errorLabel" visible="false" />
+               </children>
+            </VBox>
+            <TextField fx:id="txtDistrict" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <TextField fx:id="txtState" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <Label alignment="TOP_RIGHT" styleClass="nodeLabel" text="Owner Name :" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
+            <Label alignment="TOP_RIGHT" styleClass="nodeLabel" text="Mobile No :" GridPane.halignment="RIGHT" GridPane.rowIndex="8" />
+            <TextField fx:id="txtOwnerName" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <TextField fx:id="txtMobileNo" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+            <Label alignment="TOP_RIGHT" styleClass="nodeLabel" text="GST No :" GridPane.halignment="RIGHT" GridPane.rowIndex="9" />
+            <Separator GridPane.columnSpan="2" GridPane.rowIndex="10" />
+            <TextField fx:id="txtGSTNo" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+            <TilePane alignment="TOP_RIGHT" hgap="25.0" styleClass="parent" GridPane.columnSpan="2" GridPane.rowIndex="11">
+               <children>
+                  <Button fx:id="btnSave" defaultButton="true" disable="true" mnemonicParsing="true" onAction="#onSaveCommand" text="_Save" />
+                  <Button fx:id="btnClose" cancelButton="true" mnemonicParsing="true" onAction="#onCloseCommand" text="_Close" />
+               </children>
+            </TilePane>
+         </children>
+         <columnConstraints>
+            <ColumnConstraints />
+            <ColumnConstraints />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
+        </GridPane>
+   </children>
+</HBox>

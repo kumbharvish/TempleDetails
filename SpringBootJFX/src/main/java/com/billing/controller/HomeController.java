@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.billing.controllers;
+package com.billing.controller;
 
 import java.io.IOException;
 import java.net.URL;
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Controller;
 import com.billing.dto.UserDetails;
 import com.billing.main.Global;
 import com.billing.service.DBBackupService;
-import com.billing.starter.MyStoreApplication;
 import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
 import com.billing.utils.Utility;
@@ -62,7 +61,7 @@ public class HomeController {
     
     public UserDetails userDetails = null;
 
-    private static final Logger logger = LoggerFactory.getLogger(MyStoreApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
     
     private final static String INVOICE_VIEW_FILE_NAME = "Invoice";
 
@@ -519,7 +518,7 @@ public class HomeController {
             }
         }
 
-        final String viewPath = "/com/billing/fx/views/" + fxmlFileName + ".fxml";
+        final String viewPath = "/com/billing/gui/" + fxmlFileName + ".fxml";
 
         FXMLLoader loader = new FXMLLoader();
         URL resource = this.getClass().getResource(viewPath);

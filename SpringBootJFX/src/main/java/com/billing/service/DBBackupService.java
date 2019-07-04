@@ -22,7 +22,7 @@ import javafx.stage.Stage;
 public class DBBackupService {
 
 	@Autowired
-	private static Environment env;
+	private Environment env;
 
 	@Autowired
 	AppUtils appUtils;

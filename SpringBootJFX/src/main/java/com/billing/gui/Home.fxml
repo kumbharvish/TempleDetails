@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.CheckMenuItem?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.input.KeyCodeCombination?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane id="rootPane" stylesheets="@../../../../resources/stylesheets/home.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.HomeController">
+   <top>
+      <VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
+         <children>
+            <MenuBar>
+              <menus>
+                <Menu fx:id="homeMenu" mnemonicParsing="false" text="_Home">
+                  <items>
+                    <MenuItem fx:id="manageAccountMenuItem" onAction="#onManageAccountCommand" text="Manage _Account">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="A" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+                           </accelerator></MenuItem>
+                        <MenuItem fx:id="storeDetailsMenuItem" onAction="#onStoreDetailsCommand" text="_Store Details" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem fx:id="measurementUnitsMenuItem" onAction="#onMeasurementUnitsCommand" text="Measurement _Units">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="U" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem fx:id="productCategoryMenuItem" onAction="#onProductCategoriesCommand" text="Product Ca_tegories">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="T" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem fx:id="productsMenuItem" onAction="#onProductsCommand" text="_Products">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="P" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+                           </accelerator>
+                        </MenuItem>
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem fx:id="expenseMenuItem" onAction="#onExpenseCommand" text="Expe_nse">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="N" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+                           </accelerator>
+                        </MenuItem>
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem fx:id="exitMenuItem" onAction="#onExitCommand" text="E_xit">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="X" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+                           </accelerator>
+                        </MenuItem>
+                  </items>
+                </Menu>
+                <Menu fx:id="invoiceMenu" text="_Invoice">
+                  <items>
+                    <MenuItem fx:id="createInvoiceMenuItem" onAction="#onCreateInvoiceCommand" text="_Create Invoice">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="I" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+                           </accelerator></MenuItem>
+                        <MenuItem fx:id="searchInvoiceMenuItem" onAction="#onSearchInvoiceCommand" text="_Search Invoice">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="F" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem fx:id="returnInvoiceMenuItem" onAction="#onReturnInvoiceCommand" text="Invoice _Return">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="R" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+                           </accelerator>
+                        </MenuItem>
+                  </items>
+                </Menu>
+                  <Menu fx:id="customersMenu" text="C_ustomers">
+                    <items>
+                      <MenuItem fx:id="customersMenuItem" onAction="#onCustomerCommand" text="C_ustomers">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="C" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem fx:id="customerPaymentHistoryMenuItem" onAction="#onCustomerPaymentHistoryCommand" text="Pa_yment History" />
+                        <MenuItem fx:id="customerPurchaseHistoryMenuItem" onAction="#onCustomerPurchaseHistoryCommand" text="Purchase _History" />
+                    </items>
+                  </Menu>
+                <Menu fx:id="barcodeMenu" text="_Barcode">
+                  <items>
+                    <MenuItem fx:id="generateBarcodeMenuItem" onAction="#onGenerateBarcodeCommand" text="_Generate Barcode Number" />
+                        <MenuItem fx:id="printBarcodeMenuItem" onAction="#onPrintBarcodeCommand" text="Print Barc_ode" />
+                  </items>
+                </Menu>
+                  <Menu fx:id="purchaseMenu" text="_Purchase">
+                    <items>
+                        <MenuItem fx:id="suppliersMenuItem" onAction="#onSuppliersCommand" text="_Suppliers" />
+                      <MenuItem fx:id="stockEntryMenuItem" onAction="#onStockEntryCommand" text="Stock Purchase _Entry" />
+                        <MenuItem fx:id="stockHistoryMenuItem" onAction="#onStockHistoryCommand" text="Stock Purchase _History" />
+                    </items>
+                  </Menu>
+                  <Menu fx:id="reportsHomeMenu" text="_Reports">
+                     <items>
+                        <Menu fx:id="reportsMenu" text="R_eports">
+                          <items>
+                            <MenuItem fx:id="salesStockValueReportMenuItem" onAction="#onSalesStockValueReportCommand" text="Sales Stock _Value Report" />
+                              <MenuItem fx:id="productProfitReportMenuItem" onAction="#onProductProfitReportCommand" text="Product Pro_fit Report" />
+                              <MenuItem fx:id="customersReportMenuItem" onAction="#onCustomerReportCommand" text="_Customers Report" />
+                              <MenuItem fx:id="zeroStockProductsReportMenuItem" onAction="#onZeroStockProductsCommand" text="_Zero Stock Products Report" />
+                              <MenuItem fx:id="productCategoryWiseStockReprotMenuItem" onAction="#onProductCategoryWiseStockCommand" text="Product Category _Wise Stock Report" />
+                              <MenuItem fx:id="salesReportMenuItem" onAction="#onSalesReportCommand" text="_Sales Report" />
+                              <MenuItem fx:id="salesReturnReportMenuItem" onAction="#onSalesReturnReportCommand" text="Sales _Return Report" />
+                              <MenuItem fx:id="monthlyReportMenuItem" onAction="#onMonthlyReportCommand" text="_Monthly Report" />
+                              <MenuItem fx:id="profitLossReportMenuItem" onAction="#onProfitLossCommand" text="Profit _Loss Report" />
+                              <MenuItem fx:id="cashCounterReportMenuItem" onAction="#onCashCounterCommand" text="Cash Cou_nter Report" />
+                          </items>
+                        </Menu>
+                        <Menu fx:id="graphicalReportsMenu" text="_Graphical Reports">
+                          <items>
+                            <MenuItem fx:id="paymentModeWiseSalesMenuItem" onAction="#onPaymentModeWiseSalesCommand" text="Pa_yment Mode Wise Sales Report" />
+                              <MenuItem fx:id="dailySalesMenuItem" onAction="#onDailySalesReportCommand" text="_Daily Sales Report" />
+                              <MenuItem fx:id="monthlySalesMenuItem" onAction="#onMonthlySalesReportCommand" text="_Monthly Sales Report" />
+                          </items>
+                        </Menu>
+                        <Menu fx:id="analysisReportsMenu" text="Business _Analysis Reports">
+                          <items>
+                            <MenuItem fx:id="productWiseProfitMenuItem" onAction="#onProductWiseProfitCommand" text="Product Wise Profit Report" />
+                              <MenuItem fx:id="billWiseProfitMenuItem" mnemonicParsing="false" onAction="#onBillWiseProfitCommand" text="Bill Wise Profit Report" />
+                              <MenuItem fx:id="stockEntryWiseProfitReportMenuItem" mnemonicParsing="false" onAction="#onStockEntryWiseProfitCommand" text="Stock Entry Wise Profit Report" />
+                              <MenuItem fx:id="customerWiseProfitReportMenuItem" mnemonicParsing="false" onAction="#onCustomerWiseProfitCommand" text="Customer Wise Profit Report" />
+                              <MenuItem fx:id="productWiseSalesReportMenuItem" mnemonicParsing="false" onAction="#onProductWiseSalesCommand" text="Product Wise Sales Report" />
+                          </items>
+                        </Menu>
+                     </items>
+                  </Menu>
+                  <Menu fx:id="preferencesMenu" mnemonicParsing="false" text="Pre_ferences">
+                    <items>
+                      <MenuItem fx:id="userPreferencesMenuItem" onAction="#onUserPreferencesCommand" text="User Preferences" />
+                        <MenuItem fx:id="databackupMailSettingsMenuItem" onAction="#onDataBackupMailSettingsCommand" text="Data Bac_kup Mail Settings" />
+                        <MenuItem fx:id="dataBackupMenuItem" onAction="#onDataBackupCommand" text="Da_ta Backup" />
+                        <CheckMenuItem fx:id="hideToolbarMenuItem" onAction="#onHideToolbarCommand" text="Hide _Toolbar" />
+                    </items>
+                  </Menu>
+                  <Menu fx:id="helpMenu" text="_Help">
+                    <items>
+                      <MenuItem fx:id="aboutUsMenuItem" onAction="#onAboutUsCommand" text="About _Us" />
+                    </items>
+                  </Menu>
+              </menus>
+            </MenuBar>
+            <ToolBar fx:id="toolBar">
+               <items>
+                  <Label fx:id="lblCreateInvoice" onMouseClicked="#onCreateInvoiceClick">
+                     <tooltip>
+                        <Tooltip text="Create Invoice" />
+                     </tooltip>
+                  </Label>
+                  <Label fx:id="lblSearchInvoice" onMouseClicked="#onSearchInvoiceClick">
+                     <tooltip>
+                        <Tooltip text="Search Invoice" />
+                     </tooltip>
+                  </Label>
+                  <Separator maxHeight="24.0" orientation="VERTICAL" />
+                  <Label fx:id="lblProducts" onMouseClicked="#onProductsClick">
+                     <tooltip>
+                        <Tooltip text="Products" />
+                     </tooltip>
+                  </Label>
+                  <Label fx:id="lblMeasurementUnits" onMouseClicked="#onMeasuermentUnitsClick">
+                     <tooltip>
+                        <Tooltip text="Measurement Units" />
+                     </tooltip>
+                  </Label>
+                  <Label fx:id="lblProductCategories" onMouseClicked="#onProductCategoriesClick">
+                     <tooltip>
+                        <Tooltip text="Product Categories" />
+                     </tooltip>
+                  </Label>
+                  <Separator maxHeight="24.0" orientation="VERTICAL" />
+                  <Label fx:id="lblSaleReport" onMouseClicked="#onSaleReportClick">
+                     <tooltip>
+                        <Tooltip text="Sales Report" />
+                     </tooltip>
+                  </Label>
+                  <Label fx:id="lblCashCounter" onMouseClicked="#onCashCounterClick">
+                     <tooltip>
+                        <Tooltip text="Cash Counter" />
+                     </tooltip>
+                  </Label>
+                  <Separator maxHeight="24.0" orientation="VERTICAL" />
+                  <Label fx:id="lblDataBackup" onMouseClicked="#onDataBackupClick">
+                     <tooltip>
+                        <Tooltip text="Data Backup" />
+                     </tooltip>
+                  </Label>
+                  <Label fx:id="lblUserSettings" onMouseClicked="#onUserSettingsClick">
+                     <tooltip>
+                        <Tooltip text="User Preferences" />
+                     </tooltip>
+                  </Label>
+               </items></ToolBar>
+         </children>
+      </VBox>
+   </top>
+   <center>
+      <TabPane fx:id="tabPane" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>
