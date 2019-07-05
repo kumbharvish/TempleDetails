@@ -19,7 +19,6 @@ import com.billing.dto.StatusDTO;
 import com.billing.dto.StockItemDetails;
 import com.billing.dto.Supplier;
 import com.billing.dto.SupplierInvoiceDetails;
-import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 
 @Service
@@ -89,7 +88,7 @@ public class SupplierService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return SupplierList;
 	}
@@ -120,7 +119,7 @@ public class SupplierService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return flag;
 	}
@@ -142,7 +141,7 @@ public class SupplierService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return flag;
 	}
@@ -175,7 +174,7 @@ public class SupplierService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return flag;
 	}
@@ -218,7 +217,7 @@ public class SupplierService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return flag;
 	}
@@ -258,7 +257,7 @@ public class SupplierService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return flag;
 	}
@@ -290,7 +289,7 @@ public class SupplierService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return flag;
 	}
@@ -356,7 +355,7 @@ public class SupplierService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return supplierInvoiceDetailsList;
 	}
@@ -444,7 +443,7 @@ public class SupplierService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}

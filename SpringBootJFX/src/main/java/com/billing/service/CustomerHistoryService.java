@@ -18,7 +18,6 @@ import com.billing.dto.BillDetails;
 import com.billing.dto.Customer;
 import com.billing.dto.CustomerPaymentHistory;
 import com.billing.dto.CustomerProfit;
-import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 
 @Service
@@ -68,7 +67,7 @@ public class CustomerHistoryService {
 			e.printStackTrace();
 			logger.info("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return customerList;
 	}
@@ -111,7 +110,7 @@ public class CustomerHistoryService {
 			e.printStackTrace();
 			logger.info("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return billDetailsList;
 	}
@@ -150,7 +149,7 @@ public class CustomerHistoryService {
 			e.printStackTrace();
 			logger.info("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return customerList;
 	}

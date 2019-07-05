@@ -14,8 +14,7 @@ import org.springframework.stereotype.Service;
 import com.billing.dto.BillDetails;
 import com.billing.dto.ItemDetails;
 import com.billing.dto.StatusDTO;
-import com.billing.main.MyStoreFxSplash;
-import com.billing.utils.AppUtils;
+import com.billing.main.MyStoreApplication;
 import com.billing.utils.DBUtils;
 
 @Service
@@ -73,7 +72,7 @@ public class BillingService {
 			staus.setException(e.getMessage());
 			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return staus;
 	}
@@ -99,7 +98,7 @@ public class BillingService {
 			logger.info("Exception : ",e);
 			return status;
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
@@ -125,7 +124,7 @@ public class BillingService {
 			logger.info("Exception : ",e);
 			return status;
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
@@ -159,7 +158,7 @@ public class BillingService {
 			logger.info("Exception : ",e);
 			return status;
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
@@ -187,7 +186,7 @@ public class BillingService {
 			status.setStatusCode(-1);
 			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
@@ -214,7 +213,7 @@ public class BillingService {
 			status.setStatusCode(-1);
 			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
@@ -237,7 +236,7 @@ public class BillingService {
 			e.printStackTrace();
 			return -1;
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return newBillNumber;
 	}

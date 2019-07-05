@@ -173,7 +173,7 @@ public class ReportService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return cashCounterList;
 	}
@@ -198,7 +198,7 @@ public class ReportService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return openingCashAmount;
 	}
@@ -293,7 +293,7 @@ public class ReportService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		System.out.println(report);
 		return report;
@@ -419,7 +419,7 @@ public class ReportService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return report;
 	}
@@ -486,7 +486,7 @@ public class ReportService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 
 		return report;
@@ -512,7 +512,7 @@ public class ReportService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return openingCashAmount;
 	}
@@ -534,7 +534,7 @@ public class ReportService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return stockValueAmt;
 	}
@@ -560,7 +560,7 @@ public class ReportService {
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
@@ -614,7 +614,7 @@ public class ReportService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return customerList;
 	}

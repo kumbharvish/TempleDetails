@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import com.billing.dto.ItemDetails;
 import com.billing.dto.ReturnDetails;
 import com.billing.dto.StatusDTO;
-import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 
 @Service
@@ -88,7 +87,7 @@ public class SalesReturnService {
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
@@ -121,7 +120,7 @@ public class SalesReturnService {
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
@@ -159,7 +158,7 @@ public class SalesReturnService {
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
@@ -203,7 +202,7 @@ public class SalesReturnService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return returnDetails;
 	}
@@ -247,7 +246,7 @@ public class SalesReturnService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return returnDetails;
 	}
@@ -280,7 +279,7 @@ public class SalesReturnService {
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
@@ -305,7 +304,7 @@ public class SalesReturnService {
 			status.setStatusCode(-1);
 			return status;
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
@@ -402,7 +401,7 @@ public class SalesReturnService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return returnDetailsList;
 	}

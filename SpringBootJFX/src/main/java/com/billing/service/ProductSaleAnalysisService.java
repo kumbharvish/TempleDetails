@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import com.billing.dto.Product;
 import com.billing.dto.ProductAnalysis;
-import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 
 @Service
@@ -64,7 +63,7 @@ public class ProductSaleAnalysisService {
 			e.printStackTrace();
 			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return productAnalysisList;
 	}
@@ -118,7 +117,7 @@ public class ProductSaleAnalysisService {
 			e.printStackTrace();
 			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return productAnalysisList;
 	}

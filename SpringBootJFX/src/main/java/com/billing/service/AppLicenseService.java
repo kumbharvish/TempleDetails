@@ -48,7 +48,7 @@ public class AppLicenseService {
 			e.printStackTrace();
 			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return appSecData;
 	}
@@ -72,7 +72,7 @@ public class AppLicenseService {
 			e.printStackTrace();
 			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return flag;
 	}
@@ -93,7 +93,7 @@ public class AppLicenseService {
 			e.printStackTrace();
 			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return flag;
 	}

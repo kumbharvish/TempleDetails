@@ -11,7 +11,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -59,24 +58,13 @@ public class AppUtils {
 	private static final String APP_DATA = "SELECT VALUE_STRING FROM "
 			+ "APP_DATA WHERE DATA_NAME=?";
 
-	private static final Logger logger = LoggerFactory.getLogger(AppUtils.class);
+	static final Logger logger = LoggerFactory.getLogger(AppUtils.class);
 	
 	public static int getRecordsCount(ResultSet resultset) throws SQLException {
 		if (resultset.last()) {
 			return resultset.getRow();
 		} else {
 			return 0;
-		}
-	}
-
-	public static void closeStatment(Statement stmt) {
-
-		try {
-			if (stmt != null) {
-				stmt.close();
-			}
-		} catch (SQLException se2) {
-			logger.info("closeStatment : Exception : ",se2);
 		}
 	}
 
@@ -123,7 +111,7 @@ public class AppUtils {
 			logger.error("Get App Data Values :"+e);
 			e.printStackTrace();
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return dataList;
 

@@ -13,8 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.billing.dto.AppConfigurations;
 import com.billing.dto.StatusDTO;
-import com.billing.main.MyStoreFxSplash;
-import com.billing.utils.AppUtils;
+import com.billing.main.MyStoreApplication;
 import com.billing.utils.DBUtils;
 
 @Service
@@ -56,7 +55,7 @@ public class AppConfigService {
 			e.printStackTrace();
 			logger.info("getAppConfigList : Exception : ",e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return configList;
 	}
@@ -87,7 +86,7 @@ public class AppConfigService {
 			status.setStatusCode(-1);
 			logger.info("updateAppConfig : Exception : ",e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
@@ -111,7 +110,7 @@ public class AppConfigService {
 			e.printStackTrace();
 			logger.info("getAppConfig : Exception : ",e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return isEnabled;
 

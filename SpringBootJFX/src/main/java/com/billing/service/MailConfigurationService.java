@@ -53,7 +53,7 @@ public class MailConfigurationService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return mail;
 	}
@@ -85,7 +85,7 @@ public class MailConfigurationService {
 			status.setStatusCode(-1);
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}

@@ -20,7 +20,6 @@ import com.billing.dto.BillDetails;
 import com.billing.dto.ItemDetails;
 import com.billing.dto.Product;
 import com.billing.dto.StatusDTO;
-import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 
 @Service
@@ -132,7 +131,7 @@ public class ProductService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 
 		return productList;
@@ -172,7 +171,7 @@ public class ProductService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return pc;
 	}
@@ -214,7 +213,7 @@ public class ProductService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
@@ -236,7 +235,7 @@ public class ProductService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return flag;
 	}
@@ -277,7 +276,7 @@ public class ProductService {
 			status.setStatusCode(-1);
 			status.setException(e.getMessage());
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
@@ -317,7 +316,7 @@ public class ProductService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return productList;
 	}
@@ -359,7 +358,7 @@ public class ProductService {
 			staus.setStatusCode(-1);
 			staus.setException(e.getMessage());
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return staus;
 	}
@@ -397,7 +396,7 @@ public class ProductService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return flag;
 	}
@@ -429,7 +428,7 @@ public class ProductService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return flag;
 	}
@@ -489,7 +488,7 @@ public class ProductService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return billDetailsList;
 	}
@@ -585,7 +584,7 @@ public class ProductService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 
 		return productList;
@@ -629,7 +628,7 @@ public class ProductService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 
 		return productList;
@@ -657,7 +656,7 @@ public class ProductService {
 			status.setStatusCode(-1);
 			status.setException(e.getMessage());
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
@@ -685,7 +684,7 @@ public class ProductService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return flag;
 	}
@@ -723,7 +722,7 @@ public class ProductService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return billDetails;
 	}
@@ -759,7 +758,7 @@ public class ProductService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return billDetails;
 	}
@@ -793,7 +792,7 @@ public class ProductService {
 			status.setStatusCode(-1);
 			status.setException(e.getMessage());
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}

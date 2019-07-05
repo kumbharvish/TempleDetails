@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.billing.dto.MyStoreDetails;
-import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 
 @Service
@@ -60,7 +59,7 @@ public class StoreDetailsService {
 			e.printStackTrace();
 			logger.error("Exception: ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return myStoreDetails;
 	}
@@ -112,7 +111,7 @@ public class StoreDetailsService {
 			e.printStackTrace();
 			logger.error("Exception: ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return flag;
 	}

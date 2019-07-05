@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import com.billing.dto.Product;
 import com.billing.dto.ProductCategory;
 import com.billing.dto.StatusDTO;
-import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 
 @Service
@@ -72,7 +71,7 @@ public class ProductCategoryService {
 			e.printStackTrace();
 			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return productCategoryList;
 	}
@@ -100,7 +99,7 @@ public class ProductCategoryService {
 			status.setStatusCode(-1);
 			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
@@ -122,7 +121,7 @@ public class ProductCategoryService {
 			e.printStackTrace();
 			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return flag;
 	}
@@ -151,7 +150,7 @@ public class ProductCategoryService {
 			status.setStatusCode(-1);
 			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
@@ -195,7 +194,7 @@ public class ProductCategoryService {
 			e.printStackTrace();
 			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 
 		return productList;
@@ -229,7 +228,7 @@ public class ProductCategoryService {
 			e.printStackTrace();
 			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return productCategoryList;
 	}

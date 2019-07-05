@@ -16,7 +16,6 @@ import com.billing.constants.AppConstants;
 import com.billing.dto.Product;
 import com.billing.dto.StatusDTO;
 import com.billing.dto.StockLedger;
-import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 
 @Service
@@ -76,7 +75,7 @@ public class ProductHistoryService {
 			e.printStackTrace();
 			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
@@ -111,7 +110,7 @@ public class ProductHistoryService {
 			e.printStackTrace();
 			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		
 		return productList;
@@ -153,7 +152,7 @@ public class ProductHistoryService {
 			e.printStackTrace();
 			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
@@ -188,7 +187,7 @@ public class ProductHistoryService {
 			e.printStackTrace();
 			logger.info("Exception : ",e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		
 		return stockLedgerList;

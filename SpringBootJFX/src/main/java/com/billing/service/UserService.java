@@ -86,7 +86,7 @@ public class UserService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return userDetails;
 	}
@@ -115,7 +115,7 @@ public class UserService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return userDetails;
 	}
@@ -143,7 +143,7 @@ public class UserService {
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 
 		}
 		return status;
@@ -169,7 +169,7 @@ public class UserService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return isPwdChanged;
 	}
@@ -197,7 +197,7 @@ public class UserService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return isDetailsUpdated;
 	}
@@ -227,7 +227,7 @@ public class UserService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return customer;
 	}
@@ -257,7 +257,7 @@ public class UserService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
@@ -284,7 +284,7 @@ public class UserService {
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
@@ -311,7 +311,7 @@ public class UserService {
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
@@ -335,7 +335,7 @@ public class UserService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return isCustDeleted;
 	}
@@ -363,7 +363,7 @@ public class UserService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return isCustomerAdded;
 	}
@@ -396,7 +396,7 @@ public class UserService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return customerList;
 	}
@@ -431,7 +431,7 @@ public class UserService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return customerList;
 	}
@@ -470,7 +470,7 @@ public class UserService {
 			status.setStatusCode(-1);
 			return status;
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}

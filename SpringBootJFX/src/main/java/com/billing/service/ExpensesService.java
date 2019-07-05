@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import com.billing.dto.Expense;
 import com.billing.dto.ExpenseType;
 import com.billing.dto.StatusDTO;
-import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 
 import javafx.scene.control.ComboBox;
@@ -89,7 +88,7 @@ public class ExpensesService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return expenseList;
 	}
@@ -118,7 +117,7 @@ public class ExpensesService {
 			status.setStatusCode(-1);
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
@@ -140,7 +139,7 @@ public class ExpensesService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return flag;
 	}
@@ -170,7 +169,7 @@ public class ExpensesService {
 			status.setStatusCode(-1);
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
@@ -198,7 +197,7 @@ public class ExpensesService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return pc;
 	}
@@ -227,7 +226,7 @@ public class ExpensesService {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		} finally {
-			AppUtils.closeStatment(stmt);
+			DBUtils.closeConnection(stmt, conn);
 		}
 		return dataList;
 
