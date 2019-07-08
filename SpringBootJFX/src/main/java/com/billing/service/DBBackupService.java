@@ -40,13 +40,13 @@ public class DBBackupService {
 			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 			String folderLocation = appUtils.getAppDataValues("MYSTORE_HOME").get(0) + AppConstants.DATA_BACKUP_FOLDER;
 			String mySqlHome = appUtils.getAppDataValues("MYSQL_HOME").get(0);
-			logger.error("mySqlHome : " + mySqlHome);
+			logger.error(" -- mySqlHome :: " + mySqlHome);
 			String fileName = "\\\\DataBackup_" + sdf.format(currentDate) + ".sql";
 			String executeCmd = mySqlHome + "\\\\bin\\\\mysqldump -u root -ppassword " + dbSchema + " -r "
 					+ folderLocation + fileName;
 			/* NOTE: Executing the command here */
 			System.out.println(executeCmd);
-			logger.error("DB dump : " + executeCmd);
+			logger.error(" -- DB Dump executeCmd :: " + executeCmd);
 			Process runtimeProcess = Runtime.getRuntime().exec(executeCmd);
 			int processComplete = runtimeProcess.waitFor();
 

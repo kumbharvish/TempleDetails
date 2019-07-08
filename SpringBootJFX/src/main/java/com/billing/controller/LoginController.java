@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import com.billing.dto.MyStoreDetails;
 import com.billing.dto.UserDetails;
 import com.billing.dto.WindowState;
+import com.billing.main.AppContext;
 import com.billing.main.Global;
 import com.billing.service.AppLicenseService;
 import com.billing.service.StoreDetailsService;
@@ -40,8 +41,9 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+@SuppressWarnings("restriction")
 @Controller
-public class LoginController {
+public class LoginController extends AppContext{
 
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 	
@@ -60,6 +62,8 @@ public class LoginController {
 	private final static String APPLICATION_HOME_TITTLE = "My Store";
 	
 	private final static String APPLICATION_LOGIN_TITTLE = "Login";
+	
+	private FXMLLoader fxmlLoader;
 	 
     @FXML
     private Button btnClose;
@@ -85,6 +89,13 @@ public class LoginController {
     private Label lblLicenseValideUpto;
     
     @FXML
+    public void initialize() {
+        btnLogin.setDefaultButton(true);
+        fxmlLoader = new FXMLLoader();
+        fxmlLoader.setControllerFactory(springContext::getBean);
+    }
+    
+    @FXML
     void doLogin(ActionEvent event) {
 			String user = txtUserName.getText();
 			String pwd = txtPassword.getText();
@@ -96,7 +107,7 @@ public class LoginController {
 					Stage st = (Stage)btnLogin.getScene().getWindow();
 		            st.close();
 		            // Open Home Window
-		            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/billing/gui/Home.fxml"));
+		            fxmlLoader.setLocation(getClass().getResource("/com/billing/gui/Home.fxml"));
 				        Parent root = null;
 				        try {
 				            root = fxmlLoader.<BorderPane>load();
@@ -111,9 +122,9 @@ public class LoginController {
 				        HomeController homeController = fxmlLoader.getController();
 				        homeController.MainWindow = stage;
 				        homeController.userDetails = userDetails;
-				        stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/images/shop32X32.png")));
-				        stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/images/shop48X48.png")));
-				        stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/images/shop64X64.png")));
+				        stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop32X32.png")));
+				        stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop48X48.png")));
+				        stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop64X64.png")));
 				        
 				        final WindowState s = Global.getDefaultWindowState();
 				        stage.setX(s.getXPos());
@@ -142,10 +153,6 @@ public class LoginController {
     	System.exit(0);
     }
     
-    @FXML
-    public void initialize() {
-        btnLogin.setDefaultButton(true);
-    }
 
 	public void show(Parent parent) {
         Scene scene = new Scene(parent);

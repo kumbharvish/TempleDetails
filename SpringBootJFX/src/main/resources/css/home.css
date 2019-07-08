@@ -93,140 +93,140 @@
 }
 
 #manageAccountMenuItem > .label{
-    -fx-graphic: url("/resources/images/MyAccount_24.png");
+    -fx-graphic: url("/images/MyAccount_24.png");
 }
 
 #storeDetailsMenuItem > .label{
-    -fx-graphic: url("/resources/images/shop_24.png");
+    -fx-graphic: url("/images/shop_24.png");
 }
 
 #measurementUnitsMenuItem > .label{
-    -fx-graphic: url("/resources/images/Measurement_unit_24.png");
+    -fx-graphic: url("/images/Measurement_unit_24.png");
 }
 
 #productCategoryMenuItem > .label{
-    -fx-graphic: url("/resources/images/ProductCategories_24.png");
+    -fx-graphic: url("/images/ProductCategories_24.png");
 }
 
 #productsMenuItem > .label{
-    -fx-graphic: url("/resources/images/Products_24.png");
+    -fx-graphic: url("/images/Products_24.png");
 }
 
 #expenseMenuItem > .label{
-    -fx-graphic: url("/resources/images/Expense_24.png");
+    -fx-graphic: url("/images/Expense_24.png");
 }
 
 #exitMenuItem > .label{
-    -fx-graphic: url("/resources/images/exit.png");
+    -fx-graphic: url("/images/exit.png");
 }
 
 #createInvoiceMenuItem > .label{
-     -fx-graphic: url("/resources/images/invoice_24.png");
+     -fx-graphic: url("/images/invoice_24.png");
 }
 
 #searchInvoiceMenuItem > .label{
-     -fx-graphic: url("/resources/images/search_invoice_24.png");
+     -fx-graphic: url("/images/search_invoice_24.png");
 }
 #returnInvoiceMenuItem > .label{
-     -fx-graphic: url("/resources/images/Return_Invoice_24.png");
+     -fx-graphic: url("/images/Return_Invoice_24.png");
 }
 
 #customersMenuItem > .label{
-     -fx-graphic: url("/resources/images/customer_24.png");
+     -fx-graphic: url("/images/customer_24.png");
 }
 
 #customerPaymentHistoryMenuItem > .label{
-     -fx-graphic: url("/resources/images/CustPaymentHist_24.png");
+     -fx-graphic: url("/images/CustPaymentHist_24.png");
 }
 
 #customerPurchaseHistoryMenuItem > .label{
-     -fx-graphic: url("/resources/images/CustPurchaseHist_24.png");
+     -fx-graphic: url("/images/CustPurchaseHist_24.png");
 }
 
 #generateBarcodeMenuItem > .label{
-     -fx-graphic: url("/resources/images/GenerateBarcode_24.png");
+     -fx-graphic: url("/images/GenerateBarcode_24.png");
 }
 
 #printBarcodeMenuItem > .label{
-     -fx-graphic: url("/resources/images/PrintBarcode_24.png");
+     -fx-graphic: url("/images/PrintBarcode_24.png");
 }
 
 #suppliersMenuItem > .label{
-     -fx-graphic: url("/resources/images/Suppliers_24.png");
+     -fx-graphic: url("/images/Suppliers_24.png");
 }
 
 #stockEntryMenuItem > .label{
-     -fx-graphic: url("/resources/images/StockPurchaseEntry_24.png");
+     -fx-graphic: url("/images/StockPurchaseEntry_24.png");
 }
 
 #stockHistoryMenuItem > .label{
-     -fx-graphic: url("/resources/images/StockPurchaseHistory_24.png");
+     -fx-graphic: url("/images/StockPurchaseHistory_24.png");
 }
 
 #reportsMenu > .label{
-     -fx-graphic: url("/resources/images/Reports_24.png");
+     -fx-graphic: url("/images/Reports_24.png");
 }
 
 #graphicalReportsMenu > .label{
-     -fx-graphic: url("/resources/images/GraphicalReports_24.png");
+     -fx-graphic: url("/images/GraphicalReports_24.png");
 }
 
 #analysisReportsMenu > .label{
-     -fx-graphic: url("/resources/images/BusinessAnalysis_24.png");
+     -fx-graphic: url("/images/BusinessAnalysis_24.png");
 }
 
 #userPreferencesMenuItem > .label{
-     -fx-graphic: url("/resources/images/configuration_24.png");
+     -fx-graphic: url("/images/configuration_24.png");
 }
 
 #databackupMailSettingsMenuItem > .label{
-     -fx-graphic: url("/resources/images/GmailSettings_24.png");
+     -fx-graphic: url("/images/GmailSettings_24.png");
 }
 
 #dataBackupMenuItem > .label{
-     -fx-graphic: url("/resources/images/DataBackup_24.png");
+     -fx-graphic: url("/images/DataBackup_24.png");
 }
 
 #hideToolbarMenuItem > .label{
-     -fx-graphic: url("/resources/images/hide.png");
+     -fx-graphic: url("/images/hide.png");
 }
 
 #aboutUsMenuItem > .label{
-     -fx-graphic: url("/resources/images/about_24.png");
+     -fx-graphic: url("/images/about_24.png");
 }
 
 #lblCreateInvoice{
-     -fx-graphic: url("/resources/images/invoice_24.png");
+     -fx-graphic: url("/images/invoice_24.png");
 }
 
 #lblSearchInvoice{
-     -fx-graphic: url("/resources/images/search_invoice_24.png");
+     -fx-graphic: url("/images/search_invoice_24.png");
 }
 
 #lblProducts{
-     -fx-graphic: url("/resources/images/Products_24.png");
+     -fx-graphic: url("/images/Products_24.png");
 }
 
 #lblMeasurementUnits{
-    -fx-graphic: url("/resources/images/Measurement_unit_24.png");
+    -fx-graphic: url("/images/Measurement_unit_24.png");
 }
 
 #lblProductCategories{
-    -fx-graphic: url("/resources/images/ProductCategories_24.png");
+    -fx-graphic: url("/images/ProductCategories_24.png");
 }
 
 #lblSaleReport{
-    -fx-graphic: url("/resources/images/SaleReport_24.png");
+    -fx-graphic: url("/images/SaleReport_24.png");
 }
 
 #lblCashCounter{
-    -fx-graphic: url("/resources/images/CashCounter_24.png");
+    -fx-graphic: url("/images/CashCounter_24.png");
 }
 
 #lblDataBackup{
-    -fx-graphic: url("/resources/images/DataBackup_24.png");
+    -fx-graphic: url("/images/DataBackup_24.png");
 }
 
 #lblUserSettings{
-    -fx-graphic: url("/resources/images/configuration_24.png");
+    -fx-graphic: url("/images/configuration_24.png");
 }
