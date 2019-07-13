@@ -107,6 +107,9 @@ public class AppUtils {
 				dataList.add(rs.getString("VALUE_STRING"));
 			}
 			rs.close();
+			if(dataList.isEmpty()) {
+				logger.info("--- ## App Data Configuration Missing for Key ## --- :: "+dataName);
+			}
 		} catch (Exception e) {
 			logger.error("Get App Data Values :"+e);
 			e.printStackTrace();

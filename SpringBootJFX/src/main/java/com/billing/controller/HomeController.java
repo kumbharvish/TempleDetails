@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import com.billing.dto.UserDetails;
 import com.billing.main.Global;
 import com.billing.service.DBBackupService;
+import com.billing.service.DBScheduledDumpTask;
 import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
 import com.billing.utils.Utility;
@@ -48,6 +50,7 @@ import javafx.stage.WindowEvent;
  *
  * @author Vishal
  */
+@SuppressWarnings("restriction")
 @Controller
 public class HomeController {
 	
@@ -56,6 +59,9 @@ public class HomeController {
 	
 	@Autowired
 	DBBackupService dbBackupService;
+	
+	@Autowired
+	DBScheduledDumpTask dbScheduledDumpTask;
 
     public Stage MainWindow = null;
     
@@ -65,7 +71,7 @@ public class HomeController {
     
     private final static String INVOICE_VIEW_FILE_NAME = "Invoice";
 
-    @FXML
+	@FXML
     private MenuItem manageAccountMenuItem;
 
     @FXML
@@ -238,12 +244,20 @@ public class HomeController {
                 });
 
         toolBar.managedProperty().bind(toolBar.visibleProperty());
-        //Take Database Backup
-        dbBackupService.createDBDump();
         appUtils.licenseExpiryAlert();
+        //Start Scheduled DB Dump task
+        startScheduledDBDumpTask();
     }
    
-    @FXML
+    private void startScheduledDBDumpTask() {
+    	Timer time = new Timer();
+    	Integer dbDumpInterval = Integer.parseInt(appUtils.getAppDataValues("DB_DUMP_INTERVAL").get(0));
+    	logger.info("---- DB Dump Scheduled with Interval of :: "+dbDumpInterval+" Mins ---");
+    	dbDumpInterval = dbDumpInterval*60*1000; //Convert Minutes to Milliseconds
+		time.schedule(dbScheduledDumpTask, 0, dbDumpInterval); 		
+	}
+
+	@FXML
     void onAboutUsCommand(ActionEvent event) {
     	addTab("About", "About");
     }

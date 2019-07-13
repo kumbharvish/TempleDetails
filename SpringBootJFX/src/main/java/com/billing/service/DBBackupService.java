@@ -41,7 +41,7 @@ public class DBBackupService {
 			String folderLocation = appUtils.getAppDataValues("MYSTORE_HOME").get(0) + AppConstants.DATA_BACKUP_FOLDER;
 			String mySqlHome = appUtils.getAppDataValues("MYSQL_HOME").get(0);
 			logger.error(" -- mySqlHome :: " + mySqlHome);
-			String fileName = "\\\\DataBackup_" + sdf.format(currentDate) + ".sql";
+			String fileName = "\\\\DataBackup_" + sdf.format(currentDate)+"_"+System.currentTimeMillis()+ ".sql";
 			String executeCmd = mySqlHome + "\\\\bin\\\\mysqldump -u root -ppassword " + dbSchema + " -r "
 					+ folderLocation + fileName;
 			/* NOTE: Executing the command here */
@@ -77,7 +77,7 @@ public class DBBackupService {
 			String folderLocation = appUtils.getAppDataValues("MYSTORE_HOME").get(0) + AppConstants.DATA_BACKUP_FOLDER;
 			String mySqlHome = appUtils.getAppDataValues("MYSQL_HOME").get(0);
 			logger.error("mySqlHome : " + mySqlHome);
-			String fileName = "\\\\DataBackup_" + sdf.format(currentDate) + ".sql";
+			String fileName = "\\\\DataBackup_" + sdf.format(currentDate)+"_"+System.currentTimeMillis() + ".sql";
 			String executeCmd = mySqlHome + "\\\\bin\\\\mysqldump -u root -ppassword " + dbSchema + " -r "
 					+ folderLocation + fileName;
 			/* NOTE: Executing the command here */

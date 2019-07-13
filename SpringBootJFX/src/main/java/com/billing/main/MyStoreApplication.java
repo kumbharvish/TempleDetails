@@ -85,6 +85,8 @@ public class MyStoreApplication extends Application {
 		System.out.println("---- DATA BACKUP From STOP Method ---");
 		DBBackupService dbBackupService = (DBBackupService)springContext.getBean(DBBackupService.class);
 		dbBackupService.createDBDump();
+		System.out.println("---- Terminate Application ---");
+		System.exit(0);
 	}
 
 }
