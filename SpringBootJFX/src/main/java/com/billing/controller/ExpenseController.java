@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import com.billing.dto.Expense;
 import com.billing.dto.StatusDTO;
 import com.billing.service.ExpensesService;
+import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
 import com.billing.utils.Utility;
@@ -17,7 +18,6 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
@@ -28,13 +28,20 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+@SuppressWarnings("restriction")
 @Controller
 public class ExpenseController implements TabContent {
 	
 	@Autowired
 	ExpensesService expensesService;
 	
-	public Stage MainWindow = null;
+	@Autowired
+	AlertHelper alertHelper;
+	
+	@Autowired
+	AppUtils appUtils;
+	
+	public Stage currentStage = null;
     
     private TabPane tabPane = null;	
     
@@ -70,7 +77,7 @@ public class ExpenseController implements TabContent {
     @FXML
     void onCloseCommand(ActionEvent event) {
     	 if (isDirty.get()) {
-             ButtonType buttonType = AppUtils.shouldSaveUnsavedData(MainWindow);
+             ButtonType buttonType = appUtils.shouldSaveUnsavedData(currentStage);
              if (buttonType == ButtonType.CANCEL) {
                  return; // no need to take any further action
              } else if (buttonType == ButtonType.YES) {
@@ -101,7 +108,7 @@ public class ExpenseController implements TabContent {
 	@Override
 	public boolean shouldClose() {
 		 if (isDirty.get()) {
-	            ButtonType response = AppUtils.shouldSaveUnsavedData(MainWindow);
+	            ButtonType response = appUtils.shouldSaveUnsavedData(currentStage);
 	            if (response == ButtonType.CANCEL) {
 	                return false;
 	            }
@@ -135,7 +142,7 @@ public class ExpenseController implements TabContent {
 
 	@Override
 	public void setMainWindow(Stage stage) {
-		MainWindow = stage;
+		currentStage = stage;
 	}
 
 	@Override
@@ -153,14 +160,9 @@ public class ExpenseController implements TabContent {
 		
 		StatusDTO status = expensesService.addExpense(expense);
 		if(status.getStatusCode()==0){
-    		AppUtils.showInfoAlert(MainWindow, "Expense saved successfully !", "Information");
+    		alertHelper.showInfoAlert(currentStage, "Information", null,"Expense saved successfully !");
     	}else {
-    		String message = Utility.getDataSaveErrorText();
-            Utility.beep();
-            Alert alert = Utility.getErrorAlert("Error Occurred", 
-                    "Error in Saving Data",
-                    message, MainWindow);
-            alert.showAndWait();
+            alertHelper.showDataSaveErrAlert(currentStage);
             return false;
     	}
         return true;
@@ -185,7 +187,7 @@ public class ExpenseController implements TabContent {
         // Category
         int category = cbCategory.getSelectionModel().getSelectedIndex();
         if (category == 0) {
-        	 Utility.beep();
+        	 alertHelper.beep();
         	 cbCategoryErrorMsg.setText("Please select expese category!");
         	 cbCategory.requestFocus();
              valid = false;
@@ -195,7 +197,7 @@ public class ExpenseController implements TabContent {
         //Amount
         int amount = txtAmount.getText().trim().length();
         if (amount == 0) {
-	       	Utility.beep();
+        	alertHelper.beep();
 	       	txtAmountErrorMsg.setText("Please enter amount!");
 	       	txtAmount.requestFocus();
            valid = false;

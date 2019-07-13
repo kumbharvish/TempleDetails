@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 
 import com.billing.dto.MyStoreDetails;
 import com.billing.service.StoreDetailsService;
+import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
 import com.billing.utils.Utility;
@@ -16,7 +17,6 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Tab;
@@ -30,15 +30,22 @@ import javafx.stage.Stage;
  *
  * @author Vishal
  */
+@SuppressWarnings("restriction")
 @Controller
 public class StoreDetailsController implements TabContent {
 	
 	@Autowired
 	StoreDetailsService myStoreService;
+	
+	@Autowired
+	AlertHelper alertHelper;
+	
+	@Autowired
+	AppUtils appUtils;
 
 	private static final Logger logger = LoggerFactory.getLogger(StoreDetailsController.class);
 
-	public Stage MainWindow = null;
+	public Stage currentStage = null;
 
 	private TabPane tabPane = null;
 
@@ -101,7 +108,7 @@ public class StoreDetailsController implements TabContent {
 	private void onCloseCommand(ActionEvent event) {
 
 		if (isDirty.get()) {
-			ButtonType buttonType = AppUtils.shouldSaveUnsavedData(MainWindow);
+			ButtonType buttonType = appUtils.shouldSaveUnsavedData(currentStage);
 			if (buttonType == ButtonType.CANCEL) {
 				return; // no need to take any further action
 			} else if (buttonType == ButtonType.YES) {
@@ -158,7 +165,7 @@ public class StoreDetailsController implements TabContent {
 	public boolean shouldClose() {
 
 		if (isDirty.get()) {
-			ButtonType response = AppUtils.shouldSaveUnsavedData(MainWindow);
+			ButtonType response = appUtils.shouldSaveUnsavedData(currentStage);
 			if (response == ButtonType.CANCEL) {
 				return false;
 			}
@@ -199,12 +206,9 @@ public class StoreDetailsController implements TabContent {
 		boolean isSuccess = myStoreService.updateStoreDetails(myStoreDetails);
 
 		if (isSuccess) {
-			AppUtils.showInfoAlert(MainWindow, "Details saved successfully !", "Information");
+			alertHelper.showInfoAlert(currentStage,"Information",null, "Details saved successfully !");
 		} else {
-			String message = Utility.getDataSaveErrorText();
-			Utility.beep();
-			Alert alert = Utility.getErrorAlert("Error Occurred", "Error in Saving Data", message, MainWindow);
-			alert.showAndWait();
+			alertHelper.showDataSaveErrAlert(currentStage);
 			return false;
 		}
 		return true;
@@ -221,13 +225,13 @@ public class StoreDetailsController implements TabContent {
 
 		int nameLength = txtStoreName.getText().trim().length();
 		if (nameLength == 0) {
-			Utility.beep();
+			alertHelper.beep();
 			txtStoreNameErrorMsg.setText("Store name not specified!");
 			txtStoreName.requestFocus();
 			valid = false;
 		} else if (nameLength < 3 || nameLength > 35) {
 			txtStoreNameErrorMsg.setText("Store name should be between 3 and 35 characters in length.");
-			Utility.beep();
+			alertHelper.beep();
 			txtStoreName.requestFocus();
 			valid = false;
 		} else {
@@ -236,12 +240,12 @@ public class StoreDetailsController implements TabContent {
 
 		int cityLength = txtCity.getText().trim().length();
 		if (cityLength == 0) {
-			Utility.beep();
+			alertHelper.beep();
 			txtCityErrorMsg.setText("City not specified!");
 			txtCity.requestFocus();
 			valid = false;
 		} else if (cityLength < 3 || cityLength > 20) {
-			Utility.beep();
+			alertHelper.beep();
 			txtCityErrorMsg.setText("City should be between 3 and 20 characters in length.");
 			txtCity.requestFocus();
 			valid = false;
@@ -258,10 +262,7 @@ public class StoreDetailsController implements TabContent {
 		try {
 			myStoreDetails = myStoreService.getMyStoreDetails();
 		} catch (Exception e) {
-			String message = Utility.getDataFetchErrorText();
-			Alert alert = Utility.getErrorAlert("Error Occurred", "Error in Fetching Data", message, MainWindow);
-			Utility.beep();
-			alert.showAndWait();
+			alertHelper.showDataFetchErrAlert(currentStage);
 			logger.error("StoreDetailsController loadData -->", e);
 			return false;
 		}
@@ -295,7 +296,7 @@ public class StoreDetailsController implements TabContent {
 
 	@Override
 	public void setMainWindow(Stage stage) {
-		MainWindow = stage;
+		currentStage = stage;
 	}
 
 	@Override

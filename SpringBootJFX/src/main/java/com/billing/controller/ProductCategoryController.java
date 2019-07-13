@@ -6,9 +6,9 @@ import org.springframework.stereotype.Controller;
 
 import com.billing.dto.ProductCategory;
 import com.billing.service.ProductCategoryService;
+import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
-import com.billing.utils.Utility;
 
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
@@ -27,11 +27,18 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+@SuppressWarnings("restriction")
 @Controller
 public class ProductCategoryController implements TabContent{
 	
 	@Autowired
 	ProductCategoryService productCategoryService;
+	
+	@Autowired
+	AlertHelper alertHelper;
+	
+	@Autowired
+	AppUtils appUtils;
 
 	public Stage MainWindow = null;
     
@@ -75,7 +82,7 @@ public class ProductCategoryController implements TabContent{
 	@Override
 	public boolean shouldClose() {
 		if (isDirty.get()) {
-            ButtonType response = AppUtils.shouldSaveUnsavedData(MainWindow);
+            ButtonType response = appUtils.shouldSaveUnsavedData(MainWindow);
             if (response == ButtonType.CANCEL) {
                 return false;
             }
@@ -151,7 +158,7 @@ public class ProductCategoryController implements TabContent{
         // Category
         int category = txtCategoryName.getText().trim().length();
         if (category == 0) {
-        	 Utility.beep();
+        	alertHelper.beep();
         	 txtCategoryNameErrorMsg.setText("Please enter category name!");
         	 txtCategoryName.requestFocus();
              valid = false;

@@ -8,16 +8,15 @@ import org.springframework.stereotype.Controller;
 import com.billing.dto.MailConfigDTO;
 import com.billing.dto.StatusDTO;
 import com.billing.service.MailConfigurationService;
+import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
-import com.billing.utils.Utility;
 
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.PasswordField;
@@ -29,15 +28,22 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+@SuppressWarnings("restriction")
 @Controller
 public class BackupMailSettingsController implements TabContent {
 
 	@Autowired
 	MailConfigurationService mailConfigurationService;
 
+	@Autowired
+	AppUtils appUtils;
+
+	@Autowired
+	AlertHelper alertHelper;
+
 	private static final Logger logger = LoggerFactory.getLogger(BackupMailSettingsController.class);
 
-	public Stage MainWindow = null;
+	public Stage currentStage = null;
 
 	private TabPane tabPane = null;
 
@@ -89,7 +95,7 @@ public class BackupMailSettingsController implements TabContent {
 	@FXML
 	void onCloseCommand(ActionEvent event) {
 		if (isDirty.get()) {
-			ButtonType buttonType = AppUtils.shouldSaveUnsavedData(MainWindow);
+			ButtonType buttonType = appUtils.shouldSaveUnsavedData(currentStage);
 			if (buttonType == ButtonType.CANCEL) {
 				return; // no need to take any further action
 			} else if (buttonType == ButtonType.YES) {
@@ -123,13 +129,13 @@ public class BackupMailSettingsController implements TabContent {
 
 		int fromMailIdLength = txtFromMailId.getText().trim().length();
 		if (fromMailIdLength == 0) {
-			Utility.beep();
+			alertHelper.beep();
 			txtFromMailIdErrorMsg.setText("From Mail Id not specified!");
 			txtFromMailId.requestFocus();
 			valid = false;
 		} else if (!txtFromMailId.getText().contains("@gmail.com")) {
 			txtFromMailIdErrorMsg.setText("Not valid Gmail Id !");
-			Utility.beep();
+			alertHelper.beep();
 			txtFromMailId.requestFocus();
 			valid = false;
 		} else {
@@ -138,7 +144,7 @@ public class BackupMailSettingsController implements TabContent {
 
 		int passworLength = txtPassword.getText().trim().length();
 		if (passworLength == 0) {
-			Utility.beep();
+			alertHelper.beep();
 			txtPasswordErrorMsg.setText("Password not specified!");
 			txtPassword.requestFocus();
 			valid = false;
@@ -148,13 +154,13 @@ public class BackupMailSettingsController implements TabContent {
 
 		int toMailIdLength = txtToMailId.getText().trim().length();
 		if (toMailIdLength == 0) {
-			Utility.beep();
+			alertHelper.beep();
 			txtToMailIdErrorMsg.setText("To Mail Id not specified!");
 			txtToMailId.requestFocus();
 			valid = false;
 		} else if (!txtToMailId.getText().contains("@")) {
 			txtToMailIdErrorMsg.setText("Not valid email Id !");
-			Utility.beep();
+			alertHelper.beep();
 			txtToMailId.requestFocus();
 			valid = false;
 		} else {
@@ -163,12 +169,12 @@ public class BackupMailSettingsController implements TabContent {
 
 		int subjectLength = txtSubject.getText().trim().length();
 		if (subjectLength == 0) {
-			Utility.beep();
+			alertHelper.beep();
 			txtSubjectErrorMsg.setText("Subject not specified!");
 			txtSubject.requestFocus();
 			valid = false;
 		} else if (subjectLength < 3 || subjectLength > 20) {
-			Utility.beep();
+			alertHelper.beep();
 			txtSubjectErrorMsg.setText("Subject should be between 3 and 20 characters in length.");
 			txtSubject.requestFocus();
 			valid = false;
@@ -181,7 +187,7 @@ public class BackupMailSettingsController implements TabContent {
 
 	@Override
 	public void setMainWindow(Stage stage) {
-		MainWindow = stage;
+		currentStage = stage;
 	}
 
 	@Override
@@ -230,7 +236,7 @@ public class BackupMailSettingsController implements TabContent {
 	@Override
 	public boolean shouldClose() {
 		if (isDirty.get()) {
-			ButtonType response = AppUtils.shouldSaveUnsavedData(MainWindow);
+			ButtonType response = appUtils.shouldSaveUnsavedData(currentStage);
 			if (response == ButtonType.CANCEL) {
 				return false;
 			}
@@ -268,12 +274,9 @@ public class BackupMailSettingsController implements TabContent {
 		StatusDTO status = mailConfigurationService.updateMailConfig(mail);
 
 		if (status.getStatusCode() == 0) {
-			AppUtils.showInfoAlert(MainWindow, "Settings saved successfully !", "Information");
+			alertHelper.showInfoAlert(currentStage, "Information", null, "Settings saved successfully !");
 		} else {
-			String message = Utility.getDataSaveErrorText();
-			Utility.beep();
-			Alert alert = Utility.getErrorAlert("Error Occurred", "Error in Saving Data", message, MainWindow);
-			alert.showAndWait();
+			alertHelper.showDataSaveErrAlert(currentStage);
 			return false;
 		}
 		return true;
@@ -291,10 +294,7 @@ public class BackupMailSettingsController implements TabContent {
 		try {
 			mail = mailConfigurationService.getMailConfig();
 		} catch (Exception e) {
-			String message = Utility.getDataFetchErrorText();
-			Alert alert = Utility.getErrorAlert("Error Occurred", "Error in Fetching Data", message, MainWindow);
-			Utility.beep();
-			alert.showAndWait();
+			alertHelper.showDataFetchErrAlert(currentStage);
 			logger.error("BackupMailSettingsController loadData -->", e);
 			return false;
 		}

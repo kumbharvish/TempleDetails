@@ -56,24 +56,6 @@ public abstract class Utility {
         }
     }
 
-    public static Alert getErrorAlert(String title, String header,
-            String content, Stage ownerWindow) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        if (header != null) {
-            alert.setHeaderText(header);
-        }
-        alert.setContentText(content);
-        if (ownerWindow != null) {
-            alert.initOwner(ownerWindow);
-        }
-        Global.styleAlertDialog(alert);
-        return alert;
-    }
-
-    public static void beep() {
-        Toolkit.getDefaultToolkit().beep();
-    }
 
     public static byte[] getFileBytes(File file) throws FileNotFoundException,
             IOException {
@@ -92,18 +74,6 @@ public abstract class Utility {
         }
 
         return outstream.toByteArray();
-    }
-
-    public static String getDataSaveErrorText() {
-        return "An error occurred in saving the data to the database.\n"
-                + "The error has been logged and will be reviewed to fix it.\n"
-                + "We regret the inconvenience caused.";
-    }
-
-    public static String getDataFetchErrorText() {
-        return "An error occurred in fetching the data from the database.\n"
-                + "The error has been logged and will be reviewed to fix it.\n"
-                + "We regret the inconvenience caused.";
     }
 
     public static StringConverter<LocalDate> getDateStringConverter() {

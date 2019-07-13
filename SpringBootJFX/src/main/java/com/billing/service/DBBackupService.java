@@ -1,7 +1,6 @@
 package com.billing.service;
 
 import java.text.SimpleDateFormat;
-
 import java.util.Date;
 
 import org.slf4j.Logger;
@@ -13,11 +12,13 @@ import org.springframework.stereotype.Service;
 import com.billing.constants.AppConstants;
 import com.billing.dto.MailConfigDTO;
 import com.billing.dto.StatusDTO;
+import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 import com.billing.utils.EmailAttachmentSender;
 
 import javafx.stage.Stage;
 
+@SuppressWarnings("restriction")
 @Service
 public class DBBackupService {
 
@@ -26,7 +27,10 @@ public class DBBackupService {
 
 	@Autowired
 	AppUtils appUtils;
-	
+
+	@Autowired
+	AlertHelper alertHelper;
+
 	@Autowired
 	MailConfigurationService mailConfigurationService;
 
@@ -41,7 +45,7 @@ public class DBBackupService {
 			String folderLocation = appUtils.getAppDataValues("MYSTORE_HOME").get(0) + AppConstants.DATA_BACKUP_FOLDER;
 			String mySqlHome = appUtils.getAppDataValues("MYSQL_HOME").get(0);
 			logger.error(" -- mySqlHome :: " + mySqlHome);
-			String fileName = "\\\\DataBackup_" + sdf.format(currentDate)+"_"+System.currentTimeMillis()+ ".sql";
+			String fileName = "\\\\DataBackup_" + sdf.format(currentDate) + "_" + System.currentTimeMillis() + ".sql";
 			String executeCmd = mySqlHome + "\\\\bin\\\\mysqldump -u root -ppassword " + dbSchema + " -r "
 					+ folderLocation + fileName;
 			/* NOTE: Executing the command here */
@@ -56,13 +60,13 @@ public class DBBackupService {
 			 */
 			if (processComplete == 0) {
 			} else {
-				AppUtils.showWarningAlert(null, "Data Backup Failed !", "Data Backup");
+				alertHelper.showWarningAlert(null, "Data Backup", null, "Data Backup Failed !");
 			}
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("Data Backup Exception-->", ex);
-			AppUtils.showWarningAlert(null, "Data Backup Failed !", "Data Backup");
+			alertHelper.showWarningAlert(null, "Data Backup", null, "Data Backup Failed !");
 		}
 	}
 
@@ -77,7 +81,7 @@ public class DBBackupService {
 			String folderLocation = appUtils.getAppDataValues("MYSTORE_HOME").get(0) + AppConstants.DATA_BACKUP_FOLDER;
 			String mySqlHome = appUtils.getAppDataValues("MYSQL_HOME").get(0);
 			logger.error("mySqlHome : " + mySqlHome);
-			String fileName = "\\\\DataBackup_" + sdf.format(currentDate)+"_"+System.currentTimeMillis() + ".sql";
+			String fileName = "\\\\DataBackup_" + sdf.format(currentDate) + "_" + System.currentTimeMillis() + ".sql";
 			String executeCmd = mySqlHome + "\\\\bin\\\\mysqldump -u root -ppassword " + dbSchema + " -r "
 					+ folderLocation + fileName;
 			/* NOTE: Executing the command here */
@@ -94,29 +98,29 @@ public class DBBackupService {
 				if ("Y".equals(mail.getIsEnabled())) {
 					StatusDTO status = EmailAttachmentSender.sendEmailWithAttachments(mail, folderLocation + fileName);
 					if (0 == status.getStatusCode()) {
-						AppUtils.showWarningAlert(stage, "Data Backup Successfully Completed !", "Data Backup Mail");
+						alertHelper.showInfoAlert(stage, "Data Backup Mail", null,
+								"Data Backup Successfully Completed !");
 					} else {
 						if (status.getException().contains("Unknown SMTP host")) {
-							AppUtils.showWarningAlert(stage, "Please check your Internet Connection !",
-									"Mail Send Error");
+							alertHelper.showWarningAlert(stage, "Mail Send Error", null,
+									"Please check your Internet Connection !");
 						}
 						if (status.getException().contains("AuthFail")) {
-							AppUtils.showWarningAlert(stage,
-									"Your Mail From Id or Password is incorrect. Please check Mail Configurations !",
-									"Mail Send Error");
+							alertHelper.showWarningAlert(stage, "Mail Send Error", null,
+									"Your Mail From Id or Password is incorrect. Please check Mail Configurations !");
 						}
 					}
 				} else {
-					AppUtils.showWarningAlert(stage, "Data Backup Successfully Completed !", "Data Backup");
+					alertHelper.showInfoAlert(stage,"Data Backup",null, "Data Backup Successfully Completed !");
 				}
 			} else {
-				AppUtils.showWarningAlert(stage, "Data Backup Failed !", "Data Backup");
+				alertHelper.showErrorAlert(stage, "Data Backup", null,"Data Backup Failed !");
 			}
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("Data Backup Exception--> ", ex);
-			AppUtils.showWarningAlert(stage, "Data Backup Failed !", "Data Backup");
+			alertHelper.showErrorAlert(stage, "Data Backup",null,"Data Backup Failed !");
 		}
 	}
 

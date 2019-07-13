@@ -37,7 +37,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.billing.constants.AppConstants;
-import com.billing.main.Global;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -45,21 +44,24 @@ import javafx.stage.Stage;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
+@SuppressWarnings("restriction")
 @Component
 public class AppUtils {
-	
+
 	@Autowired
 	DBUtils dbUtils;
-	
+
+	@Autowired
+	AlertHelper alertHelper;
+
 	private static final String PDF_CONST = "SLAES";
-    private static final String PDF_RANDOM = "Invoice1Hbfh667adfDEJ78";
-    private static final int LICENSE_EXPIRY_LIMIT =15;
-	
-	private static final String APP_DATA = "SELECT VALUE_STRING FROM "
-			+ "APP_DATA WHERE DATA_NAME=?";
+	private static final String PDF_RANDOM = "Invoice1Hbfh667adfDEJ78";
+	private static final int LICENSE_EXPIRY_LIMIT = 15;
+
+	private static final String APP_DATA = "SELECT VALUE_STRING FROM " + "APP_DATA WHERE DATA_NAME=?";
 
 	static final Logger logger = LoggerFactory.getLogger(AppUtils.class);
-	
+
 	public static int getRecordsCount(ResultSet resultset) throws SQLException {
 		if (resultset.last()) {
 			return resultset.getRow();
@@ -79,11 +81,12 @@ public class AppUtils {
 		return flag;
 
 	}
+
 	public static boolean isMandatorySelected(JComboBox jCombox) {
 
 		boolean flag = false;
 
-		if (jCombox.getSelectedIndex()==0)
+		if (jCombox.getSelectedIndex() == 0)
 			flag = false;
 		else
 			flag = true;
@@ -107,11 +110,11 @@ public class AppUtils {
 				dataList.add(rs.getString("VALUE_STRING"));
 			}
 			rs.close();
-			if(dataList.isEmpty()) {
-				logger.info("--- ## App Data Configuration Missing for Key ## --- :: "+dataName);
+			if (dataList.isEmpty()) {
+				logger.info("--- ## App Data Configuration Missing for Key ## --- :: " + dataName);
 			}
 		} catch (Exception e) {
-			logger.error("Get App Data Values :"+e);
+			logger.error("Get App Data Values :" + e);
 			e.printStackTrace();
 		} finally {
 			DBUtils.closeConnection(stmt, conn);
@@ -128,16 +131,14 @@ public class AppUtils {
 	public static int getRandomCode() {
 		int min = 10000;
 		int max = 99999;
-		int randonCode = (int) Math.floor(Math.random() * (max - min + 1))
-				+ min;
+		int randonCode = (int) Math.floor(Math.random() * (max - min + 1)) + min;
 		return randonCode;
 	}
 
 	public static long getBarcode() {
 		long min = 700000000000L;
 		long max = 799999999999L;
-		long randonCode = (long) Math.floor(Math.random() * (max - min + 1))
-				+ min;
+		long randonCode = (long) Math.floor(Math.random() * (max - min + 1)) + min;
 		return randonCode;
 	}
 
@@ -148,7 +149,7 @@ public class AppUtils {
 			return Double.valueOf(df.format(value));
 		return 0.0;
 	}
-	
+
 	public static double getDecimalRoundUp2Decimal(Double value) {
 		DecimalFormat df = new DecimalFormat("#0.00");
 		df.setRoundingMode(RoundingMode.HALF_UP);
@@ -163,13 +164,13 @@ public class AppUtils {
 			return df.format(value);
 		return "0.00";
 	}
-	
-	/*public static String getAmountFormat(Double value) {
-		com.ibm.icu.text.DecimalFormat df = new com.ibm.icu.text.DecimalFormat("##,##,##0.00");
-		if (value != null)
-			return df.format(value);
-		return "0.00";
-	}*/
+
+	/*
+	 * public static String getAmountFormat(Double value) {
+	 * com.ibm.icu.text.DecimalFormat df = new
+	 * com.ibm.icu.text.DecimalFormat("##,##,##0.00"); if (value != null) return
+	 * df.format(value); return "0.00"; }
+	 */
 
 	public static void removeItemFromList(List<Integer> list, Integer removeItem) {
 		Iterator<Integer> it = list.iterator();
@@ -181,7 +182,8 @@ public class AppUtils {
 
 		}
 	}
-	//OverLoaded
+
+	// OverLoaded
 	public static void removeItemFromList(List<String> list, String removeItem) {
 		Iterator<String> it = list.iterator();
 
@@ -197,17 +199,17 @@ public class AppUtils {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		return sdf.format(dt);
 	}
-	
+
 	public static String getFormattedDateWithTime(Date dt) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
 		return sdf.format(dt);
 	}
-	
+
 	public static Date getFormattedDate(String dt) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		Date date = null;
 		try {
-			date =  sdf.parse(dt);
+			date = sdf.parse(dt);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -219,8 +221,7 @@ public class AppUtils {
 		Cipher cipher = Cipher.getInstance(AppUtils.PDF_CONST.substring(2));
 		cipher.init(Cipher.ENCRYPT_MODE, params);
 		byte[] encryptedByteValue = cipher.doFinal(value.getBytes("utf-8"));
-		String encryptedValue64 = new BASE64Encoder()
-				.encode(encryptedByteValue);
+		String encryptedValue64 = new BASE64Encoder().encode(encryptedByteValue);
 		return encryptedValue64;
 
 	}
@@ -241,134 +242,93 @@ public class AppUtils {
 		return params;
 	}
 
-	public static void openWindowsDocument(String filePath){
+	public static void openWindowsDocument(String filePath) {
 		try {
 			if ((new File(filePath)).exists()) {
-				Process p = Runtime
-				   .getRuntime()
-				   .exec("rundll32 url.dll,FileProtocolHandler "+filePath);
+				Process p = Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + filePath);
 				p.waitFor();
 			} else {
-				logger.error("openWindowsDocument File does not exists: "+filePath);
+				logger.error("openWindowsDocument File does not exists: " + filePath);
 			}
-	  	  } catch (Exception ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
-			logger.error("openWindowsDocument Exception: ",ex);
-		  }
-		
+			logger.error("openWindowsDocument Exception: ", ex);
+		}
+
 	}
-	public static void setTableRowHeight(JTable table){
-		//Table Row Height 
-		 table.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		 table.setRowHeight(20);
-		 //Header
-		 JTableHeader header = table.getTableHeader();
-		 header.setFont(new Font("Dialog", Font.BOLD, 12));
-		 header.setBackground(Color.GRAY);
-		 header.setForeground(Color.WHITE);
+
+	public static void setTableRowHeight(JTable table) {
+		// Table Row Height
+		table.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		table.setRowHeight(20);
+		// Header
+		JTableHeader header = table.getTableHeader();
+		header.setFont(new Font("Dialog", Font.BOLD, 12));
+		header.setBackground(Color.GRAY);
+		header.setForeground(Color.WHITE);
 	}
-	
-	public static ImageIcon resizeImage( byte[] imgPath,JLabel label){
-        ImageIcon MyImage = new ImageIcon(imgPath);
-        Image img = MyImage.getImage();
-        Image newImage = img.getScaledInstance(label.getWidth(), label.getHeight(),Image.SCALE_SMOOTH);
-        ImageIcon image = new ImageIcon(newImage);
-        return image;
-    }
-	
+
+	public static ImageIcon resizeImage(byte[] imgPath, JLabel label) {
+		ImageIcon MyImage = new ImageIcon(imgPath);
+		Image img = MyImage.getImage();
+		Image newImage = img.getScaledInstance(label.getWidth(), label.getHeight(), Image.SCALE_SMOOTH);
+		ImageIcon image = new ImageIcon(newImage);
+		return image;
+	}
+
 	public void licenseExpiryAlert(Container panel) {
 		try {
-			String licenseDateStr =dec(getAppDataValues("APP_SECURE_KEY").get(0));
+			String licenseDateStr = dec(getAppDataValues("APP_SECURE_KEY").get(0));
 			SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
 			Date licenseDate = sdf.parse(licenseDateStr);
 			Date currentDate = new Date();
-			long diff = getDifferenceDays(currentDate,licenseDate);
-			System.out.println("Days Difference : "+diff);
-			if(diff<=15) {
-				JOptionPane.showMessageDialog(panel,"Your license expires in "+diff+" days. Kindly renew your license.","Renew License",JOptionPane.WARNING_MESSAGE);
+			long diff = getDifferenceDays(currentDate, licenseDate);
+			System.out.println("Days Difference : " + diff);
+			if (diff <= 15) {
+				JOptionPane.showMessageDialog(panel,
+						"Your license expires in " + diff + " days. Kindly renew your license.", "Renew License",
+						JOptionPane.WARNING_MESSAGE);
 			}
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-			logger.error("licenseExpiryAlert :",e);
+			logger.error("licenseExpiryAlert :", e);
 		}
 	}
-	
+
 	public static long getDifferenceDays(Date d1, Date d2) {
-	    long diff = d2.getTime() - d1.getTime();
-	    return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+		long diff = d2.getTime() - d1.getTime();
+		return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 	}
-	
-	//JFX Methods
-	public static void showInfoAlert(Stage stage,String promptMessage, String title) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setHeaderText(null);
-            alert.setTitle(title);
-            alert.setContentText(promptMessage);
-            alert.initOwner(stage);
-             Global.styleAlertDialog(alert);
-             alert.showAndWait();
-             
-     }
-	
-	public static void showWarningAlert(Stage stage,String promptMessage, String title) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setHeaderText(null);
-        alert.setTitle(title);
-        alert.setContentText(promptMessage);
-        alert.initOwner(stage);
-         Global.styleAlertDialog(alert);
-         alert.showAndWait();
-	}
-	
-	public static void showConfirmAlert(Stage stage,String promptMessage, String title) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setHeaderText(null);
-        alert.setTitle(title);
-        alert.setContentText(promptMessage);
-        alert.initOwner(stage);
-         Global.styleAlertDialog(alert);
-         alert.showAndWait();
-	}
-	
+
 	public void licenseExpiryAlert() {
 		try {
-			String licenseDateStr =dec(getAppDataValues("APP_SECURE_KEY").get(0));
+			String licenseDateStr = dec(getAppDataValues("APP_SECURE_KEY").get(0));
 			SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
 			Date licenseDate = sdf.parse(licenseDateStr);
 			Date currentDate = new Date();
-			long diff = getDifferenceDays(currentDate,licenseDate);
-			if(diff<=LICENSE_EXPIRY_LIMIT) {
-				Alert alert = new Alert(Alert.AlertType.WARNING);
-		        alert.setHeaderText(null);
-		        alert.setTitle(AppConstants.RENEW_LICENESE);
-		        alert.setContentText("Your license expires in "+diff+" days. Kindly renew your license!");
-		        alert.initOwner(null);
-		         Global.styleAlertDialog(alert);
-		         alert.showAndWait();
+			long diff = getDifferenceDays(currentDate, licenseDate);
+			if (diff <= LICENSE_EXPIRY_LIMIT) {
+				alertHelper.showWarningAlert(null, AppConstants.RENEW_LICENESE, null,
+						"Your license expires in " + diff + " days. Kindly renew your license!");
 			}
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-			logger.error("licenseExpiryAlert :",e);
+			logger.error("licenseExpiryAlert :", e);
 		}
 	}
-	
-	public static ButtonType shouldSaveUnsavedData(Stage stage) {
-        
-        final String promptMessage = "The details are not saved.\n"
-                   + "Save the data before closing the tab?";
-           Alert alert = new Alert(Alert.AlertType.CONFIRMATION, promptMessage,
-            ButtonType.YES, ButtonType.NO, ButtonType.CANCEL );
-           alert.setHeaderText("Unsaved Details. Save now?");
-           alert.setTitle("Unsaved Details");
-           alert.initOwner(stage);
-            Global.styleAlertDialog(alert);
 
-           Optional<ButtonType> result = alert.showAndWait();
-           if (! result.isPresent()) {
-               return ButtonType.CANCEL;
-           }
+	public ButtonType shouldSaveUnsavedData(Stage stage) {
 
-           return result.get();
-    }
-	
+		final String contextText = "The details are not saved.\n" + "Save the data before closing the tab?";
+		Alert alert = alertHelper.showConfirmAlertWithYesNo(stage, "Unsaved Details", "Unsaved Details. Save now?",
+				contextText);
+
+		Optional<ButtonType> result = alert.showAndWait();
+		if (!result.isPresent()) {
+			return ButtonType.CANCEL;
+		}
+
+		return result.get();
+	}
+
 }

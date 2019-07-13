@@ -2,7 +2,6 @@ package com.billing.main;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -13,6 +12,7 @@ import com.billing.controller.LoginController;
 import com.billing.properties.AppProperties;
 import com.billing.service.AppLicenseService;
 import com.billing.service.DBBackupService;
+import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 
 import javafx.application.Application;
@@ -33,6 +33,7 @@ public class MyStoreApplication extends Application {
 	
 	private FXMLLoader fxmlLoader;
 	
+	
 	public static void main(String[] args) {
 		launch();
 	}
@@ -52,17 +53,18 @@ public class MyStoreApplication extends Application {
 	private void showLoginStage(Stage initStage) {
 		AppProperties appProperties = (AppProperties)springContext.getBean(AppProperties.class);
 		AppLicenseService appLicenseService = (AppLicenseService)springContext.getBean(AppLicenseService.class);
+		AlertHelper alertHelper = (AlertHelper)springContext.getBean(AlertHelper.class);
 		try {
 			if (!appProperties.check()) {
-				AppUtils.showWarningAlert(null, AppConstants.LICENSE_ERROR_1, AppConstants.LICENSE_ERROR);
+				alertHelper.showWarningAlert(null,AppConstants.LICENSE_ERROR,null,AppConstants.LICENSE_ERROR_1);
 				System.exit(0);
 			} else {
 				if (appLicenseService.change()) {
-					AppUtils.showWarningAlert(null, AppConstants.COMP_DATE_ERROR, AppConstants.COMP_DATE);
+					alertHelper.showWarningAlert(null,AppConstants.COMP_DATE,null,AppConstants.COMP_DATE_ERROR);
 					System.exit(0);
 				} else {
 					if (!appProperties.doCheck()) {
-						AppUtils.showWarningAlert(null, AppConstants.LICENSE_ERROR_2, AppConstants.LICENSE_EXPIRED);
+						alertHelper.showWarningAlert(null,AppConstants.LICENSE_EXPIRED,null,AppConstants.LICENSE_ERROR_2);
 						System.exit(0);
 					} else {
 						logger.error(" --- Application Check Complete and Started --- ");

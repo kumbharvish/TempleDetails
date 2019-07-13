@@ -551,13 +551,6 @@ public abstract class Global {
 //         
 //     }
      
-     public static void styleAlertDialog(final Alert alert) {
-        final String styleSheetPath = "/css/alertDialog.css";
-        final DialogPane dialogPane = alert.getDialogPane();
-        dialogPane.getStylesheets().add(
-                Global.class.getResource(styleSheetPath).toExternalForm());
-     }
-     
       public static void setStageDefaultDimensions(final Stage stage) {
         final WindowState defaultWindowState = Global.getDefaultWindowState();
         stage.setWidth(defaultWindowState.getWidth());
