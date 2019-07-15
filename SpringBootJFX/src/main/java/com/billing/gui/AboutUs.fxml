@@ -12,15 +12,15 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<HBox alignment="TOP_CENTER" fillHeight="false" styleClass="rootNode" stylesheets="@../../../../resources/stylesheets/about.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.AboutController">
+<HBox alignment="TOP_CENTER" fillHeight="false" styleClass="rootNode" stylesheets="@../../../css/aboutus.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.AboutUsController">
    <children>
       <VBox fx:id="contentHolder" spacing="30.0">
          <children>
-            <HBox spacing="30.0" stylesheets="@../../../../resources/stylesheets/about.css">
+            <HBox spacing="30.0">
                <children>
                   <ImageView pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../resources/images/shop64X64.png" />
+                        <Image url="@../../../images/shop64X64.png" />
                      </image></ImageView>
                   <VBox spacing="5.0">
                      <children>

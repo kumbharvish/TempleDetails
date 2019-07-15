@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<HBox alignment="TOP_CENTER" fillHeight="false" styleClass="rootNode" stylesheets="@../../../../resources/stylesheets/storedetails.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.StoreDetailsController">
+<HBox alignment="TOP_CENTER" fillHeight="false" styleClass="rootNode" stylesheets="@../../../css/storedetails.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.StoreDetailsController">
    <children>
       <GridPane fx:id="gridPane" hgap="20.0" vgap="15.0">
         <children>

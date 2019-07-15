@@ -120,7 +120,7 @@ public class LoginController extends AppContext{
 				        Stage stage = new Stage();
 				        stage.setScene(scene);
 				        HomeController homeController = fxmlLoader.getController();
-				        homeController.MainWindow = stage;
+				        homeController.currentStage = stage;
 				        homeController.userDetails = userDetails;
 				        stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop32X32.png")));
 				        stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop48X48.png")));

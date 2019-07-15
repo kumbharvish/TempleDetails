@@ -1,9 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.billing.controller;
+
+import org.springframework.stereotype.Controller;
 
 import com.billing.utils.TabContent;
 
@@ -17,15 +14,10 @@ import javafx.scene.control.TabPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-/**
- * FXML Controller class
- *
- * @author Vishal
- */
-public class AboutController implements TabContent {
+@SuppressWarnings("restriction")
+@Controller
+public class AboutUsController implements TabContent {
 
-    private Stage mainWindow;
-    
     private TabPane tabPane;
     
     private double version = 1.0;
@@ -38,7 +30,7 @@ public class AboutController implements TabContent {
     
     private static final String MY_STORE ="My Store Billing";
     
-    private static final String COPYRIGHT ="Copyright � 2017";
+    private static final String COPYRIGHT ="Copyright "+"\u00a9"+" 2017";
     
     @FXML
     private Text txtTitle;
@@ -79,7 +71,6 @@ public class AboutController implements TabContent {
 
     @Override
     public void setMainWindow(Stage stage) {
-        mainWindow = stage;
     }
 
     @Override

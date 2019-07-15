@@ -68,7 +68,7 @@ public class HomeController extends AppContext {
 	@Autowired
 	DBScheduledDumpTask dbScheduledDumpTask;
 
-	public Stage MainWindow = null;
+	public Stage currentStage = null;
 
 	public UserDetails userDetails = null;
 
@@ -234,8 +234,6 @@ public class HomeController extends AppContext {
 	@FXML
 	private TabPane tabPane;
 
-	private FXMLLoader fxmlLoader;
-
 	public void initialize() {
 		tabPane.getSelectionModel().selectedItemProperty()
 				.addListener((ObservableValue<? extends Tab> observable, Tab oldValue, Tab newValue) -> {
@@ -253,8 +251,6 @@ public class HomeController extends AppContext {
 		appUtils.licenseExpiryAlert();
 		// Start Scheduled DB Dump task
 		startScheduledDBDumpTask();
-		fxmlLoader = new FXMLLoader();
-		fxmlLoader.setControllerFactory(springContext::getBean);
 	}
 
 	private void startScheduledDBDumpTask() {
@@ -267,7 +263,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onAboutUsCommand(ActionEvent event) {
-		addTab("About", "About");
+		addTab("AboutUs", "About");
 	}
 
 	@FXML
@@ -339,12 +335,12 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onDataBackupCommand(ActionEvent event) {
-		dbBackupService.createDBDumpSendOnMail(MainWindow);
+		dbBackupService.createDBDumpSendOnMail(currentStage);
 	}
 
 	@FXML
 	private void onExitCommand(ActionEvent event) {
-		MainWindow.fireEvent(new WindowEvent(MainWindow, WindowEvent.WINDOW_CLOSE_REQUEST));
+		currentStage.fireEvent(new WindowEvent(currentStage, WindowEvent.WINDOW_CLOSE_REQUEST));
 	}
 
 	@FXML
@@ -542,6 +538,8 @@ public class HomeController extends AppContext {
 		final String viewPath = "/com/billing/gui/" + fxmlFileName + ".fxml";
 
 		URL resource = this.getClass().getResource(viewPath);
+		FXMLLoader fxmlLoader = new FXMLLoader();
+		fxmlLoader.setControllerFactory(springContext::getBean);
 		fxmlLoader.setLocation(resource);
 		Parent rootPane = null;
 		try {
@@ -551,14 +549,14 @@ public class HomeController extends AppContext {
 			logger.error("HomeController addTab Error in loading the view file :" + fxmlFileName, e);
 			alertHelper.beep();
 
-			alertHelper.showErrorAlert(MainWindow, "Error Occurred", "Error in creating user interface",
+			alertHelper.showErrorAlert(currentStage, "Error Occurred", "Error in creating user interface",
 					"An error occurred in creating user interface " + "for the selected command");
 
 			return;
 		}
 
 		final TabContent controller = (TabContent) fxmlLoader.getController();
-		controller.setMainWindow(MainWindow);
+		controller.setMainWindow(currentStage);
 		controller.setTabPane(tabPane);
 
 		if (!controller.loadData()) {
