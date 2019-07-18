@@ -56,15 +56,15 @@ public class MyStoreApplication extends Application {
 		AlertHelper alertHelper = (AlertHelper)springContext.getBean(AlertHelper.class);
 		try {
 			if (!appProperties.check()) {
-				alertHelper.showWarningAlert(null,AppConstants.LICENSE_ERROR,null,AppConstants.LICENSE_ERROR_1);
+				alertHelper.showErrorAlert(null,AppConstants.LICENSE_ERROR,null,AppConstants.LICENSE_ERROR_1);
 				System.exit(0);
 			} else {
 				if (appLicenseService.change()) {
-					alertHelper.showWarningAlert(null,AppConstants.COMP_DATE,null,AppConstants.COMP_DATE_ERROR);
+					alertHelper.showErrorAlert(null,AppConstants.COMP_DATE,null,AppConstants.COMP_DATE_ERROR);
 					System.exit(0);
 				} else {
 					if (!appProperties.doCheck()) {
-						alertHelper.showWarningAlert(null,AppConstants.LICENSE_EXPIRED,null,AppConstants.LICENSE_ERROR_2);
+						alertHelper.showErrorAlert(null,AppConstants.LICENSE_EXPIRED,null,AppConstants.LICENSE_ERROR_2);
 						System.exit(0);
 					} else {
 						logger.error(" --- Application Check Complete and Started --- ");

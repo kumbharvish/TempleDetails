@@ -233,6 +233,9 @@ public class HomeController extends AppContext {
 
 	@FXML
 	private TabPane tabPane;
+	
+	@FXML
+    private Label lblLicenseValidUpto;
 
 	public void initialize() {
 		tabPane.getSelectionModel().selectedItemProperty()
@@ -249,6 +252,12 @@ public class HomeController extends AppContext {
 
 		toolBar.managedProperty().bind(toolBar.visibleProperty());
 		appUtils.licenseExpiryAlert();
+		try {
+			lblLicenseValidUpto.setText("License Valid Upto : "+AppUtils.dec(appUtils.getAppDataValues("APP_SECURE_KEY").get(0)));
+		}catch(Exception e) {
+			logger.error("lblLicenseValidUpto -->"+e);
+		}
+		
 		// Start Scheduled DB Dump task
 		startScheduledDBDumpTask();
 	}

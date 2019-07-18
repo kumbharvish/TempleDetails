@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.CheckMenuItem?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
@@ -14,7 +15,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane id="rootPane" stylesheets="@../../../css/home.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.HomeController">
+<BorderPane id="rootPane" stylesheets="@../../../css/home.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.HomeController">
    <top>
       <VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
          <children>
@@ -205,4 +206,25 @@
    <center>
       <TabPane fx:id="tabPane" BorderPane.alignment="CENTER" />
    </center>
+   <bottom>
+      <BorderPane BorderPane.alignment="CENTER">
+         <right>
+            <Label text="Contact No :  (+91) 8149880299" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets right="4.0" />
+               </BorderPane.margin>
+            </Label>
+         </right>
+         <left>
+            <Label text="Copyright © Kumbharvish@gmail.com" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets left="4.0" />
+               </BorderPane.margin>
+            </Label>
+         </left>
+         <center>
+            <Label id="lblLicenseValidUpto" fx:id="lblLicenseValidUpto" text="License Valid Upto :" BorderPane.alignment="CENTER" />
+         </center>
+      </BorderPane>
+   </bottom>
 </BorderPane>
