@@ -160,7 +160,7 @@ public class ExpenseController implements TabContent {
 		
 		StatusDTO status = expensesService.addExpense(expense);
 		if(status.getStatusCode()==0){
-    		alertHelper.showInfoAlert(currentStage, "Information", null,"Expense saved successfully !");
+    		alertHelper.showSuccessNotification("Expense saved successfully");
     	}else {
             alertHelper.showDataSaveErrAlert(currentStage);
             return false;
@@ -188,7 +188,7 @@ public class ExpenseController implements TabContent {
         int category = cbCategory.getSelectionModel().getSelectedIndex();
         if (category == 0) {
         	 alertHelper.beep();
-        	 cbCategoryErrorMsg.setText("Please select expese category!");
+        	 cbCategoryErrorMsg.setText("Please select expese category");
         	 cbCategory.requestFocus();
              valid = false;
         } else {
@@ -198,7 +198,7 @@ public class ExpenseController implements TabContent {
         int amount = txtAmount.getText().trim().length();
         if (amount == 0) {
         	alertHelper.beep();
-	       	txtAmountErrorMsg.setText("Please enter amount!");
+	       	txtAmountErrorMsg.setText("Please enter amount");
 	       	txtAmount.requestFocus();
            valid = false;
        } else {
@@ -206,7 +206,7 @@ public class ExpenseController implements TabContent {
        } 
         LocalDate startDate = dateExpense.getValue();
         if (startDate == null) {
-            dateExpenseErrorMsg.setText("Date not specified!");
+            dateExpenseErrorMsg.setText("Date not specified");
             valid = false;
         }else {
         	 dateExpenseErrorMsg.setText("");

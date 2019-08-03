@@ -36,6 +36,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -159,6 +160,9 @@ public class HomeController extends AppContext {
 
 	@FXML
 	private MenuItem cashCounterReportMenuItem;
+	
+	@FXML
+	private MenuItem expenseReportMenuItem;
 
 	@FXML
 	private MenuItem paymentModeWiseSalesMenuItem;
@@ -187,8 +191,9 @@ public class HomeController extends AppContext {
 	@FXML
 	private MenuItem userPreferencesMenuItem;
 
-	@FXML
-	private MenuItem databackupMailSettingsMenuItem;
+	/*
+	 * @FXML private MenuItem databackupMailSettingsMenuItem;
+	 */
 
 	@FXML
 	private MenuItem dataBackupMenuItem;
@@ -233,9 +238,9 @@ public class HomeController extends AppContext {
 
 	@FXML
 	private TabPane tabPane;
-	
+
 	@FXML
-    private Label lblLicenseValidUpto;
+	private Label lblLicenseValidUpto;
 
 	public void initialize() {
 		tabPane.getSelectionModel().selectedItemProperty()
@@ -253,11 +258,12 @@ public class HomeController extends AppContext {
 		toolBar.managedProperty().bind(toolBar.visibleProperty());
 		appUtils.licenseExpiryAlert();
 		try {
-			lblLicenseValidUpto.setText("License Valid Upto : "+AppUtils.dec(appUtils.getAppDataValues("APP_SECURE_KEY").get(0)));
-		}catch(Exception e) {
-			logger.error("lblLicenseValidUpto -->"+e);
+			lblLicenseValidUpto.setText(
+					"License Valid Upto : " + AppUtils.dec(appUtils.getAppDataValues("APP_SECURE_KEY").get(0)));
+		} catch (Exception e) {
+			logger.error("lblLicenseValidUpto -->" + e);
 		}
-		
+
 		// Start Scheduled DB Dump task
 		startScheduledDBDumpTask();
 	}
@@ -288,6 +294,11 @@ public class HomeController extends AppContext {
 	@FXML
 	void onCashCounterCommand(ActionEvent event) {
 
+	}
+	
+	@FXML
+	void onExpenseReportCommand(ActionEvent event) {
+		
 	}
 
 	@FXML
@@ -337,10 +348,10 @@ public class HomeController extends AppContext {
 		}
 	}
 
-	@FXML
-	void onDataBackupMailSettingsCommand(ActionEvent event) {
-		addTab("BackupMailSetting", "Data Backup Mail Settings");
-	}
+	/*
+	 * @FXML void onDataBackupMailSettingsCommand(ActionEvent event) {
+	 * addTab("BackupMailSetting", "Data Backup Mail Settings"); }
+	 */
 
 	@FXML
 	void onDataBackupCommand(ActionEvent event) {
@@ -405,7 +416,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onProductCategoriesClick(MouseEvent event) {
-
+		addTab("ProductCategory", "Product Categories");
 	}
 
 	@FXML

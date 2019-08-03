@@ -320,8 +320,7 @@ public class AppUtils {
 	public ButtonType shouldSaveUnsavedData(Stage stage) {
 
 		final String contextText = "The details are not saved.\n" + "Save the data before closing the tab?";
-		Alert alert = alertHelper.showConfirmAlertWithYesNo(stage, "Unsaved Details", "Unsaved Details. Save now?",
-				contextText);
+		Alert alert = alertHelper.showConfirmAlertWithYesNoCancel(stage, "Unsaved Details. Save now?", contextText);
 
 		Optional<ButtonType> result = alert.showAndWait();
 		if (!result.isPresent()) {

@@ -206,7 +206,7 @@ public class StoreDetailsController implements TabContent {
 		boolean isSuccess = myStoreService.updateStoreDetails(myStoreDetails);
 
 		if (isSuccess) {
-			alertHelper.showInfoAlert(currentStage,"Information",null, "Details saved successfully !");
+			alertHelper.showSuccessNotification("Details saved successfully");
 		} else {
 			alertHelper.showDataSaveErrAlert(currentStage);
 			return false;

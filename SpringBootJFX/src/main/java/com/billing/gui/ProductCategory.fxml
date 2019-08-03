@@ -16,21 +16,21 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<HBox alignment="TOP_CENTER" stylesheets="@../../../css/productCategory.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.ProductCategoryController">
+<HBox alignment="TOP_CENTER" stylesheets="@../../../css/productCategory.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.ProductCategoryController">
    <children>
       <BorderPane fx:id="borderPane" styleClass="rootNode">
          <top>
             <VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
                <children>
                   <Label fx:id="heading" alignment="TOP_CENTER" contentDisplay="CENTER" text="Product Categories" textAlignment="CENTER" />
-                  <GridPane fx:id="gridPane" alignment="TOP_CENTER" hgap="20.0" styleClass="root" vgap="15.0">
+                  <GridPane fx:id="gridPane" alignment="TOP_CENTER" hgap="20.0" vgap="15.0">
                     <children>
                         <Label styleClass="requiredInput" text="Category Name :" GridPane.halignment="RIGHT" />
                         <Label styleClass="nodeLabel" text="Category Description :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
                         <VBox GridPane.columnIndex="1">
                            <children>
                               <TextField fx:id="txtCategoryName" />
-                              <Text fx:id="txtCategoryNameErrorMsg" strokeType="OUTSIDE" strokeWidth="0.0" />
+                              <Text fx:id="txtCategoryNameErrorMsg" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="errorLabel" />
                            </children>
                         </VBox>
                         <TextField fx:id="txtCategoryDesc" GridPane.columnIndex="1" GridPane.rowIndex="1" />
@@ -70,8 +70,8 @@
          <center>
             <TableView fx:id="tableView" BorderPane.alignment="CENTER">
               <columns>
-                <TableColumn fx:id="tcCategoryName" prefWidth="170.0" text="Category Name" />
-                <TableColumn fx:id="tcCategoryDesc" prefWidth="196.0" text="Category Description" />
+                <TableColumn fx:id="tcCategoryName" prefWidth="233.0" text="Category Name" />
+                <TableColumn fx:id="tcCategoryDesc" prefWidth="189.0" text="Category Description" />
               </columns>
                <BorderPane.margin>
                   <Insets bottom="20.0" top="20.0" />

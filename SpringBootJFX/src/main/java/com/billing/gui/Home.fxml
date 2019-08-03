@@ -114,6 +114,7 @@
                               <MenuItem fx:id="monthlyReportMenuItem" onAction="#onMonthlyReportCommand" text="_Monthly Report" />
                               <MenuItem fx:id="profitLossReportMenuItem" onAction="#onProfitLossCommand" text="Profit _Loss Report" />
                               <MenuItem fx:id="cashCounterReportMenuItem" onAction="#onCashCounterCommand" text="Cash Cou_nter Report" />
+                              <MenuItem fx:id="expenseReportMenuItem" onAction="#onExpenseReportCommand" text="_Expense Report" />
                           </items>
                         </Menu>
                         <Menu fx:id="graphicalReportsMenu" text="_Graphical Reports">
@@ -137,7 +138,6 @@
                   <Menu fx:id="preferencesMenu" mnemonicParsing="false" text="Pre_ferences">
                     <items>
                       <MenuItem fx:id="userPreferencesMenuItem" onAction="#onUserPreferencesCommand" text="User Preferences" />
-                        <MenuItem fx:id="databackupMailSettingsMenuItem" onAction="#onDataBackupMailSettingsCommand" text="Data Bac_kup Mail Settings" />
                         <MenuItem fx:id="dataBackupMenuItem" onAction="#onDataBackupCommand" text="Da_ta Backup" />
                         <CheckMenuItem fx:id="hideToolbarMenuItem" onAction="#onHideToolbarCommand" text="Hide _Toolbar" />
                     </items>

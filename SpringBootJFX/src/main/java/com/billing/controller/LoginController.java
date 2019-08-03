@@ -15,6 +15,7 @@ import com.billing.main.Global;
 import com.billing.service.AppLicenseService;
 import com.billing.service.StoreDetailsService;
 import com.billing.service.UserService;
+import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
 import com.jfoenix.controls.JFXPasswordField;
@@ -26,7 +27,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
@@ -58,6 +61,9 @@ public class LoginController extends AppContext{
 	
 	@Autowired
 	StoreDetailsService myStoreService;
+	
+	@Autowired
+	AlertHelper alertHelper;
 
 	private final static String APPLICATION_HOME_TITTLE = "My Store";
 	
@@ -140,7 +146,12 @@ public class LoginController extends AppContext{
 				            if (!homeController.closeAllTabs()) {
 				                event2.consume();
 				                return;
-				            }});
+				            }
+				            Alert alert = alertHelper.showConfirmAlertWithYesNo(stage, null, "Do you want to exit?");
+				    		if (alert.getResult() == ButtonType.NO) {
+				    			event2.consume();
+				    		}
+				        });
 
 				}else{
 					errorMessage.setText("Incorrect Username / Password");
