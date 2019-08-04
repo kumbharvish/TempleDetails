@@ -30,7 +30,7 @@
                         <VBox GridPane.columnIndex="1">
                            <children>
                               <TextField fx:id="txtCategoryName" />
-                              <Text fx:id="txtCategoryNameErrorMsg" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="errorLabel" />
+                              <Label fx:id="txtCategoryNameErrorMsg" styleClass="errorLabel" />
                            </children>
                         </VBox>
                         <TextField fx:id="txtCategoryDesc" GridPane.columnIndex="1" GridPane.rowIndex="1" />

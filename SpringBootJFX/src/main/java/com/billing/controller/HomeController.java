@@ -278,7 +278,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onAboutUsCommand(ActionEvent event) {
-		addTab("AboutUs", "About");
+		addTab("AboutUs", "About Us");
 	}
 
 	@FXML
@@ -381,7 +381,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onManageAccountCommand(ActionEvent event) {
-
+		addTab("ManageAccount", "Manage Account");
 	}
 
 	@FXML

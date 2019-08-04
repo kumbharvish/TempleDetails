@@ -25,7 +25,7 @@
             <VBox spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.vgrow="NEVER">
                <children>
                   <TextField fx:id="txtStoreName" promptText="3 to 35 characters" VBox.vgrow="NEVER" />
-                  <Text fx:id="txtStoreNameErrorMsg" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="errorLabel" visible="false" VBox.vgrow="NEVER" />
+                  <Label fx:id="txtStoreNameErrorMsg" styleClass="errorLabel" visible="false" VBox.vgrow="NEVER" />
                </children>
             </VBox>
             <Label alignment="TOP_RIGHT" styleClass="nodeLabel" text="State :" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
@@ -34,7 +34,7 @@
             <VBox spacing="3.0" styleClass="parent" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.vgrow="NEVER">
                <children>
                   <TextField fx:id="txtCity" promptText="3 to 20 characters" VBox.vgrow="NEVER" />
-                  <Text fx:id="txtCityErrorMsg" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="errorLabel" visible="false" />
+                  <Label fx:id="txtCityErrorMsg" styleClass="errorLabel" visible="false" />
                </children>
             </VBox>
             <TextField fx:id="txtDistrict" GridPane.columnIndex="1" GridPane.rowIndex="5" />

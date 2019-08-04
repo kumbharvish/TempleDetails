@@ -15,12 +15,12 @@
          <children>
             <JFXTextField fx:id="txtUserName" layoutX="26.0" layoutY="26.0" prefHeight="36.0" prefWidth="223.0" promptText="User Name" unFocusColor="BLACK">
                <font>
-                  <Font name="System Bold" size="16.0" />
+                  <Font name="System" size="16.0" />
                </font>
             </JFXTextField>
             <JFXPasswordField fx:id="txtPassword" layoutX="26.0" layoutY="110.0" prefHeight="36.0" prefWidth="223.0" promptText="Password" unFocusColor="BLACK">
                <font>
-                  <Font name="System Bold" size="16.0" />
+                  <Font name="System" size="16.0" />
                </font>
             </JFXPasswordField>
             <JFXButton fx:id="btnLogin" buttonType="RAISED" layoutX="39.0" layoutY="207.0" onAction="#doLogin" prefHeight="37.0" prefWidth="84.0" ripplerFill="WHITE" text="Login" textFill="WHITE" textOverrun="WORD_ELLIPSIS">

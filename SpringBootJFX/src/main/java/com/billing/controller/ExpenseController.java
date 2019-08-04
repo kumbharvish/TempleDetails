@@ -22,10 +22,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 @SuppressWarnings("restriction")
@@ -49,13 +49,13 @@ public class ExpenseController implements TabContent {
     private ComboBox<String> cbCategory;
 
     @FXML
-    private Text cbCategoryErrorMsg;
+    private Label cbCategoryErrorMsg;
 
     @FXML
     private TextField txtAmount;
 
     @FXML
-    private Text txtAmountErrorMsg;
+    private Label txtAmountErrorMsg;
 
     @FXML
     private TextField txtDescription;
@@ -64,7 +64,7 @@ public class ExpenseController implements TabContent {
     private DatePicker dateExpense;
 
     @FXML
-    private Text dateExpenseErrorMsg;
+    private Label dateExpenseErrorMsg;
 
     @FXML
     private Button btnSave;

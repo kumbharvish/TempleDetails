@@ -19,10 +19,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
@@ -50,11 +50,12 @@ public class StoreDetailsController implements TabContent {
 	private TabPane tabPane = null;
 
 	private int storeId = 0;
+	
 	@FXML
 	private TextField txtStoreName;
 
 	@FXML
-	private Text txtStoreNameErrorMsg;
+	private Label txtStoreNameErrorMsg;
 
 	@FXML
 	private TextField txtAddress;
@@ -66,7 +67,7 @@ public class StoreDetailsController implements TabContent {
 	private TextField txtCity;
 
 	@FXML
-	private Text txtCityErrorMsg;
+	private Label txtCityErrorMsg;
 
 	@FXML
 	private TextField txtDistrict;
@@ -226,11 +227,11 @@ public class StoreDetailsController implements TabContent {
 		int nameLength = txtStoreName.getText().trim().length();
 		if (nameLength == 0) {
 			alertHelper.beep();
-			txtStoreNameErrorMsg.setText("Store name not specified!");
+			txtStoreNameErrorMsg.setText("Store name not specified");
 			txtStoreName.requestFocus();
 			valid = false;
 		} else if (nameLength < 3 || nameLength > 35) {
-			txtStoreNameErrorMsg.setText("Store name should be between 3 and 35 characters in length.");
+			txtStoreNameErrorMsg.setText("Store name should be between 3 and 35 characters in length");
 			alertHelper.beep();
 			txtStoreName.requestFocus();
 			valid = false;
@@ -241,12 +242,12 @@ public class StoreDetailsController implements TabContent {
 		int cityLength = txtCity.getText().trim().length();
 		if (cityLength == 0) {
 			alertHelper.beep();
-			txtCityErrorMsg.setText("City not specified!");
+			txtCityErrorMsg.setText("City not specified");
 			txtCity.requestFocus();
 			valid = false;
 		} else if (cityLength < 3 || cityLength > 20) {
 			alertHelper.beep();
-			txtCityErrorMsg.setText("City should be between 3 and 20 characters in length.");
+			txtCityErrorMsg.setText("City should be between 3 and 20 characters in length");
 			txtCity.requestFocus();
 			valid = false;
 		} else {
