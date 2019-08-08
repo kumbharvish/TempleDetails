@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 
 import com.billing.dto.MailConfigDTO;
 import com.billing.dto.StatusDTO;
+import com.billing.dto.UserDetails;
 import com.billing.service.MailConfigurationService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
@@ -322,6 +323,12 @@ public class BackupMailSettingsController implements TabContent {
 			radioDisable.setSelected(true);
 		}
 		return true;
+	}
+
+	@Override
+	public void setUserDetails(UserDetails user) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

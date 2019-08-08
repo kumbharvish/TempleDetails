@@ -578,6 +578,7 @@ public class HomeController extends AppContext {
 		final TabContent controller = (TabContent) fxmlLoader.getController();
 		controller.setMainWindow(currentStage);
 		controller.setTabPane(tabPane);
+		controller.setUserDetails(userDetails);
 
 		if (!controller.loadData()) {
 			return;

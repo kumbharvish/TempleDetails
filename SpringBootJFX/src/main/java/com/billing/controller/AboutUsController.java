@@ -2,6 +2,7 @@ package com.billing.controller;
 
 import org.springframework.stereotype.Controller;
 
+import com.billing.dto.UserDetails;
 import com.billing.utils.TabContent;
 
 import javafx.beans.Observable;
@@ -119,6 +120,12 @@ public class AboutUsController implements TabContent {
 
 	@Override
 	public void initialize() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setUserDetails(UserDetails user) {
 		// TODO Auto-generated method stub
 		
 	}

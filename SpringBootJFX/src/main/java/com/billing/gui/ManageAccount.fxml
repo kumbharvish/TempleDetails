@@ -35,6 +35,8 @@
             </VBox>
          </top>
          <center>
+		  <VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
+		  <children>
             <GridPane fx:id="gpPersonalDetails" alignment="TOP_CENTER" hgap="20.0" vgap="15.0" BorderPane.alignment="CENTER">
                <children>
                   <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="requiredInput" text="First Name :" textAlignment="RIGHT" GridPane.halignment="RIGHT" />
@@ -42,14 +44,14 @@
                   <VBox GridPane.columnIndex="1">
                      <children>
                         <TextField fx:id="txtFirstName" VBox.vgrow="NEVER" />
-                        <Label fx:id="txtFirstNameErrorMsg" styleClass="errorLabel" />
+                        <Label fx:id="lblFirstNameErrorMsg" styleClass="errorLabel" />
                      </children>
                   </VBox>
                   <TextField fx:id="txtMobile" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                   <Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                   <TilePane alignment="TOP_RIGHT" hgap="10.0" vgap="5.0" GridPane.columnSpan="2" GridPane.rowIndex="5">
                      <children>
-                        <Button fx:id="btnUpdate" mnemonicParsing="false" onAction="#onResetCommand" text="Update" />
+                        <Button fx:id="btnUpdatePersonalDtls" mnemonicParsing="false" onAction="#onUpdatePersonalDtlsBtn" text="Update" />
                      </children>
                      <GridPane.margin>
                         <Insets bottom="10.0" />
@@ -60,7 +62,7 @@
                   <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <children>
                         <TextField fx:id="txtLastName" VBox.vgrow="NEVER" />
-                        <Label fx:id="txtFirstNameErrorMsg" styleClass="errorLabel" />
+                        <Label fx:id="lblLastNameErrorMsg" styleClass="errorLabel" />
                      </children>
                   </VBox>
                   <TextField fx:id="txtEmail" GridPane.columnIndex="1" GridPane.rowIndex="3" />
@@ -81,6 +83,96 @@
                   <RowConstraints />
                </rowConstraints>
             </GridPane>
+			<GridPane fx:id="gpChangePassword" alignment="TOP_CENTER" hgap="20.0" vgap="15.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="requiredInput" text="Existing Password :" textAlignment="RIGHT" GridPane.halignment="RIGHT" />
+                  <VBox GridPane.columnIndex="1">
+                     <children>
+                        <TextField fx:id="txtExistingPwd" VBox.vgrow="NEVER" />
+                        <Label fx:id="lblExistingPwdErrorMsg" styleClass="errorLabel" />
+                     </children>
+                  </VBox>
+				   <Label styleClass="requiredInput" text="New Password :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                  <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <children>
+                        <TextField fx:id="txtNewPassword" VBox.vgrow="NEVER" />
+                        <Label fx:id="lblNewPasswordErrorMsg" styleClass="errorLabel" />
+                     </children>
+                  </VBox>
+				   <Label styleClass="requiredInput" text="Confirm Password :" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                  <VBox prefHeight="7.0" prefWidth="219.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                     <children>
+                        <TextField fx:id="txtConfirmPassword" VBox.vgrow="NEVER" />
+                        <Label fx:id="lblConfirmPasswordErrorMsg" styleClass="errorLabel" />
+                     </children>
+                  </VBox>
+                  <Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                  <TilePane alignment="TOP_RIGHT" hgap="10.0" vgap="5.0" GridPane.columnSpan="2" GridPane.rowIndex="4">
+                     <children>
+                        <Button fx:id="btnUpdatePassword" mnemonicParsing="false" onAction="#onUpdatePwdButton" text="Update" />
+                     </children>
+                     <GridPane.margin>
+                        <Insets bottom="10.0" />
+                     </GridPane.margin>
+                  </TilePane>
+                 
+                 </children>
+               <padding>
+                  <Insets top="10.0" />
+               </padding>
+               <columnConstraints>
+                  <ColumnConstraints maxWidth="245.0" minWidth="0.0" prefWidth="122.0" />
+                  <ColumnConstraints maxWidth="245.0" minWidth="0.0" prefWidth="173.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+               </rowConstraints>
+            </GridPane>
+                  <GridPane fx:id="gpChangeUsername" alignment="TOP_CENTER" hgap="20.0" layoutX="10.0" layoutY="260.0" vgap="15.0">
+                     <children>
+                        <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="requiredInput" text="Username :" textAlignment="RIGHT" GridPane.halignment="RIGHT" />
+                        <Label styleClass="requiredInput" text="New Username :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                        <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                           <children>
+                              <TextField fx:id="txtNewUsername" VBox.vgrow="NEVER" />
+                              <Label fx:id="lblNewUsernameErrorMsg" styleClass="errorLabel" />
+                           </children>
+                        </VBox>
+                        <Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                        <TilePane alignment="TOP_RIGHT" hgap="10.0" vgap="5.0" GridPane.columnSpan="2" GridPane.rowIndex="3">
+                           <children>
+                              <Button fx:id="btnUpdateUsername" mnemonicParsing="false" onAction="#onUpdateUsernameButton" text="Update" />
+                           </children>
+                           <GridPane.margin>
+                              <Insets bottom="10.0" />
+                           </GridPane.margin>
+                        </TilePane>
+                        <VBox GridPane.columnIndex="1">
+                           <children>
+                              <Label fx:id="lblExistingUsername" styleClass="nodeLabel" />
+                           </children>
+                        </VBox>
+                     </children>
+                     <padding>
+                        <Insets top="10.0" />
+                     </padding>
+                     <columnConstraints>
+                        <ColumnConstraints maxWidth="245.0" minWidth="0.0" prefWidth="122.0" />
+                        <ColumnConstraints maxWidth="245.0" minWidth="0.0" prefWidth="173.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                        <RowConstraints />
+                        <RowConstraints />
+                     </rowConstraints>
+                  </GridPane>
+			</children>
+            </VBox>
          </center>
       </BorderPane>
    </children>

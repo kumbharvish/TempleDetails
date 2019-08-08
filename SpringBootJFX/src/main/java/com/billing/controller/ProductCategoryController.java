@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import com.billing.dto.Product;
 import com.billing.dto.ProductCategory;
 import com.billing.dto.StatusDTO;
+import com.billing.dto.UserDetails;
 import com.billing.service.ProductCategoryService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
@@ -281,6 +282,12 @@ public class ProductCategoryController implements TabContent {
 				alertHelper.showDataSaveErrAlert(currentStage);
 			}
 		}
+	}
+
+	@Override
+	public void setUserDetails(UserDetails user) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

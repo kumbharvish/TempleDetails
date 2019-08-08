@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.billing.dto.MyStoreDetails;
+import com.billing.dto.UserDetails;
 import com.billing.service.StoreDetailsService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
@@ -303,6 +304,12 @@ public class StoreDetailsController implements TabContent {
 	@Override
 	public void setTabPane(TabPane pane) {
 		this.tabPane = pane;
+	}
+
+	@Override
+	public void setUserDetails(UserDetails user) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

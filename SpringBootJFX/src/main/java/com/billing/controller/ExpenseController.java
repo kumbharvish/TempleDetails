@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 
 import com.billing.dto.Expense;
 import com.billing.dto.StatusDTO;
+import com.billing.dto.UserDetails;
 import com.billing.service.ExpensesService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
@@ -232,6 +233,12 @@ public class ExpenseController implements TabContent {
 	 dateExpense.valueProperty().addListener(this::invalidated);
 	 txtAmount.textProperty().addListener(Utility.getForceNumberListner());
 	 btnSave.disableProperty().bind(isDirty.not());
+	}
+
+	@Override
+	public void setUserDetails(UserDetails user) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
