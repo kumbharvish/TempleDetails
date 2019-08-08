@@ -43,6 +43,7 @@ public class MyStoreApplication extends Application {
 		springContext = SpringApplication.run(MyStoreApplication.class);
         fxmlLoader = new FXMLLoader();
         fxmlLoader.setControllerFactory(springContext::getBean);
+        System.setProperty("java.awt.headless", "false");
 	}
 
 	@Override

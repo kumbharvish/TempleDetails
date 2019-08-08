@@ -117,12 +117,12 @@ public class AlertHelper {
 
 	public void showDataFetchErrAlert(Stage alertOwner) {
 		beep();
-		showErrorAlert(alertOwner, "Error Occurred", "Error in Fetching Data", AppConstants.DATA_FETCH_ERROR);
+		showErrorAlert(alertOwner, "Error", "Error in fetching data", AppConstants.DATA_FETCH_ERROR);
 	}
 
 	public void showDataSaveErrAlert(Stage alertOwner) {
 		beep();
-		showErrorAlert(alertOwner, "Error Occurred", "Error in Saving Data", AppConstants.DATA_SAVE_ERROR);
+		showErrorAlert(alertOwner, "Error", "Error in saving data", AppConstants.DATA_SAVE_ERROR);
 	}
 	
 	public void showWarningNotification(String contextText){

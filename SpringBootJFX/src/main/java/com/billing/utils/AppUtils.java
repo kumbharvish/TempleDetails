@@ -216,14 +216,18 @@ public class AppUtils {
 		return date;
 	}
 
-	public static String enc(String value) throws Exception {
-		Key params = generate();
-		Cipher cipher = Cipher.getInstance(AppUtils.PDF_CONST.substring(2));
-		cipher.init(Cipher.ENCRYPT_MODE, params);
-		byte[] encryptedByteValue = cipher.doFinal(value.getBytes("utf-8"));
-		String encryptedValue64 = new BASE64Encoder().encode(encryptedByteValue);
-		return encryptedValue64;
-
+	public static String enc(String value){
+		try {
+			Key params = generate();
+			Cipher cipher = Cipher.getInstance(AppUtils.PDF_CONST.substring(2));
+			cipher.init(Cipher.ENCRYPT_MODE, params);
+			byte[] encryptedByteValue = cipher.doFinal(value.getBytes("utf-8"));
+			String encryptedValue64 = new BASE64Encoder().encode(encryptedByteValue);
+			return encryptedValue64;
+		}catch(Exception e) {
+			logger.info("Encryption Exception : ",e);
+		}
+		return null;
 	}
 
 	public static String dec(String value) throws Exception {

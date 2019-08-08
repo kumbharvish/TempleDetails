@@ -5,8 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.billing.dto.StatusDTO;
 import com.billing.dto.UserDetails;
 import com.billing.service.UserService;
+import com.billing.utils.AlertHelper;
+import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
 import com.billing.utils.Utility;
 
@@ -16,7 +19,9 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -31,12 +36,16 @@ public class ManageAccountController implements TabContent {
 
 	private static final Logger logger = LoggerFactory.getLogger(ManageAccountController.class);
 
-	private BooleanProperty isDirtyPersonalDtls = new SimpleBooleanProperty(false);
-	private BooleanProperty isDirtyPwd = new SimpleBooleanProperty(false);
-	private BooleanProperty isDirtyUsername = new SimpleBooleanProperty(false);
+	private BooleanProperty isDirty = new SimpleBooleanProperty(false);
 
 	@Autowired
 	UserService userService;
+
+	@Autowired
+	AlertHelper alertHelper;
+
+	@Autowired
+	AppUtils appUtils;
 
 	private UserDetails userDetails;
 
@@ -87,19 +96,19 @@ public class ManageAccountController implements TabContent {
 	private TextField txtEmail;
 
 	@FXML
-	private TextField txtExistingPwd;
+	private PasswordField txtExistingPwd;
 
 	@FXML
 	private Label lblExistingPwdErrorMsg;
 
 	@FXML
-	private TextField txtNewPassword;
+	private PasswordField txtNewPassword;
 
 	@FXML
 	private Label lblNewPasswordErrorMsg;
 
 	@FXML
-	private TextField txtConfirmPassword;
+	private PasswordField txtConfirmPassword;
 
 	@FXML
 	private Label lblConfirmPasswordErrorMsg;
@@ -121,6 +130,15 @@ public class ManageAccountController implements TabContent {
 
 	@FXML
 	private Label lblExistingUsername;
+
+	@FXML
+	private Button btnClose;
+
+	@FXML
+	private Button btnClosePwd;
+
+	@FXML
+	private Button btnCloseUsername;
 
 	@Override
 	public void initialize() {
@@ -162,54 +180,93 @@ public class ManageAccountController implements TabContent {
 				.bind(lblNewUsernameErrorMsg.textProperty().length().greaterThanOrEqualTo(1));
 
 		txtMobile.textProperty().addListener(Utility.getForceNumberListner());
-	}
 
-	@FXML
-	void onActionChangePassword(ActionEvent event) {
+		txtFirstName.textProperty().addListener(this::invalidated);
+		txtLastName.textProperty().addListener(this::invalidated);
+		txtEmail.textProperty().addListener(this::invalidated);
+		txtMobile.textProperty().addListener(this::invalidated);
 
-	}
-
-	@FXML
-	void onActionChangeUsername(ActionEvent event) {
-
-	}
-
-	@FXML
-	void onActionPersonalDetails(ActionEvent event) {
-
+		btnUpdatePersonalDtls.disableProperty().bind(isDirty.not());
 	}
 
 	@FXML
 	void onUpdatePersonalDtlsBtn(ActionEvent event) {
+		if (!validateInput()) {
+			return;
+		}
 
+		boolean result = saveData();
+		if (result) {
+			closeTab();
+		}
 	}
 
 	@FXML
 	void onUpdatePwdButton(ActionEvent event) {
+		if (!validateInput()) {
+			return;
+		}
 
+		saveData();
 	}
 
 	@FXML
 	void onUpdateUsernameButton(ActionEvent event) {
+		if (!validateInput()) {
+			return;
+		}
 
+		saveData();
+	}
+
+	@FXML
+	void onCloseCommand(ActionEvent event) {
+		if (isDirty.get()) {
+			ButtonType buttonType = appUtils.shouldSaveUnsavedData(currentStage);
+			if (buttonType == ButtonType.CANCEL) {
+				return; // no need to take any further action
+			} else if (buttonType == ButtonType.YES) {
+				if (!validateInput()) {
+					return;
+				} else {
+					saveData();
+				}
+			}
+		}
+		closeTab();
 	}
 
 	@Override
 	public boolean shouldClose() {
-		// TODO Auto-generated method stub
+		if (isDirty.get()) {
+			ButtonType response = appUtils.shouldSaveUnsavedData(currentStage);
+			if (response == ButtonType.CANCEL) {
+				return false;
+			}
+
+			if (response == ButtonType.YES) {
+				if (!validateInput()) {
+					return false;
+				} else {
+					saveData();
+				}
+			}
+
+		}
+
 		return true;
 	}
 
 	@Override
 	public void putFocusOnNode() {
-		// TODO Auto-generated method stub
-
+		txtFirstName.requestFocus();
 	}
 
 	@Override
 	public boolean loadData() {
 		userDetails = userService.getUserDetails(userDetails);
 		populateFields();
+		isDirty.set(false);
 		return true;
 	}
 
@@ -217,7 +274,7 @@ public class ManageAccountController implements TabContent {
 		txtFirstName.setText(userDetails.getFirstName());
 		txtLastName.setText(userDetails.getLastName());
 		txtEmail.setText(userDetails.getEmail());
-		txtMobile.setText(String.valueOf(userDetails.getMobileNo()));
+		txtMobile.setText(userDetails.getMobileNo() == 0 ? "" : String.valueOf(userDetails.getMobileNo()));
 		lblExistingUsername.setText(userDetails.getUserName());
 	}
 
@@ -233,13 +290,56 @@ public class ManageAccountController implements TabContent {
 
 	@Override
 	public boolean saveData() {
-		// TODO Auto-generated method stub
-		return false;
+		if (rbPersonalDetails.isSelected()) {
+			UserDetails userDtls = new UserDetails();
+			userDtls.setFirstName(txtFirstName.getText());
+			userDtls.setLastName(txtLastName.getText());
+			userDtls.setEmail(txtEmail.getText());
+			userDtls.setMobileNo(txtMobile.getText().equals("") ? 0 : Long.valueOf(txtMobile.getText()));
+			userDtls.setUserId(userDetails.getUserId());
+			boolean isDetailsUpded = userService.updatePersonalDetails(userDtls);
+			if (isDetailsUpded) {
+				alertHelper.showSuccessNotification("Personal details updated successfully");
+			} else {
+				alertHelper.showDataSaveErrAlert(currentStage);
+				return false;
+			}
+		} else if (rbChangePassword.isSelected()) {
+			UserDetails userDtls = new UserDetails();
+			boolean isPwdChanged = false;
+			userDtls.setUserId(userDetails.getUserId());
+			isPwdChanged = userService.changePassword(userDtls, AppUtils.enc(txtExistingPwd.getText()),
+					AppUtils.enc(txtConfirmPassword.getText()));
+			if (isPwdChanged) {
+				lblExistingPwdErrorMsg.setText("");
+				alertHelper.showSuccessNotification("Password changed successfully");
+			} else {
+				lblExistingPwdErrorMsg.setText("Existing Password is wrong");
+				return false;
+			}
+
+		} else {
+			UserDetails userDtls = new UserDetails();
+			userDtls.setUserId(userDetails.getUserId());
+			userDtls.setUserName(lblExistingUsername.getText());
+			StatusDTO status = userService.changeUserName(userDtls, txtNewUsername.getText());
+
+			if (status.getStatusCode() == 0) {
+				alertHelper.showSuccessNotification("Username changed successfully ");
+				lblExistingUsername.setText(txtNewUsername.getText());
+				txtNewUsername.setText("");
+			} else {
+				alertHelper.showDataSaveErrAlert(currentStage);
+				return false;
+			}
+		}
+		
+		return true;
 	}
 
 	@Override
 	public void invalidated(Observable observable) {
-		isDirtyPersonalDtls.set(true);
+		isDirty.set(true);
 	}
 
 	@Override
@@ -250,14 +350,88 @@ public class ManageAccountController implements TabContent {
 
 	@Override
 	public boolean validateInput() {
-		// TODO Auto-generated method stub
-		return false;
+		boolean valid = true;
+		if (rbPersonalDetails.isSelected()) {
+			int firstName = txtFirstName.getText().trim().length();
+			if (firstName == 0) {
+				alertHelper.beep();
+				lblFirstNameErrorMsg.setText("Please enter first name");
+				txtFirstName.requestFocus();
+				valid = false;
+			} else {
+				lblFirstNameErrorMsg.setText("");
+			}
+			int lastName = txtLastName.getText().trim().length();
+			if (lastName == 0) {
+				alertHelper.beep();
+				lblLastNameErrorMsg.setText("Please enter last name");
+				txtLastName.requestFocus();
+				valid = false;
+			} else {
+				lblLastNameErrorMsg.setText("");
+			}
+			return valid;
+		} else if (rbChangePassword.isSelected()) {
+			int extPwd = txtExistingPwd.getText().trim().length();
+			if (extPwd == 0) {
+				alertHelper.beep();
+				lblExistingPwdErrorMsg.setText("Please enter existing password");
+				txtExistingPwd.requestFocus();
+				valid = false;
+			} else {
+				lblExistingPwdErrorMsg.setText("");
+			}
+			int newPwd = txtNewPassword.getText().trim().length();
+			if (newPwd == 0) {
+				alertHelper.beep();
+				lblNewPasswordErrorMsg.setText("Please enter new password");
+				txtNewPassword.requestFocus();
+				valid = false;
+			} else {
+				lblNewPasswordErrorMsg.setText("");
+			}
+			int confirmPwd = txtConfirmPassword.getText().trim().length();
+			if (confirmPwd == 0) {
+				alertHelper.beep();
+				lblConfirmPasswordErrorMsg.setText("Please enter confirm password");
+				txtConfirmPassword.requestFocus();
+				valid = false;
+			} else {
+				lblConfirmPasswordErrorMsg.setText("");
+			}
+
+			if (!txtConfirmPassword.getText().trim().equals(txtNewPassword.getText().trim())) {
+				alertHelper.beep();
+				lblConfirmPasswordErrorMsg.setText("New password and confirm password doesn't match");
+				txtConfirmPassword.requestFocus();
+				valid = false;
+			} else {
+				lblConfirmPasswordErrorMsg.setText("");
+			}
+			return valid;
+		} else {
+			int newUsername = txtNewUsername.getText().trim().length();
+			if (newUsername == 0) {
+				alertHelper.beep();
+				lblNewUsernameErrorMsg.setText("Please enter new username");
+				txtNewUsername.requestFocus();
+				valid = false;
+			} else if (txtNewUsername.getText().trim().equals(lblExistingUsername.getText().trim())) {
+				alertHelper.beep();
+				lblNewUsernameErrorMsg.setText("New username should be different from exting username");
+				txtNewUsername.requestFocus();
+				valid = false;
+			} else {
+				lblNewUsernameErrorMsg.setText("");
+			}
+
+			return valid;
+		}
 	}
 
 	@Override
 	public void setUserDetails(UserDetails user) {
 		userDetails = user;
-
 	}
 
 }
