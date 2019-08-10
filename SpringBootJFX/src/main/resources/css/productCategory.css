@@ -6,16 +6,6 @@
     -fx-padding: 5px;
 }
 
-.uom-cell{
-   -fx-padding: 4px 3px 4px 20px;
-}
-
-.abbreviation-cell{
-    -fx-padding: 4px 0 4px 0; 
-    -fx-alignment: center;
-    -fx-font-weight: 700;
-}
-
 #content{
     -fx-padding: 15px 0 0 0;
 }
