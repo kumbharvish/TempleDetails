@@ -308,8 +308,8 @@ public class ManageAccountController implements TabContent {
 			UserDetails userDtls = new UserDetails();
 			boolean isPwdChanged = false;
 			userDtls.setUserId(userDetails.getUserId());
-			isPwdChanged = userService.changePassword(userDtls, AppUtils.enc(txtExistingPwd.getText()),
-					AppUtils.enc(txtConfirmPassword.getText()));
+			isPwdChanged = userService.changePassword(userDtls, appUtils.enc(txtExistingPwd.getText()),
+					appUtils.enc(txtConfirmPassword.getText()));
 			if (isPwdChanged) {
 				lblExistingPwdErrorMsg.setText("");
 				alertHelper.showSuccessNotification("Password changed successfully");

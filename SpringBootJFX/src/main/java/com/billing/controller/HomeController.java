@@ -259,7 +259,7 @@ public class HomeController extends AppContext {
 		appUtils.licenseExpiryAlert();
 		try {
 			lblLicenseValidUpto.setText(
-					"License Valid Upto : " + AppUtils.dec(appUtils.getAppDataValues("APP_SECURE_KEY").get(0)));
+					"License Valid Upto : " + appUtils.dec(appUtils.getAppDataValues("APP_SECURE_KEY").get(0)));
 		} catch (Exception e) {
 			logger.error("lblLicenseValidUpto -->" + e);
 		}

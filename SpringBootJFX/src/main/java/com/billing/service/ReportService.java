@@ -28,6 +28,9 @@ public class ReportService {
 
 	@Autowired
 	DBUtils dbUtils;
+	
+	@Autowired
+	AppUtils appUtils;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportService.class);
 
@@ -388,7 +391,7 @@ public class ReportService {
 				stmt = conn.prepareStatement(GET_CLOSING_STOCK_VALUE);
 				ResultSet rs7 = stmt.executeQuery();
 				if (rs7.next()) {
-					closingStockValue = AppUtils.getDecimalRoundUp2Decimal(rs7.getDouble("CLOSING_STOCK_VALUE"));
+					closingStockValue = appUtils.getDecimalRoundUp2Decimal(rs7.getDouble("CLOSING_STOCK_VALUE"));
 					closingStockAmt = closingStockValue;
 				}
 			} else {
@@ -586,7 +589,7 @@ public class ReportService {
 		double stockValueAmount = getStockValueAmount();
 		System.out.println("Stock Value Amount : " + stockValueAmount);
 		addOpeningStockAmount(new Date(System.currentTimeMillis()),
-				AppUtils.getDecimalRoundUp2Decimal(stockValueAmount));
+				appUtils.getDecimalRoundUp2Decimal(stockValueAmount));
 		return status;
 	}
 

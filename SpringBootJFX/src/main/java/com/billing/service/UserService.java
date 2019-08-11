@@ -25,6 +25,9 @@ public class UserService {
 
 	@Autowired
 	DBUtils dbUtils;
+	
+	@Autowired
+	AppUtils appUtils;
 
 	private static final Logger logger = LoggerFactory.getLogger(GraphService.class);
 
@@ -70,7 +73,7 @@ public class UserService {
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(VALIDATE_USER_SQL);
 			stmt.setString(1, userName);
-			stmt.setString(2, AppUtils.enc(password));
+			stmt.setString(2, appUtils.enc(password));
 			ResultSet rs = stmt.executeQuery();
 
 			if (rs.next()) {

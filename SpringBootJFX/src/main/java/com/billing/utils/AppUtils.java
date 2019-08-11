@@ -70,30 +70,6 @@ public class AppUtils {
 		}
 	}
 
-	public static boolean isMandatoryEntered(JTextField field) {
-
-		boolean flag = false;
-
-		if (field.getText().equals(""))
-			flag = false;
-		else
-			flag = true;
-		return flag;
-
-	}
-
-	public static boolean isMandatorySelected(JComboBox jCombox) {
-
-		boolean flag = false;
-
-		if (jCombox.getSelectedIndex() == 0)
-			flag = false;
-		else
-			flag = true;
-		return flag;
-
-	}
-
 	// This method returns data values from app_data for given data name.
 	public List<String> getAppDataValues(String dataName) {
 
@@ -123,26 +99,21 @@ public class AppUtils {
 
 	}
 
-	/*
-	 * public static void main(String[] args) {
-	 * System.out.println(getAppDataValues("MEASURES")); }
-	 */
-
-	public static int getRandomCode() {
+	public int getRandomCode() {
 		int min = 10000;
 		int max = 99999;
 		int randonCode = (int) Math.floor(Math.random() * (max - min + 1)) + min;
 		return randonCode;
 	}
 
-	public static long getBarcode() {
+	public long getBarcode() {
 		long min = 700000000000L;
 		long max = 799999999999L;
 		long randonCode = (long) Math.floor(Math.random() * (max - min + 1)) + min;
 		return randonCode;
 	}
 
-	public static double getDecimalRoundUp(Double value) {
+	public double getDecimalRoundUp(Double value) {
 		DecimalFormat df = new DecimalFormat("#");
 		df.setRoundingMode(RoundingMode.HALF_UP);
 		if (value != null)
@@ -150,7 +121,7 @@ public class AppUtils {
 		return 0.0;
 	}
 
-	public static double getDecimalRoundUp2Decimal(Double value) {
+	public double getDecimalRoundUp2Decimal(Double value) {
 		DecimalFormat df = new DecimalFormat("#0.00");
 		df.setRoundingMode(RoundingMode.HALF_UP);
 		if (value != null)
@@ -158,7 +129,7 @@ public class AppUtils {
 		return 0.0;
 	}
 
-	public static String getDecimalFormat(Double value) {
+	public String getDecimalFormat(Double value) {
 		DecimalFormat df = new DecimalFormat("#0.00");
 		if (value != null)
 			return df.format(value);
@@ -172,7 +143,7 @@ public class AppUtils {
 	 * df.format(value); return "0.00"; }
 	 */
 
-	public static void removeItemFromList(List<Integer> list, Integer removeItem) {
+	public void removeItemFromList(List<Integer> list, Integer removeItem) {
 		Iterator<Integer> it = list.iterator();
 
 		while (it.hasNext()) {
@@ -184,7 +155,7 @@ public class AppUtils {
 	}
 
 	// OverLoaded
-	public static void removeItemFromList(List<String> list, String removeItem) {
+	public void removeItemFromList(List<String> list, String removeItem) {
 		Iterator<String> it = list.iterator();
 
 		while (it.hasNext()) {
@@ -195,17 +166,17 @@ public class AppUtils {
 		}
 	}
 
-	public static String getFormattedDate(Date dt) {
+	public String getFormattedDate(Date dt) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		return sdf.format(dt);
 	}
 
-	public static String getFormattedDateWithTime(Date dt) {
+	public String getFormattedDateWithTime(Date dt) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
 		return sdf.format(dt);
 	}
 
-	public static Date getFormattedDate(String dt) {
+	public Date getFormattedDate(String dt) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		Date date = null;
 		try {
@@ -216,7 +187,7 @@ public class AppUtils {
 		return date;
 	}
 
-	public static String enc(String value){
+	public String enc(String value){
 		try {
 			Key params = generate();
 			Cipher cipher = Cipher.getInstance(AppUtils.PDF_CONST.substring(2));
@@ -230,7 +201,7 @@ public class AppUtils {
 		return null;
 	}
 
-	public static String dec(String value) throws Exception {
+	public String dec(String value) throws Exception {
 		Key params = generate();
 		Cipher cipher = Cipher.getInstance(AppUtils.PDF_CONST.substring(2));
 		cipher.init(Cipher.DECRYPT_MODE, params);
@@ -241,7 +212,7 @@ public class AppUtils {
 
 	}
 
-	private static Key generate() throws Exception {
+	private Key generate() throws Exception {
 		Key params = new SecretKeySpec(AppUtils.PDF_RANDOM.substring(7).getBytes(), AppUtils.PDF_CONST.substring(2));
 		return params;
 	}
@@ -259,25 +230,6 @@ public class AppUtils {
 			logger.error("openWindowsDocument Exception: ", ex);
 		}
 
-	}
-
-	public static void setTableRowHeight(JTable table) {
-		// Table Row Height
-		table.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		table.setRowHeight(20);
-		// Header
-		JTableHeader header = table.getTableHeader();
-		header.setFont(new Font("Dialog", Font.BOLD, 12));
-		header.setBackground(Color.GRAY);
-		header.setForeground(Color.WHITE);
-	}
-
-	public static ImageIcon resizeImage(byte[] imgPath, JLabel label) {
-		ImageIcon MyImage = new ImageIcon(imgPath);
-		Image img = MyImage.getImage();
-		Image newImage = img.getScaledInstance(label.getWidth(), label.getHeight(), Image.SCALE_SMOOTH);
-		ImageIcon image = new ImageIcon(newImage);
-		return image;
 	}
 
 	public void licenseExpiryAlert(Container panel) {
@@ -299,7 +251,7 @@ public class AppUtils {
 		}
 	}
 
-	public static long getDifferenceDays(Date d1, Date d2) {
+	public long getDifferenceDays(Date d1, Date d2) {
 		long diff = d2.getTime() - d1.getTime();
 		return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 	}

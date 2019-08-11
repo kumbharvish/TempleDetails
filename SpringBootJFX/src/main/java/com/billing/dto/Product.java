@@ -32,7 +32,7 @@ public class Product {
 	
 	private Date lastUpdateDate;
 	
-	private String Description;
+	private String description;
 
 	private String enterBy;
 	
@@ -135,11 +135,11 @@ public class Product {
 	}
 
 	public String getDescription() {
-		return Description;
+		return description;
 	}
 
 	public void setDescription(String description) {
-		Description = description;
+		this.description = description;
 	}
 
 	public String getEnterBy() {
@@ -317,7 +317,7 @@ public class Product {
 				+ ", purcasePrice=" + purcasePrice + ", sellPrice=" + sellPrice
 				+ ", productMRP=" + productMRP + ", discount=" + discount
 				+ ", entryDate=" + entryDate + ", lastUpdateDate="
-				+ lastUpdateDate + ", Description=" + Description
+				+ lastUpdateDate + ", Description=" + description
 				+ ", enterBy=" + enterBy + ", productCategory="
 				+ productCategory + ", sellQuantity=" + sellQuantity
 				+ ", stockValueAmount=" + stockValueAmount + ", profit="

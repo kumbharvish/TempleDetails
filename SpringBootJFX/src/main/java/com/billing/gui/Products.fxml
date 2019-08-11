@@ -7,20 +7,19 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox alignment="TOP_CENTER" styleClass="rootNode" stylesheets="@../../../css/products.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.ProductsController">
-   <children>
-      <BorderPane fx:id="borderPane">
+<BorderPane styleClass="rootNode" stylesheets="@../../../css/products.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.ProductsController">
          <top>
             <VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
                <children>
@@ -32,13 +31,13 @@
             </VBox>
          </top>
         <center>
-            <SplitPane fx:id="splitPane" dividerPositions="0.5099255583126551" styleClass="parent" BorderPane.alignment="CENTER">
+            <SplitPane fx:id="splitPane" dividerPositions="0.37" BorderPane.alignment="CENTER">
                <items>
                   <BorderPane styleClass="parent">
 				  <center>
                         <ScrollPane prefHeight="708.0" prefWidth="585.0" styleClass="parent" BorderPane.alignment="CENTER">
                            <content>
-      				  <GridPane fx:id="gridPane" hgap="20.0" styleClass="nodeLabel" vgap="15.0">
+      				  <GridPane fx:id="gridPane" hgap="20.0" vgap="15.0">
                            <children>
                               <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="requiredInput" text="Category :" textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
                               <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="requiredInput" text="Name :" textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
@@ -62,7 +61,7 @@
                               <Label alignment="TOP_RIGHT" styleClass="requiredInput" text="Sell Price :" GridPane.halignment="RIGHT" GridPane.rowIndex="8" />
                               <Label alignment="TOP_RIGHT" styleClass="nodeLabel" text="Barcode :" GridPane.halignment="RIGHT" GridPane.rowIndex="9" />
                               <Separator GridPane.columnSpan="2" GridPane.rowIndex="13" />
-                              <TextField fx:id="txtGSTNo" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                              <TextField fx:id="txtBarcode" GridPane.columnIndex="1" GridPane.rowIndex="9" />
                               <TilePane alignment="TOP_RIGHT" hgap="25.0" styleClass="parent" GridPane.columnSpan="2" GridPane.rowIndex="14">
                                  <children>
                                     <Button fx:id="btnAdd" defaultButton="true" mnemonicParsing="true" onAction="#onAddCommand" text="Add" />
@@ -76,32 +75,32 @@
                               <VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <children>
                                     <TextField fx:id="txtProductName" />
-                                    <Label fx:id="lblProductNameErrMsg" />
+                                    <Label fx:id="lblProductNameErrMsg" styleClass="errorLabel" />
                                  </children>
                               </VBox>
                               <VBox GridPane.columnIndex="1" GridPane.rowIndex="3">
                                  <children>
                                     <ComboBox fx:id="cbMeasuringUnit" />
-                                    <Label fx:id="lblUnitErrMsg" />
+                                    <Label fx:id="lblUnitErrMsg" styleClass="errorLabel" />
                                  </children>
                               </VBox>
                               <VBox GridPane.columnIndex="1" GridPane.rowIndex="5">
                                  <children>
-                                    <TextField fx:id="txtPuirchaseRate" />
-                                    <Label fx:id="lblPurRateErrMsg" />
+                                    <TextField fx:id="txtPurchaseRate" />
+                                    <Label fx:id="lblPurRateErrMsg" styleClass="errorLabel" />
                                  </children>
                               </VBox>
                               <VBox GridPane.columnIndex="1" GridPane.rowIndex="6">
                                  <children>
                                     <TextField fx:id="txtTax" />
-                                    <Label fx:id="lblTaxErrMsg" />
+                                    <Label fx:id="lblTaxErrMsg" styleClass="errorLabel" />
                                  </children>
                               </VBox>
                               <TextField fx:id="lblPurchasePrice" editable="false" focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                               <VBox GridPane.columnIndex="1" GridPane.rowIndex="8">
                                  <children>
                                     <TextField fx:id="txtSellPrice" />
-                                    <Label fx:id="lblSellPriceErrMsg" />
+                                    <Label fx:id="lblSellPriceErrMsg" styleClass="errorLabel" />
                                  </children>
                               </VBox>
                               <Label styleClass="nodeLabel" text="Entered By :" GridPane.halignment="RIGHT" GridPane.rowIndex="10" />
@@ -178,16 +177,34 @@
                      <top>
                         <TextField fx:id="txtSearchProduct" BorderPane.alignment="CENTER">
                            <BorderPane.margin>
-                              <Insets bottom="5.0" left="40.0" right="5.0" top="10.0" />
+                              <Insets bottom="5.0" left="400.0" right="5.0" top="10.0" />
                            </BorderPane.margin>
                            <tooltip>
                               <Tooltip text="Product Search" />
                            </tooltip>
                         </TextField>
-                     </top></BorderPane>
+                     </top>
+               <center>
+                  <TableView fx:id="tableView" BorderPane.alignment="CENTER">
+                    <columns>
+                      <TableColumn fx:id="tcCategory" minWidth="120.0" prefWidth="140.0" text="Category" />
+                        <TableColumn fx:id="tcName" minWidth="120.0" prefWidth="170.0" text="Name" />
+						<TableColumn fx:id="tcQuantity" minWidth="60.0" prefWidth="60.0" text="Quantity" />
+                        <TableColumn fx:id="tcMUnit" minWidth="60.0" prefWidth="60.0" text="M. Unit" />
+                        <TableColumn fx:id="tcPurchaseRate" minWidth="70" prefWidth="100.0" text="Purchase Rate" />
+                        <TableColumn fx:id="tcTax" minWidth="60.0" prefWidth="60.0" text="Tax (%)" />
+                        <TableColumn fx:id="tcSellPrice" minWidth="70" prefWidth="100.0" text="Sell Price" />
+                        <TableColumn fx:id="tcDescription" minWidth="70" prefWidth="120" text="Description" />
+                    </columns>
+                     <BorderPane.margin>
+                        <Insets bottom="10.0" right="5.0" />
+                     </BorderPane.margin>
+					 <placeholder>
+                  <Label fx:id="placeholderText" text="&lt; No Products Found &gt;" />
+                </placeholder>
+                  </TableView>
+               </center></BorderPane>
                </items>
             </SplitPane>
          </center>
-      </BorderPane>
-   </children>
-</HBox>
+</BorderPane>

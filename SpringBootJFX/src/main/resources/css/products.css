@@ -1,24 +1,16 @@
 @import "common.css";
 
-#radioContainer{
+.rootNode{
+    -fx-padding: 20px 50px 25px 50px;
     -fx-border-width: 1px;
     -fx-border-color: -lookupBorder;
-    -fx-padding: 5px;
-}
-
-#content{
-    -fx-padding: 15px 0 0 0;
-}
-
-#borderPane{
-    -fx-padding: 15px 40px 15px 40px;
-    -fx-border-width: 1px;
-    -fx-border-color: -lookupBorder;
+    -fx-border-insets: 15px 30px 15px 30px;
 }
 
 #splitPane{
     -fx-border-width: 1px 0 0 0;
     -fx-border-color: -lookupBorder;
+    -fx-background-color: transparent;
 }
 
 #lblViewStockLedger{

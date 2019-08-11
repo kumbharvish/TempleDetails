@@ -19,6 +19,9 @@ public class MailConfigurationService {
 
 	@Autowired
 	DBUtils dbUtils;
+	
+	@Autowired
+	AppUtils appUtils;
 
 	private static final Logger logger = LoggerFactory.getLogger(MailConfigurationService.class);
 
@@ -42,7 +45,7 @@ public class MailConfigurationService {
 				mail.setHost(rs.getString("HOST"));
 				mail.setPort(rs.getString("PORT"));
 				mail.setMailFrom(rs.getString("MAIL_FROM"));
-				mail.setPassword(AppUtils.dec(rs.getString("PASSWORD")));
+				mail.setPassword(appUtils.dec(rs.getString("PASSWORD")));
 				mail.setMailTo(rs.getString("MAIL_TO"));
 				mail.setMailSubject(rs.getString("MAIL_SUBJECT"));
 				mail.setMailMessage(rs.getString("MAIL_MESSAGE"));
@@ -67,7 +70,7 @@ public class MailConfigurationService {
 				conn = dbUtils.getConnection();
 				stmt = conn.prepareStatement(UPDATE_MAIL_CONFIG);
 				stmt.setString(1, mail.getMailFrom());
-				stmt.setString(2, AppUtils.enc(mail.getPassword()));
+				stmt.setString(2, appUtils.enc(mail.getPassword()));
 				stmt.setString(3, mail.getMailTo());
 				stmt.setString(4, mail.getMailSubject());
 				stmt.setString(5, mail.getMailMessage());

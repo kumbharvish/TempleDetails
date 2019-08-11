@@ -21,6 +21,9 @@ public class AppLicenseService {
 	@Autowired
 	DBUtils dbUtils;
 	
+	@Autowired
+	AppUtils appUtils;
+	
 	private static final String INS_APP_SECURITY_DATA = "INSERT INTO APP_SECURITY_DATA (SECURITY_DATA) VALUES(?)";
 	
 	private static final String DELETE_APP_SECURITY_DATA = "DELETE FROM APP_SECURITY_DATA";
@@ -41,7 +44,7 @@ public class AppLicenseService {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				appSecData = AppUtils.dec(rs.getString("SECURITY_DATA"));
+				appSecData = appUtils.dec(rs.getString("SECURITY_DATA"));
 			}
 			rs.close();
 		} catch (Exception e) {
@@ -106,7 +109,7 @@ public class AppLicenseService {
 		
 		String lastRun;
 		try {
-			lastRun = AppUtils.enc(sdf.format(new Date()));
+			lastRun = appUtils.enc(sdf.format(new Date()));
 			//Insert
 			insertAppSecurityData(lastRun);
 		} catch (Exception e) {

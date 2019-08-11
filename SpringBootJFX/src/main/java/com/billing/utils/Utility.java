@@ -167,6 +167,14 @@ public abstract class Utility {
     		};
     		return forceNumberListener;
      }
+     //Returns Listner object to force decimal values in textfield
+     public static ChangeListener<String> getForceDecimalNumberListner() {
+    	 ChangeListener<String> forceNumberListener = (observable, oldValue, newValue) -> {
+    		 if (!newValue.matches("\\d{0,7}([\\.]\\d{0,4})?"))
+    		      ((StringProperty) observable).set(oldValue);
+    		};
+    		return forceNumberListener;
+     }
      
 } // end of class definition
 
