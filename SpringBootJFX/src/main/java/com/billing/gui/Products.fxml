@@ -39,29 +39,73 @@
                            <content>
       				  <GridPane fx:id="gridPane" hgap="20.0" vgap="15.0">
                            <children>
-                              <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="requiredInput" text="Category :" textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
-                              <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="requiredInput" text="Name :" textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-                              <Label alignment="TOP_RIGHT" styleClass="requiredInput" text="M. Unit :" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
-                              <Label alignment="TOP_RIGHT" styleClass="requiredInput" text="Quantity :" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
-                              <Label alignment="TOP_RIGHT" styleClass="requiredInput" text="Purchase Rate:" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
-                              <VBox spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.vgrow="NEVER">
+							  <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="nodeLabel" text="Code :" textAlignment="RIGHT" GridPane.halignment="RIGHT" />
+                              <TextField fx:id="lblProductCode" editable="false" focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" />
+							  <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="requiredInput" text="Category :" textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                               <VBox spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.vgrow="NEVER">
                                  <children>
                                     <ComboBox fx:id="cbProductCategory" />
                                     <Label fx:id="lblProductCategoryErrMsg" styleClass="errorLabel" visible="false" VBox.vgrow="NEVER" />
                                  </children>
                               </VBox>
-                              <Label alignment="TOP_RIGHT" styleClass="requiredInput" text="Tax (%) :" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
-                              <VBox spacing="3.0" styleClass="parent" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.vgrow="NEVER">
+							  <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="requiredInput" text="Name :" textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                              <VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                 <children>
+                                    <TextField fx:id="txtProductName" />
+                                    <Label fx:id="lblProductNameErrMsg" styleClass="errorLabel" />
+                                 </children>
+                              </VBox>
+							                                
+                              <Label alignment="TOP_RIGHT" styleClass="requiredInput" text="M. Unit :" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+							  <VBox GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                 <children>
+                                    <ComboBox fx:id="cbMeasuringUnit" />
+                                    <Label fx:id="lblUnitErrMsg" styleClass="errorLabel" />
+                                 </children>
+                              </VBox>
+							  <Label alignment="TOP_RIGHT" styleClass="requiredInput" text="Quantity :" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+							  <VBox spacing="3.0" styleClass="parent" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.vgrow="NEVER">
                                  <children>
                                     <TextField fx:id="txtQuantity" VBox.vgrow="NEVER" />
                                     <Label fx:id="lblQuantityErrMsg" styleClass="errorLabel" visible="false" />
                                  </children>
                               </VBox>
-                              <Label alignment="TOP_RIGHT" styleClass="nodeLabel" text="Purchase Price :" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
+                              <Label alignment="TOP_RIGHT" styleClass="requiredInput" text="Purchase Rate:" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
+							  <VBox GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                 <children>
+                                    <TextField fx:id="txtPurchaseRate" />
+                                    <Label fx:id="lblPurRateErrMsg" styleClass="errorLabel" />
+                                 </children>
+                              </VBox>
+                             
+                              <Label alignment="TOP_RIGHT" styleClass="requiredInput" text="Tax (%) :" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
+							   <VBox GridPane.columnIndex="1" GridPane.rowIndex="6">
+                                 <children>
+                                    <TextField fx:id="txtTax" />
+                                    <Label fx:id="lblTaxErrMsg" styleClass="errorLabel" />
+                                 </children>
+                              </VBox>
+							  <Label alignment="TOP_RIGHT" styleClass="nodeLabel" text="Purchase Price :" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
+							  <TextField fx:id="lblPurchasePrice" editable="false" focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                               <Label alignment="TOP_RIGHT" styleClass="requiredInput" text="Sell Price :" GridPane.halignment="RIGHT" GridPane.rowIndex="8" />
+							  <VBox GridPane.columnIndex="1" GridPane.rowIndex="8">
+                                 <children>
+                                    <TextField fx:id="txtSellPrice" />
+                                    <Label fx:id="lblSellPriceErrMsg" styleClass="errorLabel" />
+                                 </children>
+                              </VBox>
                               <Label alignment="TOP_RIGHT" styleClass="nodeLabel" text="Barcode :" GridPane.halignment="RIGHT" GridPane.rowIndex="9" />
-                              <Separator GridPane.columnSpan="2" GridPane.rowIndex="13" />
-                              <TextField fx:id="txtBarcode" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+							  <TextField fx:id="txtBarcode" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                                                                               
+                              <Label styleClass="nodeLabel" text="Entered By :" GridPane.halignment="RIGHT" GridPane.rowIndex="10" />
+                              <TextField fx:id="lblEnteredBy" editable="false" focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                              <Label styleClass="nodeLabel" text="Entry Date :" GridPane.halignment="RIGHT" GridPane.rowIndex="11" />
+                              <TextField fx:id="lblEntryDate" editable="false" focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                              <Label styleClass="nodeLabel" text="Description :" GridPane.halignment="RIGHT" GridPane.rowIndex="12" />
+                              <TextField fx:id="txtDescription" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+							  
+							  <Separator GridPane.columnSpan="2" GridPane.rowIndex="13" />
+                              
                               <TilePane alignment="TOP_RIGHT" hgap="25.0" styleClass="parent" GridPane.columnSpan="2" GridPane.rowIndex="14">
                                  <children>
                                     <Button fx:id="btnAdd" defaultButton="true" mnemonicParsing="true" onAction="#onAddCommand" text="Add" />
@@ -70,45 +114,6 @@
                                     <Button fx:id="btnReset" mnemonicParsing="false" onAction="#onResetCommand" text="Reset" />
                                  </children>
                               </TilePane>
-                              <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="nodeLabel" text="Code :" textAlignment="RIGHT" GridPane.halignment="RIGHT" />
-                              <TextField fx:id="lblProductCode" editable="false" focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" />
-                              <VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
-                                 <children>
-                                    <TextField fx:id="txtProductName" />
-                                    <Label fx:id="lblProductNameErrMsg" styleClass="errorLabel" />
-                                 </children>
-                              </VBox>
-                              <VBox GridPane.columnIndex="1" GridPane.rowIndex="3">
-                                 <children>
-                                    <ComboBox fx:id="cbMeasuringUnit" />
-                                    <Label fx:id="lblUnitErrMsg" styleClass="errorLabel" />
-                                 </children>
-                              </VBox>
-                              <VBox GridPane.columnIndex="1" GridPane.rowIndex="5">
-                                 <children>
-                                    <TextField fx:id="txtPurchaseRate" />
-                                    <Label fx:id="lblPurRateErrMsg" styleClass="errorLabel" />
-                                 </children>
-                              </VBox>
-                              <VBox GridPane.columnIndex="1" GridPane.rowIndex="6">
-                                 <children>
-                                    <TextField fx:id="txtTax" />
-                                    <Label fx:id="lblTaxErrMsg" styleClass="errorLabel" />
-                                 </children>
-                              </VBox>
-                              <TextField fx:id="lblPurchasePrice" editable="false" focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                              <VBox GridPane.columnIndex="1" GridPane.rowIndex="8">
-                                 <children>
-                                    <TextField fx:id="txtSellPrice" />
-                                    <Label fx:id="lblSellPriceErrMsg" styleClass="errorLabel" />
-                                 </children>
-                              </VBox>
-                              <Label styleClass="nodeLabel" text="Entered By :" GridPane.halignment="RIGHT" GridPane.rowIndex="10" />
-                              <TextField fx:id="lblEnteredBy" editable="false" focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-                              <Label styleClass="nodeLabel" text="Entry Date :" GridPane.halignment="RIGHT" GridPane.rowIndex="11" />
-                              <TextField fx:id="lblEntryDate" editable="false" focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="11" />
-                              <Label styleClass="nodeLabel" text="Description :" GridPane.halignment="RIGHT" GridPane.rowIndex="12" />
-                              <TextField fx:id="txtDescription" GridPane.columnIndex="1" GridPane.rowIndex="12" />
                            </children>
                            <columnConstraints>
                              <ColumnConstraints hgrow="NEVER" />
@@ -157,6 +162,16 @@
 				  </BorderPane>
 				  
                   <BorderPane styleClass="parent">
+				  <top>
+                        <TextField fx:id="txtSearchProduct" BorderPane.alignment="CENTER">
+                           <BorderPane.margin>
+                              <Insets bottom="5.0" left="400.0" right="5.0" top="10.0" />
+                           </BorderPane.margin>
+                           <tooltip>
+                              <Tooltip text="Product Search" />
+                           </tooltip>
+                        </TextField>
+                     </top>
                      <bottom>
                         <VBox nodeOrientation="RIGHT_TO_LEFT" BorderPane.alignment="CENTER">
                            <children>
@@ -174,16 +189,7 @@
                      <padding>
                         <Insets left="10.0" />
                      </padding>
-                     <top>
-                        <TextField fx:id="txtSearchProduct" BorderPane.alignment="CENTER">
-                           <BorderPane.margin>
-                              <Insets bottom="5.0" left="400.0" right="5.0" top="10.0" />
-                           </BorderPane.margin>
-                           <tooltip>
-                              <Tooltip text="Product Search" />
-                           </tooltip>
-                        </TextField>
-                     </top>
+                     
                <center>
                   <TableView fx:id="tableView" BorderPane.alignment="CENTER">
                     <columns>

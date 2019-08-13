@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +30,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -79,6 +78,8 @@ public class ProductsController implements TabContent {
 	private TabPane tabPane = null;
 
 	private HashMap<String, Integer> productCategoryMap;
+	
+	FilteredList<Product> filteredList;
 
 	@FXML
 	private Label heading;
@@ -248,6 +249,18 @@ public class ProductsController implements TabContent {
 				setPurchasePrice();
 			}
 		});
+		
+		 txtSearchProduct.textProperty().addListener((
+	                ObservableValue<? extends String> observable,
+	                String oldValue, String newValue) -> {
+	            if (newValue == null || newValue.isEmpty()) {
+	                filteredList.setPredicate(null);
+	            } else {
+	                filteredList.setPredicate((Product t) -> 
+	                        t.getProductName().toLowerCase().contains(newValue.toLowerCase())
+	                );
+	            }
+	        });
 	}
 
 	private void setPurchasePrice() {
@@ -274,6 +287,7 @@ public class ProductsController implements TabContent {
 
 	public void onSelectedRowChanged(ObservableValue<? extends Product> observable, Product oldValue,
 			Product newValue) {
+			resetFields();
 		if (newValue != null) {
 			txtProductName.setText(newValue.getProductName());
 			lblProductCode.setText(String.valueOf(newValue.getProductCode()));
@@ -379,7 +393,8 @@ public class ProductsController implements TabContent {
 		List<Product> list = productService.getAllProducts();
 		ObservableList<Product> productTableData = FXCollections.observableArrayList();
 		productTableData.addAll(list);
-		tableView.setItems(productTableData);
+		filteredList =   new FilteredList(productTableData, null);
+		tableView.setItems(filteredList);
 		return true;
 	}
 
