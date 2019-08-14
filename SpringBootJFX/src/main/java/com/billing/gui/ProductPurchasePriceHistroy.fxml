@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="471.0" prefWidth="828.0" stylesheets="@../../../css/products.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.PurchasePriceHistoryController">
+   <children>
+      <BorderPane prefHeight="471.0" prefWidth="830.0">
+         <top>
+            <TitledPane animated="false" collapsible="false" styleClass="parent" text="Product Details" BorderPane.alignment="CENTER">
+               <content>
+                  <GridPane alignment="CENTER_LEFT" hgap="20.0" vgap="15.0">
+                     <children>
+                        <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="requiredInput" text="Code :" textAlignment="RIGHT" GridPane.halignment="RIGHT" />
+                        <Label styleClass="requiredInput" text="Name :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                        <TextField fx:id="txtProductCode" editable="false" focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" />
+                        <TextField fx:id="txtProductName" editable="false" focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                     </children>
+                     <padding>
+                        <Insets top="10.0" />
+                     </padding>
+                     <columnConstraints>
+                        <ColumnConstraints maxWidth="245.0" minWidth="0.0" prefWidth="122.0" />
+                        <ColumnConstraints maxWidth="245.0" minWidth="0.0" prefWidth="173.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                     </rowConstraints>
+                  </GridPane>
+               </content>
+            </TitledPane>
+         </top>
+         <center>
+            <TitledPane animated="false" collapsible="false" styleClass="parent" text="Purchase Price History" BorderPane.alignment="CENTER">
+               <content>
+                  <TableView fx:id="tableView" prefHeight="356.0" prefWidth="761.0">
+                    <columns>
+                      <TableColumn fx:id="tcReceiveDate" prefWidth="180.0" text="Product Received Date" />
+                      <TableColumn fx:id="tcTax" prefWidth="79.0" text="Tax(%)" />
+                        <TableColumn fx:id="tcRate" prefWidth="103.0" text="Rate" />
+                        <TableColumn fx:id="tcPurchasePrice" prefWidth="141.0" text="Purchase Price" />
+                        <TableColumn fx:id="tcNarration" prefWidth="151.0" text="Narration" />
+                        <TableColumn fx:id="tcSupplierName" prefWidth="165.0" text="Supplier Name" />
+                    </columns>
+                     <padding>
+                        <Insets top="10.0" />
+                     </padding>
+					  <placeholder>
+                  <Label fx:id="placeholderText" text="&lt; Purchase Price History not found &gt;" />
+                </placeholder>
+                  </TableView>
+               </content>
+            </TitledPane>
+         </center>
+      </BorderPane>
+   </children>
+</HBox>

@@ -1,5 +1,6 @@
 package com.billing.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,7 @@ import com.billing.dto.Product;
 import com.billing.dto.ProductCategory;
 import com.billing.dto.StatusDTO;
 import com.billing.dto.UserDetails;
+import com.billing.main.AppContext;
 import com.billing.service.ProductCategoryService;
 import com.billing.service.ProductHistoryService;
 import com.billing.service.ProductService;
@@ -33,6 +35,9 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -43,11 +48,15 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 @Controller
-public class ProductsController implements TabContent {
+public class ProductsController extends AppContext implements TabContent {
 
 	private static final Logger logger = LoggerFactory.getLogger(ManageAccountController.class);
 
@@ -78,7 +87,7 @@ public class ProductsController implements TabContent {
 	private TabPane tabPane = null;
 
 	private HashMap<String, Integer> productCategoryMap;
-	
+
 	FilteredList<Product> filteredList;
 
 	@FXML
@@ -249,45 +258,43 @@ public class ProductsController implements TabContent {
 				setPurchasePrice();
 			}
 		});
-		
-		 txtSearchProduct.textProperty().addListener((
-	                ObservableValue<? extends String> observable,
-	                String oldValue, String newValue) -> {
-	            if (newValue == null || newValue.isEmpty()) {
-	                filteredList.setPredicate(null);
-	            } else {
-	                filteredList.setPredicate((Product t) -> 
-	                        t.getProductName().toLowerCase().contains(newValue.toLowerCase())
-	                );
-	            }
-	        });
+
+		txtSearchProduct.textProperty()
+				.addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+					if (newValue == null || newValue.isEmpty()) {
+						filteredList.setPredicate(null);
+					} else {
+						filteredList.setPredicate(
+								(Product t) -> t.getProductName().toLowerCase().contains(newValue.toLowerCase()));
+					}
+				});
 	}
 
 	private void setPurchasePrice() {
-		double purRateFinal=0;
-		double purchaseRateTemp=0;
-		if(!txtTax.getText().equals("") && !txtPurchaseRate.getText().equals("")){
+		double purRateFinal = 0;
+		double purchaseRateTemp = 0;
+		if (!txtTax.getText().equals("") && !txtPurchaseRate.getText().equals("")) {
 			Double tax = Double.parseDouble(txtTax.getText());
 			purchaseRateTemp = Double.parseDouble(txtPurchaseRate.getText());
 			double tempPurRate = purchaseRateTemp;
-			tempPurRate= tempPurRate+(purchaseRateTemp/100)*tax;
+			tempPurRate = tempPurRate + (purchaseRateTemp / 100) * tax;
 			purRateFinal = tempPurRate;
 			lblPurchasePrice.setText(appUtils.getDecimalFormat(purRateFinal));
-		}else{
-			if(!txtPurchaseRate.getText().equals("")){
+		} else {
+			if (!txtPurchaseRate.getText().equals("")) {
 				purchaseRateTemp = Double.parseDouble(txtPurchaseRate.getText());
 				lblPurchasePrice.setText(appUtils.getDecimalFormat(purchaseRateTemp));
-			}else{
+			} else {
 				purRateFinal = purchaseRateTemp;
 				lblPurchasePrice.setText(appUtils.getDecimalFormat(purRateFinal));
 			}
-			
+
 		}
 	}
 
 	public void onSelectedRowChanged(ObservableValue<? extends Product> observable, Product oldValue,
 			Product newValue) {
-			resetFields();
+		resetFields();
 		if (newValue != null) {
 			txtProductName.setText(newValue.getProductName());
 			lblProductCode.setText(String.valueOf(newValue.getProductCode()));
@@ -323,6 +330,20 @@ public class ProductsController implements TabContent {
 		 */
 		cbMeasuringUnit.getItems().add("Qty");
 		cbMeasuringUnit.getSelectionModel().select(0);
+	}
+
+	@FXML
+	void onPurchasePriceHistClick(MouseEvent event) {
+		if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+			Product product = tableView.getSelectionModel().getSelectedItem();
+			getPurchasePriceHistPopUp(product);
+		}
+	}
+
+	@FXML
+	void onViewStockLedgertClick(MouseEvent event) {
+		if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+		}
 	}
 
 	@FXML
@@ -393,7 +414,7 @@ public class ProductsController implements TabContent {
 		List<Product> list = productService.getAllProducts();
 		ObservableList<Product> productTableData = FXCollections.observableArrayList();
 		productTableData.addAll(list);
-		filteredList =   new FilteredList(productTableData, null);
+		filteredList = new FilteredList(productTableData, null);
 		tableView.setItems(filteredList);
 		return true;
 	}
@@ -639,6 +660,41 @@ public class ProductsController implements TabContent {
 		lblTaxErrMsg.setText("");
 		lblUnitErrMsg.setText("");
 
+	}
+
+	private void getPurchasePriceHistPopUp(Product product) {
+		FXMLLoader fxmlLoader = new FXMLLoader();
+		fxmlLoader.setControllerFactory(springContext::getBean);
+		fxmlLoader.setLocation(this.getClass().getResource("/com/billing/gui/ProductPurchasePriceHistroy.fxml"));
+
+		Parent rootPane = null;
+		try {
+			rootPane = fxmlLoader.load();
+		} catch (IOException e) {
+			e.printStackTrace();
+			logger.error("getPurchasePriceHistPopUp Error in loading the view file :", e);
+			alertHelper.beep();
+
+			alertHelper.showErrorAlert(currentStage, "Error Occurred", "Error in creating user interface",
+					"An error occurred in creating user interface " + "for the selected command");
+
+			return;
+		}
+
+		final Scene scene = new Scene(rootPane);
+		final PurchasePriceHistoryController controller = (PurchasePriceHistoryController) fxmlLoader.getController();
+
+		controller.product = product;
+
+		final Stage stage = new Stage();
+		stage.initModality(Modality.APPLICATION_MODAL);
+		stage.initOwner(currentStage);
+		stage.setUserData(controller);
+		stage.getIcons().add(new Image("/images/shop32X32.png"));
+		stage.setScene(scene);
+		stage.setTitle("Product Purchase Price History");
+		controller.loadData();
+		stage.showAndWait();
 	}
 
 }

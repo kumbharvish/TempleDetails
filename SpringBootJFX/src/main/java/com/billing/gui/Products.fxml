@@ -143,12 +143,12 @@
                      <top>
                         <ToolBar nodeOrientation="RIGHT_TO_LEFT" styleClass="parent" BorderPane.alignment="CENTER_RIGHT">
                            <items>
-                              <Label fx:id="lblViewStockLedger">
+                              <Label fx:id="lblViewStockLedger" onMouseClicked="#onViewStockLedgertClick">
                                  <tooltip>
                                     <Tooltip text="View Stock Ledger" />
                                  </tooltip>
                               </Label>
-                              <Label fx:id="lblPurchasePriceHistory">
+                              <Label fx:id="lblPurchasePriceHistory" onMouseClicked="#onPurchasePriceHistClick">
                                  <tooltip>
                                     <Tooltip text="Purchase Price History" />
                                  </tooltip>
