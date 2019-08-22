@@ -236,6 +236,8 @@ public class ProductsController extends AppContext implements TabContent {
 		tcSellPrice.setCellValueFactory(
 				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getSellPrice())));
 		tcDescription.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription()));
+		 setTableCellValueFactory();
+	        setTableCellFactories();
 		// Force Number Listner
 		txtPurchaseRate.textProperty().addListener(Utility.getForceDecimalNumberListner());
 		txtQuantity.textProperty().addListener(Utility.getForceDecimalNumberListner());
@@ -336,13 +338,23 @@ public class ProductsController extends AppContext implements TabContent {
 	void onPurchasePriceHistClick(MouseEvent event) {
 		if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
 			Product product = tableView.getSelectionModel().getSelectedItem();
-			getPurchasePriceHistPopUp(product);
+			if (lblProductCode.getText().equals("")) {
+				alertHelper.showErrorNotification("Please select product");
+			} else {
+				getPurchasePriceHistPopUp(product);
+			}
 		}
 	}
 
 	@FXML
 	void onViewStockLedgertClick(MouseEvent event) {
 		if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+			Product product = tableView.getSelectionModel().getSelectedItem();
+			if (lblProductCode.getText().equals("")) {
+				alertHelper.showErrorNotification("Please select product");
+			} else {
+				getViewStockLedgerPopUp(product);
+			}
 		}
 	}
 
@@ -693,6 +705,41 @@ public class ProductsController extends AppContext implements TabContent {
 		stage.getIcons().add(new Image("/images/shop32X32.png"));
 		stage.setScene(scene);
 		stage.setTitle("Product Purchase Price History");
+		controller.loadData();
+		stage.showAndWait();
+	}
+	
+	private void getViewStockLedgerPopUp(Product product){
+		FXMLLoader fxmlLoader = new FXMLLoader();
+		fxmlLoader.setControllerFactory(springContext::getBean);
+		fxmlLoader.setLocation(this.getClass().getResource("/com/billing/gui/ViewStockLedger.fxml"));
+
+		Parent rootPane = null;
+		try {
+			rootPane = fxmlLoader.load();
+		} catch (IOException e) {
+			e.printStackTrace();
+			logger.error("getViewStockLedgerPopUp Error in loading the view file :", e);
+			alertHelper.beep();
+
+			alertHelper.showErrorAlert(currentStage, "Error Occurred", "Error in creating user interface",
+					"An error occurred in creating user interface " + "for the selected command");
+
+			return;
+		}
+
+		final Scene scene = new Scene(rootPane);
+		final PurchasePriceHistoryController controller = (PurchasePriceHistoryController) fxmlLoader.getController();
+
+		controller.product = product;
+
+		final Stage stage = new Stage();
+		stage.initModality(Modality.APPLICATION_MODAL);
+		stage.initOwner(currentStage);
+		stage.setUserData(controller);
+		stage.getIcons().add(new Image("/images/shop32X32.png"));
+		stage.setScene(scene);
+		stage.setTitle("Product Stock Ledger");
 		controller.loadData();
 		stage.showAndWait();
 	}

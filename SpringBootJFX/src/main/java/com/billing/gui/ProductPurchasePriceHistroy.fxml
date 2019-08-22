@@ -9,14 +9,14 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="471.0" prefWidth="828.0" stylesheets="@../../../css/products.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.PurchasePriceHistoryController">
+<VBox styleClass="dialogRootNode" stylesheets="@../../../css/products.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.PurchasePriceHistoryController">
    <children>
-      <BorderPane prefHeight="471.0" prefWidth="830.0">
+      <BorderPane styleClass="parent">
          <top>
-            <TitledPane animated="false" collapsible="false" styleClass="parent" text="Product Details" BorderPane.alignment="CENTER">
+            <TitledPane fx:id="titledPaneDetails" animated="false" collapsible="false" text="Product Details" BorderPane.alignment="CENTER">
                <content>
                   <GridPane alignment="CENTER_LEFT" hgap="20.0" vgap="15.0">
                      <children>
@@ -30,7 +30,7 @@
                      </padding>
                      <columnConstraints>
                         <ColumnConstraints maxWidth="245.0" minWidth="0.0" prefWidth="122.0" />
-                        <ColumnConstraints maxWidth="245.0" minWidth="0.0" prefWidth="173.0" />
+                        <ColumnConstraints maxWidth="400.0" minWidth="0.0" prefWidth="300.0" />
                      </columnConstraints>
                      <rowConstraints>
                         <RowConstraints />
@@ -42,9 +42,9 @@
             </TitledPane>
          </top>
          <center>
-            <TitledPane animated="false" collapsible="false" styleClass="parent" text="Purchase Price History" BorderPane.alignment="CENTER">
+            <TitledPane fx:id="titledPaneHistory" animated="false" collapsible="false" text="Purchase Price History" BorderPane.alignment="CENTER">
                <content>
-                  <TableView fx:id="tableView" prefHeight="356.0" prefWidth="761.0">
+                  <TableView fx:id="tableView">
                     <columns>
                       <TableColumn fx:id="tcReceiveDate" prefWidth="180.0" text="Product Received Date" />
                       <TableColumn fx:id="tcTax" prefWidth="79.0" text="Tax(%)" />
@@ -53,16 +53,16 @@
                         <TableColumn fx:id="tcNarration" prefWidth="151.0" text="Narration" />
                         <TableColumn fx:id="tcSupplierName" prefWidth="165.0" text="Supplier Name" />
                     </columns>
-                     <padding>
-                        <Insets top="10.0" />
-                     </padding>
 					  <placeholder>
                   <Label fx:id="placeholderText" text="&lt; Purchase Price History not found &gt;" />
                 </placeholder>
+                     <padding>
+                        <Insets top="5.0" />
+                     </padding>
                   </TableView>
                </content>
             </TitledPane>
          </center>
       </BorderPane>
    </children>
-</HBox>
+</VBox>
