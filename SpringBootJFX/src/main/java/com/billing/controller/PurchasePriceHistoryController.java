@@ -60,6 +60,10 @@ public class PurchasePriceHistoryController {
 
 	public void initialize() {
 
+		setTableCellFactories();
+	}
+
+	private void setTableCellFactories() {
 		tcReceiveDate.setCellValueFactory(
 				cellData -> new SimpleStringProperty(appUtils.getFormattedDateWithTime(cellData.getValue().getTimeStamp())));
 		tcSupplierName.setCellValueFactory(
@@ -71,6 +75,13 @@ public class PurchasePriceHistoryController {
 				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getProductTax())));
 		tcPurchasePrice.setCellValueFactory(
 				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getPurcasePrice())));
+		//Set CSS
+		tcReceiveDate.getStyleClass().add("character-cell");
+		tcSupplierName.getStyleClass().add("character-cell");
+		tcNarration.getStyleClass().add("character-cell");
+		tcRate.getStyleClass().add("numeric-cell");
+		tcTax.getStyleClass().add("numeric-cell");
+		tcPurchasePrice.getStyleClass().add("numeric-cell");
 	}
 
 	public void loadData() {

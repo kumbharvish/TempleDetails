@@ -223,21 +223,7 @@ public class ProductsController extends AppContext implements TabContent {
 		lblTaxErrMsg.visibleProperty().bind(lblTaxErrMsg.textProperty().length().greaterThanOrEqualTo(1));
 		lblSellPriceErrMsg.managedProperty().bind(lblSellPriceErrMsg.visibleProperty());
 		lblSellPriceErrMsg.visibleProperty().bind(lblSellPriceErrMsg.textProperty().length().greaterThanOrEqualTo(1));
-		// Table Column Mapping
-		tcCategory.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProductCategory()));
-		tcName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProductName()));
-		tcQuantity.setCellValueFactory(
-				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getQuanity())));
-		tcMUnit.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMeasure()));
-		tcPurchaseRate.setCellValueFactory(
-				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getPurcaseRate())));
-		tcTax.setCellValueFactory(
-				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getProductTax())));
-		tcSellPrice.setCellValueFactory(
-				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getSellPrice())));
-		tcDescription.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription()));
-		 setTableCellValueFactory();
-	        setTableCellFactories();
+		setTableCellFactories();
 		// Force Number Listner
 		txtPurchaseRate.textProperty().addListener(Utility.getForceDecimalNumberListner());
 		txtQuantity.textProperty().addListener(Utility.getForceDecimalNumberListner());
@@ -270,6 +256,31 @@ public class ProductsController extends AppContext implements TabContent {
 								(Product t) -> t.getProductName().toLowerCase().contains(newValue.toLowerCase()));
 					}
 				});
+	}
+
+	private void setTableCellFactories() {
+		// Table Column Mapping
+				tcCategory.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProductCategory()));
+				tcName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProductName()));
+				tcQuantity.setCellValueFactory(
+						cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getQuanity())));
+				tcMUnit.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMeasure()));
+				tcPurchaseRate.setCellValueFactory(
+						cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getPurcaseRate())));
+				tcTax.setCellValueFactory(
+						cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getProductTax())));
+				tcSellPrice.setCellValueFactory(
+						cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getSellPrice())));
+				tcDescription.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription()));
+				//Set CSS
+				tcQuantity.getStyleClass().add("numeric-cell");
+				tcPurchaseRate.getStyleClass().add("numeric-cell");
+				tcTax.getStyleClass().add("numeric-cell");
+				tcSellPrice.getStyleClass().add("numeric-cell");
+				tcCategory.getStyleClass().add("character-cell");
+				tcName.getStyleClass().add("character-cell");
+				tcMUnit.getStyleClass().add("character-cell");
+				tcDescription.getStyleClass().add("character-cell");
 	}
 
 	private void setPurchasePrice() {
@@ -708,8 +719,8 @@ public class ProductsController extends AppContext implements TabContent {
 		controller.loadData();
 		stage.showAndWait();
 	}
-	
-	private void getViewStockLedgerPopUp(Product product){
+
+	private void getViewStockLedgerPopUp(Product product) {
 		FXMLLoader fxmlLoader = new FXMLLoader();
 		fxmlLoader.setControllerFactory(springContext::getBean);
 		fxmlLoader.setLocation(this.getClass().getResource("/com/billing/gui/ViewStockLedger.fxml"));

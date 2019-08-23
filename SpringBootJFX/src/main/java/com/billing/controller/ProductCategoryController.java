@@ -135,12 +135,18 @@ public class ProductCategoryController implements TabContent {
 		txtCategoryNameErrorMsg.managedProperty().bind(txtCategoryNameErrorMsg.visibleProperty());
 		txtCategoryNameErrorMsg.visibleProperty()
 				.bind(txtCategoryNameErrorMsg.textProperty().length().greaterThanOrEqualTo(1));
-
-		tcCategoryName.setCellValueFactory(cellData -> cellData.getValue().categoryNameProperty());
-		tcCategoryDesc.setCellValueFactory(cellData -> cellData.getValue().categoryDescProperty());
-
+		setTableCellFactories();
 		tableView.getSelectionModel().selectedItemProperty().addListener(this::onSelectedRowChanged);
 		categoryCode = 0;
+	}
+
+	private void setTableCellFactories() {
+		tcCategoryName.setCellValueFactory(cellData -> cellData.getValue().categoryNameProperty());
+		tcCategoryDesc.setCellValueFactory(cellData -> cellData.getValue().categoryDescProperty());	
+		//Set CSS
+		tcCategoryName.getStyleClass().add("character-cell");
+		tcCategoryDesc.getStyleClass().add("character-cell");
+		
 	}
 
 	public void onSelectedRowChanged(ObservableValue<? extends ProductCategory> observable, ProductCategory oldValue,

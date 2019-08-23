@@ -224,3 +224,13 @@
 .check-list-view .check-box{
     -fx-focus-traversible : false;
 }
+
+.numeric-cell{
+    -fx-padding: 4px 10px 4px 0;
+    -fx-alignment: CENTER_RIGHT;
+}
+
+.character-cell{
+    -fx-padding: 4px 0 4px 10px;
+    -fx-alignment: CENTER_LEFT;
+}
