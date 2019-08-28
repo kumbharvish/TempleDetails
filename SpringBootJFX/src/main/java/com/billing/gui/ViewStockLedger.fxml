@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox styleClass="dialogRootNode" stylesheets="@../../../css/products.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.ViewStockLedgerController">
+   <children>
+      <BorderPane styleClass="parent">
+         <top>
+            <TitledPane animated="false" collapsible="false" text="Product Details" BorderPane.alignment="CENTER">
+               <content>
+                  <GridPane alignment="CENTER_LEFT" hgap="20.0" vgap="15.0">
+                     <children>
+                        <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="nodeLabel" text="Code :" textAlignment="RIGHT" GridPane.halignment="RIGHT" />
+                        <Label styleClass="nodeLabel" text="Name :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                        <TextField fx:id="txtProductCode" editable="false" focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" />
+                        <TextField fx:id="txtProductName" editable="false" focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label styleClass="nodeLabel" text="From Date :" GridPane.columnIndex="2" GridPane.halignment="RIGHT" />
+                        <Label styleClass="nodeLabel" text="To Date :" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                        <DatePicker fx:id="dateFrom" GridPane.columnIndex="3" />
+                        <DatePicker fx:id="dateTo" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                        <Label styleClass="nodeLabel" text="Current Stock :" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                        <TextField fx:id="txtCurrentStock" editable="false" focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Button fx:id="btnGetDetails" mnemonicParsing="false" onAction="#onGetDetailsAction" text="Get Details" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+                           <GridPane.margin>
+                              <Insets right="30.0" />
+                           </GridPane.margin>
+                        </Button>
+                     </children>
+                     <padding>
+                        <Insets top="10.0" />
+                     </padding>
+                     <columnConstraints>
+                        <ColumnConstraints maxWidth="245.0" minWidth="0.0" prefWidth="122.0" />
+                        <ColumnConstraints maxWidth="300.0" minWidth="0.0" prefWidth="250.0" />
+                        <ColumnConstraints maxWidth="245.0" minWidth="10.0" prefWidth="122.0" />
+                        <ColumnConstraints maxWidth="300.0" minWidth="10.0" prefWidth="200.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                     </rowConstraints>
+                  </GridPane>
+               </content>
+            </TitledPane>
+         </top>
+         <center>
+            <TitledPane animated="false" collapsible="false" text="Product Stock Ledger" BorderPane.alignment="CENTER">
+               <content>
+                  <TableView fx:id="tableView">
+                    <columns>
+                      <TableColumn fx:id="tcDate" prefWidth="180.0" text="Date" />
+                      <TableColumn fx:id="tcTransactionType" prefWidth="177.0" text="Transaction Type" />
+                        <TableColumn fx:id="tcStockIn" prefWidth="103.0" text="Stock In" />
+                        <TableColumn fx:id="tcStockOut" prefWidth="103.0" text="Stock Out" />
+                        <TableColumn fx:id="tcNarration" prefWidth="182.0" text="Narration" />
+                    </columns>
+					  <placeholder>
+                  <Label fx:id="placeholderText" text="&lt; Stock Ledger not found &gt;" />
+                </placeholder>
+                     <padding>
+                        <Insets top="5.0" />
+                     </padding>
+                  </TableView>
+               </content>
+            </TitledPane>
+         </center>
+      </BorderPane>
+   </children>
+</VBox>

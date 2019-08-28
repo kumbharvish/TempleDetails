@@ -20,8 +20,8 @@
                <content>
                   <GridPane alignment="CENTER_LEFT" hgap="20.0" vgap="15.0">
                      <children>
-                        <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="requiredInput" text="Code :" textAlignment="RIGHT" GridPane.halignment="RIGHT" />
-                        <Label styleClass="requiredInput" text="Name :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                        <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="nodeLabel" text="Code :" textAlignment="RIGHT" GridPane.halignment="RIGHT" />
+                        <Label styleClass="nodeLabel" text="Name :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
                         <TextField fx:id="txtProductCode" editable="false" focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" />
                         <TextField fx:id="txtProductName" editable="false" focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                      </children>

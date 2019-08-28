@@ -740,7 +740,7 @@ public class ProductsController extends AppContext implements TabContent {
 		}
 
 		final Scene scene = new Scene(rootPane);
-		final PurchasePriceHistoryController controller = (PurchasePriceHistoryController) fxmlLoader.getController();
+		final ViewStockLedgerController controller = (ViewStockLedgerController) fxmlLoader.getController();
 
 		controller.product = product;
 
