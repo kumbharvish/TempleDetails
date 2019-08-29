@@ -8,7 +8,7 @@ public class CustomerProfit implements Comparable<CustomerProfit>{
 	private double sumOfBillAmt;
 	private double sumOfBillPurAmt;
 	private int totalNoOfItems;
-	private int totalQty;
+	private double totalQty;
 	private double profit;
 	
 	public String getCustName() {
@@ -48,10 +48,10 @@ public class CustomerProfit implements Comparable<CustomerProfit>{
 	public void setTotalNoOfItems(int totalNoOfItems) {
 		this.totalNoOfItems = totalNoOfItems;
 	}
-	public int getTotalQty() {
+	public double getTotalQty() {
 		return totalQty;
 	}
-	public void setTotalQty(int totalQty) {
+	public void setTotalQty(double totalQty) {
 		this.totalQty = totalQty;
 	}
 	@Override

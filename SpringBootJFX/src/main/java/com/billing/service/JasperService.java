@@ -34,7 +34,7 @@ public class JasperService {
 			map.put("Rate", appUtils.getDecimalFormat(item.getRate()));
 			map.put("Amount", appUtils.getDecimalFormat(item.getAmount()));
 			map.put("BillNo", String.valueOf(bill.getBillNumber()));
-			map.put("TotalQty", String.valueOf(bill.getTotalQuanity()));
+			map.put("TotalQty", appUtils.getDecimalFormat(bill.getTotalQuantity()));
 			map.put("NoOfItems", String.valueOf(bill.getNoOfItems()));
 			map.put("TotalAmount", appUtils.getDecimalFormat(bill.getTotalAmount()));
 			map.put("NetSalesAmount", appUtils.getDecimalFormat(bill.getNetSalesAmt()));
@@ -65,7 +65,7 @@ public class JasperService {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("ProductName", item.getProductName());
 			map.put("ProductCode", String.valueOf(item.getProductCode()));
-			map.put("Qty", String.valueOf(item.getQuanity()));
+			map.put("Qty", appUtils.getDecimalFormat(item.getQuantity()));
 			map.put("ProductMRP", appUtils.getDecimalFormat(item.getProductMRP()));
 			map.put("StockValueAmount", appUtils.getDecimalFormat(item.getStockValueAmount()));
 			dataSourceMaps.add(map);
@@ -97,7 +97,7 @@ public class JasperService {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("ProductName", item.getProductName());
 			map.put("ProductCode", String.valueOf(item.getProductCode()));
-			map.put("Quantity", item.getQuanity());
+			map.put("Quantity", item.getQuantity());
 			map.put("CategoryName", item.getProductCategory());
 			dataSourceMaps.add(map);
 		}
@@ -120,7 +120,7 @@ public class JasperService {
 
 	// Sales Report
 	public List<Map<String, ?>> createDateForSalesReport(List<BillDetails> billDetailList, String fromDate,
-			String toDate, Double totalPendingAmt, Double totalCashAmt, Double totalAmt, Integer totalQty,
+			String toDate, Double totalPendingAmt, Double totalCashAmt, Double totalAmt, Double totalQty,
 			Integer totalNoOfItems) {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
 		for (BillDetails bill : billDetailList) {
@@ -130,7 +130,7 @@ public class JasperService {
 			map.put("BillNo", String.valueOf(bill.getBillNumber()));
 			map.put("CustMobile", String.valueOf(bill.getCustomerMobileNo()));
 			map.put("CustName", bill.getCustomerName());
-			map.put("Qty", String.valueOf(bill.getTotalQuanity()));
+			map.put("Qty", appUtils.getDecimalFormat(bill.getTotalQuantity()));
 			map.put("NoOfItems", bill.getNoOfItems());
 			map.put("NetSalesAmt", appUtils.getDecimalFormat(bill.getNetSalesAmt()));
 			map.put("PaymentMode", bill.getPaymentMode());
@@ -138,7 +138,7 @@ public class JasperService {
 			map.put("TotalPendingAmt", appUtils.getDecimalFormat(totalPendingAmt));
 			map.put("TotalCashAmt", appUtils.getDecimalFormat(totalCashAmt));
 			map.put("TotalAmount", appUtils.getDecimalFormat(totalAmt));
-			map.put("TotalQty", String.valueOf(totalQty));
+			map.put("TotalQty", appUtils.getDecimalFormat(totalQty));
 			map.put("TotalNoOfItems", String.valueOf(totalNoOfItems));
 			dataSourceMaps.add(map);
 		}
@@ -147,7 +147,7 @@ public class JasperService {
 
 	// Sales Return Report
 	public List<Map<String, ?>> createDateForSalesReturnReport(List<ReturnDetails> returnList, String fromDate,
-			String toDate, Double totalPendingAmt, Double totalCashAmt, Double totalAmt, Integer totalQty,
+			String toDate, Double totalPendingAmt, Double totalCashAmt, Double totalAmt, Double totalQty,
 			Integer totalNoOfItems) {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
 		for (ReturnDetails bill : returnList) {
@@ -157,7 +157,7 @@ public class JasperService {
 			map.put("ReturnNo", String.valueOf(bill.getReturnNumber()));
 			map.put("CustMobile", String.valueOf(bill.getCustomerMobileNo()));
 			map.put("CustName", bill.getCustomerName());
-			map.put("Qty", String.valueOf(bill.getTotalQuanity()));
+			map.put("Qty", appUtils.getDecimalFormat(bill.getTotalQuantity()));
 			map.put("NoOfItems", bill.getNoOfItems());
 			map.put("ReturnTotalAmoount", appUtils.getDecimalFormat(bill.getTotalAmount()));
 			map.put("PaymentMode", bill.getReturnpaymentMode());
@@ -165,7 +165,7 @@ public class JasperService {
 			map.put("TotalPendingAmt", appUtils.getDecimalFormat(totalPendingAmt));
 			map.put("TotalCashAmt", appUtils.getDecimalFormat(totalCashAmt));
 			map.put("TotalAmount", appUtils.getDecimalFormat(totalAmt));
-			map.put("TotalQty", String.valueOf(totalQty));
+			map.put("TotalQty", appUtils.getDecimalFormat(totalQty));
 			map.put("TotalNoOfItems", String.valueOf(totalNoOfItems));
 			dataSourceMaps.add(map);
 		}

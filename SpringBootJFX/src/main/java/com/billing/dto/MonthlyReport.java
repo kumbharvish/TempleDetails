@@ -14,7 +14,7 @@ public class MonthlyReport {
 	
 	private double totalPurchaseAmt;
 	
-	private int totalQtySold;
+	private double totalQtySold;
 
 	public double getTotalSalesPendingAmt() {
 		return totalSalesPendingAmt;
@@ -64,11 +64,11 @@ public class MonthlyReport {
 		this.totalPurchaseAmt = totalPurchaseAmt;
 	}
 
-	public int getTotalQtySold() {
+	public double getTotalQtySold() {
 		return totalQtySold;
 	}
 
-	public void setTotalQtySold(int totalQtySold) {
+	public void setTotalQtySold(double totalQtySold) {
 		this.totalQtySold = totalQtySold;
 	}
 

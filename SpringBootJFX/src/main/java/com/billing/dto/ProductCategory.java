@@ -15,7 +15,7 @@ public class ProductCategory {
 	
 	private double comission;
 	
-	private int categoryStockQty;
+	private double categoryStockQty;
 	
 	private double categoryStockAmount;
 	
@@ -70,11 +70,11 @@ public class ProductCategory {
 	        return new ProductCategoryComparator(sortParameters);
     }
 	 
- public int getCategoryStockQty() {
+ public double getCategoryStockQty() {
 	return categoryStockQty;
 }
 
-public void setCategoryStockQty(int categoryStockQty) {
+public void setCategoryStockQty(double categoryStockQty) {
 	this.categoryStockQty = categoryStockQty;
 }
 

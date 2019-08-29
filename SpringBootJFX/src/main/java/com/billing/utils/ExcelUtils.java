@@ -134,7 +134,7 @@ public class ExcelUtils {
 			    cell.setCellValue(product.getProductMRP());
 			    
 			    cell = row.createCell(4);
-			    cell.setCellValue(product.getQuanity());
+			    cell.setCellValue(product.getQuantity());
 			    
 			    cell = row.createCell(5);
 			    cell.setCellValue(product.getStockValueAmount());
@@ -270,7 +270,7 @@ public class ExcelUtils {
 					    cell.setCellValue(p.getProductCategory());
 					    
 					    cell = row.createCell(4);
-					    cell.setCellValue(p.getQuanity());
+					    cell.setCellValue(p.getQuantity());
 					   
 					    
 					}

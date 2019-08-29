@@ -133,7 +133,7 @@ public class ProductHistoryService {
 			for(Product product:productList){
 				stmt.setInt(1,product.getProductCode());
 				stmt.setTimestamp(2,new java.sql.Timestamp(System.currentTimeMillis()));
-				stmt.setInt(3, product.getQuanity());
+				stmt.setDouble(3, product.getQuantity());
 				stmt.setString(4, product.getDescription());
 				stmt.setString(5,transactionType);
 				stmt.addBatch();

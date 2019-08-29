@@ -93,7 +93,7 @@ public class CustomerHistoryService {
 					billDetails.setCustomerMobileNo(rs.getLong("CUST_MOB_NO"));
 					billDetails.setCustomerName(rs.getString("CUSTOMER_NAME"));
 					billDetails.setNoOfItems(rs.getInt("NO_OF_ITEMS"));
-					billDetails.setTotalQuanity(rs.getInt("BILL_QUANTITY"));
+					billDetails.setTotalQuantity(rs.getDouble("BILL_QUANTITY"));
 					billDetails.setTotalAmount(rs.getDouble("TOTAL_AMOUNT"));
 					billDetails.setTax(rs.getDouble("BILL_TAX"));
 					billDetails.setGrandTotal(rs.getDouble("GRAND_TOTAL"));
@@ -139,7 +139,7 @@ public class CustomerHistoryService {
 				customer.setSumOfBillAmt(rs.getDouble("SUM_BILL_AMT"));
 				customer.setSumOfBillPurAmt(rs.getDouble("SUM_BILL_PUR_AMT"));
 				customer.setTotalNoOfItems(rs.getInt("TOTAL_NO_OF_ITEMS"));
-				customer.setTotalQty(rs.getInt("TOTAL_QUANTITY"));
+				customer.setTotalQty(rs.getDouble("TOTAL_QUANTITY"));
 
 				customerList.add(customer);
 				Collections.sort(customerList);

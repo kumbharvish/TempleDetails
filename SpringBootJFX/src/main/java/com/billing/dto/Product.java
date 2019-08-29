@@ -7,51 +7,51 @@ import java.util.Comparator;
 public class Product {
 
 	private int productCode;
-	
+
 	private Long productBarCode;
-	
+
 	private String productName;
-	
+
 	private String measure;
-	
-	private int quanity;
-	
+
+	private double quantity;
+
 	private double purcaseRate;
 
 	private double productTax;
-	
+
 	private double purcasePrice;
-	
+
 	private double sellPrice;
-	
+
 	private double productMRP;
-	
+
 	private double discount;
-	
+
 	private Date entryDate;
-	
+
 	private Date lastUpdateDate;
-	
+
 	private String description;
 
 	private String enterBy;
-	
+
 	private String productCategory;
-	
+
 	private int sellQuantity;
-	
+
 	private double stockValueAmount;
-	
+
 	private double profit;
-	
+
 	private double stockPurchaseAmount;
-	
+
 	private int categoryCode;
-	
+
 	private String supplierName;
-	
+
 	private int supplierId;
-	
+
 	private Timestamp timeStamp;
 
 	public int getProductCode() {
@@ -76,14 +76,6 @@ public class Product {
 
 	public void setMeasure(String measure) {
 		this.measure = measure;
-	}
-
-	public int getQuanity() {
-		return quanity;
-	}
-
-	public void setQuanity(int quanity) {
-		this.quanity = quanity;
 	}
 
 	public double getPurcasePrice() {
@@ -165,10 +157,10 @@ public class Product {
 	public void setSellQuantity(int sellQuantity) {
 		this.sellQuantity = sellQuantity;
 	}
-	
-	public double getItemPurchasePrice(){
-		
-		return sellQuantity*purcasePrice;
+
+	public double getItemPurchasePrice() {
+
+		return sellQuantity * purcasePrice;
 	}
 
 	public double getPurcaseRate() {
@@ -195,12 +187,12 @@ public class Product {
 		this.profit = profit;
 	}
 
-	 public static Comparator<Product> getComparator(SortParameter... sortParameters) {
-	        return new ProductComparator(sortParameters);
-	    }
+	public static Comparator<Product> getComparator(SortParameter... sortParameters) {
+		return new ProductComparator(sortParameters);
+	}
 
-	 public double getStockValueAmount() {
-		return productMRP * quanity;
+	public double getStockValueAmount() {
+		return productMRP * quantity;
 	}
 
 	public void setStockValueAmount(double stockValueAmount) {
@@ -216,7 +208,7 @@ public class Product {
 	}
 
 	public double getStockPurchaseAmount() {
-		return purcasePrice * quanity;
+		return purcasePrice * quantity;
 	}
 
 	public void setStockPurchaseAmount(double stockPurchaseAmount) {
@@ -231,58 +223,13 @@ public class Product {
 		this.categoryCode = categoryCode;
 	}
 
-	public enum SortParameter {
-	        CATEGORY_NAME_ASCENDING,PROFIT_ASCENDING,PRODUCT_NAME_ASCENDING,STOCK_VALUE_AMT_ASC,STOCK_QUANTITY_ASC
-	    }
+	public double getQuantity() {
+		return quantity;
+	}
 
-	 private static class ProductComparator implements Comparator<Product> {
-	        private SortParameter[] parameters;
-
-	        private ProductComparator(SortParameter[] parameters) {
-	            this.parameters = parameters;
-	        }
-
-	        public int compare(Product o1, Product o2) {
-	            int comparison;
-	            for (SortParameter parameter : parameters) {
-	                switch (parameter) {
-	                    case CATEGORY_NAME_ASCENDING:
-	                    	comparison = o1.getProductCategory().compareTo(o2.getProductCategory());
-	                        if (comparison != 0) return comparison;
-	                        break;
-	                    case PROFIT_ASCENDING:
-	                    	if (o1.getProfit() < o2.getProfit()) {
-	                	        return 1;
-	                	    }
-	                	    else if(o1.getProfit() > o2.getProfit()){
-	                	        return -1;
-	                	    }
-	                        break;
-	                    case PRODUCT_NAME_ASCENDING:
-	                    	comparison = o1.getProductName().compareTo(o2.getProductName());
-	                        if (comparison != 0) return comparison;
-	                        break;
-	                    case STOCK_VALUE_AMT_ASC:
-	                    	if (o1.getStockValueAmount() < o2.getStockValueAmount()) {
-	                	        return 1;
-	                	    }
-	                	    else if(o1.getStockValueAmount() > o2.getStockValueAmount()){
-	                	        return -1;
-	                	    }
-	                        break;
-	                    case STOCK_QUANTITY_ASC:
-	                    	if (o1.getQuanity() < o2.getQuanity()) {
-	                	        return 1;
-	                	    }
-	                	    else if(o1.getQuanity() > o2.getQuanity()){
-	                	        return -1;
-	                	    }
-	                        break;
-	                }
-	            }
-	            return 0;
-	        }
-	 }
+	public void setQuantity(double quantity) {
+		this.quantity = quantity;
+	}
 
 	public String getSupplierName() {
 		return supplierName;
@@ -310,21 +257,67 @@ public class Product {
 
 	@Override
 	public String toString() {
-		return "Product [productCode=" + productCode + ", productBarCode="
-				+ productBarCode + ", productName=" + productName
-				+ ", measure=" + measure + ", quanity=" + quanity
-				+ ", purcaseRate=" + purcaseRate + ", productTax=" + productTax
-				+ ", purcasePrice=" + purcasePrice + ", sellPrice=" + sellPrice
-				+ ", productMRP=" + productMRP + ", discount=" + discount
-				+ ", entryDate=" + entryDate + ", lastUpdateDate="
-				+ lastUpdateDate + ", Description=" + description
-				+ ", enterBy=" + enterBy + ", productCategory="
-				+ productCategory + ", sellQuantity=" + sellQuantity
-				+ ", stockValueAmount=" + stockValueAmount + ", profit="
-				+ profit + ", stockPurchaseAmount=" + stockPurchaseAmount
-				+ ", categoryCode=" + categoryCode + ", supplierName="
-				+ supplierName + ", supplierId=" + supplierId + ", timeStamp="
-				+ timeStamp + "]";
+		return "Product [productCode=" + productCode + ", productBarCode=" + productBarCode + ", productName="
+				+ productName + ", measure=" + measure + ", quanity=" + quantity + ", purcaseRate=" + purcaseRate
+				+ ", productTax=" + productTax + ", purcasePrice=" + purcasePrice + ", sellPrice=" + sellPrice
+				+ ", productMRP=" + productMRP + ", discount=" + discount + ", entryDate=" + entryDate
+				+ ", lastUpdateDate=" + lastUpdateDate + ", Description=" + description + ", enterBy=" + enterBy
+				+ ", productCategory=" + productCategory + ", sellQuantity=" + sellQuantity + ", stockValueAmount="
+				+ stockValueAmount + ", profit=" + profit + ", stockPurchaseAmount=" + stockPurchaseAmount
+				+ ", categoryCode=" + categoryCode + ", supplierName=" + supplierName + ", supplierId=" + supplierId
+				+ ", timeStamp=" + timeStamp + "]";
 	}
-	 
+
+	public enum SortParameter {
+		CATEGORY_NAME_ASCENDING, PROFIT_ASCENDING, PRODUCT_NAME_ASCENDING, STOCK_VALUE_AMT_ASC, STOCK_QUANTITY_ASC
+	}
+
+	private static class ProductComparator implements Comparator<Product> {
+		private SortParameter[] parameters;
+
+		private ProductComparator(SortParameter[] parameters) {
+			this.parameters = parameters;
+		}
+
+		public int compare(Product o1, Product o2) {
+			int comparison;
+			for (SortParameter parameter : parameters) {
+				switch (parameter) {
+				case CATEGORY_NAME_ASCENDING:
+					comparison = o1.getProductCategory().compareTo(o2.getProductCategory());
+					if (comparison != 0)
+						return comparison;
+					break;
+				case PROFIT_ASCENDING:
+					if (o1.getProfit() < o2.getProfit()) {
+						return 1;
+					} else if (o1.getProfit() > o2.getProfit()) {
+						return -1;
+					}
+					break;
+				case PRODUCT_NAME_ASCENDING:
+					comparison = o1.getProductName().compareTo(o2.getProductName());
+					if (comparison != 0)
+						return comparison;
+					break;
+				case STOCK_VALUE_AMT_ASC:
+					if (o1.getStockValueAmount() < o2.getStockValueAmount()) {
+						return 1;
+					} else if (o1.getStockValueAmount() > o2.getStockValueAmount()) {
+						return -1;
+					}
+					break;
+				case STOCK_QUANTITY_ASC:
+					if (o1.getQuantity() < o2.getQuantity()) {
+						return 1;
+					} else if (o1.getQuantity() > o2.getQuantity()) {
+						return -1;
+					}
+					break;
+				}
+			}
+			return 0;
+		}
+	}
+
 }

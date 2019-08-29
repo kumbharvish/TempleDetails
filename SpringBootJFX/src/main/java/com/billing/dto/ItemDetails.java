@@ -12,7 +12,7 @@ public class ItemDetails {
 	
 	private double rate;
 	
-	private int quantity;
+	private double quantity;
 	
 	private double amount;
 	
@@ -50,11 +50,11 @@ public class ItemDetails {
 		this.rate = rate;
 	}
 
-	public int getQuantity() {
+	public double getQuantity() {
 		return quantity;
 	}
 
-	public void setQuantity(int quantity) {
+	public void setQuantity(double quantity) {
 		this.quantity = quantity;
 	}
 

@@ -8,9 +8,9 @@ public class StockLedger {
 	
 	private Timestamp timeStamp;
 	
-	private int stockIn;
+	private double stockIn;
 	
-	private int stockOut;
+	private double stockOut;
 	
 	private String narration;
 	
@@ -32,19 +32,19 @@ public class StockLedger {
 		this.timeStamp = timeStamp;
 	}
 
-	public int getStockIn() {
+	public double getStockIn() {
 		return stockIn;
 	}
 
-	public void setStockIn(int stockIn) {
+	public void setStockIn(double stockIn) {
 		this.stockIn = stockIn;
 	}
 
-	public int getStockOut() {
+	public double getStockOut() {
 		return stockOut;
 	}
 
-	public void setStockOut(int stockOut) {
+	public void setStockOut(double stockOut) {
 		this.stockOut = stockOut;
 	}
 

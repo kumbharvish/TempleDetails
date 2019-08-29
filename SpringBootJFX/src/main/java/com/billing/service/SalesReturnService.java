@@ -62,7 +62,7 @@ public class SalesReturnService {
 				stmt.setDate(6, bill.getBillDate());
 				stmt.setString(7, bill.getBillPaymentMode());
 				stmt.setInt(8, bill.getNoOfItems());
-				stmt.setInt(9, bill.getTotalQuanity());
+				stmt.setDouble(9, bill.getTotalQuantity());
 				stmt.setString(10, bill.getReturnpaymentMode());
 				stmt.setDouble(11, bill.getTotalAmount());
 				stmt.setDouble(12, bill.getBillNetSalesAmt());
@@ -104,7 +104,7 @@ public class SalesReturnService {
 				stmt = conn.prepareStatement(UPDATE_PRODUCT_STOCK);
 				for (ItemDetails item : itemList) {
 					stmt.setInt(2, item.getItemNo());
-					stmt.setInt(1, item.getQuantity());
+					stmt.setDouble(1, item.getQuantity());
 					stmt.addBatch();
 				}
 				int batch[] = stmt.executeBatch();
@@ -140,7 +140,7 @@ public class SalesReturnService {
 					stmt.setInt(2, item.getItemNo());
 					stmt.setDouble(3, item.getMRP());
 					stmt.setDouble(4, item.getRate());
-					stmt.setInt(5, item.getQuantity());
+					stmt.setDouble(5, item.getQuantity());
 					stmt.setDouble(6, item.getAmount());
 					stmt.addBatch();
 				}
@@ -184,7 +184,7 @@ public class SalesReturnService {
 				returnDetails.setCustomerMobileNo(rs.getLong("CUST_MOB_NO"));
 				returnDetails.setCustomerName(rs.getString("CUSTOMER_NAME"));
 				returnDetails.setNoOfItems(rs.getInt("NO_OF_ITEMS"));
-				returnDetails.setTotalQuanity(rs.getInt("TOTAL_QTY"));
+				returnDetails.setTotalQuantity(rs.getDouble("TOTAL_QTY"));
 				returnDetails.setTotalAmount(rs.getDouble("RETURN_TOTAL_AMOUNT"));
 				returnDetails.setReturnpaymentMode(rs.getString("PAYMENT_MODE"));
 				returnDetails.setNewBillnetSalesAmt(rs.getDouble("NEW_BILL_NET_SALES_AMOUNT"));
@@ -228,7 +228,7 @@ public class SalesReturnService {
 				returnDetails.setCustomerMobileNo(rs.getLong("CUST_MOB_NO"));
 				returnDetails.setCustomerName(rs.getString("CUSTOMER_NAME"));
 				returnDetails.setNoOfItems(rs.getInt("NO_OF_ITEMS"));
-				returnDetails.setTotalQuanity(rs.getInt("TOTAL_QTY"));
+				returnDetails.setTotalQuantity(rs.getDouble("TOTAL_QTY"));
 				returnDetails.setTotalAmount(rs.getDouble("RETURN_TOTAL_AMOUNT"));
 				returnDetails.setReturnpaymentMode(rs.getString("PAYMENT_MODE"));
 				returnDetails.setNewBillnetSalesAmt(rs.getDouble("NEW_BILL_NET_SALES_AMOUNT"));
@@ -263,7 +263,7 @@ public class SalesReturnService {
 				stmt = conn.prepareStatement(UPDATE_PRODUCT_STOCK);
 				for (ItemDetails item : itemList) {
 					stmt.setInt(2, item.getItemNo());
-					stmt.setInt(1, item.getQuantity());
+					stmt.setDouble(1, item.getQuantity());
 					stmt.addBatch();
 				}
 				int batch[] = stmt.executeBatch();
@@ -382,7 +382,7 @@ public class SalesReturnService {
 				returnDetails.setCustomerMobileNo(rs.getLong("CUST_MOB_NO"));
 				returnDetails.setCustomerName(rs.getString("CUSTOMER_NAME"));
 				returnDetails.setNoOfItems(rs.getInt("NO_OF_ITEMS"));
-				returnDetails.setTotalQuanity(rs.getInt("TOTAL_QTY"));
+				returnDetails.setTotalQuantity(rs.getDouble("TOTAL_QTY"));
 				returnDetails.setTotalAmount(rs.getDouble("RETURN_TOTAL_AMOUNT"));
 				returnDetails.setReturnpaymentMode(rs.getString("PAYMENT_MODE"));
 				returnDetails.setNewBillnetSalesAmt(rs.getDouble("NEW_BILL_NET_SALES_AMOUNT"));

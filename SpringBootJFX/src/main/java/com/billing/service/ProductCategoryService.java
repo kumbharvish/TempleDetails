@@ -171,7 +171,7 @@ public class ProductCategoryService {
 				pc.setProductCode(rs.getInt("PRODUCT_ID"));
 				pc.setProductName(rs.getString("PRODUCT_NAME"));
 				pc.setMeasure(rs.getString("MEASURE"));
-				pc.setQuanity(rs.getInt("QUANTITY"));
+				pc.setQuantity(rs.getDouble("QUANTITY"));
 				pc.setPurcaseRate(rs.getDouble("PURCHASE_RATE"));
 				pc.setProductTax(rs.getDouble("PRODUCT_TAX"));
 				pc.setPurcasePrice(rs.getDouble("PURCHASE_PRICE"));

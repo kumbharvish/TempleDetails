@@ -24,7 +24,7 @@ public class ReturnDetails {
 	
 	private int noOfItems;
 	
-	private int totalQuanity;
+	private double totalQuantity;
 	
 	private double totalAmount;
 	
@@ -170,12 +170,12 @@ public class ReturnDetails {
 		this.noOfItems = noOfItems;
 	}
 
-	public int getTotalQuanity() {
-		return totalQuanity;
+	public double getTotalQuantity() {
+		return totalQuantity;
 	}
 
-	public void setTotalQuanity(int totalQuanity) {
-		this.totalQuanity = totalQuanity;
+	public void setTotalQuantity(double totalQuantity) {
+		this.totalQuantity = totalQuantity;
 	}
 
 	public double getTotalAmount() {
@@ -217,7 +217,7 @@ public class ReturnDetails {
 				+ billNumber + ", customerMobileNo=" + customerMobileNo
 				+ ", billDate=" + billDate + ", itemDetails=" + itemDetails
 				+ ", billPaymentMode=" + billPaymentMode + ", noOfItems="
-				+ noOfItems + ", totalQuanity=" + totalQuanity
+				+ noOfItems + ", totalQuanity=" + totalQuantity
 				+ ", totalAmount=" + totalAmount + ", returnpaymentMode="
 				+ returnpaymentMode + ", billNetSalesAmt=" + billNetSalesAmt
 				+ ", newBillnetSalesAmt=" + newBillnetSalesAmt + "]";

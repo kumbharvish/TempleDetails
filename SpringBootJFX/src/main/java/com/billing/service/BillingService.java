@@ -141,7 +141,7 @@ public class BillingService {
 				stmt = conn.prepareStatement(UPDATE_PRODUCT_STOCK);
 				for(ItemDetails item : itemList){
 					stmt.setInt(2, item.getItemNo());
-					stmt.setInt(1, item.getQuantity());
+					stmt.setDouble(1, item.getQuantity());
 					stmt.addBatch();
 				}
 				int batch[] = stmt.executeBatch();

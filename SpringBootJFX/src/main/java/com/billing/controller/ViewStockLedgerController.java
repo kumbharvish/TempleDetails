@@ -86,9 +86,9 @@ public class ViewStockLedgerController {
 				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getTransactionType())));
 		tcNarration.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNarration()));
 		tcStockIn.setCellValueFactory(
-				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getStockIn())));
+				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getStockIn())));
 		tcStockOut.setCellValueFactory(
-				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getStockOut())));
+				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getStockOut())));
 		// Set CSS
 		tcDate.getStyleClass().add("character-cell");
 		tcTransactionType.getStyleClass().add("character-cell");
@@ -100,7 +100,7 @@ public class ViewStockLedgerController {
 	public void loadData() {
 		txtProductCode.setText(String.valueOf(product.getProductCode()));
 		txtProductName.setText(product.getProductName());
-		txtCurrentStock.setText(String.valueOf(product.getQuanity()));
+		txtCurrentStock.setText(appUtils.getDecimalFormat(product.getQuantity()));
 		List<StockLedger> stockLedgerList = productHistoryService.getProductStockLedger(product.getProductCode(),
 				java.sql.Date.valueOf(dateFrom.getValue()), java.sql.Date.valueOf(dateTo.getValue()));
 		ObservableList<StockLedger> slList = FXCollections.observableArrayList();

@@ -263,7 +263,7 @@ public class ProductsController extends AppContext implements TabContent {
 				tcCategory.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProductCategory()));
 				tcName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProductName()));
 				tcQuantity.setCellValueFactory(
-						cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getQuanity())));
+						cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getQuantity())));
 				tcMUnit.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMeasure()));
 				tcPurchaseRate.setCellValueFactory(
 						cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getPurcaseRate())));
@@ -313,7 +313,7 @@ public class ProductsController extends AppContext implements TabContent {
 			lblProductCode.setText(String.valueOf(newValue.getProductCode()));
 			cbProductCategory.getSelectionModel().select(newValue.getProductCategory());
 			cbMeasuringUnit.getSelectionModel().select(newValue.getMeasure());
-			txtQuantity.setText(String.valueOf(newValue.getQuanity()));
+			txtQuantity.setText(appUtils.getDecimalFormat(newValue.getQuantity()));
 			txtPurchaseRate.setText(appUtils.getDecimalFormat(newValue.getPurcaseRate()));
 			txtTax.setText(appUtils.getDecimalFormat(newValue.getProductTax()));
 			lblPurchasePrice.setText(appUtils.getDecimalFormat(newValue.getPurcasePrice()));
@@ -464,7 +464,7 @@ public class ProductsController extends AppContext implements TabContent {
 		productToSave.setProductName(txtProductName.getText());
 		productToSave.setDescription(txtDescription.getText());
 		productToSave.setMeasure(cbMeasuringUnit.getSelectionModel().getSelectedItem());
-		productToSave.setQuanity(Integer.valueOf(txtQuantity.getText()));
+		productToSave.setQuantity(Double.valueOf(txtQuantity.getText()));
 		// productToSave.setProductCategory((String)productCategory.getSelectedItem());
 		productToSave.setCategoryCode(productCategoryMap.get(cbProductCategory.getSelectionModel().getSelectedItem()));
 		productToSave.setDiscount(0);
@@ -523,7 +523,7 @@ public class ProductsController extends AppContext implements TabContent {
 		productToUpdate.setProductName(txtProductName.getText());
 		productToUpdate.setDescription(txtDescription.getText());
 		productToUpdate.setMeasure(cbMeasuringUnit.getSelectionModel().getSelectedItem());
-		productToUpdate.setQuanity(Integer.valueOf(txtQuantity.getText()));
+		productToUpdate.setQuantity(Double.valueOf(txtQuantity.getText()));
 		// productToUpdate.setProductCategory((String)productCategory.getSelectedItem());
 		productToUpdate
 				.setCategoryCode(productCategoryMap.get(cbProductCategory.getSelectionModel().getSelectedItem()));
