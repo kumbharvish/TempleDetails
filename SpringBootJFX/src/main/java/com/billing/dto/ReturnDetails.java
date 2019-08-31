@@ -1,14 +1,12 @@
 package com.billing.dto;
 
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.List;
 
 public class ReturnDetails {
 	
 	private int returnNumber;
 	
-	private Timestamp timestamp;
+	private String timestamp;
 	
 	private String comments;
 	
@@ -16,7 +14,7 @@ public class ReturnDetails {
 	
 	private long customerMobileNo;
 	
-	private Date billDate;
+	private String billDate;
 	
 	private List<ItemDetails> itemDetails;
 	
@@ -106,11 +104,11 @@ public class ReturnDetails {
 		this.returnNumber = returnNumber;
 	}
 
-	public Timestamp getTimestamp() {
+	public String getTimestamp() {
 		return timestamp;
 	}
 
-	public void setTimestamp(Timestamp timestamp) {
+	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
 
@@ -138,11 +136,11 @@ public class ReturnDetails {
 		this.customerMobileNo = customerMobileNo;
 	}
 
-	public Date getBillDate() {
+	public String getBillDate() {
 		return billDate;
 	}
 
-	public void setBillDate(Date billDate) {
+	public void setBillDate(String billDate) {
 		this.billDate = billDate;
 	}
 

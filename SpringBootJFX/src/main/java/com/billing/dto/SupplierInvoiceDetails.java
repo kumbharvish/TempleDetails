@@ -1,7 +1,5 @@
 package com.billing.dto;
 
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.List;
 
 public class SupplierInvoiceDetails {
@@ -14,7 +12,7 @@ private int stockNumber;
 	
 	private int invoiceNumber;
 	
-	private Date invoiceDate;
+	private String invoiceDate;
 	
 	private String comments;
 	
@@ -36,7 +34,7 @@ private int stockNumber;
 	
 	private double supplierInvoiceAmt;
 	
-	private Timestamp timeStamp;
+	private String timeStamp;
 
 	public int getStockNumber() {
 		return stockNumber;
@@ -54,11 +52,11 @@ private int stockNumber;
 		this.supplierName = supplierName;
 	}
 
-	public Date getInvoiceDate() {
+	public String getInvoiceDate() {
 		return invoiceDate;
 	}
 
-	public void setInvoiceDate(Date invoiceDate) {
+	public void setInvoiceDate(String invoiceDate) {
 		this.invoiceDate = invoiceDate;
 	}
 
@@ -150,11 +148,11 @@ private int stockNumber;
 		this.invoiceNumber = invoiceNumber;
 	}
 
-	public Timestamp getTimeStamp() {
+	public String getTimeStamp() {
 		return timeStamp;
 	}
 
-	public void setTimeStamp(Timestamp timeStamp) {
+	public void setTimeStamp(String timeStamp) {
 		this.timeStamp = timeStamp;
 	}
 

@@ -305,7 +305,7 @@ public class ReportService {
 
 	// Get Profit Loss Statement
 
-	public ProfitLossDetails getProfitLossStatment(Date fromDate, Date toDate) {
+	public ProfitLossDetails getProfitLossStatment(String fromDate, String toDate) {
 
 		ProfitLossDetails report = new ProfitLossDetails();
 		Connection conn = null;
@@ -326,7 +326,7 @@ public class ReportService {
 			// Opening Stock Amount
 			ProfitLossData openingStockValue = new ProfitLossData();
 			openingStockValue.setDescription(AppConstants.OPENING_STOCK);
-			openingStockAmt = getOpeningStockValue(new Date(fromDate.getTime()));
+			openingStockAmt = getOpeningStockValue(fromDate);
 			if (openingStockAmt == 0) {
 				return null;
 			}
@@ -336,8 +336,8 @@ public class ReportService {
 			ProfitLossData expenses = new ProfitLossData();
 			expenses.setDescription(AppConstants.EXPESES);
 			stmt = conn.prepareStatement(GET_TOTAL_EXPENSES_AMOUNT);
-			stmt.setDate(1, fromDate);
-			stmt.setDate(2, toDate);
+			stmt.setString(1, fromDate);
+			stmt.setString(2, toDate);
 			ResultSet rs3 = stmt.executeQuery();
 			if (rs3.next()) {
 				expensesAmt = rs3.getDouble("TOTAL_EXPENSE_AMOUNT");
@@ -350,8 +350,8 @@ public class ReportService {
 			purchases.setDescription(AppConstants.PURCHASES);
 
 			stmt = conn.prepareStatement(GET_TOTAL_PURCHASE_AMOUNT);
-			stmt.setDate(1, fromDate);
-			stmt.setDate(2, toDate);
+			stmt.setString(1, fromDate);
+			stmt.setString(2, toDate);
 			ResultSet rs5 = stmt.executeQuery();
 			if (rs5.next()) {
 				purchasesAmt = rs5.getDouble("TOTAL_PURCHASE_AMOUNT");
@@ -367,15 +367,15 @@ public class ReportService {
 			double salesReturnAmt = 0.0;
 			sales.setDescription(AppConstants.SALES_REPORT);
 			stmt = conn.prepareStatement(GET_TOTAL_SALES_AMOUNT);
-			stmt.setDate(1, fromDate);
-			stmt.setDate(2, toDate);
+			stmt.setString(1, fromDate);
+			stmt.setString(2, toDate);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
 				salesAmount = rs.getDouble("TOTAL_SALES_AMOUNT");
 			}
 			stmt = conn.prepareStatement(GET_TOTAL_SALES_RETURN_AMOUNT_REPORT);
-			stmt.setDate(1, fromDate);
-			stmt.setDate(2, toDate);
+			stmt.setString(1, fromDate);
+			stmt.setString(2, toDate);
 			ResultSet rs2 = stmt.executeQuery();
 			if (rs2.next()) {
 				salesReturnAmt = rs2.getDouble("TOTAL_SALES_RETURN_AMOUNT");
@@ -387,7 +387,7 @@ public class ReportService {
 			ProfitLossData closingStock = new ProfitLossData();
 			closingStock.setDescription(AppConstants.CLOSING_STOCK);
 			double closingStockValue = 0.0;
-			if (toDate.toString().equals(new Date(System.currentTimeMillis()).toString())) {
+			if (toDate.toString().equals(appUtils.getCurrentTimestamp())) {
 				stmt = conn.prepareStatement(GET_CLOSING_STOCK_VALUE);
 				ResultSet rs7 = stmt.executeQuery();
 				if (rs7.next()) {
@@ -399,7 +399,7 @@ public class ReportService {
 				DateTime dateTime = new DateTime(toDate);
 				java.util.Date onePlusDay = dateTime.plusDays(1).toDate();
 				System.out.println("One Plus To Date : " + onePlusDay);
-				closingStockValue = getOpeningStockValue(new Date(onePlusDay.getTime()));
+				closingStockValue = getOpeningStockValue(appUtils.getDBFormattedDate(new Date(onePlusDay.getTime())));
 				closingStockAmt = closingStockValue;
 			}
 			closingStock.setAmount(closingStockValue);
@@ -496,14 +496,14 @@ public class ReportService {
 	}
 
 	// Get Opening Stock Value
-	public Double getOpeningStockValue(Date date) {
+	public Double getOpeningStockValue(String date) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		Double openingCashAmount = 0.0;
 		try {
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(GET_OPENING_STOCK_VALUE);
-			stmt.setDate(1, date);
+			stmt.setString(1, date);
 
 			ResultSet rs = stmt.executeQuery();
 
@@ -543,14 +543,14 @@ public class ReportService {
 	}
 
 	// Add Opening Stock Value
-	public StatusDTO insertOpeningStockValue(Date date, double amount) {
+	public StatusDTO insertOpeningStockValue(String date, double amount) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();
 		try {
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(INS_OPENING_STOCK_VALUE);
-			stmt.setDate(1, date);
+			stmt.setString(1, date);
 			stmt.setDouble(2, amount);
 
 			int i = stmt.executeUpdate();
@@ -569,7 +569,7 @@ public class ReportService {
 	}
 
 	// Add Opening Stock Value recurrsive logic
-	public StatusDTO addOpeningStockAmount(Date date, double amount) {
+	public StatusDTO addOpeningStockAmount(String date, double amount) {
 		StatusDTO status = new StatusDTO(-1);
 		Double openingStock = getOpeningStockValue(date);
 		System.out.println("Day Opening Value :" + openingStock);
@@ -578,7 +578,7 @@ public class ReportService {
 			DateTime dateTime = new DateTime(date);
 			java.util.Date oneMinusDay = dateTime.minusDays(1).toDate();
 			System.out.println("Checking for Previous Day :+" + oneMinusDay);
-			addOpeningStockAmount(new Date(oneMinusDay.getTime()), amount);
+			addOpeningStockAmount(appUtils.getDBFormattedDate(new Date(oneMinusDay.getTime())), amount);
 		}
 		return status;
 
@@ -588,7 +588,7 @@ public class ReportService {
 		StatusDTO status = new StatusDTO(-1);
 		double stockValueAmount = getStockValueAmount();
 		System.out.println("Stock Value Amount : " + stockValueAmount);
-		addOpeningStockAmount(new Date(System.currentTimeMillis()),
+		addOpeningStockAmount(appUtils.getCurrentTimestamp(),
 				appUtils.getDecimalRoundUp2Decimal(stockValueAmount));
 		return status;
 	}

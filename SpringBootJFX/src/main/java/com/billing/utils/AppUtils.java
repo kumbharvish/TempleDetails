@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -57,6 +58,7 @@ public class AppUtils {
 	private static final String PDF_CONST = "SLAES";
 	private static final String PDF_RANDOM = "Invoice1Hbfh667adfDEJ78";
 	private static final int LICENSE_EXPIRY_LIMIT = 15;
+	private static final String TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 	private static final String APP_DATA = "SELECT VALUE_STRING FROM " + "APP_DATA WHERE DATA_NAME=?";
 
@@ -170,6 +172,11 @@ public class AppUtils {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		return sdf.format(dt);
 	}
+	
+	public String getDBFormattedDate(Date dt) {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		return sdf.format(dt);
+	}
 
 	public String getFormattedDateWithTime(Date dt) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
@@ -185,6 +192,18 @@ public class AppUtils {
 			e.printStackTrace();
 		}
 		return date;
+	}
+	
+	public String getFormattedDateWithTime(String dt) {
+		SimpleDateFormat inputSdf = new SimpleDateFormat(TIMESTAMP_FORMAT);
+		SimpleDateFormat outputSdf = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+		Date date = null;
+		try {
+			date = inputSdf.parse(dt);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return outputSdf.format(date);
 	}
 
 	public String enc(String value){
@@ -284,6 +303,12 @@ public class AppUtils {
 		}
 
 		return result.get();
+	}
+	
+	public String getCurrentTimestamp() {
+		SimpleDateFormat sdf = new SimpleDateFormat(TIMESTAMP_FORMAT);
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		return sdf.format(timestamp);
 	}
 
 }

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.billing.dto.ItemDetails;
 import com.billing.dto.ReturnDetails;
 import com.billing.dto.StatusDTO;
+import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 
 @Service
@@ -23,6 +24,9 @@ public class SalesReturnService {
 
 	@Autowired
 	DBUtils dbUtils;
+	
+	@Autowired
+	AppUtils appUtils;
 
 	private static final Logger logger = LoggerFactory.getLogger(SalesReturnService.class);
 
@@ -55,11 +59,11 @@ public class SalesReturnService {
 				conn = dbUtils.getConnection();
 				stmt = conn.prepareStatement(INS_BILL_DETAILS);
 				stmt.setInt(1, bill.getReturnNumber());
-				stmt.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis()));
+				stmt.setString(2, appUtils.getCurrentTimestamp());
 				stmt.setString(3, bill.getComments());
 				stmt.setInt(4, bill.getBillNumber());
 				stmt.setLong(5, bill.getCustomerMobileNo());
-				stmt.setDate(6, bill.getBillDate());
+				stmt.setString(6, bill.getBillDate());
 				stmt.setString(7, bill.getBillPaymentMode());
 				stmt.setInt(8, bill.getNoOfItems());
 				stmt.setDouble(9, bill.getTotalQuantity());
@@ -178,9 +182,9 @@ public class SalesReturnService {
 				returnDetails = new ReturnDetails();
 				returnDetails.setReturnNumber(rs.getInt("RETURN_NUMBER"));
 				returnDetails.setBillNumber(rs.getInt("BILL_NUMBER"));
-				returnDetails.setBillDate(rs.getDate("BILL_DATE"));
+				returnDetails.setBillDate(rs.getString("BILL_DATE"));
 				returnDetails.setComments(rs.getString("COMMENTS"));
-				returnDetails.setTimestamp(rs.getTimestamp("RETURN_DATE"));
+				returnDetails.setTimestamp(rs.getString("RETURN_DATE"));
 				returnDetails.setCustomerMobileNo(rs.getLong("CUST_MOB_NO"));
 				returnDetails.setCustomerName(rs.getString("CUSTOMER_NAME"));
 				returnDetails.setNoOfItems(rs.getInt("NO_OF_ITEMS"));
@@ -222,9 +226,9 @@ public class SalesReturnService {
 				returnDetails = new ReturnDetails();
 				returnDetails.setReturnNumber(rs.getInt("RETURN_NUMBER"));
 				returnDetails.setBillNumber(rs.getInt("BILL_NUMBER"));
-				returnDetails.setBillDate(rs.getDate("BILL_DATE"));
+				returnDetails.setBillDate(rs.getString("BILL_DATE"));
 				returnDetails.setComments(rs.getString("COMMENTS"));
-				returnDetails.setTimestamp(rs.getTimestamp("RETURN_DATE"));
+				returnDetails.setTimestamp(rs.getString("RETURN_DATE"));
 				returnDetails.setCustomerMobileNo(rs.getLong("CUST_MOB_NO"));
 				returnDetails.setCustomerName(rs.getString("CUSTOMER_NAME"));
 				returnDetails.setNoOfItems(rs.getInt("NO_OF_ITEMS"));
@@ -342,7 +346,7 @@ public class SalesReturnService {
 	}
 
 	// Get Bill Details
-	public List<ReturnDetails> getReturnDetails(Date fromDate, Date toDate, Long customerMobile) {
+	public List<ReturnDetails> getReturnDetails(String fromDate, String toDate, Long customerMobile) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ReturnDetails returnDetails = null;
@@ -354,10 +358,10 @@ public class SalesReturnService {
 		String CUSTOMER_MOB_QEUERY = " AND SRD.CUST_MOB_NO LIKE ? ";
 		try {
 			if (fromDate == null) {
-				fromDate = new Date(1947 / 01 / 01);
+				fromDate = "1947-01-01";
 			}
 			if (toDate == null) {
-				toDate = new Date(System.currentTimeMillis());
+				toDate = appUtils.getCurrentTimestamp();
 			}
 			if (customerMobile != null) {
 				SELECT_BILL_DETAILS.append(CUSTOMER_MOB_QEUERY);
@@ -365,8 +369,8 @@ public class SalesReturnService {
 			SELECT_BILL_DETAILS.append(ORDER_BY_CLAUSE);
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(SELECT_BILL_DETAILS.toString());
-			stmt.setDate(1, fromDate);
-			stmt.setDate(2, toDate);
+			stmt.setString(1, fromDate);
+			stmt.setString(2, toDate);
 			if (customerMobile != null) {
 				stmt.setString(3, "%" + customerMobile + "%");
 			}
@@ -376,9 +380,9 @@ public class SalesReturnService {
 				returnDetails = new ReturnDetails();
 				returnDetails.setReturnNumber(rs.getInt("RETURN_NUMBER"));
 				returnDetails.setBillNumber(rs.getInt("BILL_NUMBER"));
-				returnDetails.setBillDate(rs.getDate("BILL_DATE"));
+				returnDetails.setBillDate(rs.getString("BILL_DATE"));
 				returnDetails.setComments(rs.getString("COMMENTS"));
-				returnDetails.setTimestamp(rs.getTimestamp("RETURN_DATE"));
+				returnDetails.setTimestamp(rs.getString("RETURN_DATE"));
 				returnDetails.setCustomerMobileNo(rs.getLong("CUST_MOB_NO"));
 				returnDetails.setCustomerName(rs.getString("CUSTOMER_NAME"));
 				returnDetails.setNoOfItems(rs.getInt("NO_OF_ITEMS"));

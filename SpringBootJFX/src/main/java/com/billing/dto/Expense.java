@@ -1,6 +1,5 @@
 package com.billing.dto;
 
-import java.sql.Date;
 
 public class Expense {
 	
@@ -12,7 +11,7 @@ public class Expense {
 	
 	private String description;
 	
-	private Date date;
+	private String date;
 
 	public String getCategory() {
 		return category;
@@ -38,11 +37,11 @@ public class Expense {
 		this.description = description;
 	}
 
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 

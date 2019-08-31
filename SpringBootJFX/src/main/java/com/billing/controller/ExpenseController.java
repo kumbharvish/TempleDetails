@@ -155,7 +155,7 @@ public class ExpenseController implements TabContent {
 	public boolean saveData() {
 		Expense expense = new Expense();
 		expense.setCategory(cbCategory.getSelectionModel().getSelectedItem());
-		expense.setDate(java.sql.Date.valueOf(dateExpense.getValue()));
+		expense.setDate(dateExpense.getValue().toString());
 		expense.setAmount(Double.parseDouble(txtAmount.getText()));
 		expense.setDescription(txtDescription.getText());
 		

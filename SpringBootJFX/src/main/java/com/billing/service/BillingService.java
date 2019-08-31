@@ -15,6 +15,7 @@ import com.billing.dto.BillDetails;
 import com.billing.dto.ItemDetails;
 import com.billing.dto.StatusDTO;
 import com.billing.main.MyStoreApplication;
+import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 
 @Service
@@ -22,6 +23,9 @@ public class BillingService {
 	
 	@Autowired
 	DBUtils dbUtils;
+	
+	@Autowired
+	AppUtils appUtils;
 	
 	 private static final Logger logger = LoggerFactory.getLogger(BillingService.class);
 	
@@ -173,7 +177,7 @@ public class BillingService {
 		try {
 				conn = dbUtils.getConnection();
 				stmt = conn.prepareStatement(INS_OPENING_CASH);
-				stmt.setDate(1, new java.sql.Date(System.currentTimeMillis()));
+				stmt.setString(1, appUtils.getCurrentTimestamp());
 				stmt.setDouble(2, amount);
 				
 				int i = stmt.executeUpdate();

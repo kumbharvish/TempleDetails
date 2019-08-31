@@ -20,6 +20,7 @@ import com.billing.dto.BillDetails;
 import com.billing.dto.ItemDetails;
 import com.billing.dto.Product;
 import com.billing.dto.StatusDTO;
+import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 
 @Service
@@ -27,6 +28,9 @@ public class ProductService {
 
 	@Autowired
 	DBUtils dbUtils;
+
+	@Autowired
+	AppUtils appUtils;
 
 	private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
 
@@ -115,8 +119,8 @@ public class ProductService {
 				pc.setSellPrice(rs.getDouble("SELL_PRICE"));
 				pc.setProductMRP(rs.getDouble("PRODUCT_MRP"));
 				pc.setDiscount(rs.getDouble("DISCOUNT"));
-				pc.setEntryDate(rs.getDate("ENTRY_DATE"));
-				pc.setLastUpdateDate(rs.getDate("LAST_UPDATE_DATE"));
+				pc.setEntryDate(rs.getString("ENTRY_DATE"));
+				pc.setLastUpdateDate(rs.getString("LAST_UPDATE_DATE"));
 				pc.setDescription(rs.getString("DESCRIPTION"));
 				pc.setEnterBy(rs.getString("ENTER_BY"));
 				pc.setProductCategory(rs.getString("CATEGORY_NAME"));
@@ -156,8 +160,8 @@ public class ProductService {
 				pc.setSellPrice(rs.getDouble("SELL_PRICE"));
 				pc.setProductMRP(rs.getDouble("PRODUCT_MRP"));
 				pc.setDiscount(rs.getDouble("DISCOUNT"));
-				pc.setEntryDate(rs.getDate("ENTRY_DATE"));
-				pc.setLastUpdateDate(rs.getDate("LAST_UPDATE_DATE"));
+				pc.setEntryDate(rs.getString("ENTRY_DATE"));
+				pc.setLastUpdateDate(rs.getString("LAST_UPDATE_DATE"));
 				pc.setDescription(rs.getString("DESCRIPTION"));
 				pc.setEnterBy(rs.getString("ENTER_BY"));
 				pc.setProductCategory(rs.getString("CATEGORY_NAME"));
@@ -191,8 +195,8 @@ public class ProductService {
 				stmt.setDouble(6, product.getSellPrice());
 				stmt.setDouble(7, product.getSellPrice());// MRP same as sell price
 				stmt.setDouble(8, product.getDiscount());
-				stmt.setDate(9, new java.sql.Date(System.currentTimeMillis()));
-				stmt.setDate(10, new java.sql.Date(System.currentTimeMillis()));
+				stmt.setString(9, appUtils.getCurrentTimestamp());
+				stmt.setString(10, appUtils.getCurrentTimestamp());
 				stmt.setString(11, product.getDescription());
 				stmt.setString(12, product.getEnterBy());
 				// stmt.setString(13, product.getProductCategory());
@@ -254,7 +258,7 @@ public class ProductService {
 				stmt.setDouble(5, product.getSellPrice());
 				stmt.setDouble(6, product.getSellPrice());
 				stmt.setDouble(7, product.getDiscount());
-				stmt.setDate(8, new java.sql.Date(System.currentTimeMillis()));
+				stmt.setString(8, appUtils.getCurrentTimestamp());
 				stmt.setString(9, product.getDescription());
 				stmt.setString(10, product.getEnterBy());
 				// stmt.setString(11, product.getProductCategory());
@@ -301,8 +305,8 @@ public class ProductService {
 				pc.setSellPrice(rs.getDouble("SELL_PRICE"));
 				pc.setProductMRP(rs.getDouble("PRODUCT_MRP"));
 				pc.setDiscount(rs.getDouble("DISCOUNT"));
-				pc.setEntryDate(rs.getDate("ENTRY_DATE"));
-				pc.setLastUpdateDate(rs.getDate("LAST_UPDATE_DATE"));
+				pc.setEntryDate(rs.getString("ENTRY_DATE"));
+				pc.setLastUpdateDate(rs.getString("LAST_UPDATE_DATE"));
 				pc.setDescription(rs.getString("DESCRIPTION"));
 				pc.setEnterBy(rs.getString("ENTER_BY"));
 				pc.setProductCategory(rs.getString("CATEGORY_NAME"));
@@ -329,7 +333,7 @@ public class ProductService {
 				conn = dbUtils.getConnection();
 				stmt = conn.prepareStatement(INS_BILL_DETAILS);
 				stmt.setInt(1, bill.getBillNumber());
-				stmt.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis()));
+				stmt.setString(2, appUtils.getCurrentTimestamp());
 				stmt.setLong(3, bill.getCustomerMobileNo());
 				stmt.setString(4, bill.getCustomerName());
 				stmt.setInt(5, bill.getNoOfItems());
@@ -432,7 +436,7 @@ public class ProductService {
 	}
 
 	// Get Bill Details
-	public List<BillDetails> getBillDetails(Date fromDate, Date toDate, Long customerMobile) {
+	public List<BillDetails> getBillDetails(String fromDate, String toDate, Long customerMobile) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		BillDetails billDetails = null;
@@ -444,10 +448,10 @@ public class ProductService {
 		String CUSTOMER_MOB_QEUERY = " AND CBD.CUST_MOB_NO LIKE ? ";
 		try {
 			if (fromDate == null) {
-				fromDate = new Date(1947 / 01 / 01);
+				fromDate = "1947-01-01";
 			}
 			if (toDate == null) {
-				toDate = new Date(System.currentTimeMillis());
+				toDate = appUtils.getCurrentTimestamp();
 			}
 			if (customerMobile != null) {
 				SELECT_BILL_DETAILS.append(CUSTOMER_MOB_QEUERY);
@@ -455,8 +459,8 @@ public class ProductService {
 			SELECT_BILL_DETAILS.append(ORDER_BY_CLAUSE);
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(SELECT_BILL_DETAILS.toString());
-			stmt.setDate(1, fromDate);
-			stmt.setDate(2, toDate);
+			stmt.setString(1, fromDate);
+			stmt.setString(2, toDate);
 			if (customerMobile != null) {
 				stmt.setString(3, "%" + customerMobile + "%");
 			}
@@ -466,7 +470,7 @@ public class ProductService {
 			while (rs.next()) {
 				billDetails = new BillDetails();
 				billDetails.setBillNumber(rs.getInt("BILL_NUMBER"));
-				billDetails.setTimestamp(rs.getTimestamp("BILL_DATE_TIME"));
+				billDetails.setTimestamp(rs.getString("BILL_DATE_TIME"));
 				billDetails.setCustomerMobileNo(rs.getLong("CUST_MOB_NO"));
 				billDetails.setCustomerName(rs.getString("CUSTOMER_NAME"));
 				billDetails.setNoOfItems(rs.getInt("NO_OF_ITEMS"));
@@ -566,8 +570,8 @@ public class ProductService {
 				pc.setSellPrice(rs.getDouble("SELL_PRICE"));
 				pc.setProductMRP(rs.getDouble("PRODUCT_MRP"));
 				pc.setDiscount(rs.getDouble("DISCOUNT"));
-				pc.setEntryDate(rs.getDate("ENTRY_DATE"));
-				pc.setLastUpdateDate(rs.getDate("LAST_UPDATE_DATE"));
+				pc.setEntryDate(rs.getString("ENTRY_DATE"));
+				pc.setLastUpdateDate(rs.getString("LAST_UPDATE_DATE"));
 				pc.setDescription(rs.getString("DESCRIPTION"));
 				pc.setEnterBy(rs.getString("ENTER_BY"));
 				pc.setProductCategory(rs.getString("CATEGORY_NAME"));
@@ -610,8 +614,8 @@ public class ProductService {
 				pc.setSellPrice(rs.getDouble("SELL_PRICE"));
 				pc.setProductMRP(rs.getDouble("PRODUCT_MRP"));
 				pc.setDiscount(rs.getDouble("DISCOUNT"));
-				pc.setEntryDate(rs.getDate("ENTRY_DATE"));
-				pc.setLastUpdateDate(rs.getDate("LAST_UPDATE_DATE"));
+				pc.setEntryDate(rs.getString("ENTRY_DATE"));
+				pc.setLastUpdateDate(rs.getString("LAST_UPDATE_DATE"));
 				pc.setDescription(rs.getString("DESCRIPTION"));
 				pc.setEnterBy(rs.getString("ENTER_BY"));
 				pc.setProductCategory(rs.getString("CATEGORY_NAME"));
@@ -702,7 +706,7 @@ public class ProductService {
 			while (rs.next()) {
 				billDetails = new BillDetails();
 				billDetails.setBillNumber(rs.getInt("BILL_NUMBER"));
-				billDetails.setTimestamp(rs.getTimestamp("BILL_DATE_TIME"));
+				billDetails.setTimestamp(rs.getString("BILL_DATE_TIME"));
 				billDetails.setCustomerMobileNo(rs.getLong("CUST_MOB_NO"));
 				billDetails.setCustomerName(rs.getString("CUSTOMER_NAME"));
 				billDetails.setNoOfItems(rs.getInt("NO_OF_ITEMS"));
@@ -738,7 +742,7 @@ public class ProductService {
 			while (rs.next()) {
 				billDetails = new BillDetails();
 				billDetails.setBillNumber(rs.getInt("BILL_NUMBER"));
-				billDetails.setTimestamp(rs.getTimestamp("BILL_DATE_TIME"));
+				billDetails.setTimestamp(rs.getString("BILL_DATE_TIME"));
 				billDetails.setCustomerMobileNo(rs.getLong("CUST_MOB_NO"));
 				billDetails.setCustomerName(rs.getString("CUSTOMER_NAME"));
 				billDetails.setNoOfItems(rs.getInt("NO_OF_ITEMS"));
@@ -772,7 +776,7 @@ public class ProductService {
 			conn.setAutoCommit(false);
 			for (Product product : productList) {
 				stmt.setDouble(1, product.getPurcasePrice());
-				stmt.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis()));
+				stmt.setString(2, appUtils.getCurrentTimestamp());
 				stmt.setDouble(3, product.getPurcaseRate());
 				stmt.setDouble(4, product.getProductTax());
 				stmt.setInt(5, product.getProductCode());

@@ -1,7 +1,5 @@
 package com.billing.dto;
 
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.Comparator;
 
 public class Product {
@@ -28,9 +26,9 @@ public class Product {
 
 	private double discount;
 
-	private Date entryDate;
+	private String entryDate;
 
-	private Date lastUpdateDate;
+	private String lastUpdateDate;
 
 	private String description;
 
@@ -52,7 +50,7 @@ public class Product {
 
 	private int supplierId;
 
-	private Timestamp timeStamp;
+	private String timeStamp;
 
 	public int getProductCode() {
 		return productCode;
@@ -110,19 +108,19 @@ public class Product {
 		this.discount = discount;
 	}
 
-	public Date getEntryDate() {
+	public String getEntryDate() {
 		return entryDate;
 	}
 
-	public void setEntryDate(Date entryDate) {
+	public void setEntryDate(String entryDate) {
 		this.entryDate = entryDate;
 	}
 
-	public Date getLastUpdateDate() {
+	public String getLastUpdateDate() {
 		return lastUpdateDate;
 	}
 
-	public void setLastUpdateDate(Date lastUpdateDate) {
+	public void setLastUpdateDate(String lastUpdateDate) {
 		this.lastUpdateDate = lastUpdateDate;
 	}
 
@@ -247,11 +245,11 @@ public class Product {
 		this.supplierId = supplierId;
 	}
 
-	public Timestamp getTimeStamp() {
+	public String getTimeStamp() {
 		return timeStamp;
 	}
 
-	public void setTimeStamp(Timestamp timeStamp) {
+	public void setTimeStamp(String timeStamp) {
 		this.timeStamp = timeStamp;
 	}
 

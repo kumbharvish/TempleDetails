@@ -34,8 +34,6 @@ public class MyStoreDetails {
 	
 	private String gstNo;
 	
-	private InputStream imagePath;
-
 	public String getStoreName() {
 		return storeName;
 	}
@@ -146,14 +144,6 @@ public class MyStoreDetails {
 
 	public void setMyStoreId(int myStoreId) {
 		this.myStoreId = myStoreId;
-	}
-
-	public InputStream getImagePath() {
-		return imagePath;
-	}
-
-	public void setImagePath(InputStream imagePath) {
-		this.imagePath = imagePath;
 	}
 
 	public String getGstNo() {

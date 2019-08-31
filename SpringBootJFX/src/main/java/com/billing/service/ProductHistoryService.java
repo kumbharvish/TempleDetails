@@ -16,6 +16,7 @@ import com.billing.constants.AppConstants;
 import com.billing.dto.Product;
 import com.billing.dto.StatusDTO;
 import com.billing.dto.StockLedger;
+import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 
 @Service
@@ -23,6 +24,9 @@ public class ProductHistoryService {
 	
 	@Autowired
 	DBUtils dbUtils;
+	
+	@Autowired
+	AppUtils appUtils;
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProductCategoryService.class);
 	
@@ -54,7 +58,7 @@ public class ProductHistoryService {
 			for(Product product:productList){
 				stmt.setInt(1,product.getProductCode());
 				stmt.setDouble(2,product.getPurcasePrice());
-				stmt.setTimestamp(3,new java.sql.Timestamp(System.currentTimeMillis()));
+				stmt.setString(3, appUtils.getCurrentTimestamp());
 				stmt.setString(4,product.getDescription());
 				stmt.setDouble(5,product.getPurcaseRate());
 				stmt.setDouble(6,product.getProductTax());
@@ -99,7 +103,7 @@ public class ProductHistoryService {
 				pc.setPurcaseRate(rs.getDouble("PURCHASE_RATE"));
 				pc.setProductTax(rs.getDouble("PRODUCT_TAX"));
 				pc.setPurcasePrice(rs.getDouble("PURCHASE_PRICE"));
-				pc.setTimeStamp(rs.getTimestamp("ENTRY_DATE"));
+				pc.setTimeStamp(rs.getString("ENTRY_DATE"));
 				pc.setDescription(rs.getString("NARRATION"));
 				pc.setSupplierName(rs.getString("SUPPLIER_NAME"));
 
@@ -132,7 +136,7 @@ public class ProductHistoryService {
 			
 			for(Product product:productList){
 				stmt.setInt(1,product.getProductCode());
-				stmt.setTimestamp(2,new java.sql.Timestamp(System.currentTimeMillis()));
+				stmt.setString(2, appUtils.getCurrentTimestamp());
 				stmt.setDouble(3, product.getQuantity());
 				stmt.setString(4, product.getDescription());
 				stmt.setString(5,transactionType);
@@ -158,7 +162,7 @@ public class ProductHistoryService {
 	}
 	
 	//Get Stock Ledger for Product
-	public List<StockLedger> getProductStockLedger(int productCode,Date fromDate,Date toDate) {
+	public List<StockLedger> getProductStockLedger(int productCode,String fromDate,String toDate) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		StockLedger pc = null;
@@ -167,14 +171,14 @@ public class ProductHistoryService {
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(PRODUCT_STOCK_LEDGER);
 			stmt.setInt(1, productCode);
-			stmt.setDate(2, fromDate);
-			stmt.setDate(3, toDate);
+			stmt.setString(2, fromDate);
+			stmt.setString(3, toDate);
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
 				pc = new StockLedger();
 				pc.setProductCode(rs.getInt("PRODUCT_CODE"));
-				pc.setTimeStamp(rs.getTimestamp("TIMESTAMP"));
+				pc.setTimeStamp(rs.getString("TIMESTAMP"));
 				pc.setNarration(rs.getString("NARRATION"));
 				pc.setTransactionType(rs.getString("TRANSACTION_TYPE"));
 				pc.setStockIn(rs.getDouble("STOCK_IN"));

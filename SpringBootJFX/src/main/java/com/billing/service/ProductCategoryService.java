@@ -34,7 +34,7 @@ public class ProductCategoryService {
 	private static final String DELETE_CATEGORY = "DELETE FROM PRODUCT_CATEGORY_DETAILS WHERE CATEGORY_ID=?";
 
 	private static final String UPDATE_CATEGORY = "UPDATE PRODUCT_CATEGORY_DETAILS SET CATEGORY_NAME=?,"
-			+ "CATEGORY_DESCRIPTION=?," + " WHERE CATEGORY_ID=?";
+			+ "CATEGORY_DESCRIPTION=?" + " WHERE CATEGORY_ID=?";
 
 	private static final String GET_ALL_PRODUCTS_FOR_CATEGORY = "SELECT  PD.PRODUCT_ID,PD.PRODUCT_NAME,PD.MEASURE,PD.QUANTITY,PD.PURCHASE_PRICE,PD.SELL_PRICE,"
 			+ "PD.PRODUCT_MRP,PD.DISCOUNT,PD.ENTRY_DATE,PD.LAST_UPDATE_DATE,PD.DESCRIPTION,PD.ENTER_BY,"
@@ -175,8 +175,8 @@ public class ProductCategoryService {
 				pc.setSellPrice(rs.getDouble("SELL_PRICE"));
 				pc.setProductMRP(rs.getDouble("PRODUCT_MRP"));
 				pc.setDiscount(rs.getDouble("DISCOUNT"));
-				pc.setEntryDate(rs.getDate("ENTRY_DATE"));
-				pc.setLastUpdateDate(rs.getDate("LAST_UPDATE_DATE"));
+				pc.setEntryDate(rs.getString("ENTRY_DATE"));
+				pc.setLastUpdateDate(rs.getString("LAST_UPDATE_DATE"));
 				pc.setDescription(rs.getString("DESCRIPTION"));
 				pc.setEnterBy(rs.getString("ENTER_BY"));
 				pc.setProductCategory(rs.getString("CATEGORY_NAME"));

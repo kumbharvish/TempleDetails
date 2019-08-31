@@ -1,13 +1,12 @@
 package com.billing.dto;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 public class BillDetails {
 	
 	private int billNumber;
 	
-	private Timestamp timestamp;
+	private String timestamp;
 	
 	private long customerMobileNo;
 	
@@ -43,11 +42,11 @@ public class BillDetails {
 		this.billNumber = billNumber;
 	}
 
-	public Timestamp getTimestamp() {
+	public String getTimestamp() {
 		return timestamp;
 	}
 
-	public void setTimestamp(Timestamp timestamp) {
+	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
 

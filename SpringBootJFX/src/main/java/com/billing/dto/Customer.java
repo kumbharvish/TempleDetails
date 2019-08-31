@@ -1,6 +1,5 @@
 package com.billing.dto;
 
-import java.sql.Timestamp;
 import java.util.Comparator;
 
 public class Customer{
@@ -12,8 +11,8 @@ public class Customer{
 	private String custEmail;
 	private double amount;
 	private String historyFlag;
-	private Timestamp entryDate;
-	private Timestamp lastUpdateDate;
+	private String entryDate;
+	private String lastUpdateDate;
 	private String narration;
 	
 	public String getCustName() {
@@ -58,16 +57,16 @@ public class Customer{
 	public void setHistoryFlag(String historyFlag) {
 		this.historyFlag = historyFlag;
 	}
-	public Timestamp getEntryDate() {
+	public String getEntryDate() {
 		return entryDate;
 	}
-	public void setEntryDate(Timestamp entryDate) {
+	public void setEntryDate(String entryDate) {
 		this.entryDate = entryDate;
 	}
-	public Timestamp getLastUpdateDate() {
+	public String getLastUpdateDate() {
 		return lastUpdateDate;
 	}
-	public void setLastUpdateDate(Timestamp lastUpdateDate) {
+	public void setLastUpdateDate(String lastUpdateDate) {
 		this.lastUpdateDate = lastUpdateDate;
 	}
 	

@@ -222,8 +222,8 @@ public class UserService {
 				customer.setBalanceAmt(rs.getDouble("BALANCE_AMOUNT"));
 				customer.setCustCity(rs.getString("CUST_CITY"));
 				customer.setCustEmail(rs.getString("CUST_EMAIL"));
-				customer.setEntryDate(rs.getTimestamp("ENTRY_DATE"));
-				customer.setLastUpdateDate(rs.getTimestamp("LAST_UPDATE"));
+				customer.setEntryDate(rs.getString("ENTRY_DATE"));
+				customer.setLastUpdateDate(rs.getString("LAST_UPDATE"));
 			}
 			rs.close();
 		} catch (Exception e) {
@@ -246,8 +246,8 @@ public class UserService {
 			stmt.setString(2, customer.getCustName());
 			stmt.setString(3, customer.getCustEmail());
 			stmt.setString(4, customer.getCustCity());
-			stmt.setTimestamp(5, new java.sql.Timestamp(System.currentTimeMillis()));
-			stmt.setTimestamp(6, new java.sql.Timestamp(System.currentTimeMillis()));
+			stmt.setString(5, appUtils.getCurrentTimestamp());
+			stmt.setString(6, appUtils.getCurrentTimestamp());
 
 			int records = stmt.executeUpdate();
 
@@ -354,7 +354,7 @@ public class UserService {
 			stmt.setString(1, customer.getCustName());
 			stmt.setString(2, customer.getCustEmail());
 			stmt.setString(3, customer.getCustCity());
-			stmt.setTimestamp(4, new java.sql.Timestamp(System.currentTimeMillis()));
+			stmt.setString(4, appUtils.getCurrentTimestamp());
 			stmt.setLong(5, customer.getCustMobileNumber());
 
 			int records = stmt.executeUpdate();
@@ -389,8 +389,8 @@ public class UserService {
 				customer.setBalanceAmt(rs.getDouble("BALANCE_AMOUNT"));
 				customer.setCustCity(rs.getString("CUST_CITY"));
 				customer.setCustEmail(rs.getString("CUST_EMAIL"));
-				customer.setEntryDate(rs.getTimestamp("ENTRY_DATE"));
-				customer.setLastUpdateDate(rs.getTimestamp("LAST_UPDATE"));
+				customer.setEntryDate(rs.getString("ENTRY_DATE"));
+				customer.setLastUpdateDate(rs.getString("LAST_UPDATE"));
 
 				customerList.add(customer);
 			}
@@ -422,8 +422,8 @@ public class UserService {
 				customer.setBalanceAmt(rs.getDouble("BALANCE_AMOUNT"));
 				customer.setCustCity(rs.getString("CUST_CITY"));
 				customer.setCustEmail(rs.getString("CUST_EMAIL"));
-				customer.setEntryDate(rs.getTimestamp("ENTRY_DATE"));
-				customer.setLastUpdateDate(rs.getTimestamp("LAST_UPDATE"));
+				customer.setEntryDate(rs.getString("ENTRY_DATE"));
+				customer.setLastUpdateDate(rs.getString("LAST_UPDATE"));
 
 				customerList.add(customer);
 				Comparator<Customer> cp = Customer.getComparator(Customer.SortParameter.CUSTOMER_NAME_ASCENDING);
@@ -448,7 +448,7 @@ public class UserService {
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(INS_CUSTOMER_PAY_HISTORY);
 			stmt.setLong(1, customerMobile);
-			stmt.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis()));
+			stmt.setString(2, appUtils.getCurrentTimestamp());
 			Customer customer = getCustomerDetails(customerMobile);
 			if (AppConstants.CREDIT.equals(flag)) {
 				stmt.setDouble(3, customer.getBalanceAmt() + creditAmount);

@@ -1,7 +1,6 @@
 package com.billing.service;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -191,7 +190,7 @@ public class SupplierService {
 				stmt.setInt(1, bill.getStockNumber());
 				stmt.setString(2, bill.getSupplierName());
 				stmt.setInt(3, bill.getInvoiceNumber());
-				stmt.setDate(4, bill.getInvoiceDate());
+				stmt.setString(4, bill.getInvoiceDate());
 				stmt.setString(5, bill.getComments());
 				stmt.setInt(6, bill.getNoOfItems());
 				stmt.setDouble(7, bill.getTotalQuanity());
@@ -201,7 +200,7 @@ public class SupplierService {
 				stmt.setDouble(11, bill.getExtraCharges());
 				stmt.setString(12, bill.getPaymentMode());
 				stmt.setDouble(13, bill.getSupplierInvoiceAmt());
-				stmt.setTimestamp(14, bill.getTimeStamp());
+				stmt.setString(14, bill.getTimeStamp());
 				stmt.setInt(15, bill.getSupplierId());
 				int i = stmt.executeUpdate();
 				if (i > 0) {
@@ -296,8 +295,8 @@ public class SupplierService {
 
 	// Stock History Services
 
-	public List<SupplierInvoiceDetails> getStockEntryDetails(Integer supplierId, Integer invoiceNumber, Date fromDate,
-			Date toDate) {
+	public List<SupplierInvoiceDetails> getStockEntryDetails(Integer supplierId, Integer invoiceNumber, String fromDate,
+			String toDate) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		SupplierInvoiceDetails supplierInvoiceDetails = null;
@@ -323,12 +322,12 @@ public class SupplierService {
 				stmt.setInt(2, invoiceNumber);
 			}
 			if (!invoiceNumberFlag && dateFlag) {
-				stmt.setDate(2, fromDate);
-				stmt.setDate(3, toDate);
+				stmt.setString(2, fromDate);
+				stmt.setString(3, toDate);
 			}
 			if (invoiceNumberFlag && dateFlag) {
-				stmt.setDate(3, fromDate);
-				stmt.setDate(4, toDate);
+				stmt.setString(3, fromDate);
+				stmt.setString(4, toDate);
 			}
 			ResultSet rs = stmt.executeQuery();
 
@@ -338,7 +337,7 @@ public class SupplierService {
 				supplierInvoiceDetails.setStockNumber(rs.getInt("STOCK_NUMBER"));
 				supplierInvoiceDetails.setInvoiceNumber(rs.getInt("SUPP_INVOICE_NO"));
 				supplierInvoiceDetails.setSupplierName(rs.getString("SUPPLIER_NAME"));
-				supplierInvoiceDetails.setInvoiceDate(rs.getDate("INVOICE_DATE"));
+				supplierInvoiceDetails.setInvoiceDate(rs.getString("INVOICE_DATE"));
 				supplierInvoiceDetails.setComments(rs.getString("COMMENTS"));
 				supplierInvoiceDetails.setNoOfItems(rs.getInt("NO_OF_ITEMS"));
 				supplierInvoiceDetails.setTotalQuanity(rs.getDouble("TOTAL_QTY"));
@@ -348,7 +347,7 @@ public class SupplierService {
 				supplierInvoiceDetails.setExtraCharges(rs.getDouble("EXTRA_CHARGES"));
 				supplierInvoiceDetails.setPaymentMode(rs.getString("PAYMENT_MODE"));
 				supplierInvoiceDetails.setSupplierInvoiceAmt(rs.getDouble("SUPP_INVOICE_AMOUNT"));
-				supplierInvoiceDetails.setTimeStamp(rs.getTimestamp("TIMESTAMP"));
+				supplierInvoiceDetails.setTimeStamp(rs.getString("TIMESTAMP"));
 				supplierInvoiceDetailsList.add(supplierInvoiceDetails);
 			}
 		} catch (Exception e) {

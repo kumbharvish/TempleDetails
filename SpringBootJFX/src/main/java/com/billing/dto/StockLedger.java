@@ -1,12 +1,10 @@
 package com.billing.dto;
 
-import java.sql.Timestamp;
-
 public class StockLedger {
 
 	private int productCode;
 	
-	private Timestamp timeStamp;
+	private String timeStamp;
 	
 	private double stockIn;
 	
@@ -24,11 +22,11 @@ public class StockLedger {
 		this.productCode = productCode;
 	}
 
-	public Timestamp getTimeStamp() {
+	public String getTimeStamp() {
 		return timeStamp;
 	}
 
-	public void setTimeStamp(Timestamp timeStamp) {
+	public void setTimeStamp(String timeStamp) {
 		this.timeStamp = timeStamp;
 	}
 

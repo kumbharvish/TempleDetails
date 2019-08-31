@@ -18,6 +18,7 @@ import com.billing.dto.BillDetails;
 import com.billing.dto.Customer;
 import com.billing.dto.CustomerPaymentHistory;
 import com.billing.dto.CustomerProfit;
+import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 
 @Service
@@ -25,6 +26,9 @@ public class CustomerHistoryService {
 
 	@Autowired
 	DBUtils dbUtils;
+	
+	@Autowired
+	AppUtils appUtils;
 	
 	@Autowired
 	UserService userService;
@@ -53,7 +57,7 @@ public class CustomerHistoryService {
 				customer.setCustMobNo(rs.getLong("CUST_MOB_NO"));
 				customer.setCustName(rs.getString("CUSTOMER_NAME"));
 				customer.setClosingBlanace(rs.getDouble("AMOUNT"));
-				customer.setEntryDate(rs.getTimestamp("TIMESTAMP"));
+				customer.setEntryDate(rs.getString("TIMESTAMP"));
 				customer.setStatus(rs.getString("STATUS"));
 				customer.setNarration(rs.getString("NARRATION"));
 				customer.setCredit(rs.getDouble("CREDIT"));
@@ -88,7 +92,7 @@ public class CustomerHistoryService {
 				while (rs.next()) {
 					billDetails = new BillDetails();
 					billDetails.setBillNumber(rs.getInt("BILL_NUMBER"));
-					billDetails.setTimestamp(rs.getTimestamp("BILL_DATE_TIME"));
+					billDetails.setTimestamp(rs.getString("BILL_DATE_TIME"));
 					billDetails.setCustomerMobileNo(rs.getLong("CUST_MOB_NO"));
 					billDetails.setCustomerName(rs.getString("CUSTOMER_NAME"));
 					billDetails.setNoOfItems(rs.getInt("NO_OF_ITEMS"));
@@ -115,22 +119,22 @@ public class CustomerHistoryService {
 	}
 
 	// Customer wise profit report
-	public List<CustomerProfit> getCustomerWiseProfit(Date fromDate, Date toDate) {
+	public List<CustomerProfit> getCustomerWiseProfit(String fromDate, String toDate) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		CustomerProfit customer = null;
 		List<CustomerProfit> customerList = new ArrayList<CustomerProfit>();
 		try {
 			if (fromDate == null) {
-				fromDate = new Date(1947 / 01 / 01);
+				fromDate = "1947-01-01";
 			}
 			if (toDate == null) {
-				toDate = new Date(System.currentTimeMillis());
+				toDate = appUtils.getCurrentTimestamp();
 			}
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(CUSTOMER_WISE_PROFIT);
-			stmt.setDate(1, fromDate);
-			stmt.setDate(2, toDate);
+			stmt.setString(1, fromDate);
+			stmt.setString(2, toDate);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				customer = new CustomerProfit();

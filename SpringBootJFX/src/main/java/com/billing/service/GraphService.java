@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.billing.dto.GraphDTO;
+import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 
 @Service
@@ -20,6 +21,9 @@ public class GraphService {
 	
 	@Autowired
 	DBUtils dbUtils;
+	
+	@Autowired
+	AppUtils appUtils;
 	
 	private static final Logger logger = LoggerFactory.getLogger(GraphService.class);
 
@@ -33,23 +37,23 @@ public class GraphService {
 			+ "GROUP BY DATE_FORMAT(BILL_DATE_TIME,'%b %y') ORDER BY BILL_DATE_TIME DESC ;";
 
 	// Get Payment mode wise collection
-	public List<GraphDTO> getPaymentModeAmounts(Date fromDate, Date toDate) {
+	public List<GraphDTO> getPaymentModeAmounts(String fromDate, String toDate) {
 		List<GraphDTO> list = new ArrayList<GraphDTO>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		GraphDTO graph = null;
 		try {
 			if (fromDate == null) {
-				fromDate = new Date(1947 / 01 / 01);
+				fromDate ="1947-01-01";
 			}
 			if (toDate == null) {
-				toDate = new Date(System.currentTimeMillis());
+				toDate = appUtils.getCurrentTimestamp();
 			}
 
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(PAYMENT_MODE_AMOUNT);
-			stmt.setDate(1, fromDate);
-			stmt.setDate(2, toDate);
+			stmt.setString(1, fromDate);
+			stmt.setString(2, toDate);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				graph = new GraphDTO();

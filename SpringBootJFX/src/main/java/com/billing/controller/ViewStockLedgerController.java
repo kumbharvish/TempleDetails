@@ -102,7 +102,7 @@ public class ViewStockLedgerController {
 		txtProductName.setText(product.getProductName());
 		txtCurrentStock.setText(appUtils.getDecimalFormat(product.getQuantity()));
 		List<StockLedger> stockLedgerList = productHistoryService.getProductStockLedger(product.getProductCode(),
-				java.sql.Date.valueOf(dateFrom.getValue()), java.sql.Date.valueOf(dateTo.getValue()));
+				dateFrom.getValue().toString(), dateTo.getValue().toString());
 		ObservableList<StockLedger> slList = FXCollections.observableArrayList();
 		slList.addAll(stockLedgerList);
 		tableView.setItems(slList);

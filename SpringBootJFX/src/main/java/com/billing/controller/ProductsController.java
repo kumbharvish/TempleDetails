@@ -477,8 +477,8 @@ public class ProductsController extends AppContext implements TabContent {
 		productToSave.setPurcasePrice(Double.parseDouble(lblPurchasePrice.getText()));
 		productToSave.setSellPrice(Double.parseDouble(txtSellPrice.getText()));
 		productToSave.setEnterBy(userDetails.getFirstName() + " " + userDetails.getLastName());
-		productToSave.setEntryDate(new java.sql.Date(System.currentTimeMillis()));
-		productToSave.setLastUpdateDate(new java.sql.Date(System.currentTimeMillis()));
+		productToSave.setEntryDate(appUtils.getCurrentTimestamp());
+		productToSave.setLastUpdateDate(appUtils.getCurrentTimestamp());
 		if (txtBarcode.getText().equals("")) {
 			productToSave.setProductBarCode(Long.valueOf(0));
 		} else {
@@ -537,7 +537,7 @@ public class ProductsController extends AppContext implements TabContent {
 		productToUpdate.setPurcasePrice(Double.parseDouble(lblPurchasePrice.getText()));
 		productToUpdate.setSellPrice(Double.parseDouble(txtSellPrice.getText()));
 		productToUpdate.setEnterBy(userDetails.getFirstName() + " " + userDetails.getLastName());
-		productToUpdate.setLastUpdateDate(new java.sql.Date(System.currentTimeMillis()));
+		productToUpdate.setLastUpdateDate(appUtils.getCurrentTimestamp());
 		if (txtBarcode.getText().equals("")) {
 			productToUpdate.setProductBarCode(Long.valueOf(0));
 		} else {

@@ -1,7 +1,6 @@
 package com.billing.service;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.billing.dto.Expense;
 import com.billing.dto.ExpenseType;
 import com.billing.dto.StatusDTO;
+import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 
 import javafx.scene.control.ComboBox;
@@ -27,6 +27,9 @@ public class ExpensesService {
 
 	@Autowired
 	DBUtils dbUtils;
+	
+	@Autowired
+	AppUtils appUtils;
 
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesService.class);
 
@@ -44,7 +47,7 @@ public class ExpensesService {
 
 	private static final String GET_EXPENSE_TYPES = "SELECT * FROM APP_EXPENSE_TYPES";
 
-	public List<Expense> getExpenses(Date fromDate, Date toDate, String expenseCategory) {
+	public List<Expense> getExpenses(String fromDate, String toDate, String expenseCategory) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		Expense pc = null;
@@ -54,10 +57,10 @@ public class ExpensesService {
 		String CATEGORY = " AND CATEGORY = ? ";
 		try {
 			if (fromDate == null) {
-				fromDate = new Date(1947 / 01 / 01);
+				fromDate = "1947-01-01";
 			}
 			if (toDate == null) {
-				toDate = new Date(System.currentTimeMillis());
+				toDate = appUtils.getCurrentTimestamp();
 			}
 			if (expenseCategory != null) {
 				query1.append(CATEGORY);
@@ -66,8 +69,8 @@ public class ExpensesService {
 
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(query1.toString());
-			stmt.setDate(1, fromDate);
-			stmt.setDate(2, toDate);
+			stmt.setString(1, fromDate);
+			stmt.setString(2, toDate);
 			if (expenseCategory != null) {
 				stmt.setString(3, expenseCategory);
 			}
@@ -79,7 +82,7 @@ public class ExpensesService {
 				pc.setCategory(rs.getString("CATEGORY"));
 				pc.setAmount(Double.parseDouble(rs.getString("AMOUNT")));
 				pc.setDescription(rs.getString("DESCRIPTION"));
-				pc.setDate(rs.getDate("DATE"));
+				pc.setDate(rs.getString("DATE"));
 
 				expenseList.add(pc);
 			}
@@ -104,7 +107,7 @@ public class ExpensesService {
 				stmt.setString(1, expense.getCategory());
 				stmt.setString(2, expense.getDescription());
 				stmt.setDouble(3, expense.getAmount());
-				stmt.setDate(4, expense.getDate());
+				stmt.setString(4, expense.getDate());
 
 				int i = stmt.executeUpdate();
 				if (i > 0) {
@@ -155,7 +158,7 @@ public class ExpensesService {
 				stmt.setString(1, expense.getCategory());
 				stmt.setString(2, expense.getDescription());
 				stmt.setDouble(3, expense.getAmount());
-				stmt.setDate(4, expense.getDate());
+				stmt.setString(4, expense.getDate());
 				stmt.setInt(5, expense.getId());
 
 				int i = stmt.executeUpdate();
@@ -190,7 +193,7 @@ public class ExpensesService {
 				pc.setCategory(rs.getString("CATEGORY"));
 				pc.setAmount(Double.parseDouble(rs.getString("AMOUNT")));
 				pc.setDescription(rs.getString("DESCRIPTION"));
-				pc.setDate(rs.getDate("DATE"));
+				pc.setDate(rs.getString("DATE"));
 			}
 			rs.close();
 		} catch (Exception e) {

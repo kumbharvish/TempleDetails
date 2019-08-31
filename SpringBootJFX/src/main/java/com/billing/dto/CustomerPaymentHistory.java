@@ -1,6 +1,5 @@
 package com.billing.dto;
 
-import java.sql.Timestamp;
 
 public class CustomerPaymentHistory {
 	
@@ -18,14 +17,14 @@ public class CustomerPaymentHistory {
 	
 	private String status;
 	
-	private Timestamp entryDate;
+	private String entryDate;
 	
 
-	public Timestamp getEntryDate() {
+	public String getEntryDate() {
 		return entryDate;
 	}
 
-	public void setEntryDate(Timestamp entryDate) {
+	public void setEntryDate(String entryDate) {
 		this.entryDate = entryDate;
 	}
 

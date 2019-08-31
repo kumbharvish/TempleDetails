@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.billing.dto.Product;
 import com.billing.dto.ProductAnalysis;
+import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 
 @Service
@@ -23,6 +24,9 @@ public class ProductSaleAnalysisService {
 
 	@Autowired
 	DBUtils dbUtils;
+	
+	@Autowired
+	AppUtils appUtils;
 	
 	@Autowired
 	ProductService productService;
@@ -34,22 +38,22 @@ public class ProductSaleAnalysisService {
 	private static final String PRODUCT_WISE_SALES = "SELECT BID.ITEM_NUMBER , PD.PRODUCT_NAME,BID.ITEM_MRP,SUM(BID.ITEM_QTY) AS TOTAL_QTY FROM BILL_ITEM_DETAILS BID,PRODUCT_DETAILS PD WHERE BID.BILL_NUMBER IN (SELECT BILL_NUMBER FROM CUSTOMER_BILL_DETAILS WHERE DATE(BILL_DATE_TIME) BETWEEN ? AND ?) AND BID.ITEM_NUMBER = PD.PRODUCT_ID GROUP BY BID.ITEM_NUMBER ORDER BY SUM(BID.ITEM_QTY) DESC";
 
 	// Get Product total Quantity between date
-	public List<ProductAnalysis> getProductTotalQuantity(Date fromDate, Date toDate) {
+	public List<ProductAnalysis> getProductTotalQuantity(String fromDate, String toDate) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ProductAnalysis product = null;
 		List<ProductAnalysis> productAnalysisList = new ArrayList<ProductAnalysis>();
 		try {
 			if (fromDate == null) {
-				fromDate = new Date(1947 / 01 / 01);
+				fromDate = "1947-01-01";
 			}
 			if (toDate == null) {
-				toDate = new Date(System.currentTimeMillis());
+				toDate = appUtils.getCurrentTimestamp();
 			}
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(PRODUCT_WISE_PROFIT);
-			stmt.setDate(1, fromDate);
-			stmt.setDate(2, toDate);
+			stmt.setString(1, fromDate);
+			stmt.setString(2, toDate);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				product = new ProductAnalysis();
@@ -69,7 +73,7 @@ public class ProductSaleAnalysisService {
 	}
 
 	// Get Product Wise Profit for the given period
-	public List<ProductAnalysis> getProductWiseProfit(Date fromDate, Date toDate) {
+	public List<ProductAnalysis> getProductWiseProfit(String fromDate, String toDate) {
 
 		List<ProductAnalysis> productAnalysisList = getProductTotalQuantity(fromDate, toDate);
 		HashMap<Integer, Product> productMap = productService.getProductMap();
@@ -86,22 +90,22 @@ public class ProductSaleAnalysisService {
 	}
 
 	// Product Wise Sales Analysis
-	public List<ProductAnalysis> getProductWiseSales(Date fromDate, Date toDate) {
+	public List<ProductAnalysis> getProductWiseSales(String fromDate, String toDate) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ProductAnalysis product = null;
 		List<ProductAnalysis> productAnalysisList = new ArrayList<ProductAnalysis>();
 		try {
 			if (fromDate == null) {
-				fromDate = new Date(1947 / 01 / 01);
+				fromDate = "1947-01-01";
 			}
 			if (toDate == null) {
-				toDate = new Date(System.currentTimeMillis());
+				toDate = appUtils.getCurrentTimestamp();
 			}
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(PRODUCT_WISE_SALES);
-			stmt.setDate(1, fromDate);
-			stmt.setDate(2, toDate);
+			stmt.setString(1, fromDate);
+			stmt.setString(2, toDate);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				product = new ProductAnalysis();
