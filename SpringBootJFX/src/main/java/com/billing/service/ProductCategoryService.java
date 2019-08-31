@@ -215,8 +215,8 @@ public class ProductCategoryService {
 				pc = new ProductCategory();
 				pc.setCategoryName(rs.getString("CATEGORY_NAME"));
 				pc.setCategoryCode(rs.getInt("CATEGORY_ID"));
-				pc.setCategoryStockQty(rs.getInt("CATEGORY_STOCK_QTY"));
-				pc.setCategoryStockAmount(rs.getInt("CATEGORY_STOCK_AMOUNT"));
+				pc.setCategoryStockQty(rs.getDouble("CATEGORY_STOCK_QTY"));
+				pc.setCategoryStockAmount(rs.getDouble("CATEGORY_STOCK_AMOUNT"));
 				productCategoryList.add(pc);
 			}
 

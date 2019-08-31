@@ -46,7 +46,6 @@ public class CustomerHistoryService {
 		try {
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(GET_ALL_CUSTOMERS_HISTORY);
-			System.out.println("GET_ALL_CUSTOMERS_HISTORY" + GET_ALL_CUSTOMERS_HISTORY);
 			stmt.setLong(1, customerMobile);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {

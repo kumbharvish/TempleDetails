@@ -177,8 +177,8 @@ public class ProductHistoryService {
 				pc.setTimeStamp(rs.getTimestamp("TIMESTAMP"));
 				pc.setNarration(rs.getString("NARRATION"));
 				pc.setTransactionType(rs.getString("TRANSACTION_TYPE"));
-				pc.setStockIn(rs.getInt("STOCK_IN"));
-				pc.setStockOut(rs.getInt("STOCK_OUT"));
+				pc.setStockIn(rs.getDouble("STOCK_IN"));
+				pc.setStockOut(rs.getDouble("STOCK_OUT"));
 
 				stockLedgerList.add(pc);
 			}

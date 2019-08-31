@@ -54,7 +54,7 @@ public class ProductSaleAnalysisService {
 			while (rs.next()) {
 				product = new ProductAnalysis();
 				product.setProductCode(rs.getInt("ITEM_NUMBER"));
-				product.setTotalQty(rs.getInt("TOTAL_QTY"));
+				product.setTotalQty(rs.getDouble("TOTAL_QTY"));
 
 				productAnalysisList.add(product);
 			}
@@ -108,7 +108,7 @@ public class ProductSaleAnalysisService {
 				product.setProductCode(rs.getInt("ITEM_NUMBER"));
 				product.setProductName(rs.getString("PRODUCT_NAME"));
 				product.setProductMRP(rs.getDouble("ITEM_MRP"));
-				product.setTotalQty(rs.getInt("TOTAL_QTY"));
+				product.setTotalQty(rs.getDouble("TOTAL_QTY"));
 
 				productAnalysisList.add(product);
 			}

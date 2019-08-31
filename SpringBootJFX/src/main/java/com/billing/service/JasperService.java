@@ -30,7 +30,7 @@ public class JasperService {
 		for (ItemDetails item : bill.getItemDetails()) {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("Name", item.getItemName());
-			map.put("Qty", String.valueOf(item.getQuantity()));
+			map.put("Qty", appUtils.getDecimalFormat(item.getQuantity()));
 			map.put("Rate", appUtils.getDecimalFormat(item.getRate()));
 			map.put("Amount", appUtils.getDecimalFormat(item.getAmount()));
 			map.put("BillNo", String.valueOf(bill.getBillNumber()));
@@ -97,7 +97,7 @@ public class JasperService {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("ProductName", item.getProductName());
 			map.put("ProductCode", String.valueOf(item.getProductCode()));
-			map.put("Quantity", item.getQuantity());
+			map.put("Quantity", appUtils.getDecimalFormat(item.getQuantity()));
 			map.put("CategoryName", item.getProductCategory());
 			dataSourceMaps.add(map);
 		}

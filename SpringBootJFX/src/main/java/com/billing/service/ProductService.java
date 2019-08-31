@@ -511,7 +511,7 @@ public class ProductService {
 				itemDetails.setItemName(rs.getString("PRODUCT_NAME"));
 				itemDetails.setMRP(rs.getDouble("ITEM_MRP"));
 				itemDetails.setRate(rs.getDouble("ITEM_RATE"));
-				itemDetails.setQuantity(rs.getInt("ITEM_QTY"));
+				itemDetails.setQuantity(rs.getDouble("ITEM_QTY"));
 
 				itemDetailsList.add(itemDetails);
 			}
