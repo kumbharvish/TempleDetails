@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.billing.dto.MyStoreDetails;
+import com.billing.dto.StatusDTO;
 import com.billing.utils.DBUtils;
 
 @Service
@@ -24,6 +25,10 @@ public class StoreDetailsService {
 			+ "ADDRESS=?, ADDRESS2=?,CITY=?,DISTRICT=?,STATE=?,PHONE=?,CST_NUMBER=?,PAN_NUMBER=?,VAT_NUMBER=?,ELECTRICITY_NO=?,"
 			+ " OWNER_NAME=?,MOBILE_NO=?,GST_NO=? WHERE STORE_ID=?";
 
+	private static final String INS_STORE_DETAILS = "INSERT INTO MY_STORE_DETAILS (STORE_ID,NAME,ADDRESS,ADDRESS2,CITY,DISTRICT,"
+			+ "STATE,PHONE,CST_NUMBER,PAN_NUMBER,VAT_NUMBER,ELECTRICITY_NO,OWNER_NAME,MOBILE_NO,GST_NO)"
+			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	
 	private static final String GET_MY_STORE_DETAILS = "SELECT * FROM MY_STORE_DETAILS";
 
 	public MyStoreDetails getMyStoreDetails() {
@@ -64,11 +69,13 @@ public class StoreDetailsService {
 	}
 
 	// Save My Store Details
-	public boolean updateStoreDetails(MyStoreDetails myStoreDetails) {
+	public StatusDTO updateStoreDetails(MyStoreDetails myStoreDetails) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		boolean flag = false;
+		StatusDTO status = new StatusDTO();
+		status.setStatusCode(1); // Store Details not available
 
+		
 		try {
 			if (myStoreDetails != null) {
 				conn = dbUtils.getConnection();
@@ -92,15 +99,60 @@ public class StoreDetailsService {
 
 				int i = stmt.executeUpdate();
 				if (i > 0) {
-					flag = true;
+					status.setStatusCode(0);
 				}
 			}
 		} catch (Exception e) {
+			status.setStatusCode(-1);
+			status.setException(e.getMessage());
 			e.printStackTrace();
 			logger.error("Exception: ", e);
 		} finally {
 			DBUtils.closeConnection(stmt, conn);
 		}
-		return flag;
+		return status;
 	}
+	
+	// Save My Store Details
+		public StatusDTO addStoreDetails(MyStoreDetails myStoreDetails) {
+			Connection conn = null;
+			PreparedStatement stmt = null;
+			StatusDTO status = new StatusDTO();
+			
+			try {
+				if (myStoreDetails != null) {
+					conn = dbUtils.getConnection();
+					stmt = conn.prepareStatement(INS_STORE_DETAILS);
+					
+					stmt.setInt(1, 1);
+					stmt.setString(2, myStoreDetails.getStoreName());
+					stmt.setString(3, myStoreDetails.getAddress());
+					stmt.setString(4, myStoreDetails.getAddress2());
+					stmt.setString(5, myStoreDetails.getCity());
+					stmt.setString(6, myStoreDetails.getDistrict());
+					stmt.setString(7, myStoreDetails.getState());
+					stmt.setLong(8, myStoreDetails.getPhone());
+					stmt.setLong(9, myStoreDetails.getCstNo());
+					stmt.setString(10, myStoreDetails.getPanNo());
+					stmt.setLong(11, myStoreDetails.getVatNo());
+					stmt.setLong(12, myStoreDetails.getElectricityNo());
+					stmt.setString(13, myStoreDetails.getOwnerName());
+					stmt.setLong(14, myStoreDetails.getMobileNo());
+					stmt.setString(15, myStoreDetails.getGstNo());
+
+					int i = stmt.executeUpdate();
+					if (i > 0) {
+						status.setStatusCode(0);
+					}
+				}
+			} catch (Exception e) {
+				status.setStatusCode(-1);
+				status.setException(e.getMessage());
+				e.printStackTrace();
+				logger.error("Exception: ", e);
+			} finally {
+				DBUtils.closeConnection(stmt, conn);
+			}
+			return status;
+		}
 }

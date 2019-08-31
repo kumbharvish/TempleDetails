@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.billing.dto.MyStoreDetails;
+import com.billing.dto.StatusDTO;
 import com.billing.dto.UserDetails;
 import com.billing.service.StoreDetailsService;
 import com.billing.utils.AlertHelper;
@@ -205,11 +206,19 @@ public class StoreDetailsController implements TabContent {
 		myStoreDetails.setMobileNo(!txtMobileNo.getText().equals("") ? Long.valueOf(txtMobileNo.getText()) : 0);
 		myStoreDetails.setGstNo(txtGSTNo.getText());
 
-		boolean isSuccess = myStoreService.updateStoreDetails(myStoreDetails);
-
-		if (isSuccess) {
-			alertHelper.showSuccessNotification("Details saved successfully");
-		} else {
+		StatusDTO statusUpdate = myStoreService.updateStoreDetails(myStoreDetails);
+		StatusDTO statusAdd = null;
+		if (statusUpdate.getStatusCode()==0) {
+			alertHelper.showSuccessNotification("Details updated successfully");
+		} else if(statusUpdate.getStatusCode()==1){
+			statusAdd = myStoreService.addStoreDetails(myStoreDetails);
+			if(statusAdd.getStatusCode()==0){
+				alertHelper.showSuccessNotification("Details saved successfully");
+			}else {
+				alertHelper.showDataSaveErrAlert(currentStage);
+				return false;
+			}
+		}else {
 			alertHelper.showDataSaveErrAlert(currentStage);
 			return false;
 		}
