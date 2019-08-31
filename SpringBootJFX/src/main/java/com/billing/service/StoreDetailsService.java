@@ -22,7 +22,7 @@ public class StoreDetailsService {
 
 	private static final String UPDATE_STORE_DETAILS = "UPDATE MY_STORE_DETAILS SET NAME=?,"
 			+ "ADDRESS=?, ADDRESS2=?,CITY=?,DISTRICT=?,STATE=?,PHONE=?,CST_NUMBER=?,PAN_NUMBER=?,VAT_NUMBER=?,ELECTRICITY_NO=?,"
-			+ " OWNER_NAME=?,MOBILE_NO=?,GST_NO=?";
+			+ " OWNER_NAME=?,MOBILE_NO=?,GST_NO=? WHERE STORE_ID=?";
 
 	private static final String GET_MY_STORE_DETAILS = "SELECT * FROM MY_STORE_DETAILS";
 
@@ -51,7 +51,6 @@ public class StoreDetailsService {
 				myStoreDetails.setElectricityNo(rs.getLong("ELECTRICITY_NO"));
 				myStoreDetails.setOwnerName(rs.getString("OWNER_NAME"));
 				myStoreDetails.setMobileNo(rs.getLong("MOBILE_NO"));
-				myStoreDetails.setImage(rs.getBytes("IMAGE"));
 				myStoreDetails.setGstNo(rs.getString("GST_NO"));
 			}
 			rs.close();
@@ -69,18 +68,12 @@ public class StoreDetailsService {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		boolean flag = false;
-		StringBuilder sb = new StringBuilder(UPDATE_STORE_DETAILS);
 
 		try {
 			if (myStoreDetails != null) {
 				conn = dbUtils.getConnection();
-				if (myStoreDetails.getImagePath() != null) {
-					sb.append(",IMAGE=? WHERE STORE_ID=?");
-					stmt = conn.prepareStatement(sb.toString());
-				} else {
-					sb.append(" WHERE STORE_ID=?");
-					stmt = conn.prepareStatement(sb.toString());
-				}
+				stmt = conn.prepareStatement(UPDATE_STORE_DETAILS);
+				
 				stmt.setString(1, myStoreDetails.getStoreName());
 				stmt.setString(2, myStoreDetails.getAddress());
 				stmt.setString(3, myStoreDetails.getAddress2());
@@ -95,12 +88,7 @@ public class StoreDetailsService {
 				stmt.setString(12, myStoreDetails.getOwnerName());
 				stmt.setLong(13, myStoreDetails.getMobileNo());
 				stmt.setString(14, myStoreDetails.getGstNo());
-				if (myStoreDetails.getImagePath() != null) {
-					stmt.setBlob(15, myStoreDetails.getImagePath());
-					stmt.setInt(16, myStoreDetails.getMyStoreId());
-				} else {
-					stmt.setInt(15, myStoreDetails.getMyStoreId());
-				}
+				stmt.setInt(15, myStoreDetails.getMyStoreId());
 
 				int i = stmt.executeUpdate();
 				if (i > 0) {

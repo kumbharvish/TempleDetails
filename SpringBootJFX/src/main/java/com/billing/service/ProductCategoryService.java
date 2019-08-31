@@ -34,7 +34,7 @@ public class ProductCategoryService {
 	private static final String DELETE_CATEGORY = "DELETE FROM PRODUCT_CATEGORY_DETAILS WHERE CATEGORY_ID=?";
 
 	private static final String UPDATE_CATEGORY = "UPDATE PRODUCT_CATEGORY_DETAILS SET CATEGORY_NAME=?,"
-			+ "CATEGORY_DESCRIPTION=?, COMMISSION=?" + " WHERE CATEGORY_ID=?";
+			+ "CATEGORY_DESCRIPTION=?," + " WHERE CATEGORY_ID=?";
 
 	private static final String GET_ALL_PRODUCTS_FOR_CATEGORY = "SELECT  PD.PRODUCT_ID,PD.PRODUCT_NAME,PD.MEASURE,PD.QUANTITY,PD.PURCHASE_PRICE,PD.SELL_PRICE,"
 			+ "PD.PRODUCT_MRP,PD.DISCOUNT,PD.ENTRY_DATE,PD.LAST_UPDATE_DATE,PD.DESCRIPTION,PD.ENTER_BY,"
@@ -58,8 +58,6 @@ public class ProductCategoryService {
 				pc.setCategoryName(rs.getString("CATEGORY_NAME"));
 				pc.setCategoryCode(Integer.parseInt(rs.getString("CATEGORY_ID")));
 				pc.setCategoryDescription(rs.getString("CATEGORY_DESCRIPTION"));
-				pc.setComission(Double.parseDouble(rs.getString("COMMISSION")));
-
 				productCategoryList.add(pc);
 			}
 
@@ -136,8 +134,7 @@ public class ProductCategoryService {
 				stmt = conn.prepareStatement(UPDATE_CATEGORY);
 				stmt.setString(1, prodcutCategory.getCategoryName());
 				stmt.setString(2, prodcutCategory.getCategoryDescription());
-				stmt.setDouble(3, 0.0);
-				stmt.setInt(4, prodcutCategory.getCategoryCode());
+				stmt.setInt(3, prodcutCategory.getCategoryCode());
 
 				int i = stmt.executeUpdate();
 				if (i > 0) {
