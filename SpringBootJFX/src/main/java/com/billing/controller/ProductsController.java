@@ -169,6 +169,9 @@ public class ProductsController extends AppContext implements TabContent {
 	private TextField txtDescription;
 
 	@FXML
+	private TextField txtDiscount;
+
+	@FXML
 	private Label lblViewStockLedger;
 
 	@FXML
@@ -204,6 +207,9 @@ public class ProductsController extends AppContext implements TabContent {
 	@FXML
 	private TableColumn<Product, String> tcDescription;
 
+	@FXML
+	private TableColumn<Product, String> tcDiscount;
+
 	@Override
 	public void initialize() {
 		// Error Messages
@@ -230,6 +236,7 @@ public class ProductsController extends AppContext implements TabContent {
 		txtBarcode.textProperty().addListener(Utility.getForceNumberListner());
 		txtTax.textProperty().addListener(Utility.getForceDecimalNumberListner());
 		txtSellPrice.textProperty().addListener(Utility.getForceDecimalNumberListner());
+		txtDiscount.textProperty().addListener(Utility.getForceDecimalNumberListner());
 		// Table row selection
 		tableView.getSelectionModel().selectedItemProperty().addListener(this::onSelectedRowChanged);
 		cbMeasuringUnit.prefWidthProperty().bind(cbProductCategory.widthProperty());
@@ -260,27 +267,30 @@ public class ProductsController extends AppContext implements TabContent {
 
 	private void setTableCellFactories() {
 		// Table Column Mapping
-				tcCategory.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProductCategory()));
-				tcName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProductName()));
-				tcQuantity.setCellValueFactory(
-						cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getQuantity())));
-				tcMUnit.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMeasure()));
-				tcPurchaseRate.setCellValueFactory(
-						cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getPurcaseRate())));
-				tcTax.setCellValueFactory(
-						cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getProductTax())));
-				tcSellPrice.setCellValueFactory(
-						cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getSellPrice())));
-				tcDescription.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription()));
-				//Set CSS
-				tcQuantity.getStyleClass().add("numeric-cell");
-				tcPurchaseRate.getStyleClass().add("numeric-cell");
-				tcTax.getStyleClass().add("numeric-cell");
-				tcSellPrice.getStyleClass().add("numeric-cell");
-				tcCategory.getStyleClass().add("character-cell");
-				tcName.getStyleClass().add("character-cell");
-				tcMUnit.getStyleClass().add("character-cell");
-				tcDescription.getStyleClass().add("character-cell");
+		tcCategory.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProductCategory()));
+		tcName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProductName()));
+		tcQuantity.setCellValueFactory(
+				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getQuantity())));
+		tcMUnit.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMeasure()));
+		tcPurchaseRate.setCellValueFactory(
+				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getPurcaseRate())));
+		tcTax.setCellValueFactory(
+				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getProductTax())));
+		tcSellPrice.setCellValueFactory(
+				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getSellPrice())));
+		tcDiscount.setCellValueFactory(
+				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getDiscount())));
+		tcDescription.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription()));
+		// Set CSS
+		tcQuantity.getStyleClass().add("numeric-cell");
+		tcPurchaseRate.getStyleClass().add("numeric-cell");
+		tcTax.getStyleClass().add("numeric-cell");
+		tcSellPrice.getStyleClass().add("numeric-cell");
+		tcDiscount.getStyleClass().add("numeric-cell");
+		tcCategory.getStyleClass().add("character-cell");
+		tcName.getStyleClass().add("character-cell");
+		tcMUnit.getStyleClass().add("character-cell");
+		tcDescription.getStyleClass().add("character-cell");
 	}
 
 	private void setPurchasePrice() {
@@ -314,13 +324,15 @@ public class ProductsController extends AppContext implements TabContent {
 			cbProductCategory.getSelectionModel().select(newValue.getProductCategory());
 			cbMeasuringUnit.getSelectionModel().select(newValue.getMeasure());
 			txtQuantity.setText(appUtils.getDecimalFormat(newValue.getQuantity()));
+			txtQuantity.setDisable(true);
 			txtPurchaseRate.setText(appUtils.getDecimalFormat(newValue.getPurcaseRate()));
 			txtTax.setText(appUtils.getDecimalFormat(newValue.getProductTax()));
 			lblPurchasePrice.setText(appUtils.getDecimalFormat(newValue.getPurcasePrice()));
 			txtSellPrice.setText(appUtils.getDecimalFormat(newValue.getSellPrice()));
+			txtDiscount.setText(newValue.getDiscount() == 0 ? "" : appUtils.getDecimalFormat(newValue.getDiscount()));
 			txtBarcode.setText(newValue.getProductBarCode() == 0 ? "" : String.valueOf(newValue.getProductBarCode()));
 			lblEnteredBy.setText(newValue.getEnterBy());
-			lblEntryDate.setText(newValue.getEntryDate().toString());
+			lblEntryDate.setText(appUtils.getFormattedDateWithTime(newValue.getEntryDate()));
 			txtDescription.setText(newValue.getDescription());
 		}
 	}
@@ -465,13 +477,13 @@ public class ProductsController extends AppContext implements TabContent {
 		productToSave.setDescription(txtDescription.getText());
 		productToSave.setMeasure(cbMeasuringUnit.getSelectionModel().getSelectedItem());
 		productToSave.setQuantity(Double.valueOf(txtQuantity.getText()));
-		// productToSave.setProductCategory((String)productCategory.getSelectedItem());
 		productToSave.setCategoryCode(productCategoryMap.get(cbProductCategory.getSelectionModel().getSelectedItem()));
 		productToSave.setDiscount(0);
-		/*
-		 * if(discount.getText().equals("")){ productToSave.setDiscount(0); }else{
-		 * productToSave.setDiscount(Double.parseDouble(discount.getText())); }
-		 */
+		if (txtDiscount.getText().equals("")) {
+			productToSave.setDiscount(0);
+		} else {
+			productToSave.setDiscount(Double.parseDouble(txtDiscount.getText()));
+		}
 		productToSave.setPurcaseRate(Double.parseDouble(txtPurchaseRate.getText()));
 		productToSave.setProductTax(Double.parseDouble(txtTax.getText()));
 		productToSave.setPurcasePrice(Double.parseDouble(lblPurchasePrice.getText()));
@@ -524,14 +536,14 @@ public class ProductsController extends AppContext implements TabContent {
 		productToUpdate.setDescription(txtDescription.getText());
 		productToUpdate.setMeasure(cbMeasuringUnit.getSelectionModel().getSelectedItem());
 		productToUpdate.setQuantity(Double.valueOf(txtQuantity.getText()));
-		// productToUpdate.setProductCategory((String)productCategory.getSelectedItem());
 		productToUpdate
 				.setCategoryCode(productCategoryMap.get(cbProductCategory.getSelectionModel().getSelectedItem()));
 		productToUpdate.setDiscount(0);
-		/*
-		 * if(discount.getText().equals("")){ productToUpdate.setDiscount(0); }else{
-		 * productToUpdate.setDiscount(Double.parseDouble(discount.getText())); }
-		 */
+		if (txtDiscount.getText().equals("")) {
+			productToUpdate.setDiscount(0);
+		} else {
+			productToUpdate.setDiscount(Double.parseDouble(txtDiscount.getText()));
+		}
 		productToUpdate.setPurcaseRate(Double.parseDouble(txtPurchaseRate.getText()));
 		productToUpdate.setProductTax(Double.parseDouble(txtTax.getText()));
 		productToUpdate.setPurcasePrice(Double.parseDouble(lblPurchasePrice.getText()));
@@ -666,10 +678,12 @@ public class ProductsController extends AppContext implements TabContent {
 		cbProductCategory.getSelectionModel().select(0);
 		cbMeasuringUnit.getSelectionModel().select(0);
 		txtQuantity.setText("");
+		txtQuantity.setDisable(false);
 		txtPurchaseRate.setText("");
 		txtTax.setText("");
 		lblPurchasePrice.setText("");
 		txtSellPrice.setText("");
+		txtDiscount.setText("");
 		txtBarcode.setText("");
 		lblEnteredBy.setText("");
 		lblEntryDate.setText("");

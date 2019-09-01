@@ -58,6 +58,7 @@ public class MyStoreApplication extends Application {
 		try {
 			if (!appProperties.check()) {
 				alertHelper.showErrorAlert(null,AppConstants.LICENSE_ERROR,null,AppConstants.LICENSE_ERROR_1);
+				alertHelper.showProductKeyDialog();
 				System.exit(0);
 			} else {
 				if (appLicenseService.change()) {
@@ -66,6 +67,7 @@ public class MyStoreApplication extends Application {
 				} else {
 					if (!appProperties.doCheck()) {
 						alertHelper.showErrorAlert(null,AppConstants.LICENSE_EXPIRED,null,AppConstants.LICENSE_ERROR_2);
+						alertHelper.showLicenseKeyDialog();
 						System.exit(0);
 					} else {
 						logger.error(" --- Application Check Complete and Started --- ");

@@ -38,6 +38,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.billing.constants.AppConstants;
+import com.billing.dto.ProductCategory;
+import com.billing.dto.StatusDTO;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -61,6 +63,8 @@ public class AppUtils {
 	private static final String TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 	private static final String APP_DATA = "SELECT VALUE_STRING FROM " + "APP_DATA WHERE DATA_NAME=?";
+
+	private static final String UPDATE_APP_DATA = "UPDATE APP_DATA SET VALUE_STRING =? WHERE DATA_NAME=?";
 
 	static final Logger logger = LoggerFactory.getLogger(AppUtils.class);
 
@@ -99,6 +103,33 @@ public class AppUtils {
 		}
 		return dataList;
 
+	}
+
+	public StatusDTO updateAppData(String dataName, String valueString) {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		StatusDTO status = new StatusDTO();
+		try {
+			if (dataName != null && valueString != null) {
+				conn = dbUtils.getConnection();
+				stmt = conn.prepareStatement(UPDATE_APP_DATA);
+				stmt.setString(1, valueString);
+				stmt.setString(2, dataName);
+
+				int i = stmt.executeUpdate();
+				if (i > 0) {
+					status.setStatusCode(0);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			status.setException(e.getMessage());
+			status.setStatusCode(-1);
+			logger.info("Exception : ", e);
+		} finally {
+			DBUtils.closeConnection(stmt, conn);
+		}
+		return status;
 	}
 
 	public int getRandomCode() {
@@ -172,7 +203,7 @@ public class AppUtils {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		return sdf.format(dt);
 	}
-	
+
 	public String getDBFormattedDate(Date dt) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		return sdf.format(dt);
@@ -193,7 +224,7 @@ public class AppUtils {
 		}
 		return date;
 	}
-	
+
 	public String getFormattedDateWithTime(String dt) {
 		SimpleDateFormat inputSdf = new SimpleDateFormat(TIMESTAMP_FORMAT);
 		SimpleDateFormat outputSdf = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
@@ -206,7 +237,7 @@ public class AppUtils {
 		return outputSdf.format(date);
 	}
 
-	public String enc(String value){
+	public String enc(String value) {
 		try {
 			Key params = generate();
 			Cipher cipher = Cipher.getInstance(AppUtils.PDF_CONST.substring(2));
@@ -214,8 +245,8 @@ public class AppUtils {
 			byte[] encryptedByteValue = cipher.doFinal(value.getBytes("utf-8"));
 			String encryptedValue64 = new BASE64Encoder().encode(encryptedByteValue);
 			return encryptedValue64;
-		}catch(Exception e) {
-			logger.info("Encryption Exception : ",e);
+		} catch (Exception e) {
+			logger.info("Encryption Exception : ", e);
 		}
 		return null;
 	}
@@ -251,25 +282,6 @@ public class AppUtils {
 
 	}
 
-	public void licenseExpiryAlert(Container panel) {
-		try {
-			String licenseDateStr = dec(getAppDataValues("APP_SECURE_KEY").get(0));
-			SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
-			Date licenseDate = sdf.parse(licenseDateStr);
-			Date currentDate = new Date();
-			long diff = getDifferenceDays(currentDate, licenseDate);
-			System.out.println("Days Difference : " + diff);
-			if (diff <= 15) {
-				JOptionPane.showMessageDialog(panel,
-						"Your license expires in " + diff + " days. Kindly renew your license.", "Renew License",
-						JOptionPane.WARNING_MESSAGE);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("licenseExpiryAlert :", e);
-		}
-	}
-
 	public long getDifferenceDays(Date d1, Date d2) {
 		long diff = d2.getTime() - d1.getTime();
 		return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
@@ -283,8 +295,13 @@ public class AppUtils {
 			Date currentDate = new Date();
 			long diff = getDifferenceDays(currentDate, licenseDate);
 			if (diff <= LICENSE_EXPIRY_LIMIT) {
-				alertHelper.showWarningAlert(null, AppConstants.RENEW_LICENESE, null,
-						"Your license expires in " + diff + " days. Kindly renew your license!");
+				if (diff == 0) {
+					alertHelper.showWarningAlert(null, AppConstants.RENEW_LICENESE, null,
+							"Your license expires today. Kindly renew your license!");
+				} else {
+					alertHelper.showWarningAlert(null, AppConstants.RENEW_LICENESE, null,
+							"Your license expires in " + diff + " days. Kindly renew your license!");
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -304,11 +321,15 @@ public class AppUtils {
 
 		return result.get();
 	}
-	
+
 	public String getCurrentTimestamp() {
 		SimpleDateFormat sdf = new SimpleDateFormat(TIMESTAMP_FORMAT);
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		return sdf.format(timestamp);
+	}
+
+	public String getCurrentWorkingDir() {
+		return System.getProperty("user.dir");
 	}
 
 }

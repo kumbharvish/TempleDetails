@@ -93,6 +93,12 @@ public class HomeController extends AppContext {
 	private MenuItem productsMenuItem;
 
 	@FXML
+	private MenuItem quickStockCorrectionMenuItem;
+
+	@FXML
+	private MenuItem taxesMenuItem;
+
+	@FXML
 	private MenuItem expenseMenuItem;
 
 	@FXML
@@ -160,7 +166,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	private MenuItem cashCounterReportMenuItem;
-	
+
 	@FXML
 	private MenuItem expenseReportMenuItem;
 
@@ -217,6 +223,9 @@ public class HomeController extends AppContext {
 
 	@FXML
 	private Label lblProducts;
+
+	@FXML
+	private Label lblQuickStockCorrection;
 
 	@FXML
 	private Label lblMeasurementUnits;
@@ -295,10 +304,10 @@ public class HomeController extends AppContext {
 	void onCashCounterCommand(ActionEvent event) {
 
 	}
-	
+
 	@FXML
 	void onExpenseReportCommand(ActionEvent event) {
-		
+
 	}
 
 	@FXML
@@ -416,12 +425,21 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onProductCategoriesClick(MouseEvent event) {
-		addTab("ProductCategory", "Product Categories");
+		if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+			productCategoryMenuItem.fire();
+		}
 	}
 
 	@FXML
 	void onProductCategoriesCommand(ActionEvent event) {
 		addTab("ProductCategory", "Product Categories");
+	}
+
+	@FXML
+	void onQuickStockCorrectionClick(MouseEvent event) {
+		if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+			quickStockCorrectionMenuItem.fire();
+		}
 	}
 
 	@FXML
@@ -533,6 +551,16 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onZeroStockProductsCommand(ActionEvent event) {
+
+	}
+
+	@FXML
+	void onTaxesCommand(ActionEvent event) {
+
+	}
+
+	@FXML
+	void onQuickStockCorrectionCommand(ActionEvent event) {
 
 	}
 

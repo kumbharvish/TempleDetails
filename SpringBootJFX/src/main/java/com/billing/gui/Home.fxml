@@ -27,7 +27,6 @@
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="A" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
                            </accelerator></MenuItem>
-                        <MenuItem fx:id="storeDetailsMenuItem" onAction="#onStoreDetailsCommand" text="_Store Details" />
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem fx:id="measurementUnitsMenuItem" onAction="#onMeasurementUnitsCommand" text="Measurement _Units">
                            <accelerator>
@@ -42,6 +41,11 @@
                         <MenuItem fx:id="productsMenuItem" onAction="#onProductsCommand" text="_Products">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="P" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem fx:id="quickStockCorrectionMenuItem" onAction="#onQuickStockCorrectionCommand" text="_Quick Stock Correction">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="U" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
                            </accelerator>
                         </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
@@ -135,10 +139,12 @@
                         </Menu>
                      </items>
                   </Menu>
-                  <Menu fx:id="preferencesMenu" mnemonicParsing="false" text="Pre_ferences">
+                  <Menu fx:id="settingsMenu" mnemonicParsing="false" text="_Settings">
                     <items>
+                        <MenuItem fx:id="storeDetailsMenuItem" onAction="#onStoreDetailsCommand" text="_Store Details" />
                       <MenuItem fx:id="userPreferencesMenuItem" onAction="#onUserPreferencesCommand" text="User Preferences" />
                         <MenuItem fx:id="dataBackupMenuItem" onAction="#onDataBackupCommand" text="Da_ta Backup" />
+                        <MenuItem fx:id="taxesMenuItem" onAction="#onTaxesCommand" text="_Taxes" />
                         <CheckMenuItem fx:id="hideToolbarMenuItem" onAction="#onHideToolbarCommand" text="Hide _Toolbar" />
                     </items>
                   </Menu>
@@ -175,6 +181,11 @@
                   <Label fx:id="lblProductCategories" onMouseClicked="#onProductCategoriesClick">
                      <tooltip>
                         <Tooltip text="Product Categories" />
+                     </tooltip>
+                  </Label>
+                  <Label fx:id="lblQuickStockCorrection" onMouseClicked="#onQuickStockCorrectionClick">
+                     <tooltip>
+                        <Tooltip text="Quick Stock Correction" />
                      </tooltip>
                   </Label>
                   <Separator maxHeight="24.0" orientation="VERTICAL" />

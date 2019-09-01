@@ -135,6 +135,14 @@
      -fx-graphic: url("/images/customer_24.png");
 }
 
+#quickStockCorrectionMenuItem > .label{
+     -fx-graphic: url("/images/QuickStockCorrection.png");
+}
+
+#taxesMenuItem > .label{
+     -fx-graphic: url("/images/Taxes.png");
+}
+
 #customerPaymentHistoryMenuItem > .label{
      -fx-graphic: url("/images/CustPaymentHist_24.png");
 }
@@ -230,3 +238,8 @@
 #lblUserSettings{
     -fx-graphic: url("/images/configuration_24.png");
 }
+
+#lblQuickStockCorrection{
+    -fx-graphic: url("/images/QuickStockCorrection.png");
+}
+

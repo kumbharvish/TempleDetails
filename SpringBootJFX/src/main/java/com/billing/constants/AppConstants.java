@@ -94,7 +94,7 @@ public class AppConstants {
 
 	public static final String LICENSE_EXPIRED = "License Expired";
 
-	public static final String LICENSE_ERROR_1 = "Kindly Purchase License Key to use this Software !";
+	public static final String LICENSE_ERROR_1 = "Kindly Purchase Product Key to use this Software !";
 
 	public static final String COMP_DATE_ERROR = "Computer Date changed . Kindly set the correct date !";
 
@@ -107,5 +107,12 @@ public class AppConstants {
 	public static final String DATA_SAVE_ERROR = "An error occurred in saving the data !";
 
 	public static final String DATA_FETCH_ERROR = "An error occurred in saving the data !";
+	
+	public static final String INVALID_PRODUCT_KEY = "Invalid product key";
+	
+	public static final String SOFTWARE_ACTIVATED = "Software activated successfully. Please reopen the software.";
+	
+	public static final String LICENSE_UPDATED = "License updated successfully. Valid upto : ";
+	
 
 }

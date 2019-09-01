@@ -15,6 +15,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.billing.constants.AppConstants;
+import com.billing.dto.StatusDTO;
+import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 
 @Component
@@ -22,6 +25,10 @@ public class AppProperties {
 	
 	@Autowired
 	AppUtils appUtils;
+	
+	@Autowired
+	AlertHelper alertHelper;
+	
 	
 	private static final Logger logger = LoggerFactory.getLogger(AppProperties.class);
 	
@@ -67,6 +74,44 @@ public class AppProperties {
 		return isValidLicense;
 	}
 	
+	public boolean validateKeyUpdate(String key) throws Exception{
+		List<String> licenseKeys = new ArrayList<String>();
+		licenseKeys.add(COMPUTER+MAC_ADDRESS);
+		licenseKeys.add(USER+MAC_ADDRESS);
+		licenseKeys.add(VERSION);
+		licenseKeys.add(IPADDRESS);
+		boolean isValidLicense=false;
+		String sysKey="";
+		String tempString="";
+		Map<String,String> details =  getDetails();
+		licenseKeys.remove(2);
+		licenseKeys.remove(2);
+		for(String s:licenseKeys){
+			tempString=details.get(s);
+			sysKey=sysKey+tempString;
+		}
+		
+		if(appUtils.enc(sysKey).equals(key)) {
+			isValidLicense=true;
+			//Update Key to DB
+			appUtils.updateAppData("APP_KEY",key);
+			alertHelper.showInfoAlert(null, "Success", "Activation Successful", AppConstants.SOFTWARE_ACTIVATED);
+		}else {
+			alertHelper.showErrorAlert(null, "Error", null, AppConstants.INVALID_PRODUCT_KEY);
+		}
+			
+		return isValidLicense;
+	}
+	
+	public void updateLicenseKey(String key) throws Exception {
+		StatusDTO status = appUtils.updateAppData("APP_SECURE_KEY", key);
+		if(status.getStatusCode()==0) {
+			alertHelper.showInfoAlert(null, "Success", "License Updated", AppConstants.LICENSE_UPDATED+appUtils.dec(key));
+		}else {
+			alertHelper.showDataSaveErrAlert(null);
+		}
+	}
+	
 	public boolean doCheck() throws Exception{
 		boolean isValidLicense=true;
 		List<String> appKey = appUtils.getAppDataValues("APP_SECURE_KEY");
@@ -88,18 +133,4 @@ public class AppProperties {
 		return isValidLicense;
 	}
 	
-	
-	
-	
-	public static void main(String[] args) throws Exception {
-		/*Map<String, String> sysProperties = getSystemProperties();
-		
-		System.out.println("Computer Name:"+sysProperties.get("COMPUTERNAME"));
-		System.out.println("User Name:"+sysProperties.get("USERNAME"));
-		
-		System.out.println(validateLicense());*/
-		
-		//validateLicensedDays();
-		//System.out.println(getProperties());
-	}
 }
