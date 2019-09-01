@@ -395,12 +395,14 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onMeasuermentUnitsClick(MouseEvent event) {
-
+		if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+			measurementUnitsMenuItem.fire();
+		}
 	}
 
 	@FXML
 	void onMeasurementUnitsCommand(ActionEvent event) {
-
+		addTab("UOM", "Measurement Units");
 	}
 
 	@FXML
