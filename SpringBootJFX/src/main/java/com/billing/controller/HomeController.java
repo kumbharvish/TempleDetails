@@ -560,7 +560,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onQuickStockCorrectionCommand(ActionEvent event) {
-
+		addTab("QuickStockCorrection","Quick Stock Correction");
 	}
 
 	private void addTab(final String fxmlFileName, final String title) {

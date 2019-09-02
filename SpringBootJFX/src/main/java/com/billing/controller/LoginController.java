@@ -64,9 +64,9 @@ public class LoginController extends AppContext{
 	
 	@Autowired
 	AlertHelper alertHelper;
-
-	private final static String APPLICATION_HOME_TITTLE = "My Store";
 	
+	MyStoreDetails mystore;
+
 	private final static String APPLICATION_LOGIN_TITTLE = "Login";
 	
 	private FXMLLoader fxmlLoader;
@@ -138,8 +138,11 @@ public class LoginController extends AppContext{
 				        stage.setWidth(s.getWidth());
 				        stage.setHeight(s.getHeight());
 				        
-				       //stage.getProperties().put("hostServices", getHostServices());
-				        stage.setTitle(APPLICATION_HOME_TITTLE);
+				        if(mystore!=null) {
+				        	stage.setTitle("My Store - "+mystore.getStoreName());
+				        }else {
+				        	stage.setTitle("My Store");
+				        }				        
 				        stage.setMaximized(true);
 				        stage.show();
 				        stage.setOnCloseRequest((WindowEvent event2) -> {
@@ -178,11 +181,11 @@ public class LoginController extends AppContext{
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop32X32.png")));
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop48X48.png")));
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop64X64.png")));
-        MyStoreDetails mystore = myStoreService.getMyStoreDetails();
+        mystore = myStoreService.getMyStoreDetails();
         if(mystore!=null) {
         	lblShopName.setText(mystore.getStoreName());
         }else {
-        	lblShopName.setText("Store Name Here");
+        	lblShopName.setText("My Store");
         }
         
         try {

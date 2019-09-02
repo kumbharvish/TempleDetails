@@ -37,8 +37,9 @@ public class DBBackupService {
 
 	private static final Logger logger = LoggerFactory.getLogger(DBBackupService.class);
 
-	public void createDBDump() {
+	public boolean createDBDump() {
 		try {
+			boolean flag = false;
 			String currentDir = appUtils.getCurrentWorkingDir();
 			String fileSeparator = System.getProperty("file.separator");
 			if(!Files.isDirectory(Paths.get(currentDir+fileSeparator+AppConstants.DATA_BACKUP_FOLDER))) {
@@ -57,64 +58,20 @@ public class DBBackupService {
 			FileCopyUtils.copy(inputFile, outputFile);
 			//Delete database.mbf.db
 			inputFile.delete();
+			return true;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("Data Backup Exception-->", ex);
 			alertHelper.showWarningAlert(null, "Data Backup", null, "Data Backup Failed !");
+			return false;
 		}
 	}
 
-	// Create DB Dump and Send on Mail Configured
+	// Create DB Dump show alert
 	public void createDBDumpSendOnMail(Stage stage) {
-		try {/*
-			String dbSchema = env.getProperty("DB.SCHEMA");
-			MailConfigDTO mail = mailConfigurationService.getMailConfig();
-
-			Date currentDate = new Date();
-			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-			String folderLocation = appUtils.getAppDataValues("MYSTORE_HOME").get(0) + AppConstants.DATA_BACKUP_FOLDER;
-			String mySqlHome = appUtils.getAppDataValues("MYSQL_HOME").get(0);
-			logger.error("mySqlHome : " + mySqlHome);
-			String fileName = "\\\\DataBackup_" + sdf.format(currentDate) + "_" + System.currentTimeMillis() + ".sql";
-			String executeCmd = mySqlHome + "\\\\bin\\\\mysqldump -u root -ppassword " + dbSchema + " -r "
-					+ folderLocation + fileName;
-			 NOTE: Executing the command here 
-			System.out.println(executeCmd);
-			logger.error("DB dump : " + executeCmd);
-			Process runtimeProcess = Runtime.getRuntime().exec(executeCmd);
-			int processComplete = runtimeProcess.waitFor();
-
-			
-			 * NOTE: processComplete=0 if correctly executed, will contain other values if
-			 * not
-			 
-			if (processComplete == 0) {
-				if ("Y".equals(mail.getIsEnabled())) {
-					StatusDTO status = EmailAttachmentSender.sendEmailWithAttachments(mail, folderLocation + fileName);
-					if (0 == status.getStatusCode()) {
-						alertHelper.showInfoAlert(stage, "Data Backup Mail", null,
-								"Data Backup Successfully Completed !");
-					} else {
-						if (status.getException().contains("Unknown SMTP host")) {
-							alertHelper.showWarningAlert(stage, "Mail Send Error", null,
-									"Please check your Internet Connection !");
-						}
-						if (status.getException().contains("AuthFail")) {
-							alertHelper.showWarningAlert(stage, "Mail Send Error", null,
-									"Your Mail From Id or Password is incorrect. Please check Mail Configurations !");
-						}
-					}
-				} else {
-					alertHelper.showInfoAlert(stage,"Data Backup",null, "Data Backup Successfully Completed !");
-				}
-			} else {
-				alertHelper.showErrorAlert(stage, "Data Backup", null,"Data Backup Failed !");
-			}*/
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			logger.error("Data Backup Exception--> ", ex);
-			alertHelper.showErrorAlert(stage, "Data Backup",null,"Data Backup Failed !");
+		boolean flag = createDBDump();
+		if(flag) {
+			alertHelper.showInfoAlert(null, "Data Backup", "Backup Success", "Data backup completed sucessfully");
 		}
 	}
 }
