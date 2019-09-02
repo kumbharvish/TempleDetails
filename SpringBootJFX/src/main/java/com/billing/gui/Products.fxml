@@ -81,7 +81,7 @@
                               <Label alignment="TOP_RIGHT" styleClass="requiredInput" text="Tax (%) :" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
 							   <VBox GridPane.columnIndex="1" GridPane.rowIndex="6">
                                  <children>
-                                    <TextField fx:id="txtTax" />
+                                    <ComboBox fx:id="cbTax" />
                                     <Label fx:id="lblTaxErrMsg" styleClass="errorLabel" />
                                  </children>
                               </VBox>
@@ -94,8 +94,8 @@
                                     <Label fx:id="lblSellPriceErrMsg" styleClass="errorLabel" />
                                  </children>
                               </VBox>
-							  <Label text="Discount (%) :" styleClass="nodeLabel" GridPane.halignment="RIGHT" GridPane.rowIndex="9" />
-                              <TextField fx:id="txtDiscount"  GridPane.columnIndex="1" GridPane.rowIndex="9" />
+							  <Label styleClass="nodeLabel" text="Discount (%) :" GridPane.halignment="RIGHT" GridPane.rowIndex="9" />
+                              <TextField fx:id="txtDiscount" GridPane.columnIndex="1" GridPane.rowIndex="9" />
                               <Label alignment="TOP_RIGHT" styleClass="nodeLabel" text="Barcode :" GridPane.halignment="RIGHT" GridPane.rowIndex="10" />
 							  <TextField fx:id="txtBarcode" GridPane.columnIndex="1" GridPane.rowIndex="10" />
                                                                                

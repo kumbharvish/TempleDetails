@@ -11,19 +11,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.billing.constants.AppConstants;
+import com.billing.dto.MeasurementUnit;
 import com.billing.dto.Product;
 import com.billing.dto.ProductCategory;
 import com.billing.dto.StatusDTO;
+import com.billing.dto.Tax;
 import com.billing.dto.UserDetails;
 import com.billing.main.AppContext;
+import com.billing.service.MeasurementUnitsService;
 import com.billing.service.ProductCategoryService;
 import com.billing.service.ProductHistoryService;
 import com.billing.service.ProductService;
+import com.billing.service.TaxesService;
 import com.billing.service.UserService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
-import com.billing.utils.Utility;
 
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
@@ -79,6 +82,12 @@ public class ProductsController extends AppContext implements TabContent {
 
 	@Autowired
 	ProductCategoryService productCategoryService;
+
+	@Autowired
+	MeasurementUnitsService measurementUnitsService;
+	
+	@Autowired
+	TaxesService taxesService;
 
 	private UserDetails userDetails;
 
@@ -145,7 +154,7 @@ public class ProductsController extends AppContext implements TabContent {
 	private Label lblPurRateErrMsg;
 
 	@FXML
-	private TextField txtTax;
+	private ComboBox<String> cbTax;
 
 	@FXML
 	private Label lblTaxErrMsg;
@@ -231,24 +240,25 @@ public class ProductsController extends AppContext implements TabContent {
 		lblSellPriceErrMsg.visibleProperty().bind(lblSellPriceErrMsg.textProperty().length().greaterThanOrEqualTo(1));
 		setTableCellFactories();
 		// Force Number Listner
-		txtPurchaseRate.textProperty().addListener(Utility.getForceDecimalNumberListner());
-		txtQuantity.textProperty().addListener(Utility.getForceDecimalNumberListner());
-		txtBarcode.textProperty().addListener(Utility.getForceNumberListner());
-		txtTax.textProperty().addListener(Utility.getForceDecimalNumberListner());
-		txtSellPrice.textProperty().addListener(Utility.getForceDecimalNumberListner());
-		txtDiscount.textProperty().addListener(Utility.getForceDecimalNumberListner());
+		txtPurchaseRate.textProperty().addListener(appUtils.getForceDecimalNumberListner());
+		txtQuantity.textProperty().addListener(appUtils.getForceDecimalNumberListner());
+		txtBarcode.textProperty().addListener(appUtils.getForceNumberListner());
+		txtSellPrice.textProperty().addListener(appUtils.getForceDecimalNumberListner());
+		txtDiscount.textProperty().addListener(appUtils.getForceDecimalNumberListner());
 		// Table row selection
 		tableView.getSelectionModel().selectedItemProperty().addListener(this::onSelectedRowChanged);
-		cbMeasuringUnit.prefWidthProperty().bind(cbProductCategory.widthProperty());
+		cbProductCategory.prefWidthProperty().bind(cbMeasuringUnit.widthProperty());
+		cbTax.prefWidthProperty().bind(cbMeasuringUnit.widthProperty());
 		populateCategoryComboBox();
 		populateMUnitComboBox();
+		populateTaxtComboBox();
 		// Register textfield listners
 		txtPurchaseRate.focusedProperty().addListener((observable, oldValue, newValue) -> {
 			if (!newValue) {
 				setPurchasePrice();
 			}
 		});
-		txtTax.focusedProperty().addListener((observable, oldValue, newValue) -> {
+		cbTax.focusedProperty().addListener((observable, oldValue, newValue) -> {
 			if (!newValue) {
 				setPurchasePrice();
 			}
@@ -296,8 +306,8 @@ public class ProductsController extends AppContext implements TabContent {
 	private void setPurchasePrice() {
 		double purRateFinal = 0;
 		double purchaseRateTemp = 0;
-		if (!txtTax.getText().equals("") && !txtPurchaseRate.getText().equals("")) {
-			Double tax = Double.parseDouble(txtTax.getText());
+		if (cbTax.getSelectionModel().getSelectedIndex() != 0 && !txtPurchaseRate.getText().equals("")) {
+			Double tax = Double.parseDouble(cbTax.getSelectionModel().getSelectedItem());
 			purchaseRateTemp = Double.parseDouble(txtPurchaseRate.getText());
 			double tempPurRate = purchaseRateTemp;
 			tempPurRate = tempPurRate + (purchaseRateTemp / 100) * tax;
@@ -326,7 +336,7 @@ public class ProductsController extends AppContext implements TabContent {
 			txtQuantity.setText(appUtils.getDecimalFormat(newValue.getQuantity()));
 			txtQuantity.setDisable(true);
 			txtPurchaseRate.setText(appUtils.getDecimalFormat(newValue.getPurcaseRate()));
-			txtTax.setText(appUtils.getDecimalFormat(newValue.getProductTax()));
+			cbTax.getSelectionModel().select(appUtils.getDecimalFormat(newValue.getProductTax()));
 			lblPurchasePrice.setText(appUtils.getDecimalFormat(newValue.getPurcasePrice()));
 			txtSellPrice.setText(appUtils.getDecimalFormat(newValue.getSellPrice()));
 			txtDiscount.setText(newValue.getDiscount() == 0 ? "" : appUtils.getDecimalFormat(newValue.getDiscount()));
@@ -349,12 +359,20 @@ public class ProductsController extends AppContext implements TabContent {
 
 	public void populateMUnitComboBox() {
 		cbMeasuringUnit.getItems().add("-- Select Measurement Unit --");
-		/*
-		 * for (ProductCategory s : productCategoryService.getAllCategories()) {
-		 * cbMeasuringUnit.getItems().add(s.getCategoryName()); }
-		 */
-		cbMeasuringUnit.getItems().add("Qty");
+		for (MeasurementUnit u : measurementUnitsService.getAllUOM()) {
+			cbMeasuringUnit.getItems().add(u.getName());
+		}
 		cbMeasuringUnit.getSelectionModel().select(0);
+	}
+	
+
+	public void populateTaxtComboBox() {
+		cbTax.getItems().add("-- Select Tax --");
+		cbTax.getItems().add("0.00");
+		for (Tax u : taxesService.getAllTax()) {
+			cbTax.getItems().add(appUtils.getDecimalFormat(u.getValue()));
+		}
+		cbTax.getSelectionModel().select(0);
 	}
 
 	@FXML
@@ -485,7 +503,7 @@ public class ProductsController extends AppContext implements TabContent {
 			productToSave.setDiscount(Double.parseDouble(txtDiscount.getText()));
 		}
 		productToSave.setPurcaseRate(Double.parseDouble(txtPurchaseRate.getText()));
-		productToSave.setProductTax(Double.parseDouble(txtTax.getText()));
+		productToSave.setProductTax(Double.parseDouble(cbTax.getSelectionModel().getSelectedItem()));
 		productToSave.setPurcasePrice(Double.parseDouble(lblPurchasePrice.getText()));
 		productToSave.setSellPrice(Double.parseDouble(txtSellPrice.getText()));
 		productToSave.setEnterBy(userDetails.getFirstName() + " " + userDetails.getLastName());
@@ -517,7 +535,7 @@ public class ProductsController extends AppContext implements TabContent {
 				resetFields();
 				loadData();
 			} else {
-				if (status.getException().contains("Duplicate entry")) {
+				if (status.getException().contains("UNIQUE")) {
 					alertHelper.beep();
 					alertHelper.showErrorNotification("Entered product name already exists");
 					txtProductName.requestFocus();
@@ -545,7 +563,7 @@ public class ProductsController extends AppContext implements TabContent {
 			productToUpdate.setDiscount(Double.parseDouble(txtDiscount.getText()));
 		}
 		productToUpdate.setPurcaseRate(Double.parseDouble(txtPurchaseRate.getText()));
-		productToUpdate.setProductTax(Double.parseDouble(txtTax.getText()));
+		productToUpdate.setProductTax(Double.parseDouble(cbTax.getSelectionModel().getSelectedItem()));
 		productToUpdate.setPurcasePrice(Double.parseDouble(lblPurchasePrice.getText()));
 		productToUpdate.setSellPrice(Double.parseDouble(txtSellPrice.getText()));
 		productToUpdate.setEnterBy(userDetails.getFirstName() + " " + userDetails.getLastName());
@@ -569,7 +587,7 @@ public class ProductsController extends AppContext implements TabContent {
 				loadData();
 				resetFields();
 			} else {
-				if (status.getException().contains("Duplicate entry")) {
+				if (status.getException().contains("UNIQUE")) {
 					alertHelper.beep();
 					alertHelper.showErrorNotification("Entered product name already exists");
 				} else {
@@ -648,11 +666,11 @@ public class ProductsController extends AppContext implements TabContent {
 		}
 
 		// Tax
-		int tax = txtTax.getText().trim().length();
+		int tax = cbTax.getSelectionModel().getSelectedIndex();
 		if (tax == 0) {
 			alertHelper.beep();
-			lblTaxErrMsg.setText("Please enter tax");
-			txtTax.requestFocus();
+			lblTaxErrMsg.setText("Please select tax");
+			cbTax.requestFocus();
 			valid = false;
 		} else {
 			lblTaxErrMsg.setText("");
@@ -680,7 +698,7 @@ public class ProductsController extends AppContext implements TabContent {
 		txtQuantity.setText("");
 		txtQuantity.setDisable(false);
 		txtPurchaseRate.setText("");
-		txtTax.setText("");
+		cbTax.getSelectionModel().select(0);
 		lblPurchasePrice.setText("");
 		txtSellPrice.setText("");
 		txtDiscount.setText("");

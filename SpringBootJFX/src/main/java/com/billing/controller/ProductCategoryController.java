@@ -169,7 +169,7 @@ public class ProductCategoryController implements TabContent {
 			loadData();
 			alertHelper.showSuccessNotification("Category added sucessfully");
 		} else {
-			if (status.getException().contains("Duplicate entry")) {
+			if (status.getException().contains("UNIQUE")) {
 				alertHelper.showErrorNotification("Entered category name already exists");
 			} else {
 				alertHelper.showDataSaveErrAlert(currentStage);
@@ -282,7 +282,7 @@ public class ProductCategoryController implements TabContent {
 			loadData();
 			alertHelper.showSuccessNotification("Category updated sucessfully!");
 		} else {
-			if (status.getException().contains("Duplicate entry")) {
+			if (status.getException().contains("UNIQUE")) {
 				alertHelper.showErrorNotification("Entered category name already exists");
 			} else {
 				alertHelper.showDataSaveErrAlert(currentStage);

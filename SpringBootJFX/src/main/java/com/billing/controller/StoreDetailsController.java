@@ -12,7 +12,6 @@ import com.billing.service.StoreDetailsService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
-import com.billing.utils.Utility;
 
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
@@ -147,7 +146,7 @@ public class StoreDetailsController implements TabContent {
 		txtState.textProperty().addListener(this::invalidated);
 		txtOwnerName.textProperty().addListener(this::invalidated);
 		txtMobileNo.textProperty().addListener(this::invalidated);
-		txtMobileNo.textProperty().addListener(Utility.getForceNumberListner());
+		txtMobileNo.textProperty().addListener(appUtils.getForceNumberListner());
 		txtGSTNo.textProperty().addListener(this::invalidated);
 
 		btnSave.disableProperty().bind(isDirty.not());

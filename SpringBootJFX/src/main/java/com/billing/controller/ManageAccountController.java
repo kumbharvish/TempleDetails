@@ -11,7 +11,6 @@ import com.billing.service.UserService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
-import com.billing.utils.Utility;
 
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
@@ -179,7 +178,7 @@ public class ManageAccountController implements TabContent {
 		lblNewUsernameErrorMsg.visibleProperty()
 				.bind(lblNewUsernameErrorMsg.textProperty().length().greaterThanOrEqualTo(1));
 
-		txtMobile.textProperty().addListener(Utility.getForceNumberListner());
+		txtMobile.textProperty().addListener(appUtils.getForceNumberListner());
 
 		txtFirstName.textProperty().addListener(this::invalidated);
 		txtLastName.textProperty().addListener(this::invalidated);

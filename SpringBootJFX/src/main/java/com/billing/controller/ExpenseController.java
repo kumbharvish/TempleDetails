@@ -12,7 +12,6 @@ import com.billing.service.ExpensesService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
-import com.billing.utils.Utility;
 
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
@@ -231,7 +230,7 @@ public class ExpenseController implements TabContent {
    	 cbCategory.selectionModelProperty().addListener(this::invalidated);
 	 txtAmount.textProperty().addListener(this::invalidated);
 	 dateExpense.valueProperty().addListener(this::invalidated);
-	 txtAmount.textProperty().addListener(Utility.getForceNumberListner());
+	 txtAmount.textProperty().addListener(appUtils.getForceNumberListner());
 	 btnSave.disableProperty().bind(isDirty.not());
 	}
 

@@ -24,7 +24,6 @@ import com.billing.service.DBScheduledDumpTask;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
-import com.billing.utils.Utility;
 
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
@@ -35,8 +34,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -558,7 +555,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onTaxesCommand(ActionEvent event) {
-
+		addTab("Taxes","Taxes");
 	}
 
 	@FXML

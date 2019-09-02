@@ -12,6 +12,7 @@ import com.billing.properties.AppProperties;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar.ButtonData;
@@ -37,6 +38,8 @@ public class AlertHelper {
 	AppProperties appProperties;
 	
 	double NOTIFICATION_DURATION = 4;
+	
+	Pos NOTIFICATION_LOCATION = Pos.TOP_RIGHT; 
 
 	public void showErrorAlert(Stage alertOwner, String title, String headerText, String contextText) {
 		Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -148,6 +151,7 @@ public class AlertHelper {
         .text(contextText)
         .darkStyle()
         .hideAfter(Duration.seconds(NOTIFICATION_DURATION))
+        .position(NOTIFICATION_LOCATION)
         .showWarning();
 	}
 	
@@ -157,6 +161,7 @@ public class AlertHelper {
         .text(contextText)
         .darkStyle()
         .hideAfter(Duration.seconds(NOTIFICATION_DURATION))
+        .position(NOTIFICATION_LOCATION)
         .graphic(new ImageView(new Image("/images/Error_Red_Cross.png")))
         .show();
 	}
@@ -167,6 +172,7 @@ public class AlertHelper {
         .text(contextText)
         .darkStyle()
         .hideAfter(Duration.seconds(NOTIFICATION_DURATION))
+        .position(NOTIFICATION_LOCATION)
         .graphic(new ImageView(new Image("/images/Success_Greent_Tick.png")))
         .show();
 	}

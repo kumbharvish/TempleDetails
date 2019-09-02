@@ -5,12 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.billing.dto.MeasurementUnit;
-import com.billing.dto.Product;
-import com.billing.dto.ProductCategory;
 import com.billing.dto.StatusDTO;
+import com.billing.dto.Tax;
 import com.billing.dto.UserDetails;
-import com.billing.service.MeasurementUnitsService;
+import com.billing.service.TaxesService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
@@ -37,10 +35,10 @@ import javafx.stage.Stage;
 
 @SuppressWarnings("restriction")
 @Controller
-public class UOMController implements TabContent {
+public class TaxesController implements TabContent {
 
 	@Autowired
-	MeasurementUnitsService measurementUnitsService;
+	TaxesService taxesService;
 
 	@Autowired
 	AlertHelper alertHelper;
@@ -53,13 +51,16 @@ public class UOMController implements TabContent {
 	private TabPane tabPane = null;
 
 	@FXML
-	private TextField txtUOMName;
+	private TextField txtTaxName;
 
 	@FXML
-	private Label txtUOMNameErrorMsg;
+	private Label txtTaxNameErrorMsg;
 
 	@FXML
-	private TextField txtUOMDesc;
+	private TextField txtTaxValue;
+	
+	@FXML
+	private Label txtTaxValueErrorMsg;
 
 	@FXML
 	private Button btnAdd;
@@ -74,17 +75,17 @@ public class UOMController implements TabContent {
 	private Button btnReset;
 
 	@FXML
-	private TableView<MeasurementUnit> tableView;
+	private TableView<Tax> tableView;
 
 	@FXML
-	private TableColumn<MeasurementUnit, String> tcUOMName;
+	private TableColumn<Tax, String> tcTaxName;
 
 	@FXML
-	private TableColumn<MeasurementUnit, String> tcUOMDesc;
+	private TableColumn<Tax, String> tcTaxValue;
 
 	private BooleanProperty isDirty = new SimpleBooleanProperty(false);
 
-	private int uomCode = 0;
+	private int taxCode = 0;
 
 	@Override
 	public boolean shouldClose() {
@@ -110,15 +111,15 @@ public class UOMController implements TabContent {
 
 	@Override
 	public void putFocusOnNode() {
-		txtUOMName.requestFocus();
+		txtTaxName.requestFocus();
 	}
 
 	@Override
 	public boolean loadData() {
-		List<MeasurementUnit> list = measurementUnitsService.getAllUOM();
-		ObservableList<MeasurementUnit> uomTableData = FXCollections.observableArrayList();
-		uomTableData.addAll(list);
-		tableView.setItems(uomTableData);
+		List<Tax> list = taxesService.getAllTax();
+		ObservableList<Tax> taxTableData = FXCollections.observableArrayList();
+		taxTableData.addAll(list);
+		tableView.setItems(taxTableData);
 		return true;
 	}
 
@@ -134,47 +135,48 @@ public class UOMController implements TabContent {
 
 	@Override
 	public void initialize() {
-		txtUOMNameErrorMsg.managedProperty().bind(txtUOMNameErrorMsg.visibleProperty());
-		txtUOMNameErrorMsg.visibleProperty().bind(txtUOMNameErrorMsg.textProperty().length().greaterThanOrEqualTo(1));
+		txtTaxNameErrorMsg.managedProperty().bind(txtTaxNameErrorMsg.visibleProperty());
+		txtTaxNameErrorMsg.visibleProperty().bind(txtTaxNameErrorMsg.textProperty().length().greaterThanOrEqualTo(1));
+		txtTaxValueErrorMsg.managedProperty().bind(txtTaxValueErrorMsg.visibleProperty());
+		txtTaxValueErrorMsg.visibleProperty().bind(txtTaxValueErrorMsg.textProperty().length().greaterThanOrEqualTo(1));
+		
+		txtTaxValue.textProperty().addListener(appUtils.getForceDecimalNumberListner());
+		
 		setTableCellFactories();
 		tableView.getSelectionModel().selectedItemProperty().addListener(this::onSelectedRowChanged);
-		uomCode = 0;
+		taxCode = 0;
 	}
 
 	private void setTableCellFactories() {
-		tcUOMName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
-		tcUOMDesc.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription()));
+		tcTaxName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
+		tcTaxValue.setCellValueFactory(cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getValue())));
 		// Set CSS
-		tcUOMName.getStyleClass().add("character-cell");
-		tcUOMDesc.getStyleClass().add("character-cell");
+		tcTaxName.getStyleClass().add("character-cell");
+		tcTaxValue.getStyleClass().add("numeric-cell");
 
 	}
 
-	public void onSelectedRowChanged(ObservableValue<? extends MeasurementUnit> observable, MeasurementUnit oldValue,
-			MeasurementUnit newValue) {
+	public void onSelectedRowChanged(ObservableValue<? extends Tax> observable, Tax oldValue,
+			Tax newValue) {
 		if (newValue != null) {
-			txtUOMName.setText(newValue.getName());
-			txtUOMDesc.setText(newValue.getDescription());
-			uomCode = newValue.getId();
+			txtTaxName.setText(newValue.getName());
+			txtTaxValue.setText(appUtils.getDecimalFormat(newValue.getValue()));
+			taxCode = newValue.getId();
 		}
 	}
 
 	@Override
 	public boolean saveData() {
-		MeasurementUnit uom = new MeasurementUnit();
-		uom.setName(txtUOMName.getText());
-		uom.setDescription(txtUOMDesc.getText());
-		StatusDTO status = measurementUnitsService.addUOM(uom);
+		Tax tax = new Tax();
+		tax.setName(txtTaxName.getText());
+		tax.setValue(Double.valueOf(txtTaxValue.getText()));
+		StatusDTO status = taxesService.addTax(tax);
 		if (status.getStatusCode() == 0) {
-			restUOMFields();
+			restFields();
 			loadData();
-			alertHelper.showSuccessNotification("Unit of measure added sucessfully");
+			alertHelper.showSuccessNotification("Tax added sucessfully");
 		} else {
-			if (status.getException().contains("UNIQUE")) {
-				alertHelper.showErrorNotification("Entered UOM name already exists");
-			} else {
 				alertHelper.showDataSaveErrAlert(currentStage);
-			}
 		}
 		return false;
 	}
@@ -193,21 +195,30 @@ public class UOMController implements TabContent {
 	@Override
 	public boolean validateInput() {
 		boolean valid = true;
-		int uom = txtUOMName.getText().trim().length();
-		if (uom == 0) {
+		int tax = txtTaxName.getText().trim().length();
+		if (tax == 0) {
 			alertHelper.beep();
-			txtUOMNameErrorMsg.setText("Please enter UOM name");
-			txtUOMName.requestFocus();
+			txtTaxNameErrorMsg.setText("Please enter Tax name");
+			txtTaxName.requestFocus();
 			valid = false;
 		} else {
-			txtUOMNameErrorMsg.setText("");
+			txtTaxNameErrorMsg.setText("");
+		}
+		int value = txtTaxValue.getText().trim().length();
+		if (value == 0) {
+			alertHelper.beep();
+			txtTaxValueErrorMsg.setText("Please enter Tax (%)");
+			txtTaxValue.requestFocus();
+			valid = false;
+		} else {
+			txtTaxValueErrorMsg.setText("");
 		}
 		return valid;
 	}
 
 	@FXML
 	void onAddCommand(ActionEvent event) {
-		if (uomCode == 0) {
+		if (taxCode == 0) {
 			if (!validateInput()) {
 				return;
 			}
@@ -224,15 +235,15 @@ public class UOMController implements TabContent {
 
 	@FXML
 	void onDeleteCommand(ActionEvent event) {
-		if (uomCode == 0) {
-			alertHelper.showErrorNotification("Please select UOM");
+		if (taxCode == 0) {
+			alertHelper.showErrorNotification("Please select Tax");
 		} else {
 			Alert alert = alertHelper.showConfirmAlertWithYesNo(currentStage, null, "Are you sure?");
 			if (alert.getResult() == ButtonType.YES) {
-				measurementUnitsService.deleteUOM(uomCode);
-				alertHelper.showSuccessNotification("Unit of measure deleted sucessfully!");
+				taxesService.deleteTax(taxCode);
+				alertHelper.showSuccessNotification("Tax deleted sucessfully!");
 				loadData();
-				restUOMFields();
+				restFields();
 			}
 
 		}
@@ -240,19 +251,19 @@ public class UOMController implements TabContent {
 
 	@FXML
 	void onResetCommand(ActionEvent event) {
-		restUOMFields();
+		restFields();
 	}
 
-	private void restUOMFields() {
-		txtUOMName.setText("");
-		txtUOMDesc.setText("");
-		uomCode = 0;
+	private void restFields() {
+		txtTaxName.setText("");
+		txtTaxValue.setText("");
+		taxCode = 0;
 	}
 
 	@FXML
 	void onUpdateCommand(ActionEvent event) {
-		if (uomCode == 0) {
-			alertHelper.showErrorNotification("Please select UOM");
+		if (taxCode == 0) {
+			alertHelper.showErrorNotification("Please select Tax");
 		} else {
 			if (!validateInput()) {
 				return;
@@ -262,22 +273,18 @@ public class UOMController implements TabContent {
 	}
 
 	private void updateData() {
-		MeasurementUnit uom = new MeasurementUnit();
-		uom.setId(uomCode);
-		uom.setName(txtUOMName.getText());
-		uom.setDescription(txtUOMDesc.getText());
+		Tax tax = new Tax();
+		tax.setId(taxCode);
+		tax.setName(txtTaxName.getText());
+		tax.setValue(Double.valueOf(txtTaxValue.getText()));
 
-		StatusDTO status = measurementUnitsService.updateUOM(uom);
+		StatusDTO status = taxesService.updateTax(tax);
 		if (status.getStatusCode() == 0) {
-			restUOMFields();
+			restFields();
 			loadData();
-			alertHelper.showSuccessNotification("Unit of Measure updated sucessfully!");
+			alertHelper.showSuccessNotification("Tax updated sucessfully!");
 		} else {
-			if (status.getException().contains("UNIQUE")) {
-				alertHelper.showErrorNotification("UOM name already exists");
-			} else {
 				alertHelper.showDataSaveErrAlert(currentStage);
-			}
 		}
 	}
 
