@@ -6,6 +6,7 @@
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
+<?import com.billing.utils.AutoCompleteTextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -40,11 +41,11 @@
                         <Insets top="30.0" />
                      </padding>
                   </HBox>
-                  <TextField fx:id="txtSearchBy">
+                  <AutoCompleteTextField fx:id="txtSearchBy">
                      <VBox.margin>
                         <Insets left="136.0" right="8.0" top="10.0" />
                      </VBox.margin>
-                  </TextField>
+                  </AutoCompleteTextField>
                   <Label styleClass="nodeLabel" text="Product Details">
                      <padding>
                         <Insets top="20.0" />

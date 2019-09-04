@@ -3,10 +3,9 @@ package com.billing.controller;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
-import javax.swing.JOptionPane;
-
-import org.controlsfx.control.textfield.TextFields;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -17,24 +16,21 @@ import com.billing.service.ProductHistoryService;
 import com.billing.service.ProductService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
+import com.billing.utils.AutoCompleteTextField;
 import com.billing.utils.TabContent;
 
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -71,7 +67,7 @@ public class QuickStockCorrectionController implements TabContent {
 	private RadioButton rbName;
 
 	@FXML
-	private TextField txtSearchBy;
+	private AutoCompleteTextField txtSearchBy;
 
 	@FXML
 	private Button btnUpdate;
@@ -103,7 +99,7 @@ public class QuickStockCorrectionController implements TabContent {
 
 	private HashMap<Long, Product> productMapWithBarcode;
 
-	private List<String> productList;
+	private SortedSet<String> entries;
 
 	@Override
 	public boolean shouldClose() {
@@ -143,16 +139,7 @@ public class QuickStockCorrectionController implements TabContent {
 		rbBarcode.setOnAction(e -> resetFields());
 		rbName.setOnAction(e -> resetFields());
 		getProductsName();
-		TextFields.bindAutoCompletion(txtSearchBy, productList);
-
-		txtSearchBy.setOnKeyPressed(new EventHandler<KeyEvent>() {
-			@Override
-			public void handle(KeyEvent ke) {
-				if (ke.getCode().equals(KeyCode.ENTER)) {
-					setProductDetails();
-				}
-			}
-		});
+		txtSearchBy.createTextField(entries,()->setProductDetails());
 	}
 
 	private void setProductDetails() {
@@ -276,11 +263,11 @@ public class QuickStockCorrectionController implements TabContent {
 	}
 
 	public void getProductsName() {
-		productList = new ArrayList<String>();
+		entries = new TreeSet<String>();
 		productMap = new HashMap<String, Product>();
 		productMapWithBarcode = new HashMap<Long, Product>();
 		for (Product product : productService.getAllProducts()) {
-			productList.add(product.getProductName());
+			entries.add(product.getProductName());
 			productMap.put(product.getProductName(), product);
 			productMapWithBarcode.put(product.getProductBarCode(), product);
 		}
