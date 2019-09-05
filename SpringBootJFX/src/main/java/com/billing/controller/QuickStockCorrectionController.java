@@ -23,6 +23,7 @@ import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -31,6 +32,8 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -139,7 +142,16 @@ public class QuickStockCorrectionController implements TabContent {
 		rbBarcode.setOnAction(e -> resetFields());
 		rbName.setOnAction(e -> resetFields());
 		getProductsName();
-		txtSearchBy.createTextField(entries,()->setProductDetails());
+		txtSearchBy.createTextField(entries, () -> setProductDetails());
+
+		txtSearchBy.setOnKeyPress(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (ke.getCode().equals(KeyCode.ENTER)) {
+					setProductDetails();
+				}
+			}
+		});
 	}
 
 	private void setProductDetails() {
@@ -162,12 +174,14 @@ public class QuickStockCorrectionController implements TabContent {
 	}
 
 	private void setTextFields(Product p) {
-		txtName.setText(p.getProductName());
-		txtCategory.setText(p.getProductCategory());
-		txtQuantity.setText(appUtils.getDecimalFormat(p.getQuantity()));
-		txtSellPrice.setText(appUtils.getDecimalFormat(p.getSellPrice()));
-		txtUOM.setText(p.getMeasure());
-		txtQuantity.requestFocus();
+		if (null != p) {
+			txtName.setText(p.getProductName());
+			txtCategory.setText(p.getProductCategory());
+			txtQuantity.setText(appUtils.getDecimalFormat(p.getQuantity()));
+			txtSellPrice.setText(appUtils.getDecimalFormat(p.getSellPrice()));
+			txtUOM.setText(p.getMeasure());
+			txtQuantity.requestFocus();
+		}
 	}
 
 	private void resetFields() {

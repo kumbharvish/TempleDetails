@@ -72,9 +72,14 @@ public class AppUtils {
 	AlertHelper alertHelper;
 
 	private static final String PDF_CONST = "SLAES";
+	
 	private static final String PDF_RANDOM = "Invoice1Hbfh667adfDEJ78";
+	
 	private static final int LICENSE_EXPIRY_LIMIT = 15;
+	
 	private static final String TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss";
+	
+	private static final String DATE_FORMAT = "yyyy-MM-dd";
 
 	private static final String APP_DATA = "SELECT VALUE_STRING FROM " + "APP_DATA WHERE DATA_NAME=?";
 
@@ -338,6 +343,12 @@ public class AppUtils {
 
 	public String getCurrentTimestamp() {
 		SimpleDateFormat sdf = new SimpleDateFormat(TIMESTAMP_FORMAT);
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		return sdf.format(timestamp);
+	}
+	
+	public String getTodaysDate() {
+		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		return sdf.format(timestamp);
 	}

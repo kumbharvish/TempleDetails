@@ -196,7 +196,7 @@
                   </Label>
                   <Label fx:id="lblCashCounter" onMouseClicked="#onCashCounterClick">
                      <tooltip>
-                        <Tooltip text="Cash Counter" />
+                        <Tooltip text="Cash Counter Report" />
                      </tooltip>
                   </Label>
                   <Separator maxHeight="24.0" orientation="VERTICAL" />

@@ -82,7 +82,7 @@ public class ReportService {
 	private static final String GET_TOTAL_EXP = "SELECT ED.CATEGORY,ED.AMOUNT FROM EXPENSE_DETAILS ED,APP_EXPENSE_TYPES ET WHERE DATE(DATE) BETWEEN ? and ? and ED.CATEGORY=ET.NAME AND ET.TYPE !='SAVINGS';";
 
 	// Get Total Amount of Sales except pending bills
-	public List<CashCounter> getCashCounterDetails(Date fromDate, Date toDate) {
+	public List<CashCounter> getCashCounterDetails(String fromDate, String toDate) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		List<CashCounter> cashCounterList = new ArrayList<CashCounter>();
@@ -102,8 +102,8 @@ public class ReportService {
 			}
 			// Total Sales Amount
 			stmt = conn.prepareStatement(GET_TOTAL_SALES_CASH_AMOUNT);
-			stmt.setDate(1, fromDate);
-			stmt.setDate(2, toDate);
+			stmt.setString(1, fromDate);
+			stmt.setString(2, toDate);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
 				CashCounter cashTotalSales = new CashCounter();
@@ -115,8 +115,8 @@ public class ReportService {
 			}
 			// Total Sales Return Amount
 			stmt = conn.prepareStatement(GET_TOTAL_SALES_RETURN_AMOUNT);
-			stmt.setDate(1, fromDate);
-			stmt.setDate(2, toDate);
+			stmt.setString(1, fromDate);
+			stmt.setString(2, toDate);
 			ResultSet rs2 = stmt.executeQuery();
 			if (rs2.next()) {
 				CashCounter cashTotalSalesReturn = new CashCounter();
@@ -128,8 +128,8 @@ public class ReportService {
 			}
 			// Total Expenses Amount
 			stmt = conn.prepareStatement(GET_TOTAL_EXPENSES_AMOUNT);
-			stmt.setDate(1, fromDate);
-			stmt.setDate(2, toDate);
+			stmt.setString(1, fromDate);
+			stmt.setString(2, toDate);
 			ResultSet rs3 = stmt.executeQuery();
 			if (rs3.next()) {
 				CashCounter cashTotalExpense = new CashCounter();
@@ -141,8 +141,8 @@ public class ReportService {
 			}
 			// Total Customer Settlement Amount
 			stmt = conn.prepareStatement(GET_TOTAL_CUST_SETTLEMENT_AMOUNT);
-			stmt.setDate(1, fromDate);
-			stmt.setDate(2, toDate);
+			stmt.setString(1, fromDate);
+			stmt.setString(2, toDate);
 			ResultSet rs4 = stmt.executeQuery();
 			if (rs4.next()) {
 				CashCounter cashTotalCustSettlement = new CashCounter();
@@ -182,14 +182,14 @@ public class ReportService {
 	}
 
 	// Get Opening Cash
-	public Double getOpeningCash(Date date) {
+	public Double getOpeningCash(String date) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		Double openingCashAmount = null;
 		try {
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(GET_OPENING_CASH);
-			stmt.setDate(1, date);
+			stmt.setString(1, date);
 
 			ResultSet rs = stmt.executeQuery();
 
@@ -594,15 +594,15 @@ public class ReportService {
 	}
 
 	// Get Stock Value Amount
-	public List<Customer> getSettledCustomerList(Date date) {
+	public List<Customer> getSettledCustomerList(String date) {
 		List<Customer> customerList = new ArrayList<Customer>();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(SETTLEMENT_CUST_INFO);
-			stmt.setDate(1, date);
-			stmt.setDate(2, date);
+			stmt.setString(1, date);
+			stmt.setString(2, date);
 			System.out.println(date);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {

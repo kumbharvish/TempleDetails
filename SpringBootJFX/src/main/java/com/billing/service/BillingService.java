@@ -177,7 +177,7 @@ public class BillingService {
 		try {
 				conn = dbUtils.getConnection();
 				stmt = conn.prepareStatement(INS_OPENING_CASH);
-				stmt.setString(1, appUtils.getCurrentTimestamp());
+				stmt.setString(1, appUtils.getTodaysDate());
 				stmt.setDouble(2, amount);
 				
 				int i = stmt.executeUpdate();
@@ -197,7 +197,7 @@ public class BillingService {
 	
 	//Update Opening Cash
 	
-	public StatusDTO updateOpeningCash(double amount,Date date) {
+	public StatusDTO updateOpeningCash(double amount,String date) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();
@@ -205,7 +205,7 @@ public class BillingService {
 				conn = dbUtils.getConnection();
 				stmt = conn.prepareStatement(UPDATE_OPENING_CASH);
 				stmt.setDouble(1, amount);
-				stmt.setDate(2, date);
+				stmt.setString(2, date);
 				
 				int i = stmt.executeUpdate();
 				if(i>0){

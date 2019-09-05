@@ -294,12 +294,14 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onCashCounterClick(MouseEvent event) {
-
+		if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+			cashCounterReportMenuItem.fire();
+		}
 	}
 
 	@FXML
 	void onCashCounterCommand(ActionEvent event) {
-
+		addTab("CashCounter", "Cash Counter Report");
 	}
 
 	@FXML
@@ -555,12 +557,12 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onTaxesCommand(ActionEvent event) {
-		addTab("Taxes","Taxes");
+		addTab("Taxes", "Taxes");
 	}
 
 	@FXML
 	void onQuickStockCorrectionCommand(ActionEvent event) {
-		addTab("QuickStockCorrection","Quick Stock Correction");
+		addTab("QuickStockCorrection", "Quick Stock Correction");
 	}
 
 	private void addTab(final String fxmlFileName, final String title) {
