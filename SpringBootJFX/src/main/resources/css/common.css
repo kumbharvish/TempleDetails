@@ -149,16 +149,16 @@
 
 .table-view .column-header .filler,
 .table-view .column-header-background .filler {
-    -fx-background-color: derive(bisque, 20%);
+    -fx-background-color: black;
 }
 
 .table-view .column-header{
-    -fx-background-color: peru;
+    -fx-background-color: darksalmon;
 }
 
 .table-view .column-header .label{
-    -fx-background-color: bisque;
-    -fx-text-fill: maroon;
+    -fx-background-color: darksalmon;
+    -fx-text-fill: white;
 }
 
 .list-view .list-cell:odd{

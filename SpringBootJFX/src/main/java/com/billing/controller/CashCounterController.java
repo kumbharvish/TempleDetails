@@ -295,6 +295,7 @@ public class CashCounterController implements TabContent {
 		grid.add(openingCashAmt, 1, 0);
 
 		TextField newOpeningCashAmt = new TextField();
+		newOpeningCashAmt.textProperty().addListener(appUtils.getForceDecimalNumberListner());
 		newOpeningCashAmt.setPrefColumnCount(10);
 
 		Label lbl2 = new Label("New Opening Cash Amount :");
@@ -367,7 +368,9 @@ public class CashCounterController implements TabContent {
 		tcAmount.setPrefWidth(150);
 		tableView.getColumns().add(tcName);
 		tableView.getColumns().add(tcAmount);
-		tableView.setPlaceholder(new Label("<No customer settlements found>"));
+		Label placeholderText = new Label("<No customer settlements found>");
+		placeholderText.setId("placeholderText");
+		tableView.setPlaceholder(placeholderText);
 		tcName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustName()));
 		tcAmount.setCellValueFactory(
 				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getAmount())));

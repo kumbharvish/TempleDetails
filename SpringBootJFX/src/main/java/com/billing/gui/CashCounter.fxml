@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 
@@ -36,16 +37,24 @@
             </TilePane>
          </bottom>
          <right>
-            <HBox spacing="20.0" BorderPane.alignment="TOP_RIGHT">
+            <VBox alignment="TOP_CENTER" spacing="20.0" BorderPane.alignment="TOP_RIGHT">
                <children>
-                  <Button fx:id="btnUpdateOpeningCash" mnemonicParsing="false" onAction="#onUpdateOpeningCashCommand" text="Update Opening Cash" />
+                  <Button fx:id="btnUpdateOpeningCash" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onUpdateOpeningCashCommand" text="Update Opening Cash" />
                   <Button fx:id="btnViewSettlementDetails" mnemonicParsing="false" onAction="#onViewSettlementDetailsCommand" text="View Settlement Details" />
                </children>
-            </HBox>
+               <padding>
+                  <Insets left="20.0" />
+               </padding>
+            </VBox>
          </right>
          <left>
             <HBox BorderPane.alignment="TOP_LEFT">
                <children>
+                  <Label styleClass="nodeLabel" text="Date : ">
+                     <padding>
+                        <Insets top="3.0" />
+                     </padding>
+                  </Label>
                   <DatePicker fx:id="datePicker" />
                </children>
             </HBox>
@@ -71,10 +80,26 @@
                   <Insets top="60.0" />
                </BorderPane.margin>
                <children>
-                  <Label styleClass="nodeLabel" text="Description" GridPane.halignment="CENTER" />
-                  <Label styleClass="nodeLabel" text="Credit" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
-                  <Label styleClass="nodeLabel" text="Debit" GridPane.columnIndex="2" GridPane.halignment="CENTER" />
-                  <Label styleClass="nodeLabel" text="Closing Balance" GridPane.columnIndex="3" GridPane.halignment="CENTER" />
+                  <StackPane styleClass="stackPaneHeader" GridPane.halignment="CENTER">
+                     <children>
+                        <Label styleClass="gridHeaderTxt" text="Description" />
+                     </children>
+                  </StackPane>
+                  <StackPane styleClass="stackPaneHeader" GridPane.columnIndex="1" GridPane.halignment="CENTER">
+                     <children>
+                        <Label styleClass="gridHeaderTxt" text="Credit" />
+                     </children>
+                  </StackPane>
+                  <StackPane styleClass="stackPaneHeader" GridPane.columnIndex="2" GridPane.halignment="CENTER">
+                     <children>
+                        <Label styleClass="gridHeaderTxt" text="Debit" />
+                     </children>
+                  </StackPane>
+                  <StackPane styleClass="stackPaneHeader" GridPane.columnIndex="3" GridPane.halignment="CENTER">
+                     <children>
+                        <Label styleClass="gridHeaderTxt" text="Closing Balance" />
+                     </children>
+                  </StackPane>
                   <Label styleClass="nodeLabel" text="Total Sales Amount" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
                   <Label styleClass="nodeLabel" text="Total Sales Return Amount" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
                   <Label styleClass="nodeLabel" text="Total Expense Amount" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
@@ -88,7 +113,15 @@
                   <Label fx:id="lblCrTotalCustSettleAmt" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                   <Label fx:id="lblTotalCreditAmount" styleClass="nodeLabel" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                   <Label fx:id="lblTotalDebitAmount" styleClass="nodeLabel" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-                  <Label fx:id="lblTotalCashCounterAmt" styleClass="nodeLabel" GridPane.columnIndex="3" GridPane.rowIndex="6" />
+                  <HBox alignment="CENTER" GridPane.columnIndex="3" GridPane.rowIndex="6">
+                     <children>
+                        <Label fx:id="lblTotalCashCounterAmtRupee" text="₹">
+                           <HBox.margin>
+                              <Insets right="3.0" />
+                           </HBox.margin></Label>
+                        <Label fx:id="lblTotalCashCounterAmt" />
+                     </children>
+                  </HBox>
                   <Label fx:id="lblCb_1" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                   <Label fx:id="lblCb_2" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                   <Label fx:id="lblCb_3" GridPane.columnIndex="3" GridPane.rowIndex="3" />
