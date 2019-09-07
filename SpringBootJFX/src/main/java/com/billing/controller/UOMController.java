@@ -166,7 +166,7 @@ public class UOMController implements TabContent {
 		uom.setDescription(txtUOMDesc.getText());
 		StatusDTO status = measurementUnitsService.addUOM(uom);
 		if (status.getStatusCode() == 0) {
-			restUOMFields();
+			restFields();
 			loadData();
 			alertHelper.showSuccessNotification("Unit of measure added sucessfully");
 		} else {
@@ -232,7 +232,7 @@ public class UOMController implements TabContent {
 				measurementUnitsService.deleteUOM(uomCode);
 				alertHelper.showSuccessNotification("Unit of measure deleted sucessfully!");
 				loadData();
-				restUOMFields();
+				restFields();
 			}
 
 		}
@@ -240,10 +240,11 @@ public class UOMController implements TabContent {
 
 	@FXML
 	void onResetCommand(ActionEvent event) {
-		restUOMFields();
+		restFields();
+		tableView.getSelectionModel().clearSelection();
 	}
 
-	private void restUOMFields() {
+	private void restFields() {
 		txtUOMName.setText("");
 		txtUOMDesc.setText("");
 		uomCode = 0;
@@ -269,7 +270,7 @@ public class UOMController implements TabContent {
 
 		StatusDTO status = measurementUnitsService.updateUOM(uom);
 		if (status.getStatusCode() == 0) {
-			restUOMFields();
+			restFields();
 			loadData();
 			alertHelper.showSuccessNotification("Unit of Measure updated sucessfully!");
 		} else {

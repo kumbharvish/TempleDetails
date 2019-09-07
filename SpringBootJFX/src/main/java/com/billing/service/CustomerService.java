@@ -21,7 +21,7 @@ import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 
 @Service
-public class UserService {
+public class CustomerService {
 
 	@Autowired
 	DBUtils dbUtils;

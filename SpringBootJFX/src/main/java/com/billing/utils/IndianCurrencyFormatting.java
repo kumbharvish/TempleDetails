@@ -52,13 +52,13 @@ import java.math.RoundingMode;
 
         }
 
-        public static String applyFormatting(BigDecimal amount) {
+        public static String applyFormatting(Double amount) {
 
             if (amount == null) {
                 return "";
             }
-
-            amount = amount.setScale(2, RoundingMode.HALF_UP);
-            return applyFormatting(amount.toPlainString());
+            BigDecimal bAmount = BigDecimal.valueOf(amount);
+            bAmount = bAmount.setScale(2, RoundingMode.HALF_UP);
+            return applyFormatting(bAmount.toPlainString());
         }
     } // end of class definition

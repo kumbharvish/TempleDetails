@@ -165,7 +165,7 @@ public class ProductCategoryController implements TabContent {
 		productCategory.setCategoryDescription(txtCategoryDesc.getText());
 		StatusDTO status = productCategoryService.addCategory(productCategory);
 		if (status.getStatusCode() == 0) {
-			restCategoryFields();
+			restFields();
 			loadData();
 			alertHelper.showSuccessNotification("Category added sucessfully");
 		} else {
@@ -237,11 +237,11 @@ public class ProductCategoryController implements TabContent {
 					productCategoryService.deleteCategory(categoryCode);
 					alertHelper.showSuccessNotification("Category deleted sucessfully!");
 					loadData();
-					restCategoryFields();
+					restFields();
 				}
 
 			} else {
-				restCategoryFields();
+				restFields();
 			}
 
 		}
@@ -249,10 +249,11 @@ public class ProductCategoryController implements TabContent {
 
 	@FXML
 	void onResetCommand(ActionEvent event) {
-		restCategoryFields();
+		restFields();
+		tableView.getSelectionModel().clearSelection();
 	}
 
-	private void restCategoryFields() {
+	private void restFields() {
 		txtCategoryName.setText("");
 		txtCategoryDesc.setText("");
 		categoryCode = 0;
@@ -278,7 +279,7 @@ public class ProductCategoryController implements TabContent {
 
 		StatusDTO status = productCategoryService.updateCategory(productCategory);
 		if (status.getStatusCode() == 0) {
-			restCategoryFields();
+			restFields();
 			loadData();
 			alertHelper.showSuccessNotification("Category updated sucessfully!");
 		} else {

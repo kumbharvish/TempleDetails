@@ -23,7 +23,7 @@ import com.billing.service.ProductCategoryService;
 import com.billing.service.ProductHistoryService;
 import com.billing.service.ProductService;
 import com.billing.service.TaxesService;
-import com.billing.service.UserService;
+import com.billing.service.CustomerService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
@@ -61,12 +61,12 @@ import javafx.stage.Stage;
 @Controller
 public class ProductsController extends AppContext implements TabContent {
 
-	private static final Logger logger = LoggerFactory.getLogger(ManageAccountController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ProductsController.class);
 
 	private BooleanProperty isDirty = new SimpleBooleanProperty(false);
 
 	@Autowired
-	UserService userService;
+	CustomerService userService;
 
 	@Autowired
 	AlertHelper alertHelper;
@@ -437,6 +437,7 @@ public class ProductsController extends AppContext implements TabContent {
 	@FXML
 	void onResetCommand(ActionEvent event) {
 		resetFields();
+		tableView.getSelectionModel().clearSelection();
 	}
 
 	@FXML

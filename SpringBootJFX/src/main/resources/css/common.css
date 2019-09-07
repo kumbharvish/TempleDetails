@@ -149,7 +149,7 @@
 
 .table-view .column-header .filler,
 .table-view .column-header-background .filler {
-    -fx-background-color: black;
+    -fx-background-color: -lookupBackground;
 }
 
 .table-view .column-header{

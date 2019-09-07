@@ -321,6 +321,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onCustomerCommand(ActionEvent event) {
+		addTab("Customers","Customers");
 
 	}
 

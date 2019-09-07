@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 
 import com.billing.dto.StatusDTO;
 import com.billing.dto.UserDetails;
-import com.billing.service.UserService;
+import com.billing.service.CustomerService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
@@ -38,7 +38,7 @@ public class ManageAccountController implements TabContent {
 	private BooleanProperty isDirty = new SimpleBooleanProperty(false);
 
 	@Autowired
-	UserService userService;
+	CustomerService userService;
 
 	@Autowired
 	AlertHelper alertHelper;

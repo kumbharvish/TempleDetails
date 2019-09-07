@@ -170,31 +170,31 @@ public class CashCounterController implements TabContent {
 		}
 
 		lblCrOpeningCashAmt.setText(
-				IndianCurrencyFormatting.applyFormatting(BigDecimal.valueOf(openingCashBalance.getCreditAmount())));
+				IndianCurrencyFormatting.applyFormatting(openingCashBalance.getCreditAmount()));
 		lblCb_1.setText(
-				IndianCurrencyFormatting.applyFormatting(BigDecimal.valueOf(openingCashBalance.getClosingBalance())));
+				IndianCurrencyFormatting.applyFormatting(openingCashBalance.getClosingBalance()));
 		lblCrTotalSalesAmt.setText(
-				IndianCurrencyFormatting.applyFormatting(BigDecimal.valueOf(totalSalesAmount.getCreditAmount())));
+				IndianCurrencyFormatting.applyFormatting(totalSalesAmount.getCreditAmount()));
 		lblCb_2.setText(
-				IndianCurrencyFormatting.applyFormatting(BigDecimal.valueOf(totalSalesAmount.getClosingBalance())));
+				IndianCurrencyFormatting.applyFormatting(totalSalesAmount.getClosingBalance()));
 		lblDrTotalSalesReturnAmt.setText(
-				IndianCurrencyFormatting.applyFormatting(BigDecimal.valueOf(totalSalesReturnAmount.getDebitAmount())));
+				IndianCurrencyFormatting.applyFormatting(totalSalesReturnAmount.getDebitAmount()));
 		lblCb_3.setText(IndianCurrencyFormatting
-				.applyFormatting(BigDecimal.valueOf(totalSalesReturnAmount.getClosingBalance())));
+				.applyFormatting(totalSalesReturnAmount.getClosingBalance()));
 		lblDrTotalExpenseAmt
-				.setText(IndianCurrencyFormatting.applyFormatting(BigDecimal.valueOf(totalExpense.getDebitAmount())));
-		lblCb_4.setText(IndianCurrencyFormatting.applyFormatting(BigDecimal.valueOf(totalExpense.getClosingBalance())));
+				.setText(IndianCurrencyFormatting.applyFormatting(totalExpense.getDebitAmount()));
+		lblCb_4.setText(IndianCurrencyFormatting.applyFormatting(totalExpense.getClosingBalance()));
 
 		lblCrTotalCustSettleAmt.setText(
-				IndianCurrencyFormatting.applyFormatting(BigDecimal.valueOf(totalCustSettleAmount.getCreditAmount())));
+				IndianCurrencyFormatting.applyFormatting(totalCustSettleAmount.getCreditAmount()));
 		lblCb_5.setText(IndianCurrencyFormatting
-				.applyFormatting(BigDecimal.valueOf(totalCustSettleAmount.getClosingBalance())));
+				.applyFormatting(totalCustSettleAmount.getClosingBalance()));
 		lblTotalCreditAmount
-				.setText(IndianCurrencyFormatting.applyFormatting(BigDecimal.valueOf(totalAmount.getCreditAmount())));
+				.setText(IndianCurrencyFormatting.applyFormatting(totalAmount.getCreditAmount()));
 		lblTotalDebitAmount
-				.setText(IndianCurrencyFormatting.applyFormatting(BigDecimal.valueOf(totalAmount.getDebitAmount())));
+				.setText(IndianCurrencyFormatting.applyFormatting(totalAmount.getDebitAmount()));
 		lblTotalCashCounterAmt
-				.setText(IndianCurrencyFormatting.applyFormatting(BigDecimal.valueOf(totalAmount.getClosingBalance())));
+				.setText(IndianCurrencyFormatting.applyFormatting(totalAmount.getClosingBalance()));
 
 		return true;
 	}

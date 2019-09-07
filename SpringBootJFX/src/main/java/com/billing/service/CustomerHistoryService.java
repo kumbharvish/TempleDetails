@@ -31,7 +31,7 @@ public class CustomerHistoryService {
 	AppUtils appUtils;
 	
 	@Autowired
-	UserService userService;
+	CustomerService userService;
 
 	private static final Logger logger = LoggerFactory.getLogger(CustomerHistoryService.class);
 
