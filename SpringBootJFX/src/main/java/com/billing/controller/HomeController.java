@@ -379,7 +379,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onGenerateBarcodeCommand(ActionEvent event) {
-
+		addTab("GenerateBarcode","Generate Barcode");
 	}
 
 	@FXML
@@ -422,7 +422,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onPrintBarcodeCommand(ActionEvent event) {
-
+		addTab("PrintBarcode","Print Barcode");
 	}
 
 	@FXML

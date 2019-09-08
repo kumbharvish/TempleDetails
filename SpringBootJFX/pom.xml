@@ -59,8 +59,9 @@
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
-			<version>5.1.0</version>
+			<version>6.1.0</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.controlsfx</groupId>
 			<artifactId>controlsfx</artifactId>
@@ -76,6 +77,12 @@
 			<artifactId>hibernate4-sqlite-dialect</artifactId>
 			<version>0.1.2</version>
 		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.barbecue</groupId>
+			<artifactId>barbecue</artifactId>
+			<version>1.5-beta1</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

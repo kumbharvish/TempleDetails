@@ -132,8 +132,7 @@ public class JasperUtils {
 		boolean isSucess=true;
 		try {       
             // load report location
-			String homeLocation = appUtils.getAppDataValues(AppConstants.MYSTORE_HOME).get(0);
-        	String jrxmlLocation = homeLocation+"Jrxml\\\\"+JrxmlName;
+        	String jrxmlLocation = appUtils.getCurrentWorkingDir()+"\\Jrxml\\"+JrxmlName;
         	//With JRXML
         	//JasperReport jasperReport = JasperCompileManager.compileReport(jrxmlLocation);
         	

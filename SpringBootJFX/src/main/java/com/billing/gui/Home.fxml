@@ -93,7 +93,7 @@
                   </Menu>
                 <Menu fx:id="barcodeMenu" text="_Barcode">
                   <items>
-                    <MenuItem fx:id="generateBarcodeMenuItem" onAction="#onGenerateBarcodeCommand" text="_Generate Barcode Number" />
+                    <MenuItem fx:id="generateBarcodeMenuItem" onAction="#onGenerateBarcodeCommand" text="_Generate Barcode" />
                         <MenuItem fx:id="printBarcodeMenuItem" onAction="#onPrintBarcodeCommand" text="Print Barc_ode" />
                   </items>
                 </Menu>
