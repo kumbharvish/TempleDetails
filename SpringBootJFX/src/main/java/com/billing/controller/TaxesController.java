@@ -174,7 +174,7 @@ public class TaxesController implements TabContent {
 		if (status.getStatusCode() == 0) {
 			restFields();
 			loadData();
-			alertHelper.showSuccessNotification("Tax added sucessfully");
+			alertHelper.showSuccessNotification("Tax added successfully");
 		} else {
 				alertHelper.showDataSaveErrAlert(currentStage);
 		}
@@ -241,7 +241,7 @@ public class TaxesController implements TabContent {
 			Alert alert = alertHelper.showConfirmAlertWithYesNo(currentStage, null, "Are you sure?");
 			if (alert.getResult() == ButtonType.YES) {
 				taxesService.deleteTax(taxCode);
-				alertHelper.showSuccessNotification("Tax deleted sucessfully!");
+				alertHelper.showSuccessNotification("Tax deleted successfully");
 				loadData();
 				restFields();
 			}
@@ -252,6 +252,7 @@ public class TaxesController implements TabContent {
 	@FXML
 	void onResetCommand(ActionEvent event) {
 		restFields();
+		tableView.getSelectionModel().clearSelection();
 	}
 
 	private void restFields() {
@@ -282,7 +283,7 @@ public class TaxesController implements TabContent {
 		if (status.getStatusCode() == 0) {
 			restFields();
 			loadData();
-			alertHelper.showSuccessNotification("Tax updated sucessfully!");
+			alertHelper.showSuccessNotification("Tax updated successfully");
 		} else {
 				alertHelper.showDataSaveErrAlert(currentStage);
 		}

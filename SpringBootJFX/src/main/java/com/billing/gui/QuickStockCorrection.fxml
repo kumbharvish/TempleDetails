@@ -12,8 +12,8 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ButtonBar?>
 
 <HBox alignment="TOP_CENTER" fillHeight="false" stylesheets="@../../../css/quickStockCorrection.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.QuickStockCorrectionController">
    <children>
@@ -94,18 +94,18 @@
             </GridPane>
          </center>
 		<bottom>
-            <TilePane alignment="TOP_RIGHT" hgap="20.0" BorderPane.alignment="TOP_CENTER">
-               <children>
+            <ButtonBar BorderPane.alignment="TOP_CENTER">
+               <buttons>
                   <Button fx:id="btnUpdate" mnemonicParsing="false" onAction="#onUpdateCommand" text="Update" />
                   <Button fx:id="btnClose" mnemonicParsing="false" onAction="#onCloseCommand" text="Close" />
-               </children>
+               </buttons>
                <BorderPane.margin>
                   <Insets />
                </BorderPane.margin>
                <padding>
                   <Insets top="10.0" />
                </padding>
-            </TilePane>
+            </ButtonBar>
          </bottom>
       </BorderPane>
    </children>

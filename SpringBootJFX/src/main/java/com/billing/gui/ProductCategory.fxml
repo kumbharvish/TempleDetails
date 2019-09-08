@@ -15,6 +15,7 @@
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.control.ButtonBar?>
 
 <HBox alignment="TOP_CENTER" stylesheets="@../../../css/productCategory.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.ProductCategoryController">
    <children>
@@ -35,17 +36,14 @@
                         </VBox>
                         <TextField fx:id="txtCategoryDesc" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                        <TilePane alignment="TOP_RIGHT" hgap="10.0" vgap="5.0" GridPane.columnSpan="2" GridPane.rowIndex="3">
-                           <children>
-                              <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#onAddCommand" text="Add" />
-                              <Button fx:id="btnUpdate" mnemonicParsing="false" onAction="#onUpdateCommand" text="Update" />
-                              <Button fx:id="btnDelete" mnemonicParsing="false" onAction="#onDeleteCommand" text="Delete" />
-                              <Button fx:id="btnReset" mnemonicParsing="false" onAction="#onResetCommand" text="Reset" />
-                           </children>
-                           <GridPane.margin>
-                              <Insets bottom="10.0" />
-                           </GridPane.margin>
-                        </TilePane>
+                        <ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="3">
+                                <buttons>
+                                  <Button fx:id="btnAdd" defaultButton="true" mnemonicParsing="true" onAction="#onAddCommand" text="Add" />
+                                    <Button fx:id="btnUpdate" cancelButton="true" mnemonicParsing="true" onAction="#onUpdateCommand" text="Update" />
+                                    <Button fx:id="btnDelete" mnemonicParsing="false" onAction="#onDeleteCommand" text="Delete" />
+                                    <Button fx:id="btnReset" mnemonicParsing="false" onAction="#onResetCommand" text="Reset" />
+                                </buttons>
+                              </ButtonBar>
                      </children>
                      <VBox.margin>
                         <Insets top="20.0" />

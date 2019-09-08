@@ -230,7 +230,7 @@ public class UOMController implements TabContent {
 			Alert alert = alertHelper.showConfirmAlertWithYesNo(currentStage, null, "Are you sure?");
 			if (alert.getResult() == ButtonType.YES) {
 				measurementUnitsService.deleteUOM(uomCode);
-				alertHelper.showSuccessNotification("Unit of measure deleted sucessfully!");
+				alertHelper.showSuccessNotification("Unit of measure deleted sucessfully");
 				loadData();
 				restFields();
 			}
@@ -272,7 +272,7 @@ public class UOMController implements TabContent {
 		if (status.getStatusCode() == 0) {
 			restFields();
 			loadData();
-			alertHelper.showSuccessNotification("Unit of Measure updated sucessfully!");
+			alertHelper.showSuccessNotification("Unit of Measure updated sucessfully");
 		} else {
 			if (status.getException().contains("UNIQUE")) {
 				alertHelper.showErrorNotification("UOM name already exists");
@@ -284,8 +284,6 @@ public class UOMController implements TabContent {
 
 	@Override
 	public void setUserDetails(UserDetails user) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

@@ -167,7 +167,7 @@ public class ProductCategoryController implements TabContent {
 		if (status.getStatusCode() == 0) {
 			restFields();
 			loadData();
-			alertHelper.showSuccessNotification("Category added sucessfully");
+			alertHelper.showSuccessNotification("Category added successfully");
 		} else {
 			if (status.getException().contains("UNIQUE")) {
 				alertHelper.showErrorNotification("Entered category name already exists");
@@ -235,7 +235,7 @@ public class ProductCategoryController implements TabContent {
 							+ " Products under this category. Please delete the products first in order to delete the category.");
 				} else {
 					productCategoryService.deleteCategory(categoryCode);
-					alertHelper.showSuccessNotification("Category deleted sucessfully!");
+					alertHelper.showSuccessNotification("Category deleted successfully");
 					loadData();
 					restFields();
 				}
@@ -281,7 +281,7 @@ public class ProductCategoryController implements TabContent {
 		if (status.getStatusCode() == 0) {
 			restFields();
 			loadData();
-			alertHelper.showSuccessNotification("Category updated sucessfully!");
+			alertHelper.showSuccessNotification("Category updated successfully");
 		} else {
 			if (status.getException().contains("UNIQUE")) {
 				alertHelper.showErrorNotification("Entered category name already exists");

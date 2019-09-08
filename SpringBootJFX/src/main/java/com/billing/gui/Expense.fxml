@@ -13,6 +13,7 @@
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.control.ButtonBar?>
 
 <HBox alignment="TOP_CENTER" fillHeight="false" styleClass="rootNode" stylesheets="@../../../css/expense.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.ExpenseController">
    <children>
@@ -47,12 +48,12 @@
                </children>
             </VBox>
             <Separator GridPane.columnSpan="2" GridPane.rowIndex="5" />
-            <TilePane alignment="TOP_RIGHT" hgap="25.0" styleClass="parent" GridPane.columnSpan="2" GridPane.rowIndex="6">
-               <children>
+            <ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="6">
+               <buttons>
                   <Button fx:id="btnSave" defaultButton="true" disable="true" mnemonicParsing="true" onAction="#onSaveCommand" text="_Save" />
                   <Button fx:id="btnClose" cancelButton="true" mnemonicParsing="true" onAction="#onCloseCommand" text="_Close" />
-               </children>
-            </TilePane>
+               </buttons>
+            </ButtonBar>
          </children>
          <columnConstraints>
             <ColumnConstraints />

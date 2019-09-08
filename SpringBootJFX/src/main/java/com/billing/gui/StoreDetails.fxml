@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.control.ButtonBar?>
 
 <HBox alignment="TOP_CENTER" fillHeight="false" styleClass="rootNode" stylesheets="@../../../css/storedetails.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.StoreDetailsController">
    <children>
@@ -46,12 +47,12 @@
             <Label alignment="TOP_RIGHT" styleClass="nodeLabel" text="GST No :" GridPane.halignment="RIGHT" GridPane.rowIndex="9" />
             <Separator GridPane.columnSpan="2" GridPane.rowIndex="10" />
             <TextField fx:id="txtGSTNo" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-            <TilePane alignment="TOP_RIGHT" hgap="25.0" styleClass="parent" GridPane.columnSpan="2" GridPane.rowIndex="11">
-               <children>
+            <ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="11">
+               <buttons>
                   <Button fx:id="btnSave" defaultButton="true" disable="true" mnemonicParsing="true" onAction="#onSaveCommand" text="_Save" />
                   <Button fx:id="btnClose" cancelButton="true" mnemonicParsing="true" onAction="#onCloseCommand" text="_Close" />
-               </children>
-            </TilePane>
+               </buttons>
+            </ButtonBar>
          </children>
          <columnConstraints>
             <ColumnConstraints />

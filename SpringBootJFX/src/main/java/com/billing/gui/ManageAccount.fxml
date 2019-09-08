@@ -14,6 +14,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ButtonBar?>
 
 <HBox alignment="TOP_CENTER" fillHeight="false" styleClass="rootNode" stylesheets="@../../../css/manageAccount.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.ManageAccountController">
    <children>
@@ -59,15 +60,12 @@
 				  <Label styleClass="nodeLabel" text="Email :" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
                   <TextField fx:id="txtEmail" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                   <Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-                  <TilePane alignment="TOP_RIGHT" hgap="10.0" vgap="5.0" GridPane.columnSpan="2" GridPane.rowIndex="5">
-                     <children>
+                  <ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="5">
+                     <buttons>
                         <Button fx:id="btnUpdatePersonalDtls" mnemonicParsing="false" onAction="#onUpdatePersonalDtlsBtn" text="Update" />
-                              <Button fx:id="btnClose" cancelButton="true" mnemonicParsing="true" onAction="#onCloseCommand" text="_Close" />
-                     </children>
-                     <GridPane.margin>
-                        <Insets bottom="10.0" />
-                     </GridPane.margin>
-                  </TilePane>
+                        <Button fx:id="btnClose" cancelButton="true" mnemonicParsing="true" onAction="#onCloseCommand" text="_Close" />
+                     </buttons>
+                  </ButtonBar>
                </children>
                <padding>
                   <Insets top="10.0" />
@@ -109,15 +107,12 @@
                      </children>
                   </VBox>
                   <Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                  <TilePane alignment="TOP_RIGHT" hgap="10.0" vgap="5.0" GridPane.columnSpan="2" GridPane.rowIndex="4">
-                     <children>
+                  <ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="4">
+                     <buttons>
                         <Button fx:id="btnUpdatePassword" mnemonicParsing="false" onAction="#onUpdatePwdButton" text="Update" />
-                              <Button fx:id="btnClosePwd" cancelButton="true" mnemonicParsing="true" onAction="#onCloseCommand" text="_Close" />
-                     </children>
-                     <GridPane.margin>
-                        <Insets bottom="10.0" />
-                     </GridPane.margin>
-                  </TilePane>
+                        <Button fx:id="btnClosePwd" cancelButton="true" mnemonicParsing="true" onAction="#onCloseCommand" text="_Close" />
+                     </buttons>
+                  </ButtonBar>
                  
                  </children>
                <padding>
@@ -146,15 +141,12 @@
                            </children>
                         </VBox>
                         <Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                        <TilePane alignment="TOP_RIGHT" hgap="10.0" vgap="5.0" GridPane.columnSpan="2" GridPane.rowIndex="3">
-                           <children>
+                        <ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="3">
+                           <buttons>
                               <Button fx:id="btnUpdateUsername" mnemonicParsing="false" onAction="#onUpdateUsernameButton" text="Update" />
                               <Button fx:id="btnCloseUsername" cancelButton="true" mnemonicParsing="true" onAction="#onCloseCommand" text="_Close" />
-                           </children>
-                           <GridPane.margin>
-                              <Insets bottom="10.0" />
-                           </GridPane.margin>
-                        </TilePane>
+                           </buttons>
+                        </ButtonBar>
                         <VBox GridPane.columnIndex="1">
                            <children>
                               <Label fx:id="lblExistingUsername" styleClass="nodeLabel" />
