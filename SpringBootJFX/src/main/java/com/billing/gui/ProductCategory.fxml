@@ -53,7 +53,7 @@
                      </padding>
                      <columnConstraints>
                         <ColumnConstraints />
-                        <ColumnConstraints />
+                        <ColumnConstraints prefWidth="250.0"/>
                      </columnConstraints>
                      <rowConstraints>
                         <RowConstraints />

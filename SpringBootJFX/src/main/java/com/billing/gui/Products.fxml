@@ -120,7 +120,7 @@
                            </children>
                            <columnConstraints>
                              <ColumnConstraints hgrow="NEVER" />
-                            <ColumnConstraints hgrow="ALWAYS" />
+                            <ColumnConstraints prefWidth="250.0" hgrow="ALWAYS" />
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints />

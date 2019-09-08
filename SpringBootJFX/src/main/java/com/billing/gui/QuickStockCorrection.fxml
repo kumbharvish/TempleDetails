@@ -58,7 +58,7 @@
             <GridPane alignment="CENTER" hgap="20.0" vgap="15.0" BorderPane.alignment="TOP_CENTER">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" />
-                <ColumnConstraints hgrow="SOMETIMES" />
+                <ColumnConstraints prefWidth="250.0" hgrow="SOMETIMES" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints />

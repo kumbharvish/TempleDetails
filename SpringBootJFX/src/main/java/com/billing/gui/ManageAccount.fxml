@@ -71,8 +71,8 @@
                   <Insets top="10.0" />
                </padding>
                <columnConstraints>
-                  <ColumnConstraints maxWidth="245.0" minWidth="0.0" prefWidth="76.0" />
-                  <ColumnConstraints maxWidth="245.0" minWidth="0.0" prefWidth="169.0" />
+                  <ColumnConstraints />
+                  <ColumnConstraints prefWidth="250.0" />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints />
@@ -119,8 +119,8 @@
                   <Insets top="10.0" />
                </padding>
                <columnConstraints>
-                  <ColumnConstraints maxWidth="245.0" minWidth="0.0" prefWidth="122.0" />
-                  <ColumnConstraints maxWidth="245.0" minWidth="0.0" prefWidth="173.0" />
+                  <ColumnConstraints />
+                  <ColumnConstraints prefWidth="250.0" />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints />
@@ -157,8 +157,8 @@
                         <Insets top="10.0" />
                      </padding>
                      <columnConstraints>
-                        <ColumnConstraints maxWidth="245.0" minWidth="0.0" prefWidth="122.0" />
-                        <ColumnConstraints maxWidth="245.0" minWidth="0.0" prefWidth="173.0" />
+                        <ColumnConstraints />
+                        <ColumnConstraints prefWidth="250.0" />
                      </columnConstraints>
                      <rowConstraints>
                         <RowConstraints />
