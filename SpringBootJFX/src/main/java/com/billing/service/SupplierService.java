@@ -37,12 +37,12 @@ public class SupplierService {
 	private static final String GET_ALL_SUPPLIERS = "SELECT * FROM SUPPLIER_DETAILS WHERE SUPPLIER_ID NOT IN(001)";
 
 	private static final String INS_SUPPLIER = "INSERT INTO SUPPLIER_DETAILS "
-			+ "(SUPPLIER_NAME,EMAIL,MOBILE,ADDRESS,CITY,PHONE_NO,PAN_NO,MVAT,COMMENTS)" + " VALUES(?,?,?,?,?,?,?,?,?)";
+			+ "(SUPPLIER_NAME,EMAIL,MOBILE,ADDRESS,CITY,PHONE_NO,PAN_NO,GST_NO,COMMENTS)" + " VALUES(?,?,?,?,?,?,?,?,?)";
 
 	private static final String DELETE_SUPPLIER = "DELETE FROM SUPPLIER_DETAILS WHERE SUPPLIER_ID=?";
 
 	private static final String UPDATE_SUPPLIER = "UPDATE SUPPLIER_DETAILS SET SUPPLIER_NAME=?,"
-			+ "EMAIL=?, MOBILE=?,ADDRESS=?,CITY=?,PHONE_NO=?,PAN_NO=?,MVAT=?,COMMENTS=?" + " WHERE SUPPLIER_ID=?";
+			+ "EMAIL=?, MOBILE=?,ADDRESS=?,CITY=?,PHONE_NO=?,PAN_NO=?,GST_NO=?,COMMENTS=?" + " WHERE SUPPLIER_ID=?";
 
 	private static final String UPDATE_PRODUCT_STOCK = "UPDATE PRODUCT_DETAILS SET QUANTITY=QUANTITY+? WHERE PRODUCT_ID=?";
 
@@ -77,7 +77,7 @@ public class SupplierService {
 				sp.setSupplierAddress(rs.getString("ADDRESS"));
 				sp.setCity(rs.getString("CITY"));
 				sp.setPanNo(rs.getString("PAN_NO"));
-				sp.setMVAT(rs.getString("MVAT"));
+				sp.setGstNo(rs.getString("GST_NO"));
 				sp.setPhoneNumber(rs.getLong("PHONE_NO"));
 				sp.setComments(rs.getString("COMMENTS"));
 				SupplierList.add(sp);
@@ -107,7 +107,7 @@ public class SupplierService {
 				stmt.setString(5, sp.getCity());
 				stmt.setLong(6, sp.getPhoneNumber());
 				stmt.setString(7, sp.getPanNo());
-				stmt.setString(8, sp.getMVAT());
+				stmt.setString(8, sp.getGstNo());
 				stmt.setString(9, sp.getComments());
 				int i = stmt.executeUpdate();
 				if (i > 0) {
@@ -160,7 +160,7 @@ public class SupplierService {
 				stmt.setString(5, sp.getCity());
 				stmt.setLong(6, sp.getPhoneNumber());
 				stmt.setString(7, sp.getPanNo());
-				stmt.setString(8, sp.getMVAT());
+				stmt.setString(8, sp.getGstNo());
 				stmt.setString(9, sp.getComments());
 				stmt.setInt(10, sp.getSupplierID());
 

@@ -538,7 +538,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onSuppliersCommand(ActionEvent event) {
-
+		addTab("Suppliers","Suppliers");
 	}
 
 	@FXML

@@ -89,12 +89,6 @@ public class CustomersController extends AppContext implements TabContent {
 	private Label heading;
 
 	@FXML
-	private SplitPane splitPane;
-
-	@FXML
-	private GridPane gridPane;
-
-	@FXML
 	private TextField txtCustName;
 
 	@FXML
@@ -328,7 +322,7 @@ public class CustomersController extends AppContext implements TabContent {
 		customer.setCustEmail(txtEmail.getText());
 		StatusDTO status = customerService.addCustomer(customer);
 		if (status.getStatusCode() == 0) {
-			alertHelper.showSuccessNotification("Custer added successfully");
+			alertHelper.showSuccessNotification("Customer added successfully");
 			resetFields();
 			loadData();
 		} else {
@@ -388,7 +382,7 @@ public class CustomersController extends AppContext implements TabContent {
 		int mUnit = txtCustName.getText().trim().length();
 		if (mUnit == 0) {
 			alertHelper.beep();
-			lblCustNameErrMsg.setText("Please select cusotmer name");
+			lblCustNameErrMsg.setText("Please enter customer name");
 			txtCustName.requestFocus();
 			valid = false;
 		} else {
