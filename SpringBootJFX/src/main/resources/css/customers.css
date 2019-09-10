@@ -33,3 +33,10 @@
 	-fx-wrap-text: true;
 	-fx-font-size: 15px;
 }
+
+.pendingAmountHistory {
+	-fx-background-color: antiquewhite;
+	-fx-font-weight: bold;
+	-fx-wrap-text: true;
+	-fx-font-size: 15px;
+}

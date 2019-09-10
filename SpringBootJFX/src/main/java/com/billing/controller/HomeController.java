@@ -327,7 +327,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onCustomerPaymentHistoryCommand(ActionEvent event) {
-
+		addTab("CustomerPaymentHistory","Customer Payment History");
 	}
 
 	@FXML

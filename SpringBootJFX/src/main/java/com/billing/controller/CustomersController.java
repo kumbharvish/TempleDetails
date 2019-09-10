@@ -63,9 +63,6 @@ public class CustomersController extends AppContext implements TabContent {
 	private final String SETTLEUP = "SETTLEUP";
 
 	@Autowired
-	CustomerService userService;
-
-	@Autowired
 	AlertHelper alertHelper;
 
 	@Autowired
