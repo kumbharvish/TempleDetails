@@ -217,7 +217,7 @@ public class AutoCompleteTextField extends TextField {
                     result.length()));
 
             TextFlow entryFlow = new TextFlow(pre, in, post);
-
+            entryFlow.setPrefWidth(getWidth()-10);
             CustomMenuItem item = new CustomMenuItem(entryFlow, true);
             item.setOnAction(new EventHandler<ActionEvent>() {
                 @Override

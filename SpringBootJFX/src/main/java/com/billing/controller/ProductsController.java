@@ -85,7 +85,7 @@ public class ProductsController extends AppContext implements TabContent {
 
 	@Autowired
 	MeasurementUnitsService measurementUnitsService;
-	
+
 	@Autowired
 	TaxesService taxesService;
 
@@ -269,8 +269,16 @@ public class ProductsController extends AppContext implements TabContent {
 					if (newValue == null || newValue.isEmpty()) {
 						filteredList.setPredicate(null);
 					} else {
-						filteredList.setPredicate(
-								(Product t) -> t.getProductName().toLowerCase().contains(newValue.toLowerCase()));
+						filteredList.setPredicate((Product t) -> {
+							// Compare name and category
+							String lowerCaseFilter = newValue.toLowerCase();
+							if (t.getProductName().toLowerCase().contains(lowerCaseFilter)) {
+								return true;
+							}else if(t.getProductCategory().toLowerCase().contains(lowerCaseFilter)) {
+								return true;
+							}
+							return false;
+						});
 					}
 				});
 	}
@@ -364,7 +372,6 @@ public class ProductsController extends AppContext implements TabContent {
 		}
 		cbMeasuringUnit.getSelectionModel().select(0);
 	}
-	
 
 	public void populateTaxtComboBox() {
 		cbTax.getItems().add("-- Select Tax --");

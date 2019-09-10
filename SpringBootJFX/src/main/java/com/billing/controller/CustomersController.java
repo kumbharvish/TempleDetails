@@ -186,8 +186,17 @@ public class CustomersController extends AppContext implements TabContent {
 					if (newValue == null || newValue.isEmpty()) {
 						filteredList.setPredicate(null);
 					} else {
-						filteredList.setPredicate(
-								(Customer t) -> t.getCustName().toLowerCase().contains(newValue.toLowerCase()));
+						filteredList.setPredicate((Customer t) -> {
+							// Compare name and mobile number
+							String lowerCaseFilter = newValue.toLowerCase();
+							if (t.getCustName().toLowerCase().contains(lowerCaseFilter)) {
+								return true;
+							} else if (String.valueOf(t.getCustMobileNumber()).contains(lowerCaseFilter)) {
+								return true;
+							}
+							return false;
+						});
+
 					}
 				});
 	}
@@ -488,8 +497,7 @@ public class CustomersController extends AppContext implements TabContent {
 
 					} else {
 						// Settle up
-						if (Double.valueOf(amount) > 0
-								&& Double.valueOf(amount) <= customer.getBalanceAmt()) {
+						if (Double.valueOf(amount) > 0 && Double.valueOf(amount) <= customer.getBalanceAmt()) {
 							Customer customerSt = new Customer();
 							customerSt.setCustMobileNumber(Long.valueOf(txtMobileNo.getText()));
 							customerSt.setCustName(txtCustName.getText());

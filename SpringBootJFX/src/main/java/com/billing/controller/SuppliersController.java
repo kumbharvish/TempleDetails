@@ -161,7 +161,16 @@ public class SuppliersController extends AppContext implements TabContent {
 						filteredList.setPredicate(null);
 					} else {
 						filteredList.setPredicate(
-								(Supplier t) -> t.getSupplierName().toLowerCase().contains(newValue.toLowerCase()));
+								(Supplier t) -> {
+									// Compare name and Mobile number
+									String lowerCaseFilter = newValue.toLowerCase();
+									if (t.getSupplierName().toLowerCase().contains(lowerCaseFilter)) {
+										return true;
+									}else if(String.valueOf(t.getSupplierMobile()).contains(lowerCaseFilter)) {
+										return true;
+									}
+									return false;
+								});
 					}
 				});
 	}
