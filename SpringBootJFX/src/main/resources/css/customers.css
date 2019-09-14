@@ -40,3 +40,7 @@
 	-fx-wrap-text: true;
 	-fx-font-size: 15px;
 }
+
+.tableCellCursor {
+	-fx-cursor: hand;
+}
