@@ -311,12 +311,14 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onCreateInvoiceClick(MouseEvent event) {
-
+		if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+			createInvoiceMenuItem.fire();
+		}
 	}
 
 	@FXML
 	void onCreateInvoiceCommand(ActionEvent event) {
-
+		addTab("CreateInvoice","Invoice");
 	}
 
 	@FXML
