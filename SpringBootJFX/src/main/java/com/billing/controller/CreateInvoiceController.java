@@ -1,24 +1,41 @@
 package com.billing.controller;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import javax.swing.JOptionPane;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.billing.dto.Customer;
+import com.billing.dto.MeasurementUnit;
+import com.billing.dto.Product;
 import com.billing.dto.UserDetails;
 import com.billing.main.AppContext;
 import com.billing.service.CustomerService;
+import com.billing.service.InvoiceService;
 import com.billing.service.MeasurementUnitsService;
+import com.billing.service.ProductService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
+import com.billing.utils.AutoCompleteTextField;
 import com.billing.utils.TabContent;
 
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -33,6 +50,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 @Controller
@@ -43,7 +62,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	private BooleanProperty isDirty = new SimpleBooleanProperty(false);
 
 	@Autowired
-	CustomerService userService;
+	CustomerService customerService;
 
 	@Autowired
 	AlertHelper alertHelper;
@@ -54,14 +73,35 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	@Autowired
 	MeasurementUnitsService measurementUnitsService;
 
+	@Autowired
+	ProductService productService;
+
+	@Autowired
+	InvoiceService invoiceService;
+
 	private UserDetails userDetails;
 
 	public Stage currentStage = null;
 
 	private TabPane tabPane = null;
 
+	private SortedSet<String> customerEntries;
+
+	private HashMap<Long, Customer> customerMap;
+
+	private SortedSet<String> productEntries;
+
+	private HashMap<String, Product> productMap;
+
+	private HashMap<Long, Product> productMapWithBarcode;
+
+	ObservableList<Product> productTableData;
+
 	@FXML
 	private DatePicker dpInvoiceDate;
+
+	@FXML
+	private TextField txtInvoiceNumber;
 
 	@FXML
 	private Label lblInvoiceDateErrMsg;
@@ -73,22 +113,22 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	private RadioButton rbItemName;
 
 	@FXML
-	private TextField txtCustomer;
+	private AutoCompleteTextField txtCustomer;
+
+	@FXML
+	private AutoCompleteTextField txtItemName;
+
+	@FXML
+	private TextField txtItemBarcode;
 
 	@FXML
 	private Label lblCustomerErrMsg;
 
 	@FXML
-	private TextField txtItemName;
-
-	@FXML
 	private Label lblItemNameErrMsg;
 
 	@FXML
-	private ComboBox<?> cbUnit;
-
-	@FXML
-	private Label lblUnitErrMsg;
+	private TextField txtUnit;
 
 	@FXML
 	private TextField txtRate;
@@ -112,37 +152,37 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	private Button btnRefresh;
 
 	@FXML
-	private TableView<?> tableView;
+	private TableView<Product> tableView;
 
 	@FXML
-	private TableColumn<?, ?> tcItemName;
+	private TableColumn<Product, String> tcItemName;
 
 	@FXML
-	private TableColumn<?, ?> tcUnit;
+	private TableColumn<Product, String> tcUnit;
 
 	@FXML
-	private TableColumn<?, ?> tcQuantity;
+	private TableColumn<Product, String> tcQuantity;
 
 	@FXML
-	private TableColumn<?, ?> tcRate;
+	private TableColumn<Product, String> tcRate;
 
 	@FXML
-	private TableColumn<?, ?> tcDiscount;
+	private TableColumn<Product, String> tcDiscount;
 
 	@FXML
-	private TableColumn<?, ?> tcAmount;
+	private TableColumn<Product, String> tcAmount;
 
 	@FXML
-	private TableColumn<?, ?> tcCGST;
+	private TableColumn<Product, String> tcCGST;
 
 	@FXML
-	private TableColumn<?, ?> tcSGST;
+	private TableColumn<Product, String> tcSGST;
 
 	@FXML
 	private Button btnCashHelp;
 
 	@FXML
-	private ComboBox<?> cbPaymentModes;
+	private ComboBox<String> cbPaymentModes;
 
 	@FXML
 	private Label lblPayModeErrMSg;
@@ -162,11 +202,11 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	@FXML
 	private TextField txtDiscountAmt;
 
-    @FXML
-    private TextField txtNetSalesAmount;
+	@FXML
+	private TextField txtNetSalesAmount;
 
-    @FXML
-    private CheckBox cbPrintOnSave;
+	@FXML
+	private CheckBox cbPrintOnSave;
 
 	@FXML
 	private Button btnSave;
@@ -176,10 +216,15 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 
 	@Override
 	public void initialize() {
+		productTableData = FXCollections.observableArrayList();
 		ToggleGroup radioButtonGroup = new ToggleGroup();
 		rbBarcode.setToggleGroup(radioButtonGroup);
 		rbItemName.setToggleGroup(radioButtonGroup);
-		rbBarcode.setSelected(true);
+		if ("BARCODE".equals(appUtils.getAppDataValues("INVOICE_PRODUCT_SEARCH_BY"))) {
+			rbBarcode.setSelected(true);
+		} else {
+			rbItemName.setSelected(true);
+		}
 		dpInvoiceDate.setValue(LocalDate.now());
 		dpInvoiceDate.setDayCellFactory(this::getDateCell);
 		dpInvoiceDate.valueProperty().addListener((observable, oldDate, newDate) -> {
@@ -189,6 +234,10 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 				dpInvoiceDate.setValue(today);
 			}
 		});
+		txtItemName.managedProperty().bind(txtItemName.visibleProperty());
+		txtItemName.visibleProperty().bind(rbItemName.selectedProperty());
+		txtItemBarcode.managedProperty().bind(txtItemBarcode.visibleProperty());
+		txtItemBarcode.visibleProperty().bind(rbBarcode.selectedProperty());
 
 		// Error Messages
 		lblItemNameErrMsg.managedProperty().bind(lblItemNameErrMsg.visibleProperty());
@@ -197,8 +246,6 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		lblQuantityErrMsg.visibleProperty().bind(lblQuantityErrMsg.textProperty().length().greaterThanOrEqualTo(1));
 		lblCustomerErrMsg.managedProperty().bind(lblCustomerErrMsg.visibleProperty());
 		lblCustomerErrMsg.visibleProperty().bind(lblCustomerErrMsg.textProperty().length().greaterThanOrEqualTo(1));
-		lblUnitErrMsg.managedProperty().bind(lblUnitErrMsg.visibleProperty());
-		lblUnitErrMsg.visibleProperty().bind(lblUnitErrMsg.textProperty().length().greaterThanOrEqualTo(1));
 		lblRateErrMsg.managedProperty().bind(lblRateErrMsg.visibleProperty());
 		lblRateErrMsg.visibleProperty().bind(lblRateErrMsg.textProperty().length().greaterThanOrEqualTo(1));
 		lblInvoiceDateErrMsg.managedProperty().bind(lblInvoiceDateErrMsg.visibleProperty());
@@ -207,23 +254,128 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		lblNoItemError.managedProperty().bind(lblNoItemError.visibleProperty());
 		lblNoItemError.visibleProperty().bind(lblNoItemError.textProperty().length().greaterThanOrEqualTo(1));
 
-		// lblPayModeErrMSg.managedProperty().bind(lblPayModeErrMSg.visibleProperty());
-		// lblPayModeErrMSg.visibleProperty().bind(lblPayModeErrMSg.textProperty().length().greaterThanOrEqualTo(1));
-
+		populatePaymentModes();
 		setTableCellFactories();
+		getCustomerNameList();
+		getProductNameList();
+		txtCustomer.createTextField(customerEntries, () -> setNewFoucus());
+		txtItemName.createTextField(productEntries, () -> setProductDetails());
+		txtDiscountPercent.setText("0.00");
+		txtInvoiceNumber.setText(String.valueOf(invoiceService.getNewBillNumber()));
 		// Force Number Listner
 		txtQuantity.textProperty().addListener(appUtils.getForceDecimalNumberListner());
 		txtRate.textProperty().addListener(appUtils.getForceDecimalNumberListner());
 		txtDiscountPercent.textProperty().addListener(appUtils.getForceDecimalNumberListner());
-		// Table row selection
-		/*
-		 * tableView.getSelectionModel().selectedItemProperty().addListener(this::
-		 * onSelectedRowChanged);
-		 * cbProductCategory.prefWidthProperty().bind(cbMeasuringUnit.widthProperty());
-		 * cbTax.prefWidthProperty().bind(cbMeasuringUnit.widthProperty());
-		 * populateMUnitComboBox();
-		 */
+		tableView.setItems(productTableData);
 		// Register textfield listners
+
+		cbPaymentModes.focusedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				if (newValue) {
+					cbPaymentModes.show();
+				}
+			}
+		});
+
+		txtQuantity.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (ke.getCode().equals(KeyCode.ENTER)) {
+					if (!txtItemName.getText().equals("")) {
+						addRecordToTable(productMap.get(txtItemName.getText()));
+					}
+				}
+			}
+		});
+
+		txtQuantity.setOnKeyReleased(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				txtAmount.setText("");
+				if (!txtQuantity.getText().equals("") && !ke.getCode().equals(KeyCode.PERIOD)
+						&& !ke.getCode().equals(KeyCode.DECIMAL)) {
+					setTxtAmount();
+				}
+			}
+		});
+
+		txtItemBarcode.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (ke.getCode().equals(KeyCode.ENTER)) {
+					if (!txtItemBarcode.getText().equals("")) {
+						clearItemErrorFields();
+						setProductDetailsWithBarCode(Long.valueOf(txtItemBarcode.getText().trim()));
+						txtItemBarcode.setText("");
+						setNewFoucus();
+					}
+				}
+			}
+		});
+
+		txtRate.setOnKeyReleased(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				txtAmount.setText("");
+				if (!txtRate.getText().equals("") && !ke.getCode().equals(KeyCode.PERIOD)
+						&& !ke.getCode().equals(KeyCode.DECIMAL)) {
+					setTxtAmount();
+				}
+			}
+		});
+
+		rbBarcode.selectedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				txtItemBarcode.requestFocus();
+			}
+		});
+		rbItemName.selectedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				txtItemName.requestFocus();
+			}
+		});
+	}
+
+	private void setTxtAmount() {
+		if (!txtRate.getText().equals("") && !txtQuantity.getText().equals("")) {
+			Double pRate = Double.parseDouble(txtRate.getText());
+			Double pQty = Double.parseDouble(txtQuantity.getText());
+			Double pAmount = pQty * pRate;
+			txtAmount.setText(appUtils.getDecimalFormat(pAmount));
+			lblQuantityErrMsg.setText("");
+			lblRateErrMsg.setText("");
+		}
+	}
+
+	protected void addRecordToTable(Product product) {
+		if (validateInvoiceItem(product)) {
+			product.setTableDispAmount(Double.valueOf(txtAmount.getText()));
+			product.setTableDispRate(Double.valueOf(txtRate.getText()));
+			product.setTableDispQuantity(Double.valueOf(txtQuantity.getText()));
+			productTableData.add(product);
+			resetItemFields();
+			setNewFoucus();
+		}
+	}
+
+	// Set Product details for BarCode
+	protected void setProductDetailsWithBarCode(Long productBarCode) {
+		Product product = productMapWithBarcode.get(productBarCode);
+		if (product == null) {
+			lblItemNameErrMsg.setText("Product not preset for Barcode : " + productBarCode);
+		} else {
+			product.setTableDispQuantity(1.0);
+			product.setTableDispAmount(product.getSellPrice());
+			product.setTableDispRate(product.getSellPrice());
+			if (product.getQuantity() >= product.getTableDispQuantity()) {
+				productTableData.add(product);
+			} else {
+				lblQuantityErrMsg.setText("Available stock is : " + appUtils.getDecimalFormat(product.getQuantity()));
+			}
+		}
 
 	}
 
@@ -232,45 +384,71 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	}
 
 	private void setTableCellFactories() {
+		tcItemName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProductName()));
+		tcUnit.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMeasure()));
+		tcQuantity.setCellValueFactory(cellData -> new SimpleStringProperty(
+				appUtils.getDecimalFormat(cellData.getValue().getTableDispQuantity())));
+		tcRate.setCellValueFactory(cellData -> new SimpleStringProperty(
+				appUtils.getDecimalFormat(cellData.getValue().getTableDispRate())));
+		tcAmount.setCellValueFactory(cellData -> new SimpleStringProperty(
+				appUtils.getDecimalFormat(cellData.getValue().getTableDispAmount())));
+		tcCGST.setCellValueFactory(
+				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getCgst())));
+		tcSGST.setCellValueFactory(
+				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getSgst())));
+		tcDiscount.setCellValueFactory(
+				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getDiscount())));
 
-		/*
-		 * // Table Column Mapping tcCategory.setCellValueFactory(cellData -> new
-		 * SimpleStringProperty(cellData.getValue().getProductCategory()));
-		 * tcName.setCellValueFactory(cellData -> new
-		 * SimpleStringProperty(cellData.getValue().getProductName()));
-		 * tcQuantity.setCellValueFactory( cellData -> new
-		 * SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().
-		 * getQuantity()))); tcMUnit.setCellValueFactory(cellData -> new
-		 * SimpleStringProperty(cellData.getValue().getMeasure()));
-		 * tcPurchaseRate.setCellValueFactory( cellData -> new
-		 * SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().
-		 * getPurcaseRate()))); tcTax.setCellValueFactory( cellData -> new
-		 * SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().
-		 * getProductTax()))); tcSellPrice.setCellValueFactory( cellData -> new
-		 * SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().
-		 * getSellPrice()))); tcDiscount.setCellValueFactory( cellData -> new
-		 * SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().
-		 * getDiscount()))); tcDescription.setCellValueFactory(cellData -> new
-		 * SimpleStringProperty(cellData.getValue().getDescription())); // Set CSS
-		 * tcQuantity.getStyleClass().add("numeric-cell");
-		 * tcPurchaseRate.getStyleClass().add("numeric-cell");
-		 * tcTax.getStyleClass().add("numeric-cell");
-		 * tcSellPrice.getStyleClass().add("numeric-cell");
-		 * tcDiscount.getStyleClass().add("numeric-cell");
-		 * tcCategory.getStyleClass().add("character-cell");
-		 * tcName.getStyleClass().add("character-cell");
-		 * tcMUnit.getStyleClass().add("character-cell");
-		 * tcDescription.getStyleClass().add("character-cell");
-		 */
+		tcItemName.getStyleClass().add("character-cell");
+		tcQuantity.getStyleClass().add("numeric-cell");
+		tcUnit.getStyleClass().add("character-cell");
+		tcRate.getStyleClass().add("numeric-cell");
+		tcAmount.getStyleClass().add("numeric-cell");
+		tcCGST.getStyleClass().add("numeric-cell");
+		tcDiscount.getStyleClass().add("numeric-cell");
+		tcSGST.getStyleClass().add("numeric-cell");
+
 	}
 
-	/*
-	 * public void populateMUnitComboBox() {
-	 * cbMeasuringUnit.getItems().add("-- Select Measurement Unit --"); for
-	 * (MeasurementUnit u : measurementUnitsService.getAllUOM()) {
-	 * cbMeasuringUnit.getItems().add(u.getName()); }
-	 * cbMeasuringUnit.getSelectionModel().select(0); }
-	 */
+	public void populatePaymentModes() {
+		for (String mode : appUtils.getPaymentModes()) {
+			cbPaymentModes.getItems().add(mode);
+		}
+		cbPaymentModes.getSelectionModel().select(0);
+	}
+
+	public void getCustomerNameList() {
+		customerEntries = new TreeSet<String>();
+		customerMap = new HashMap<Long, Customer>();
+		for (Customer cust : customerService.getAllCustomers()) {
+			customerEntries.add(cust.getCustMobileNumber() + " : " + cust.getCustName());
+			customerMap.put(cust.getCustMobileNumber(), cust);
+		}
+	}
+
+	public void getProductNameList() {
+		productEntries = new TreeSet<String>();
+		productMap = new HashMap<String, Product>();
+		productMapWithBarcode = new HashMap<Long, Product>();
+		for (Product p : productService.getAllProducts()) {
+			productEntries.add(p.getProductName());
+			productMap.put(p.getProductName(), p);
+			productMapWithBarcode.put(p.getProductBarCode(), p);
+		}
+	}
+
+	private void setProductDetails() {
+		if (!txtItemName.getText().equals("")) {
+			Product product = productMap.get(txtItemName.getText());
+			txtQuantity.setText("");
+			if (product != null) {
+				txtUnit.setText(product.getMeasure());
+				txtRate.setText(appUtils.getDecimalFormat(product.getSellPrice()));
+				txtQuantity.requestFocus();
+				clearItemErrorFields();
+			}
+		}
+	}
 
 	@FXML
 	void onCloseAction(ActionEvent event) {
@@ -279,7 +457,10 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 
 	@FXML
 	void onRefereshCommand(ActionEvent event) {
-
+		getProductNameList();
+		getCustomerNameList();
+		txtCustomer.createTextField(customerEntries, () -> setNewFoucus());
+		txtItemName.createTextField(productEntries, () -> setProductDetails());
 	}
 
 	@FXML
@@ -300,17 +481,11 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 
 	@Override
 	public void putFocusOnNode() {
-		dpInvoiceDate.requestFocus();
+		txtCustomer.requestFocus();
 	}
 
 	@Override
 	public boolean loadData() {
-		/*
-		 * List<Product> list = productService.getAllProducts(); ObservableList<Product>
-		 * productTableData = FXCollections.observableArrayList();
-		 * productTableData.addAll(list); filteredList = new
-		 * FilteredList(productTableData, null); tableView.setItems(filteredList);
-		 */
 		return true;
 	}
 
@@ -348,53 +523,69 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	@Override
 	public boolean validateInput() {
 		boolean valid = true;
-		/*
-		 * // Category int category =
-		 * cbProductCategory.getSelectionModel().getSelectedIndex(); if (category == 0)
-		 * { alertHelper.beep();
-		 * lblProductCategoryErrMsg.setText("Please select category");
-		 * cbProductCategory.requestFocus(); valid = false; } else {
-		 * lblProductCategoryErrMsg.setText(""); } // Product Name int name =
-		 * txtProductName.getText().trim().length(); if (name == 0) {
-		 * alertHelper.beep();
-		 * lblProductNameErrMsg.setText("Please enter product name");
-		 * txtProductName.requestFocus(); valid = false; } else {
-		 * lblProductNameErrMsg.setText(""); }
-		 * 
-		 * // Measurement Unit int mUnit =
-		 * cbMeasuringUnit.getSelectionModel().getSelectedIndex(); if (mUnit == 0) {
-		 * alertHelper.beep(); lblUnitErrMsg.setText("Please select measurement unit");
-		 * cbMeasuringUnit.requestFocus(); valid = false; } else {
-		 * lblUnitErrMsg.setText(""); }
-		 * 
-		 * // Quantity int quantity = txtQuantity.getText().trim().length(); if
-		 * (quantity == 0) { alertHelper.beep();
-		 * lblQuantityErrMsg.setText("Please enter quantity");
-		 * txtQuantity.requestFocus(); valid = false; } else {
-		 * lblQuantityErrMsg.setText(""); }
-		 * 
-		 * // Purchase Rate int purRate = txtPurchaseRate.getText().trim().length(); if
-		 * (purRate == 0) { alertHelper.beep();
-		 * lblPurRateErrMsg.setText("Please enter purchase rate");
-		 * txtPurchaseRate.requestFocus(); valid = false; } else {
-		 * lblPurRateErrMsg.setText(""); }
-		 * 
-		 * // Tax int tax = cbTax.getSelectionModel().getSelectedIndex(); if (tax == 0)
-		 * { alertHelper.beep(); lblTaxErrMsg.setText("Please select tax");
-		 * cbTax.requestFocus(); valid = false; } else { lblTaxErrMsg.setText(""); }
-		 * 
-		 * // Sell Price int sellPrice = txtSellPrice.getText().trim().length(); if
-		 * (sellPrice == 0) { alertHelper.beep();
-		 * lblSellPriceErrMsg.setText("Please enter sell price");
-		 * txtSellPrice.requestFocus(); valid = false; } else {
-		 * lblSellPriceErrMsg.setText(""); }
-		 */
-
 		return valid;
 	}
 
 	private void resetFields() {
+		resetItemFields();
+	}
 
+	private void resetItemFields() {
+		txtItemName.setText("");
+		txtItemBarcode.setText("");
+		txtAmount.setText("");
+		txtRate.setText("");
+		txtQuantity.setText("");
+		txtUnit.setText("");
+	}
+
+	protected void setNewFoucus() {
+		if (rbBarcode.isSelected()) {
+			txtItemBarcode.requestFocus();
+		} else {
+			txtItemName.requestFocus();
+		}
+	}
+
+	private boolean validateInvoiceItem(Product product) {
+		clearItemErrorFields();
+		boolean valid = true;
+		if (txtItemName.getText().equals("")) {
+			lblItemNameErrMsg.setText("Enter product name");
+			valid = false;
+		}
+		if (null == product && !txtItemName.getText().equals("")) {
+			lblItemNameErrMsg.setText("Invalid product name");
+			valid = false;
+		}
+		String rate = txtRate.getText().trim();
+		if (rate.isEmpty()) {
+			lblRateErrMsg.setText("Rate not specified");
+			valid = false;
+		}
+		String quantity = txtQuantity.getText().trim();
+		if (quantity.isEmpty()) {
+			lblQuantityErrMsg.setText("Quantity not specified");
+			valid = false;
+		} else {
+			if (null != product && (Double.valueOf(quantity) >= product.getQuantity())) {
+				valid = false;
+				lblQuantityErrMsg.setText("Available stock is : " + appUtils.getDecimalFormat(product.getQuantity()));
+			}
+		}
+		boolean isMatch = productTableData.stream().anyMatch(i -> i.getProductName().equals(product.getProductName()));
+		if (isMatch) {
+			lblItemNameErrMsg.setText("Prodcut already added");
+			valid = false;
+		}
+
+		return valid;
+	}
+
+	private void clearItemErrorFields() {
+		lblItemNameErrMsg.setText("");
+		lblQuantityErrMsg.setText("");
+		lblRateErrMsg.setText("");
 	}
 
 }

@@ -189,7 +189,7 @@ public class LoginController extends AppContext{
         }
         
         try {
-			lblLicenseValideUpto.setText(appUtils.dec(appUtils.getAppDataValues("APP_SECURE_KEY").get(0)));
+			lblLicenseValideUpto.setText(appUtils.dec(appUtils.getAppDataValues("APP_SECURE_KEY")));
 		} catch (Exception e) {
 			logger.error("LogginController.show-->"+e);
 			e.printStackTrace();

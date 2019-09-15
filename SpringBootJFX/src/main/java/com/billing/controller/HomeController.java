@@ -265,7 +265,7 @@ public class HomeController extends AppContext {
 		appUtils.licenseExpiryAlert();
 		try {
 			lblLicenseValidUpto.setText(
-					"License Valid Upto : " + appUtils.dec(appUtils.getAppDataValues("APP_SECURE_KEY").get(0)));
+					"License Valid Upto : " + appUtils.dec(appUtils.getAppDataValues("APP_SECURE_KEY")));
 		} catch (Exception e) {
 			logger.error("lblLicenseValidUpto -->" + e);
 		}
@@ -276,7 +276,7 @@ public class HomeController extends AppContext {
 
 	private void startScheduledDBDumpTask() {
 		Timer time = new Timer();
-		Integer dbDumpInterval = Integer.parseInt(appUtils.getAppDataValues("DB_DUMP_INTERVAL").get(0));
+		Integer dbDumpInterval = Integer.parseInt(appUtils.getAppDataValues("DB_DUMP_INTERVAL"));
 		logger.info("---- DB Dump Scheduled with Interval of :: " + dbDumpInterval + " Mins ---");
 		dbDumpInterval = dbDumpInterval * 60 * 1000; // Convert Minutes to Milliseconds
 		time.schedule(dbScheduledDumpTask, 0, dbDumpInterval);

@@ -32,6 +32,7 @@ import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -261,6 +262,24 @@ public class ProductsController extends AppContext implements TabContent {
 		cbTax.focusedProperty().addListener((observable, oldValue, newValue) -> {
 			if (!newValue) {
 				setPurchasePrice();
+			}else {
+				cbTax.show();
+			}
+		});
+		cbProductCategory.focusedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				if (newValue) {
+					cbProductCategory.show();
+				}
+			}
+		});
+		cbMeasuringUnit.focusedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				if (newValue) {
+					cbMeasuringUnit.show();
+				}
 			}
 		});
 
@@ -274,7 +293,7 @@ public class ProductsController extends AppContext implements TabContent {
 							String lowerCaseFilter = newValue.toLowerCase();
 							if (t.getProductName().toLowerCase().contains(lowerCaseFilter)) {
 								return true;
-							}else if(t.getProductCategory().toLowerCase().contains(lowerCaseFilter)) {
+							} else if (t.getProductCategory().toLowerCase().contains(lowerCaseFilter)) {
 								return true;
 							}
 							return false;

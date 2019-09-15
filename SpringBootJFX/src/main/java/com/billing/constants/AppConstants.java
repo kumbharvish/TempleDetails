@@ -8,7 +8,7 @@ public class AppConstants {
 
 	public static final String REPORT_EXPORT_FOLDER = "Reports";
 
-	public static final String MYSTORE_HOME = "MYSTORE_HOME";
+	public static final String JRXML = "Jrxml";
 
 	public static final String LOGO_NAME = "LOGO_NAME";
 

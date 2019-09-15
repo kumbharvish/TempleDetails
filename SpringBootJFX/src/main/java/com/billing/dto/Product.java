@@ -18,6 +18,10 @@ public class Product {
 
 	private double productTax;
 
+	private double cgst;
+
+	private double sgst;
+
 	private double purcasePrice;
 
 	private double sellPrice;
@@ -51,6 +55,12 @@ public class Product {
 	private int supplierId;
 
 	private String timeStamp;
+	
+	private double tableDispRate;
+	
+	private double tableDispQuantity;
+	
+	private double tableDispAmount;
 
 	public int getProductCode() {
 		return productCode;
@@ -251,6 +261,46 @@ public class Product {
 
 	public void setTimeStamp(String timeStamp) {
 		this.timeStamp = timeStamp;
+	}
+
+	public double getCgst() {
+		return cgst;
+	}
+
+	public void setCgst(double cgst) {
+		this.cgst = cgst;
+	}
+
+	public double getSgst() {
+		return sgst;
+	}
+
+	public void setSgst(double sgst) {
+		this.sgst = sgst;
+	}
+	
+	public double getTableDispRate() {
+		return tableDispRate;
+	}
+
+	public void setTableDispRate(double tableDispRate) {
+		this.tableDispRate = tableDispRate;
+	}
+
+	public double getTableDispQuantity() {
+		return tableDispQuantity;
+	}
+
+	public void setTableDispQuantity(double tableDispQuantity) {
+		this.tableDispQuantity = tableDispQuantity;
+	}
+
+	public double getTableDispAmount() {
+		return tableDispAmount;
+	}
+
+	public void setTableDispAmount(double tableDispAmount) {
+		this.tableDispAmount = tableDispAmount;
 	}
 
 	@Override

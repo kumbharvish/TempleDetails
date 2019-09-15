@@ -68,8 +68,7 @@ public class AppProperties {
 			tempString=details.get(s);
 			sysKey=sysKey+tempString;
 		}
-		List<String> appKey = appUtils.getAppDataValues("APP_KEY");
-		if(appUtils.enc(sysKey).equals(appKey.get(0)))
+		if(appUtils.enc(sysKey).equals(appUtils.getAppDataValues("APP_KEY")))
 			isValidLicense=true;
 		return isValidLicense;
 	}
@@ -114,11 +113,10 @@ public class AppProperties {
 	
 	public boolean doCheck() throws Exception{
 		boolean isValidLicense=true;
-		List<String> appKey = appUtils.getAppDataValues("APP_SECURE_KEY");
 		Date todaysDate = new Date();
 		SimpleDateFormat sdfParseFormat = new SimpleDateFormat("dd MMM yyyy");
 		String todaysDatest = sdfParseFormat.format(todaysDate);
-		Date expriyDate = sdfParseFormat.parse(appUtils.dec(appKey.get(0)));
+		Date expriyDate = sdfParseFormat.parse(appUtils.dec(appUtils.getAppDataValues("APP_SECURE_KEY")));
 		
 		Date currentDate = sdfParseFormat.parse(todaysDatest);
 		

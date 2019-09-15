@@ -31,100 +31,100 @@ import javafx.stage.Stage;
 @SuppressWarnings("restriction")
 @Controller
 public class ExpenseController implements TabContent {
-	
+
 	@Autowired
 	ExpensesService expensesService;
-	
+
 	@Autowired
 	AlertHelper alertHelper;
-	
+
 	@Autowired
 	AppUtils appUtils;
-	
+
 	public Stage currentStage = null;
-    
-    private TabPane tabPane = null;	
-    
+
+	private TabPane tabPane = null;
+
 	@FXML
-    private ComboBox<String> cbCategory;
+	private ComboBox<String> cbCategory;
 
-    @FXML
-    private Label cbCategoryErrorMsg;
+	@FXML
+	private Label cbCategoryErrorMsg;
 
-    @FXML
-    private TextField txtAmount;
+	@FXML
+	private TextField txtAmount;
 
-    @FXML
-    private Label txtAmountErrorMsg;
+	@FXML
+	private Label txtAmountErrorMsg;
 
-    @FXML
-    private TextField txtDescription;
+	@FXML
+	private TextField txtDescription;
 
-    @FXML
-    private DatePicker dateExpense;
+	@FXML
+	private DatePicker dateExpense;
 
-    @FXML
-    private Label dateExpenseErrorMsg;
+	@FXML
+	private Label dateExpenseErrorMsg;
 
-    @FXML
-    private Button btnSave;
+	@FXML
+	private Button btnSave;
 
-    @FXML
-    private Button btnClose;
-    
-    private BooleanProperty isDirty = new SimpleBooleanProperty(false);
+	@FXML
+	private Button btnClose;
 
-    @FXML
-    void onCloseCommand(ActionEvent event) {
-    	 if (isDirty.get()) {
-             ButtonType buttonType = appUtils.shouldSaveUnsavedData(currentStage);
-             if (buttonType == ButtonType.CANCEL) {
-                 return; // no need to take any further action
-             } else if (buttonType == ButtonType.YES) {
-            	 if (! validateInput()) {
-	            		return;
-	                }else {
-	                	saveData();
-	                }
-             } 
-         }
-         
-         closeTab();
-    }
+	private BooleanProperty isDirty = new SimpleBooleanProperty(false);
 
-    @FXML
-    void onSaveCommand(ActionEvent event) {
-    	if (! validateInput()) {
-            return;
-        }
-    	
-    	boolean result = saveData();
-          
-         if (result) {
-             closeTab();
-         }
-    }
+	@FXML
+	void onCloseCommand(ActionEvent event) {
+		if (isDirty.get()) {
+			ButtonType buttonType = appUtils.shouldSaveUnsavedData(currentStage);
+			if (buttonType == ButtonType.CANCEL) {
+				return; // no need to take any further action
+			} else if (buttonType == ButtonType.YES) {
+				if (!validateInput()) {
+					return;
+				} else {
+					saveData();
+				}
+			}
+		}
+
+		closeTab();
+	}
+
+	@FXML
+	void onSaveCommand(ActionEvent event) {
+		if (!validateInput()) {
+			return;
+		}
+
+		boolean result = saveData();
+
+		if (result) {
+			closeTab();
+		}
+	}
 
 	@Override
 	public boolean shouldClose() {
-		 if (isDirty.get()) {
-	            ButtonType response = appUtils.shouldSaveUnsavedData(currentStage);
-	            if (response == ButtonType.CANCEL) {
-	                return false;
-	            }
+		if (isDirty.get()) {
+			ButtonType response = appUtils.shouldSaveUnsavedData(currentStage);
+			if (response == ButtonType.CANCEL) {
+				return false;
+			}
 
-	            if (response == ButtonType.YES) {
-	            	if (! validateInput()) {
-	            		return false;
-	                }else {
-	                	saveData();
-	                }
-	                
-	            }
+			if (response == ButtonType.YES) {
+				if (!validateInput()) {
+					return false;
+				} else {
+					saveData();
+				}
 
-	        }
+			}
 
-	        return true;
+		}
+
+		return true;
 	}
 
 	@Override
@@ -157,15 +157,15 @@ public class ExpenseController implements TabContent {
 		expense.setDate(dateExpense.getValue().toString());
 		expense.setAmount(Double.parseDouble(txtAmount.getText()));
 		expense.setDescription(txtDescription.getText());
-		
+
 		StatusDTO status = expensesService.addExpense(expense);
-		if(status.getStatusCode()==0){
-    		alertHelper.showSuccessNotification("Expense saved successfully");
-    	}else {
-            alertHelper.showDataSaveErrAlert(currentStage);
-            return false;
-    	}
-        return true;
+		if (status.getStatusCode() == 0) {
+			alertHelper.showSuccessNotification("Expense saved successfully");
+		} else {
+			alertHelper.showDataSaveErrAlert(currentStage);
+			return false;
+		}
+		return true;
 	}
 
 	@Override
@@ -175,69 +175,70 @@ public class ExpenseController implements TabContent {
 
 	@Override
 	public void closeTab() {
-		 Tab tab = tabPane.selectionModelProperty().get()
-                 .selectedItemProperty().get();
-         tabPane.getTabs().remove(tab); //close the current tab
+		Tab tab = tabPane.selectionModelProperty().get().selectedItemProperty().get();
+		tabPane.getTabs().remove(tab); // close the current tab
 
 	}
 
 	@Override
 	public boolean validateInput() {
 		boolean valid = true;
-        // Category
-        int category = cbCategory.getSelectionModel().getSelectedIndex();
-        if (category == 0) {
-        	 alertHelper.beep();
-        	 cbCategoryErrorMsg.setText("Please select expese category");
-        	 cbCategory.requestFocus();
-             valid = false;
-        } else {
-        	cbCategoryErrorMsg.setText("");
-        }
-        //Amount
-        int amount = txtAmount.getText().trim().length();
-        if (amount == 0) {
-        	alertHelper.beep();
-	       	txtAmountErrorMsg.setText("Please enter amount");
-	       	txtAmount.requestFocus();
-           valid = false;
-       } else {
-    	   txtAmountErrorMsg.setText("");
-       } 
-        LocalDate startDate = dateExpense.getValue();
-        if (startDate == null) {
-            dateExpenseErrorMsg.setText("Date not specified");
-            valid = false;
-        }else {
-        	 dateExpenseErrorMsg.setText("");
-        }
+		// Category
+		int category = cbCategory.getSelectionModel().getSelectedIndex();
+		if (category == 0) {
+			alertHelper.beep();
+			cbCategoryErrorMsg.setText("Please select expese category");
+			cbCategory.requestFocus();
+			valid = false;
+		} else {
+			cbCategoryErrorMsg.setText("");
+		}
+		// Amount
+		int amount = txtAmount.getText().trim().length();
+		if (amount == 0) {
+			alertHelper.beep();
+			txtAmountErrorMsg.setText("Please enter amount");
+			txtAmount.requestFocus();
+			valid = false;
+		} else {
+			txtAmountErrorMsg.setText("");
+		}
+		LocalDate startDate = dateExpense.getValue();
+		if (startDate == null) {
+			dateExpenseErrorMsg.setText("Date not specified");
+			valid = false;
+		} else {
+			dateExpenseErrorMsg.setText("");
+		}
 		return valid;
 	}
 
 	@Override
 	public void initialize() {
-	 cbCategoryErrorMsg.managedProperty().bind(cbCategoryErrorMsg.visibleProperty());
-   	 txtAmountErrorMsg.managedProperty().bind(txtAmountErrorMsg.visibleProperty());
-   	 dateExpenseErrorMsg.managedProperty().bind(dateExpenseErrorMsg.visibleProperty());
-   	 
-   	cbCategoryErrorMsg.visibleProperty()
-     .bind(cbCategoryErrorMsg.textProperty().length().greaterThanOrEqualTo(1));
-   	txtAmountErrorMsg.visibleProperty()
-     .bind(txtAmountErrorMsg.textProperty().length().greaterThanOrEqualTo(1));
-   	dateExpenseErrorMsg.visibleProperty()
-   	.bind(dateExpenseErrorMsg.textProperty().length().greaterThanOrEqualTo(1));
-   	
-   	 cbCategory.selectionModelProperty().addListener(this::invalidated);
-	 txtAmount.textProperty().addListener(this::invalidated);
-	 dateExpense.valueProperty().addListener(this::invalidated);
-	 txtAmount.textProperty().addListener(appUtils.getForceNumberListner());
-	 btnSave.disableProperty().bind(isDirty.not());
+		cbCategoryErrorMsg.managedProperty().bind(cbCategoryErrorMsg.visibleProperty());
+		txtAmountErrorMsg.managedProperty().bind(txtAmountErrorMsg.visibleProperty());
+		dateExpenseErrorMsg.managedProperty().bind(dateExpenseErrorMsg.visibleProperty());
+
+		cbCategoryErrorMsg.visibleProperty().bind(cbCategoryErrorMsg.textProperty().length().greaterThanOrEqualTo(1));
+		txtAmountErrorMsg.visibleProperty().bind(txtAmountErrorMsg.textProperty().length().greaterThanOrEqualTo(1));
+		dateExpenseErrorMsg.visibleProperty().bind(dateExpenseErrorMsg.textProperty().length().greaterThanOrEqualTo(1));
+
+		cbCategory.selectionModelProperty().addListener(this::invalidated);
+		txtAmount.textProperty().addListener(this::invalidated);
+		dateExpense.valueProperty().addListener(this::invalidated);
+		txtAmount.textProperty().addListener(appUtils.getForceNumberListner());
+		btnSave.disableProperty().bind(isDirty.not());
+		cbCategory.focusedProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue) {
+				cbCategory.show();
+			}
+		});
 	}
 
 	@Override
 	public void setUserDetails(UserDetails user) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

@@ -1,9 +1,5 @@
 package com.billing.utils;
 
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Font;
-import java.awt.Image;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -11,6 +7,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.RoundingMode;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.Key;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -25,6 +23,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,13 +32,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.table.JTableHeader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +39,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.billing.constants.AppConstants;
-import com.billing.dto.ProductCategory;
 import com.billing.dto.StatusDTO;
 
 import javafx.beans.property.StringProperty;
@@ -71,17 +62,21 @@ public class AppUtils {
 	@Autowired
 	AlertHelper alertHelper;
 
+	private HashMap<String, String> properties;
+
 	private static final String PDF_CONST = "SLAES";
-	
+
 	private static final String PDF_RANDOM = "Invoice1Hbfh667adfDEJ78";
-	
+
 	private static final int LICENSE_EXPIRY_LIMIT = 15;
-	
+
 	private static final String TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss";
-	
+
 	private static final String DATE_FORMAT = "yyyy-MM-dd";
 
-	private static final String APP_DATA = "SELECT VALUE_STRING FROM " + "APP_DATA WHERE DATA_NAME=?";
+	private static final String APP_DATA = "SELECT * FROM APP_DATA ;";
+	
+	private static final String PAYMENT_MODES = "SELECT * FROM PAYMENT_MODES ;";
 
 	private static final String UPDATE_APP_DATA = "UPDATE APP_DATA SET VALUE_STRING =? WHERE DATA_NAME=?";
 
@@ -95,33 +90,43 @@ public class AppUtils {
 		}
 	}
 
-	// This method returns data values from app_data for given data name.
-	public List<String> getAppDataValues(String dataName) {
-
-		List<String> dataList = new LinkedList<String>();
+	private HashMap<String, String> getAppData() {
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		HashMap<String, String> properties = new HashMap<>();
+
 		try {
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(APP_DATA);
-			stmt.setString(1, dataName);
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				dataList.add(rs.getString("VALUE_STRING"));
+				properties.put(rs.getString("DATA_NAME"), rs.getString("VALUE_STRING"));
 			}
 			rs.close();
-			if (dataList.isEmpty()) {
-				logger.info("--- ## App Data Configuration Missing for Key ## --- :: " + dataName);
-			}
+
 		} catch (Exception e) {
 			logger.error("Get App Data Values :" + e);
 			e.printStackTrace();
 		} finally {
 			DBUtils.closeConnection(stmt, conn);
 		}
-		return dataList;
+		logger.info("===== Application Properties Loaded ===== ");
+		return properties;
+	}
 
+	// This method returns data values from app_data for given data name.
+	public String getAppDataValues(String dataName) {
+		String data = null;
+		if (properties == null) {
+			properties = getAppData();
+		}
+		data = properties.get(dataName);
+
+		if (null == data || (data != null && data.isEmpty())) {
+			logger.info("--- ## App Data Configuration Missing for Key ## --- :: " + dataName);
+		}
+		return data;
 	}
 
 	public StatusDTO updateAppData(String dataName, String valueString) {
@@ -286,7 +291,7 @@ public class AppUtils {
 		return params;
 	}
 
-	public static void openWindowsDocument(String filePath) {
+	public void openWindowsDocument(String filePath) {
 		try {
 			if ((new File(filePath)).exists()) {
 				Process p = Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + filePath);
@@ -308,7 +313,7 @@ public class AppUtils {
 
 	public void licenseExpiryAlert() {
 		try {
-			String licenseDateStr = dec(getAppDataValues("APP_SECURE_KEY").get(0));
+			String licenseDateStr = dec(getAppDataValues("APP_SECURE_KEY"));
 			SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
 			Date licenseDate = sdf.parse(licenseDateStr);
 			Date currentDate = new Date();
@@ -346,7 +351,7 @@ public class AppUtils {
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		return sdf.format(timestamp);
 	}
-	
+
 	public String getTodaysDate() {
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -356,147 +361,181 @@ public class AppUtils {
 	public String getCurrentWorkingDir() {
 		return System.getProperty("user.dir");
 	}
-	
+
 	private String getSQLExceptionText(final SQLException ex) {
 
-        StringBuilder sb = new StringBuilder(ex.getMessage());
-        SQLException exception = ex;
-        final String delimiter = "\n";
+		StringBuilder sb = new StringBuilder(ex.getMessage());
+		SQLException exception = ex;
+		final String delimiter = "\n";
 
-        while (exception.getNextException() != null) {
-            exception = exception.getNextException();
-            sb.append(delimiter).append(exception.getMessage());
-        }
+		while (exception.getNextException() != null) {
+			exception = exception.getNextException();
+			sb.append(delimiter).append(exception.getMessage());
+		}
 
-        return sb.toString();
-    }
+		return sb.toString();
+	}
 
-    public String getExceptionText(final Exception ex) {
-        if (ex instanceof SQLException) {
-            return getSQLExceptionText((SQLException) ex);
-        } else {
-            return ex.getMessage();
-        }
-    }
+	public String getExceptionText(final Exception ex) {
+		if (ex instanceof SQLException) {
+			return getSQLExceptionText((SQLException) ex);
+		} else {
+			return ex.getMessage();
+		}
+	}
 
+	public byte[] getFileBytes(File file) throws FileNotFoundException, IOException {
 
-    public byte[] getFileBytes(File file) throws FileNotFoundException,
-            IOException {
+		int fileLength = (int) file.length();
+		ByteArrayOutputStream outstream = new ByteArrayOutputStream(fileLength);
 
-        int fileLength = (int) file.length();
-        ByteArrayOutputStream outstream = new ByteArrayOutputStream(fileLength);
+		try (BufferedInputStream instream = new BufferedInputStream(new FileInputStream(file), fileLength)) {
+			byte[] bytes = new byte[1024 * 10];
+			int bytesRead = 0;
 
-        try (BufferedInputStream instream = new BufferedInputStream(
-                new FileInputStream(file), fileLength)) {
-            byte[] bytes = new byte[1024 * 10];
-            int bytesRead = 0;
+			while ((bytesRead = instream.read(bytes)) > 0) {
+				outstream.write(bytes, 0, bytesRead);
+			}
+		}
 
-            while ((bytesRead = instream.read(bytes)) > 0) {
-                outstream.write(bytes, 0, bytesRead);
-            }
-        }
+		return outstream.toByteArray();
+	}
 
-        return outstream.toByteArray();
-    }
+	public StringConverter<LocalDate> getDateStringConverter() {
+		StringConverter<LocalDate> converter = new StringConverter<LocalDate>() {
+			private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.M.yyyy");
 
-    public StringConverter<LocalDate> getDateStringConverter() {
-        StringConverter<LocalDate> converter = new StringConverter<LocalDate>() {
-            private DateTimeFormatter formatter
-                    = DateTimeFormatter.ofPattern("d.M.yyyy");
+			@Override
+			public String toString(LocalDate date) {
+				if (date == null) {
+					return "";
+				} else {
+					return formatter.format(date);
+				}
+			}
 
-            @Override
-            public String toString(LocalDate date) {
-                if (date == null) {
-                    return "";
-                } else {
-                    return formatter.format(date);
-                }
-            }
+			@Override
+			public LocalDate fromString(String string) {
+				if (string == null || string.isEmpty()) {
+					return null;
+				} else {
+					return LocalDate.parse(string, formatter);
+				}
+			}
+		};
 
-            @Override
-            public LocalDate fromString(String string) {
-                if (string == null || string.isEmpty()) {
-                    return null;
-                } else {
-                    return LocalDate.parse(string, formatter);
-                }
-            }
-        };
+		return converter;
+	}
 
-        return converter;
-    }
-    
-    public long getEpochMilli(LocalDate date) {
-         ZoneId zone =   ZoneId.of("Asia/Kolkata");
-        ZonedDateTime zonedDateTime = date.atStartOfDay(zone);
-       return zonedDateTime.toInstant().toEpochMilli();
-    }
-    
-     public DateCell getDateCell(DatePicker datePicker, 
-             LocalDate earliestDate, LocalDate latestDate) {
-         
-         if (earliestDate == null) {
-             earliestDate = LocalDate.MIN;
-         }
-         
-         if (latestDate == null) {
-             latestDate = LocalDate.MAX;
-         }
-         
-         final LocalDate minDate = earliestDate;
-         final LocalDate maxDate = latestDate;
-         
-        final DateCell dateCell = new DateCell() {
+	public long getEpochMilli(LocalDate date) {
+		ZoneId zone = ZoneId.of("Asia/Kolkata");
+		ZonedDateTime zonedDateTime = date.atStartOfDay(zone);
+		return zonedDateTime.toInstant().toEpochMilli();
+	}
 
-            @Override
-            public void updateItem(LocalDate date, boolean empty) {
-                super.updateItem(date, empty); 
+	public DateCell getDateCell(DatePicker datePicker, LocalDate earliestDate, LocalDate latestDate) {
 
-                if (date != null && !empty) {
-                    if (date.isAfter(maxDate) || date.isBefore(minDate)) {
-                        setDisable(true);
-                        setStyle("-fx-background-color: gray;");
-                    }
-                }
+		if (earliestDate == null) {
+			earliestDate = LocalDate.MIN;
+		}
 
-            }
+		if (latestDate == null) {
+			latestDate = LocalDate.MAX;
+		}
 
-        };
+		final LocalDate minDate = earliestDate;
+		final LocalDate maxDate = latestDate;
 
-        return dateCell;
-    }
-     
-     public LocalDate minDate(final LocalDate firstDate, 
-             final LocalDate secondDate) {
-         if (firstDate.isBefore(secondDate)) {
-             return firstDate;
-         }
-         return secondDate;
-     }
-     
-     public LocalDate maxDate(final LocalDate firstDate, 
-             final LocalDate secondDate) {
-         if (firstDate.isAfter(secondDate)) {
-             return firstDate;
-         }
-         return secondDate;
-     }
-     
-     //Returns Listner object to force numeric values in textfield
-     public ChangeListener<String> getForceNumberListner() {
-    	 ChangeListener<String> forceNumberListener = (observable, oldValue, newValue) -> {
-    		    if (!newValue.matches("\\d*"))
-    		      ((StringProperty) observable).set(oldValue);
-    		};
-    		return forceNumberListener;
-     }
-     //Returns Listner object to force decimal values in textfield
-     public ChangeListener<String> getForceDecimalNumberListner() {
-    	 ChangeListener<String> forceNumberListener = (observable, oldValue, newValue) -> {
-    		 if (!newValue.matches("\\d{0,7}([\\.]\\d{0,4})?"))
-    		      ((StringProperty) observable).set(oldValue);
-    		};
-    		return forceNumberListener;
-     }
+		final DateCell dateCell = new DateCell() {
 
+			@Override
+			public void updateItem(LocalDate date, boolean empty) {
+				super.updateItem(date, empty);
+
+				if (date != null && !empty) {
+					if (date.isAfter(maxDate) || date.isBefore(minDate)) {
+						setDisable(true);
+						setStyle("-fx-background-color: gray;");
+					}
+				}
+
+			}
+
+		};
+
+		return dateCell;
+	}
+
+	public LocalDate minDate(final LocalDate firstDate, final LocalDate secondDate) {
+		if (firstDate.isBefore(secondDate)) {
+			return firstDate;
+		}
+		return secondDate;
+	}
+
+	public LocalDate maxDate(final LocalDate firstDate, final LocalDate secondDate) {
+		if (firstDate.isAfter(secondDate)) {
+			return firstDate;
+		}
+		return secondDate;
+	}
+
+	// Returns Listner object to force numeric values in textfield
+	public ChangeListener<String> getForceNumberListner() {
+		ChangeListener<String> forceNumberListener = (observable, oldValue, newValue) -> {
+			if (!newValue.matches("\\d*"))
+				((StringProperty) observable).set(oldValue);
+		};
+		return forceNumberListener;
+	}
+
+	// Returns Listner object to force decimal values in textfield
+	public ChangeListener<String> getForceDecimalNumberListner() {
+		ChangeListener<String> forceNumberListener = (observable, oldValue, newValue) -> {
+			if (!newValue.matches("\\d{0,7}([\\.]\\d{0,4})?"))
+				((StringProperty) observable).set(oldValue);
+		};
+		return forceNumberListener;
+	}
+
+	public List<String> getPaymentModes() {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		List<String> data = new LinkedList<>();
+
+		try {
+			conn = dbUtils.getConnection();
+			stmt = conn.prepareStatement(PAYMENT_MODES);
+			ResultSet rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				data.add(rs.getString("NAME"));
+			}
+			rs.close();
+
+		} catch (Exception e) {
+			logger.error("Exception :" + e);
+			e.printStackTrace();
+		} finally {
+			DBUtils.closeConnection(stmt, conn);
+		}
+		return data;
+	}
+	
+	//Checks if folder does not exist create new folder and returns folder path 
+	public String createDirectory(String folderName) {
+		String currentDir = getCurrentWorkingDir();
+		String fileSeparator = System.getProperty("file.separator");
+		String directoryPath = currentDir + fileSeparator + folderName;
+		if (!Files.isDirectory(Paths.get(directoryPath))) {
+			// Create Data_Backup Folder
+			try {
+				Files.createDirectories(Paths.get(directoryPath));
+			} catch (IOException e) {
+				logger.error("Create Directory Exception : ",e);
+				e.printStackTrace();
+			}
+		}
+		return directoryPath+fileSeparator;
+	}
 }

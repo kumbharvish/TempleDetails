@@ -39,29 +39,23 @@ public class DBBackupService {
 
 	public boolean createDBDump() {
 		try {
-			boolean flag = false;
-			String currentDir = appUtils.getCurrentWorkingDir();
-			String fileSeparator = System.getProperty("file.separator");
-			if(!Files.isDirectory(Paths.get(currentDir+fileSeparator+AppConstants.DATA_BACKUP_FOLDER))) {
-				//Create Data_Backup Folder
-				Files.createDirectories(Paths.get(currentDir+fileSeparator+AppConstants.DATA_BACKUP_FOLDER));	
-			}
-			Date currentDate = new Date();
-			String fileName = currentDir+fileSeparator+AppConstants.DATA_BACKUP_FOLDER+fileSeparator+"MyStore_" + appUtils.getFormattedDate(currentDate) + "_" + System.currentTimeMillis() + ".mbf.db";
+			String directoryPath = appUtils.createDirectory(AppConstants.DATA_BACKUP_FOLDER);
+			String fileName = directoryPath + "MyStore_" + appUtils.getFormattedDate(new Date()) + "_"
+					+ System.currentTimeMillis() + ".mbf.db";
 			Connection con = dbUtils.getConnection();
 			con.createStatement().executeUpdate("backup to database.mbf.db");
 			con.close();
-			System.out.println("folderLocation+fileName : "+fileName);
+			System.out.println("folderLocation+fileName : " + fileName);
 			File inputFile = new File("database.mbf.db");
 			File outputFile = new File(fileName);
 			outputFile.createNewFile();
 			FileCopyUtils.copy(inputFile, outputFile);
-			//Delete database.mbf.db
+			// Delete database.mbf.db
 			inputFile.delete();
 			return true;
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			logger.error("Data Backup Exception-->", ex);
+			logger.error("Data Backup Exception :", ex);
 			alertHelper.showWarningAlert(null, "Data Backup", null, "Data Backup Failed !");
 			return false;
 		}
@@ -70,7 +64,7 @@ public class DBBackupService {
 	// Create DB Dump show alert
 	public void createDBDumpSendOnMail(Stage stage) {
 		boolean flag = createDBDump();
-		if(flag) {
+		if (flag) {
 			alertHelper.showInfoAlert(null, "Data Backup", "Backup Success", "Data backup completed sucessfully");
 		}
 	}
