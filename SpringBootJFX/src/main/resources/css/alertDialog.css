@@ -56,3 +56,7 @@
 /*.dialog-pane .label {
     -fx-text-fill: white;
 }*/
+
+.summation {
+	-fx-font-weight: bold;
+}

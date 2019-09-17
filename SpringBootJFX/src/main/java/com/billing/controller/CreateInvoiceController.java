@@ -2,10 +2,9 @@ package com.billing.controller;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import javax.swing.JOptionPane;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.billing.dto.Customer;
-import com.billing.dto.MeasurementUnit;
 import com.billing.dto.Product;
 import com.billing.dto.UserDetails;
 import com.billing.main.AppContext;
@@ -26,6 +24,7 @@ import com.billing.utils.AppUtils;
 import com.billing.utils.AutoCompleteTextField;
 import com.billing.utils.TabContent;
 
+import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -37,11 +36,17 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tab;
@@ -50,8 +55,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 @Controller
@@ -371,12 +378,34 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			product.setTableDispAmount(product.getSellPrice());
 			product.setTableDispRate(product.getSellPrice());
 			if (product.getQuantity() >= product.getTableDispQuantity()) {
-				productTableData.add(product);
+				if (!updateRow(product)) {
+					productTableData.add(product);
+				}
 			} else {
 				lblQuantityErrMsg.setText("Available stock is : " + appUtils.getDecimalFormat(product.getQuantity()));
 			}
 		}
 
+	}
+
+	private boolean updateRow(Product product) {
+		boolean isUpdated = false;
+		for (int idx = 0; idx < productTableData.size(); idx++) {
+			Product tableProduct = productTableData.get(idx);
+			if (tableProduct.getProductCode() == product.getProductCode()) {
+				double newQty = tableProduct.getTableDispQuantity() + 1;
+				double rate = tableProduct.getTableDispRate();
+				double newAmt = rate * newQty;
+				tableProduct.setTableDispQuantity(newQty);
+				tableProduct.setTableDispAmount(newAmt);
+				productTableData.set(idx, null);
+				productTableData.set(idx, tableProduct);
+
+				tableView.refresh();
+				isUpdated = true;
+			}
+		}
+		return isUpdated;
 	}
 
 	private DateCell getDateCell(DatePicker datePicker) {
@@ -465,7 +494,8 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 
 	@FXML
 	void onCashHelpCommand(ActionEvent event) {
-
+		txtNetSalesAmount.setText("500.00");
+		getCashHelpPopup();
 	}
 
 	@FXML
@@ -586,6 +616,78 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		lblItemNameErrMsg.setText("");
 		lblQuantityErrMsg.setText("");
 		lblRateErrMsg.setText("");
+	}
+
+	private void getCashHelpPopup() {
+
+		Dialog<String> dialog = new Dialog<>();
+		dialog.setTitle("Cash Help");
+
+		final String styleSheetPath = "/css/alertDialog.css";
+		final DialogPane dialogPane = dialog.getDialogPane();
+		dialogPane.getStylesheets().add(AlertHelper.class.getResource(styleSheetPath).toExternalForm());
+
+		Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+		stage.getIcons().add(new Image(this.getClass().getResource("/images/shop32X32.png").toString()));
+
+		// Set the button types.
+		dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+
+		GridPane grid = new GridPane();
+		grid.setHgap(10);
+		grid.setVgap(10);
+		grid.setPadding(new Insets(20, 100, 10, 10));
+
+		Label lbl = new Label("Net Total :");
+		lbl.getStyleClass().add("nodeLabel");
+		TextField txtNetTotal = new TextField();
+		txtNetTotal.setPrefColumnCount(15);
+		txtNetTotal.getStyleClass().add("readOnlyField");
+		txtNetTotal.setEditable(false);
+		txtNetTotal.setText(txtNetSalesAmount.getText());
+		grid.add(lbl, 0, 0);
+		grid.add(txtNetTotal, 1, 0);
+
+		Label lblCashAmt = new Label("Cash Amount :");
+		lblCashAmt.getStyleClass().add("nodeLabel");
+		TextField txtCashAmt = new TextField();
+		txtCashAmt.setPrefColumnCount(15);
+		txtCashAmt.textProperty().addListener(appUtils.getForceDecimalNumberListner());
+		grid.add(lblCashAmt, 0, 1);
+		grid.add(txtCashAmt, 1, 1);
+
+		Label lblRAmt = new Label("Return Amount :");
+		lblRAmt.getStyleClass().add("nodeLabel");
+		TextField txtReturnAmt = new TextField();
+		txtReturnAmt.setPrefColumnCount(15);
+		txtReturnAmt.getStyleClass().add("readOnlyField");
+		txtReturnAmt.getStyleClass().add("summation");
+		txtReturnAmt.setEditable(false);
+		grid.add(lblRAmt, 0, 2);
+		grid.add(txtReturnAmt, 1, 2);
+		GridPane.setHalignment(lbl, HPos.RIGHT);
+		GridPane.setHalignment(lblCashAmt, HPos.RIGHT);
+		GridPane.setHalignment(lblRAmt, HPos.RIGHT);
+
+		dialog.getDialogPane().setContent(grid);
+
+		Platform.runLater(() -> txtCashAmt.requestFocus());
+		
+		txtCashAmt.setOnKeyReleased(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				txtReturnAmt.setText("");
+				if (!txtCashAmt.getText().equals("") && !ke.getCode().equals(KeyCode.PERIOD)
+						&& !ke.getCode().equals(KeyCode.DECIMAL)) {
+					double netTotal = Double.valueOf(txtNetTotal.getText());
+					double cashAmt = Double.valueOf(txtCashAmt.getText());
+					txtReturnAmt.setText(appUtils.getDecimalFormat(cashAmt- netTotal));
+				}
+			}
+		});
+		
+
+		Optional<String> result = dialog.showAndWait();
 	}
 
 }
