@@ -486,7 +486,7 @@ public class ProductsController extends AppContext implements TabContent {
 
 	@Override
 	public void putFocusOnNode() {
-		cbProductCategory.requestFocus();
+		txtProductName.requestFocus();
 	}
 
 	@Override

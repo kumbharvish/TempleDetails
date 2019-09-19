@@ -41,11 +41,16 @@
                         <Insets top="30.0" />
                      </padding>
                   </HBox>
-                  <AutoCompleteTextField fx:id="txtSearchBy">
+                  <AutoCompleteTextField fx:id="txtSearchByItemName">
                      <VBox.margin>
                         <Insets left="136.0" right="8.0" top="10.0" />
                      </VBox.margin>
                   </AutoCompleteTextField>
+                   <TextField fx:id="txtSearchByBarcode">
+                    <VBox.margin>
+                        <Insets left="136.0" right="8.0" top="10.0" />
+                     </VBox.margin>
+                   </TextField>
                   <Label styleClass="nodeLabel" text="Product Details">
                      <padding>
                         <Insets top="20.0" />

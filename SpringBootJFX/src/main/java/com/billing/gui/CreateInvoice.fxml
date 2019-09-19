@@ -149,13 +149,14 @@
                                           <TableView fx:id="tableView" minHeight="-Infinity" prefHeight="300.0">
                                             <columns>
                                               <TableColumn fx:id="tcItemName" prefWidth="250.0" text="Product Name" />
-                                              <TableColumn fx:id="tcUnit" prefWidth="100.0" text="Unit" />
-                                                <TableColumn fx:id="tcQuantity" prefWidth="100.0" text="Quantity" />
+                                              <TableColumn fx:id="tcUnit" prefWidth="70.0" text="Unit" />
+                                                <TableColumn fx:id="tcQuantity" prefWidth="90.0" text="Quantity" />
                                                 <TableColumn fx:id="tcRate" prefWidth="100.0" text="Rate" />
-                                                <TableColumn fx:id="tcDiscount" prefWidth="100.0" text="Discount(%)" />
+                                                <TableColumn fx:id="tcDiscount" prefWidth="100" text="Discount(%)" />
+                                                 <TableColumn fx:id="tcDiscountAmount" prefWidth="110.0" text="Disc. Amount" />
                                                 <TableColumn fx:id="tcAmount" prefWidth="100.0" text="Amount" />
-                                                <TableColumn fx:id="tcCGST" prefWidth="100.0" text="CGST" />
-                                                <TableColumn fx:id="tcSGST" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="100.0" text="SGST" />
+                                                <TableColumn fx:id="tcCGST" prefWidth="90.0" text="CGST" />
+                                                <TableColumn fx:id="tcSGST" minWidth="-1.0" prefWidth="90.0" text="SGST" />
                                             </columns>
                                              <placeholder>
                         							<Label fx:id="placeholderText" text="&lt; No Item added &gt;" />

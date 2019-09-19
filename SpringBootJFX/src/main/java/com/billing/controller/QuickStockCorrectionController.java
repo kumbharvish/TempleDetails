@@ -70,7 +70,10 @@ public class QuickStockCorrectionController implements TabContent {
 	private RadioButton rbName;
 
 	@FXML
-	private AutoCompleteTextField txtSearchBy;
+	private AutoCompleteTextField txtSearchByItemName;
+
+	@FXML
+	private TextField txtSearchByBarcode;
 
 	@FXML
 	private Button btnUpdate;
@@ -111,7 +114,7 @@ public class QuickStockCorrectionController implements TabContent {
 
 	@Override
 	public void putFocusOnNode() {
-		txtSearchBy.requestFocus();
+		txtSearchByBarcode.requestFocus();
 	}
 
 	@Override
@@ -134,17 +137,28 @@ public class QuickStockCorrectionController implements TabContent {
 		ToggleGroup radioButtonGroup = new ToggleGroup();
 		rbBarcode.setToggleGroup(radioButtonGroup);
 		rbName.setToggleGroup(radioButtonGroup);
-		rbBarcode.setSelected(true);
+		if ("BARCODE".equals(appUtils.getAppDataValues("INVOICE_PRODUCT_SEARCH_BY"))) {
+			rbBarcode.setSelected(true);
+		} else {
+			rbName.setSelected(true);
+		}
 
+		txtSearchByItemName.managedProperty().bind(txtSearchByItemName.visibleProperty());
+		txtSearchByItemName.visibleProperty().bind(rbName.selectedProperty());
+		txtSearchByBarcode.managedProperty().bind(txtSearchByBarcode.visibleProperty());
+		txtSearchByBarcode.visibleProperty().bind(rbBarcode.selectedProperty());
+		
 		txtQuantityErrMsg.managedProperty().bind(txtQuantityErrMsg.visibleProperty());
 		txtQuantityErrMsg.visibleProperty().bind(txtQuantityErrMsg.textProperty().length().greaterThanOrEqualTo(1));
-		txtSearchBy.prefWidthProperty().bind(txtQuantity.widthProperty());
+		txtSearchByItemName.prefWidthProperty().bind(txtQuantity.widthProperty());
+		txtSearchByBarcode.prefWidthProperty().bind(txtQuantity.widthProperty());
+		txtSearchByBarcode.textProperty().addListener(appUtils.getForceNumberListner());
 		rbBarcode.setOnAction(e -> resetFields());
 		rbName.setOnAction(e -> resetFields());
 		getProductsName();
-		txtSearchBy.createTextField(entries, () -> setProductDetails());
+		txtSearchByItemName.createTextField(entries, () -> setProductDetails());
 
-		txtSearchBy.setOnKeyPress(new EventHandler<KeyEvent>() {
+		txtSearchByItemName.setOnKeyPress(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent ke) {
 				if (ke.getCode().equals(KeyCode.ENTER)) {
@@ -152,24 +166,32 @@ public class QuickStockCorrectionController implements TabContent {
 				}
 			}
 		});
+
+		txtSearchByBarcode.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (ke.getCode().equals(KeyCode.ENTER)) {
+					setProductDetailsBarcode();
+				}
+			}
+		});
 	}
 
 	private void setProductDetails() {
-		if (txtSearchBy.getText() != null && !txtSearchBy.getText().equals("")) {
-			if (rbBarcode.isSelected()) {
-				long barcode = 0;
-				try {
-					barcode = Long.valueOf(txtSearchBy.getText());
-					Product p = productMapWithBarcode.get(barcode);
-					setTextFields(p);
-				} catch (NumberFormatException e) {
-					alertHelper.showErrorNotification("Please choose name option for search");
-				}
+		if (txtSearchByItemName.getText() != null && !txtSearchByItemName.getText().equals("")) {
+			Product p = productMap.get(txtSearchByItemName.getText());
+			setTextFields(p);
+			txtSearchByItemName.setText("");
+		}
+	}
 
-			} else {
-				Product p = productMap.get(txtSearchBy.getText());
-				setTextFields(p);
-			}
+	private void setProductDetailsBarcode() {
+		if (txtSearchByBarcode.getText() != null && !txtSearchByBarcode.getText().equals("")) {
+			long barcode = 0;
+			barcode = Long.valueOf(txtSearchByBarcode.getText());
+			Product p = productMapWithBarcode.get(barcode);
+			setTextFields(p);
+			txtSearchByBarcode.setText("");
 		}
 	}
 
@@ -190,8 +212,8 @@ public class QuickStockCorrectionController implements TabContent {
 		txtQuantity.setText("");
 		txtSellPrice.setText("");
 		txtUOM.setText("");
-		txtSearchBy.setText("");
-		txtSearchBy.requestFocus();
+		txtSearchByItemName.setText("");
+		setNewFocus();
 	}
 
 	@Override
@@ -216,7 +238,7 @@ public class QuickStockCorrectionController implements TabContent {
 		int name = txtName.getText().trim().length();
 		if (name == 0) {
 			alertHelper.showErrorNotification("Please select product");
-			txtSearchBy.requestFocus();
+			setNewFocus();
 			valid = false;
 		} else {
 			int uom = txtQuantity.getText().trim().length();
@@ -230,6 +252,14 @@ public class QuickStockCorrectionController implements TabContent {
 			}
 		}
 		return valid;
+	}
+
+	protected void setNewFocus() {
+		if (rbBarcode.isSelected()) {
+			txtSearchByBarcode.requestFocus();
+		} else {
+			txtSearchByItemName.requestFocus();
+		}
 	}
 
 	@FXML

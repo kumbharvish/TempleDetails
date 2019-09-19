@@ -29,6 +29,8 @@ public class Product {
 	private double productMRP;
 
 	private double discount;
+	
+	private double discountAmount;
 
 	private String entryDate;
 
@@ -296,12 +298,22 @@ public class Product {
 	}
 
 	public double getTableDispAmount() {
-		return tableDispAmount;
+		//Amount - Discount
+		return tableDispAmount-getDiscountAmount();
 	}
 
 	public void setTableDispAmount(double tableDispAmount) {
 		this.tableDispAmount = tableDispAmount;
 	}
+	
+	public double getDiscountAmount() {
+		return ((tableDispQuantity*tableDispRate)*(discount/100));
+	}
+
+	public void setDiscountAmount(double discountAmount) {
+		this.discountAmount = discountAmount;
+	}
+
 
 	@Override
 	public String toString() {

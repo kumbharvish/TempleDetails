@@ -175,6 +175,9 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 
 	@FXML
 	private TableColumn<Product, String> tcDiscount;
+	
+	@FXML 
+	private TableColumn<Product,String> tcDiscountAmount;
 
 	@FXML
 	private TableColumn<Product, String> tcAmount;
@@ -265,7 +268,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		setTableCellFactories();
 		getCustomerNameList();
 		getProductNameList();
-		txtCustomer.createTextField(customerEntries, () -> setNewFoucus());
+		txtCustomer.createTextField(customerEntries, () -> setNewFocus());
 		txtItemName.createTextField(productEntries, () -> setProductDetails());
 		txtDiscountPercent.setText("0.00");
 		txtInvoiceNumber.setText(String.valueOf(invoiceService.getNewBillNumber()));
@@ -273,6 +276,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		txtQuantity.textProperty().addListener(appUtils.getForceDecimalNumberListner());
 		txtRate.textProperty().addListener(appUtils.getForceDecimalNumberListner());
 		txtDiscountPercent.textProperty().addListener(appUtils.getForceDecimalNumberListner());
+		txtItemBarcode.textProperty().addListener(appUtils.getForceNumberListner());
 		tableView.setItems(productTableData);
 		// Register textfield listners
 
@@ -315,7 +319,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 						clearItemErrorFields();
 						setProductDetailsWithBarCode(Long.valueOf(txtItemBarcode.getText().trim()));
 						txtItemBarcode.setText("");
-						setNewFoucus();
+						setNewFocus();
 					}
 				}
 			}
@@ -336,12 +340,14 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				txtItemBarcode.requestFocus();
+				resetItemFields();
 			}
 		});
 		rbItemName.selectedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				txtItemName.requestFocus();
+				resetItemFields();
 			}
 		});
 	}
@@ -352,7 +358,6 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			Double pQty = Double.parseDouble(txtQuantity.getText());
 			Double pAmount = pQty * pRate;
 			txtAmount.setText(appUtils.getDecimalFormat(pAmount));
-			lblQuantityErrMsg.setText("");
 			lblRateErrMsg.setText("");
 		}
 	}
@@ -364,7 +369,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			product.setTableDispQuantity(Double.valueOf(txtQuantity.getText()));
 			productTableData.add(product);
 			resetItemFields();
-			setNewFoucus();
+			setNewFocus();
 		}
 	}
 
@@ -374,15 +379,18 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		if (product == null) {
 			lblItemNameErrMsg.setText("Product not preset for Barcode : " + productBarCode);
 		} else {
-			product.setTableDispQuantity(1.0);
-			product.setTableDispAmount(product.getSellPrice());
-			product.setTableDispRate(product.getSellPrice());
-			if (product.getQuantity() >= product.getTableDispQuantity()) {
+			if (product.getQuantity() >= 1) {
 				if (!updateRow(product)) {
+					product.setTableDispQuantity(1.0);
+					//Total quantity - 1
+					product.setQuantity(product.getQuantity()-1); 
+					product.setTableDispAmount(product.getSellPrice());
+					product.setTableDispRate(product.getSellPrice());
 					productTableData.add(product);
 				}
 			} else {
 				lblQuantityErrMsg.setText("Available stock is : " + appUtils.getDecimalFormat(product.getQuantity()));
+				alertHelper.beep();
 			}
 		}
 
@@ -398,9 +406,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 				double newAmt = rate * newQty;
 				tableProduct.setTableDispQuantity(newQty);
 				tableProduct.setTableDispAmount(newAmt);
-				productTableData.set(idx, null);
-				productTableData.set(idx, tableProduct);
-
+				product.setQuantity(product.getQuantity()-1); 
 				tableView.refresh();
 				isUpdated = true;
 			}
@@ -421,6 +427,8 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 				appUtils.getDecimalFormat(cellData.getValue().getTableDispRate())));
 		tcAmount.setCellValueFactory(cellData -> new SimpleStringProperty(
 				appUtils.getDecimalFormat(cellData.getValue().getTableDispAmount())));
+		tcDiscountAmount.setCellValueFactory(cellData -> new SimpleStringProperty(
+				appUtils.getDecimalFormat(cellData.getValue().getDiscountAmount())));
 		tcCGST.setCellValueFactory(
 				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getCgst())));
 		tcSGST.setCellValueFactory(
@@ -433,6 +441,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		tcUnit.getStyleClass().add("character-cell");
 		tcRate.getStyleClass().add("numeric-cell");
 		tcAmount.getStyleClass().add("numeric-cell");
+		tcDiscountAmount.getStyleClass().add("numeric-cell");
 		tcCGST.getStyleClass().add("numeric-cell");
 		tcDiscount.getStyleClass().add("numeric-cell");
 		tcSGST.getStyleClass().add("numeric-cell");
@@ -488,7 +497,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	void onRefereshCommand(ActionEvent event) {
 		getProductNameList();
 		getCustomerNameList();
-		txtCustomer.createTextField(customerEntries, () -> setNewFoucus());
+		txtCustomer.createTextField(customerEntries, () -> setNewFocus());
 		txtItemName.createTextField(productEntries, () -> setProductDetails());
 	}
 
@@ -569,7 +578,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		txtUnit.setText("");
 	}
 
-	protected void setNewFoucus() {
+	protected void setNewFocus() {
 		if (rbBarcode.isSelected()) {
 			txtItemBarcode.requestFocus();
 		} else {
@@ -591,16 +600,19 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		String rate = txtRate.getText().trim();
 		if (rate.isEmpty()) {
 			lblRateErrMsg.setText("Rate not specified");
+			alertHelper.beep();
 			valid = false;
 		}
 		String quantity = txtQuantity.getText().trim();
 		if (quantity.isEmpty()) {
 			lblQuantityErrMsg.setText("Quantity not specified");
+			alertHelper.beep();
 			valid = false;
 		} else {
-			if (null != product && (Double.valueOf(quantity) >= product.getQuantity())) {
+			if (null != product && (product.getQuantity()< Double.valueOf(quantity))) {
 				valid = false;
 				lblQuantityErrMsg.setText("Available stock is : " + appUtils.getDecimalFormat(product.getQuantity()));
+				alertHelper.beep();
 			}
 		}
 		boolean isMatch = productTableData.stream().anyMatch(i -> i.getProductName().equals(product.getProductName()));
@@ -672,7 +684,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		dialog.getDialogPane().setContent(grid);
 
 		Platform.runLater(() -> txtCashAmt.requestFocus());
-		
+
 		txtCashAmt.setOnKeyReleased(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent ke) {
@@ -681,13 +693,12 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 						&& !ke.getCode().equals(KeyCode.DECIMAL)) {
 					double netTotal = Double.valueOf(txtNetTotal.getText());
 					double cashAmt = Double.valueOf(txtCashAmt.getText());
-					txtReturnAmt.setText(appUtils.getDecimalFormat(cashAmt- netTotal));
+					txtReturnAmt.setText(appUtils.getDecimalFormat(cashAmt - netTotal));
 				}
 			}
 		});
-		
 
-		Optional<String> result = dialog.showAndWait();
+		dialog.showAndWait();
 	}
 
 }

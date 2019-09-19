@@ -42,21 +42,20 @@
                            <children>
 							  <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="nodeLabel" text="Code :" textAlignment="RIGHT" GridPane.halignment="RIGHT" />
                               <TextField fx:id="lblProductCode" editable="false" focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" />
-							  <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="requiredInput" text="Category :" textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
-                               <VBox spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.vgrow="NEVER">
-                                 <children>
-                                    <ComboBox fx:id="cbProductCategory" />
-                                    <Label fx:id="lblProductCategoryErrMsg" styleClass="errorLabel" visible="false" VBox.vgrow="NEVER" />
-                                 </children>
-                              </VBox>
-							  <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="requiredInput" text="Name :" textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-                              <VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
+                               <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="requiredInput" text="Name :" textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                              <VBox GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <children>
                                     <TextField fx:id="txtProductName" />
                                     <Label fx:id="lblProductNameErrMsg" styleClass="errorLabel" />
                                  </children>
                               </VBox>
-							                                
+							  <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="requiredInput" text="Category :" textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                               <VBox spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.vgrow="NEVER">
+                                 <children>
+                                    <ComboBox fx:id="cbProductCategory" />
+                                    <Label fx:id="lblProductCategoryErrMsg" styleClass="errorLabel" visible="false" VBox.vgrow="NEVER" />
+                                 </children>
+                              </VBox>
                               <Label alignment="TOP_RIGHT" styleClass="requiredInput" text="UoM :" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
 							  <VBox GridPane.columnIndex="1" GridPane.rowIndex="3">
                                  <children>
