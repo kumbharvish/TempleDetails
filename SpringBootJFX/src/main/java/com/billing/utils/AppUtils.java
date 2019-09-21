@@ -39,7 +39,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.billing.constants.AppConstants;
+import com.billing.dto.GSTDetails;
+import com.billing.dto.Product;
 import com.billing.dto.StatusDTO;
+import com.billing.service.TaxesService;
 
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -62,6 +65,9 @@ public class AppUtils {
 	@Autowired
 	AlertHelper alertHelper;
 
+	@Autowired
+	TaxesService taxesService;
+
 	private HashMap<String, String> properties;
 
 	private static final String PDF_CONST = "SLAES";
@@ -75,7 +81,7 @@ public class AppUtils {
 	private static final String DATE_FORMAT = "yyyy-MM-dd";
 
 	private static final String APP_DATA = "SELECT * FROM APP_DATA ;";
-	
+
 	private static final String PAYMENT_MODES = "SELECT * FROM PAYMENT_MODES ;";
 
 	private static final String UPDATE_APP_DATA = "UPDATE APP_DATA SET VALUE_STRING =? WHERE DATA_NAME=?";
@@ -191,6 +197,13 @@ public class AppUtils {
 		if (value != null)
 			return df.format(value);
 		return "0.00";
+	}
+	
+	public String getGstDecimalFormat(Double value) {
+		DecimalFormat df = new DecimalFormat("#0.000");
+		if (value != null)
+			return df.format(value);
+		return "0.000";
 	}
 
 	/*
@@ -521,8 +534,8 @@ public class AppUtils {
 		}
 		return data;
 	}
-	
-	//Checks if folder does not exist create new folder and returns folder path 
+
+	// Checks if folder does not exist create new folder and returns folder path
 	public String createDirectory(String folderName) {
 		String currentDir = getCurrentWorkingDir();
 		String fileSeparator = System.getProperty("file.separator");
@@ -532,10 +545,51 @@ public class AppUtils {
 			try {
 				Files.createDirectories(Paths.get(directoryPath));
 			} catch (IOException e) {
-				logger.error("Create Directory Exception : ",e);
+				logger.error("Create Directory Exception : ", e);
 				e.printStackTrace();
 			}
 		}
-		return directoryPath+fileSeparator;
+		return directoryPath + fileSeparator;
 	}
+
+	public GSTDetails getGSTDetails(Product p) {
+
+		GSTDetails gst = null;
+
+		if (p != null) {
+			gst = new GSTDetails();
+			double gstAmt = 0.0;
+
+			if ("Y".equalsIgnoreCase(getAppDataValues("GST_INCLUSIVE"))) {
+				// Inclusive
+				gst.setInclusiveFlag("Y");
+				gstAmt = inclusiveCalc(p.getProductTax(), p.getTableDispAmount());
+			} else {
+				// Exclusive
+				gst.setInclusiveFlag("N");
+				gstAmt = exclusiveCalc(p.getProductTax(), p.getTableDispAmount());
+			}
+			gst.setRate(p.getProductTax());
+			gst.setName(taxesService.getTaxName(p.getProductTax()) + " (" + p.getProductTax() + "%)");
+			if (gstAmt != 0) {
+				gst.setCgst(gstAmt / 2);
+				gst.setSgst(gstAmt / 2);
+			}
+			gst.setGstAmount(gstAmt);
+		}
+
+		return gst;
+
+	}
+
+	private Double inclusiveCalc(Double gstRate, Double amount) {
+		Double gstAmt = amount - (amount * (100 / (100 + gstRate)));
+		return gstAmt;
+	}
+
+	private Double exclusiveCalc(Double gstRate, Double amount) {
+		Double gstAmt = (amount * gstRate) / 100;
+		return gstAmt;
+	}
+
 }

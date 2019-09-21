@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -25,14 +26,14 @@ public class TaxesService {
 
 	private static final String GET_ALL_TAXES = "SELECT * FROM TAXES";
 
-	private static final String ADD_TAX= "INSERT INTO TAXES " + "(NAME,VALUE)" + " VALUES(?,?)";
+	private static final String ADD_TAX = "INSERT INTO TAXES " + "(NAME,VALUE)" + " VALUES(?,?)";
 
 	private static final String DELETE_TAX = "DELETE FROM TAXES WHERE ID=?";
 
-	private static final String UPDATE_TAX= "UPDATE TAXES SET NAME=?," + "VALUE=?"
-			+ " WHERE ID=?";
-	
-	
+	private static final String UPDATE_TAX = "UPDATE TAXES SET NAME=?," + "VALUE=?" + " WHERE ID=?";
+
+	private HashMap<Double, String> taxMap;
+
 	public List<Tax> getAllTax() {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -60,7 +61,26 @@ public class TaxesService {
 		}
 		return taxList;
 	}
-	
+
+	private HashMap<Double, String> getTaxMap() {
+		HashMap<Double, String> prop = new HashMap<>();
+		for (Tax t : getAllTax()) {
+			prop.put(t.getValue(), t.getName());
+		}
+		return prop;
+
+	}
+
+	public String getTaxName(Double value) {
+		String data = null;
+		if (taxMap == null) {
+			taxMap = getTaxMap();
+		}
+		data = taxMap.get(value);
+
+		return data;
+	}
+
 	public StatusDTO addTax(Tax tax) {
 		Connection conn = null;
 		PreparedStatement stmt = null;

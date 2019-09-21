@@ -1,17 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.billing.utils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-
-/**
- *
- * @author Dinesh
- */
  public abstract class IndianCurrencyFormatting {
 
         private static String applyFormatting(String amount) {
@@ -60,5 +50,18 @@ import java.math.RoundingMode;
             BigDecimal bAmount = BigDecimal.valueOf(amount);
             bAmount = bAmount.setScale(2, RoundingMode.HALF_UP);
             return applyFormatting(bAmount.toPlainString());
+        }
+        
+        public static String removeFormatting(String amount) {
+        	StringBuffer result = new StringBuffer();
+        	if (amount == null) {
+                return "";
+            }
+        	String[] array = amount.split(",");
+        	for(String s : array) {
+        		result.append(s);
+        	}
+			return result.toString();
+        	
         }
     } // end of class definition

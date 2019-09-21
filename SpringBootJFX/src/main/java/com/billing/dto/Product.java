@@ -63,6 +63,14 @@ public class Product {
 	private double tableDispQuantity;
 	
 	private double tableDispAmount;
+	
+	private GSTDetails gstDetails;
+	
+	private double tableAmountShowValue;
+	
+	private double cgstPercent;
+	
+	private double sgstPercent;
 
 	public int getProductCode() {
 		return productCode;
@@ -266,21 +274,13 @@ public class Product {
 	}
 
 	public double getCgst() {
-		return cgst;
-	}
-
-	public void setCgst(double cgst) {
-		this.cgst = cgst;
+		return gstDetails.getCgst();
 	}
 
 	public double getSgst() {
-		return sgst;
+		return gstDetails.getSgst();
 	}
 
-	public void setSgst(double sgst) {
-		this.sgst = sgst;
-	}
-	
 	public double getTableDispRate() {
 		return tableDispRate;
 	}
@@ -326,6 +326,33 @@ public class Product {
 				+ stockValueAmount + ", profit=" + profit + ", stockPurchaseAmount=" + stockPurchaseAmount
 				+ ", categoryCode=" + categoryCode + ", supplierName=" + supplierName + ", supplierId=" + supplierId
 				+ ", timeStamp=" + timeStamp + "]";
+	}
+
+	public GSTDetails getGstDetails() {
+		return gstDetails;
+	}
+
+	public void setGstDetails(GSTDetails gstDetails) {
+		this.gstDetails = gstDetails;
+	}
+
+	public double getTableAmountShowValue() {
+		if("Y".equalsIgnoreCase(gstDetails.getInclusiveFlag())) {
+			return getTableDispAmount() - gstDetails.getGstAmount();
+		}
+		return getTableDispAmount();
+	}
+
+	public void setTableAmountShowValue(double tableAmountShowValue) {
+		this.tableAmountShowValue = tableAmountShowValue;
+	}
+
+	public double getCgstPercent() {
+		return productTax/2;
+	}
+
+	public double getSgstPercent() {
+		return productTax/2;
 	}
 
 	public enum SortParameter {

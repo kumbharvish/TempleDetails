@@ -1,8 +1,9 @@
 package com.billing.controller;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.Optional;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.billing.dto.Customer;
+import com.billing.dto.GSTDetails;
 import com.billing.dto.Product;
 import com.billing.dto.UserDetails;
 import com.billing.main.AppContext;
@@ -22,6 +24,7 @@ import com.billing.service.ProductService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 import com.billing.utils.AutoCompleteTextField;
+import com.billing.utils.IndianCurrencyFormatting;
 import com.billing.utils.TabContent;
 
 import javafx.application.Platform;
@@ -32,13 +35,17 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
@@ -59,6 +66,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 @Controller
@@ -104,6 +112,8 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 
 	ObservableList<Product> productTableData;
 
+	private boolean isGSTInclusive = false;
+	
 	@FXML
 	private DatePicker dpInvoiceDate;
 
@@ -175,9 +185,9 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 
 	@FXML
 	private TableColumn<Product, String> tcDiscount;
-	
-	@FXML 
-	private TableColumn<Product,String> tcDiscountAmount;
+
+	@FXML
+	private TableColumn<Product, String> tcDiscountAmount;
 
 	@FXML
 	private TableColumn<Product, String> tcAmount;
@@ -189,7 +199,16 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	private TableColumn<Product, String> tcSGST;
 
 	@FXML
+	private TableColumn<Product, String> tcSGSTPercent;
+
+	@FXML
+	private TableColumn<Product, String> tcCGSTPercent;
+
+	@FXML
 	private Button btnCashHelp;
+	
+	@FXML
+	private Button btnGSTDetails;
 
 	@FXML
 	private ComboBox<String> cbPaymentModes;
@@ -214,6 +233,12 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 
 	@FXML
 	private TextField txtNetSalesAmount;
+	
+	@FXML
+	private TextField txtGstAmount;
+	
+	@FXML
+	private TextField txtGstType;
 
 	@FXML
 	private CheckBox cbPrintOnSave;
@@ -223,9 +248,23 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 
 	@FXML
 	private Button btnClose;
-
+	
 	@Override
 	public void initialize() {
+
+		if ("Y".equalsIgnoreCase(appUtils.getAppDataValues("GST_INCLUSIVE"))) {
+			isGSTInclusive = true;
+			txtGstType.setText("Inclusive");
+		}else {
+			txtGstType.setText("Exclusive");
+		}
+
+		if ("Y".equalsIgnoreCase(appUtils.getAppDataValues("INVOICE_PRINT_ON_SAVE"))) {
+			cbPrintOnSave.setSelected(true);
+		}else {
+			cbPrintOnSave.setSelected(false);
+		}
+		
 		productTableData = FXCollections.observableArrayList();
 		ToggleGroup radioButtonGroup = new ToggleGroup();
 		rbBarcode.setToggleGroup(radioButtonGroup);
@@ -242,6 +281,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			LocalDate today = LocalDate.now();
 			if (newDate == null || newDate.isAfter(today)) {
 				dpInvoiceDate.setValue(today);
+				isDirty.set(true);
 			}
 		});
 		txtItemName.managedProperty().bind(txtItemName.visibleProperty());
@@ -270,7 +310,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		getProductNameList();
 		txtCustomer.createTextField(customerEntries, () -> setNewFocus());
 		txtItemName.createTextField(productEntries, () -> setProductDetails());
-		txtDiscountPercent.setText("0.00");
+		txtDiscountPercent.setText("0.0");
 		txtInvoiceNumber.setText(String.valueOf(invoiceService.getNewBillNumber()));
 		// Force Number Listner
 		txtQuantity.textProperty().addListener(appUtils.getForceDecimalNumberListner());
@@ -350,6 +390,33 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 				resetItemFields();
 			}
 		});
+
+		productTableData.addListener(new ListChangeListener<Product>() {
+
+			@Override
+			public void onChanged(ListChangeListener.Change<? extends Product> c) {
+				isDirty.set(true);
+				updateInvoiceAmount();
+			}
+		});
+
+		txtDiscountPercent.setOnKeyReleased(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (!txtDiscountPercent.getText().equals("") && !ke.getCode().equals(KeyCode.PERIOD)
+						&& !ke.getCode().equals(KeyCode.DECIMAL)) {
+					updateInvoiceAmount();
+					isDirty.set(true);
+				}
+			}
+		});
+		
+		txtDiscountPercent.textProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue == null || newValue.equals("") ) {
+				txtDiscountPercent.setText("0.0");
+				isDirty.set(true);
+			}
+		});
 	}
 
 	private void setTxtAmount() {
@@ -367,6 +434,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			product.setTableDispAmount(Double.valueOf(txtAmount.getText()));
 			product.setTableDispRate(Double.valueOf(txtRate.getText()));
 			product.setTableDispQuantity(Double.valueOf(txtQuantity.getText()));
+			product.setGstDetails(appUtils.getGSTDetails(product));
 			productTableData.add(product);
 			resetItemFields();
 			setNewFocus();
@@ -382,10 +450,11 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			if (product.getQuantity() >= 1) {
 				if (!updateRow(product)) {
 					product.setTableDispQuantity(1.0);
-					//Total quantity - 1
-					product.setQuantity(product.getQuantity()-1); 
+					// Total quantity - 1
+					product.setQuantity(product.getQuantity() - 1);
 					product.setTableDispAmount(product.getSellPrice());
 					product.setTableDispRate(product.getSellPrice());
+					product.setGstDetails(appUtils.getGSTDetails(product));
 					productTableData.add(product);
 				}
 			} else {
@@ -406,7 +475,8 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 				double newAmt = rate * newQty;
 				tableProduct.setTableDispQuantity(newQty);
 				tableProduct.setTableDispAmount(newAmt);
-				product.setQuantity(product.getQuantity()-1); 
+				product.setQuantity(product.getQuantity() - 1);
+				product.setGstDetails(appUtils.getGSTDetails(product));
 				tableView.refresh();
 				isUpdated = true;
 			}
@@ -426,15 +496,20 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		tcRate.setCellValueFactory(cellData -> new SimpleStringProperty(
 				appUtils.getDecimalFormat(cellData.getValue().getTableDispRate())));
 		tcAmount.setCellValueFactory(cellData -> new SimpleStringProperty(
-				appUtils.getDecimalFormat(cellData.getValue().getTableDispAmount())));
+				appUtils.getDecimalFormat(cellData.getValue().getTableAmountShowValue())));
 		tcDiscountAmount.setCellValueFactory(cellData -> new SimpleStringProperty(
 				appUtils.getDecimalFormat(cellData.getValue().getDiscountAmount())));
 		tcCGST.setCellValueFactory(
 				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getCgst())));
 		tcSGST.setCellValueFactory(
 				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getSgst())));
+		tcCGSTPercent.setCellValueFactory(
+				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getCgstPercent())));
+		tcSGSTPercent.setCellValueFactory(
+				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getSgstPercent())));
+
 		tcDiscount.setCellValueFactory(
-				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getDiscount())));
+				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getDiscount())));
 
 		tcItemName.getStyleClass().add("character-cell");
 		tcQuantity.getStyleClass().add("numeric-cell");
@@ -444,6 +519,8 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		tcDiscountAmount.getStyleClass().add("numeric-cell");
 		tcCGST.getStyleClass().add("numeric-cell");
 		tcDiscount.getStyleClass().add("numeric-cell");
+		tcCGSTPercent.getStyleClass().add("numeric-cell");
+		tcSGSTPercent.getStyleClass().add("numeric-cell");
 		tcSGST.getStyleClass().add("numeric-cell");
 
 	}
@@ -503,8 +580,12 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 
 	@FXML
 	void onCashHelpCommand(ActionEvent event) {
-		txtNetSalesAmount.setText("500.00");
 		getCashHelpPopup();
+	}
+	
+	@FXML
+	void onGSTDetailsCommand(ActionEvent event) {
+		getGSTDetailsPopUp();
 	}
 
 	@FXML
@@ -609,7 +690,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			alertHelper.beep();
 			valid = false;
 		} else {
-			if (null != product && (product.getQuantity()< Double.valueOf(quantity))) {
+			if (null != product && (product.getQuantity() < Double.valueOf(quantity))) {
 				valid = false;
 				lblQuantityErrMsg.setText("Available stock is : " + appUtils.getDecimalFormat(product.getQuantity()));
 				alertHelper.beep();
@@ -691,7 +772,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 				txtReturnAmt.setText("");
 				if (!txtCashAmt.getText().equals("") && !ke.getCode().equals(KeyCode.PERIOD)
 						&& !ke.getCode().equals(KeyCode.DECIMAL)) {
-					double netTotal = Double.valueOf(txtNetTotal.getText());
+					double netTotal = Double.valueOf(IndianCurrencyFormatting.removeFormatting(txtNetSalesAmount.getText()));
 					double cashAmt = Double.valueOf(txtCashAmt.getText());
 					txtReturnAmt.setText(appUtils.getDecimalFormat(cashAmt - netTotal));
 				}
@@ -699,6 +780,81 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		});
 
 		dialog.showAndWait();
+	}
+
+	private void updateInvoiceAmount() {
+		double subTotal = 0.0;
+		double quantity = 0.0;
+		int noOfItems = 0;
+		double gstAmount = 0.0;
+		double discountAmount = 0.0;
+		double netSalesAmount = 0.0;
+		noOfItems = productTableData.size();
+		for (Product product : productTableData) {
+			GSTDetails gst = product.getGstDetails();
+			subTotal = subTotal + (product.getTableDispRate() * product.getTableDispQuantity());
+			quantity = quantity + product.getTableDispQuantity();
+			gstAmount = gstAmount + gst.getGstAmount();
+			discountAmount = discountAmount + product.getDiscountAmount();
+		}
+		if (isGSTInclusive) {
+			subTotal = subTotal - gstAmount;
+		}
+
+		netSalesAmount = (subTotal - discountAmount) + gstAmount;
+
+		String discountString = txtDiscountPercent.getText().trim();
+		if (!discountString.isEmpty()) {
+			try {
+				Double totalDiscPercent = Double.valueOf(discountString);
+				if (isGSTInclusive && totalDiscPercent>0) {
+					discountAmount = discountAmount + (netSalesAmount * (totalDiscPercent / 100));
+					netSalesAmount = subTotal - discountAmount;
+				} else {
+
+				}
+			} catch (Exception e) {
+			}
+		}
+		txtNoOfItems.setText(String.valueOf(noOfItems));
+		txtTotalQty.setText(appUtils.getDecimalFormat(quantity));
+		txtSubTotal.setText(IndianCurrencyFormatting.applyFormatting(subTotal));
+		txtDiscountAmt.setText(IndianCurrencyFormatting.applyFormatting(discountAmount));
+		txtGstAmount.setText(IndianCurrencyFormatting.applyFormatting(gstAmount));
+		txtNetSalesAmount.setText(IndianCurrencyFormatting.applyFormatting(appUtils.getDecimalRoundUp2Decimal(netSalesAmount)));
+	}
+	
+	private void getGSTDetailsPopUp() {
+		FXMLLoader fxmlLoader = new FXMLLoader();
+		fxmlLoader.setControllerFactory(springContext::getBean);
+		fxmlLoader.setLocation(this.getClass().getResource("/com/billing/gui/ViewGSTDetails.fxml"));
+
+		Parent rootPane = null;
+		try {
+			rootPane = fxmlLoader.load();
+		} catch (IOException e) {
+			e.printStackTrace();
+			logger.error("getGSTDetailsPopUp Error in loading the view file :", e);
+			alertHelper.beep();
+
+			alertHelper.showErrorAlert(currentStage, "Error Occurred", "Error in creating user interface",
+					"An error occurred in creating user interface " + "for the selected command");
+
+			return;
+		}
+
+		final Scene scene = new Scene(rootPane);
+		final GSTDetailsController controller = (GSTDetailsController) fxmlLoader.getController();
+		controller.productList = productTableData;
+		final Stage stage = new Stage();
+		stage.initModality(Modality.APPLICATION_MODAL);
+		stage.initOwner(currentStage);
+		stage.setUserData(controller);
+		stage.getIcons().add(new Image("/images/shop32X32.png"));
+		stage.setScene(scene);
+		stage.setTitle("GST Details");
+		controller.loadData();
+		stage.showAndWait();
 	}
 
 }
