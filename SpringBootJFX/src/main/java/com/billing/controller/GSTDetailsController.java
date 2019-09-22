@@ -32,7 +32,9 @@ public class GSTDetailsController {
 
 	ObservableList<Product> productList;
 
-	HashMap<String, Double> gstMap = new HashMap<>();
+	HashMap<String, Double> gstMapWithTax;
+
+	HashMap<String, Double> gstMapWithAmounts;
 
 	List<Tax> taxList;
 
@@ -56,24 +58,31 @@ public class GSTDetailsController {
 
 	public void loadData() {
 		double gstTotalGSTAmount = 0.0;
+		gstMapWithTax = new HashMap<>();
+		gstMapWithAmounts = new HashMap<>();
 		for (Product product : productList) {
 			GSTDetails gst = product.getGstDetails();
 			gstTotalGSTAmount = gstTotalGSTAmount + gst.getGstAmount();
-			if (gstMap.containsKey(gst.getName())) {
-				gstMap.put(gst.getName(), gstMap.get(gst.getName()) + gst.getGstAmount());
+			if (gstMapWithTax.containsKey(gst.getName())) {
+				gstMapWithTax.put(gst.getName(), gstMapWithTax.get(gst.getName()) + gst.getGstAmount());
+				gstMapWithAmounts.put(gst.getName(), gstMapWithAmounts.get(gst.getName()) + gst.getTaxableAmount());
 			} else {
-				gstMap.put(gst.getName(), gst.getGstAmount());
+				gstMapWithTax.put(gst.getName(), gst.getGstAmount());
+				gstMapWithAmounts.put(gst.getName(), gst.getTaxableAmount());
 			}
 		}
 		taxList = taxesService.getAllTax();
-		int i=0;
+		int i = 0;
 		for (Tax t : taxList) {
-			Label lbl = getNewLabel(t.getName()+" ("+t.getValue()+"%) :");
+			String taxName = t.getName() + " (" + t.getValue() + "%)";
+			Label lbl = getNewLabel(t.getName() + " (" + t.getValue() + "%) :");
 			TextField txt = getNewTextField();
+			txt.setText(IndianCurrencyFormatting.applyFormatting(gstMapWithAmounts.get(taxName)));
 			gridPaneAmounts.add(lbl, 0, i);
 			gridPaneAmounts.add(txt, 1, i);
-			Label lbl2 = getNewLabel(t.getName()+" ("+t.getValue()+"%) :");
+			Label lbl2 = getNewLabel(t.getName() + " (" + t.getValue() + "%) :");
 			TextField txt2 = getNewTextField();
+			txt2.setText(IndianCurrencyFormatting.applyFormatting(gstMapWithTax.get(taxName)));
 			gridPaneTax.add(lbl2, 0, i);
 			gridPaneTax.add(txt2, 1, i);
 			i++;
@@ -86,6 +95,7 @@ public class GSTDetailsController {
 	private TextField getNewTextField() {
 		TextField txt = new TextField();
 		txt.getStyleClass().add("readOnlyField");
+		txt.setAlignment(Pos.CENTER_RIGHT);
 		txt.setEditable(false);
 		return txt;
 	}

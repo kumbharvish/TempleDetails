@@ -20,10 +20,6 @@ public class BillDetails {
 	
 	private double totalAmount;
 	
-	private double tax;
-	
-	private double grandTotal;
-	
 	private String 	paymentMode;
 	
 	private double discount;
@@ -33,6 +29,10 @@ public class BillDetails {
 	private double netSalesAmt;
 	
 	private double purchaseAmt;
+	
+	private String gstType;
+	
+	private double gstAmount;
 
 	public int getBillNumber() {
 		return billNumber;
@@ -98,14 +98,6 @@ public class BillDetails {
 		this.totalAmount = totalAmount;
 	}
 
-	public double getTax() {
-		return tax;
-	}
-
-	public void setTax(double tax) {
-		this.tax = tax;
-	}
-
 	public String getPaymentMode() {
 		return paymentMode;
 	}
@@ -146,13 +138,19 @@ public class BillDetails {
 		this.purchaseAmt = purchaseAmt;
 	}
 
-	public double getGrandTotal() {
-		return grandTotal;
+	public String getGstType() {
+		return gstType;
 	}
 
-	public void setGrandTotal(double grandTotal) {
-		this.grandTotal = grandTotal;
+	public void setGstType(String gstType) {
+		this.gstType = gstType;
 	}
 
-		
+	public double getGstAmount() {
+		return gstAmount;
+	}
+
+	public void setGstAmount(double gstAmount) {
+		this.gstAmount = gstAmount;
+	}
 }

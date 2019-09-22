@@ -205,7 +205,7 @@
                         <Tooltip text="Data Backup" />
                      </tooltip>
                   </Label>
-                  <Label fx:id="lblUserSettings" onMouseClicked="#onUserSettingsClick">
+                  <Label fx:id="lblUserSettings" onMouseClicked="#onUserPreferencesClick">
                      <tooltip>
                         <Tooltip text="User Preferences" />
                      </tooltip>

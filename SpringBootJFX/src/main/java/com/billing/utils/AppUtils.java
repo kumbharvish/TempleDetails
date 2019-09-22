@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -96,7 +97,7 @@ public class AppUtils {
 		}
 	}
 
-	private HashMap<String, String> getAppData() {
+	public HashMap<String, String> getAppData() {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		HashMap<String, String> properties = new HashMap<>();
@@ -162,6 +163,36 @@ public class AppUtils {
 		return status;
 	}
 
+	public StatusDTO updateUserPreferences(HashMap<String, String> saveMap) {
+
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		StatusDTO status = new StatusDTO();
+		try {
+			conn = dbUtils.getConnection();
+			stmt = conn.prepareStatement(UPDATE_APP_DATA);
+			conn.setAutoCommit(false);
+			for (Map.Entry<String, String> entry : saveMap.entrySet()) {
+				stmt.setString(1, entry.getValue());
+				stmt.setString(2, entry.getKey());
+				stmt.addBatch();
+			}
+			int batch[] = stmt.executeBatch();
+			conn.commit();
+			if (batch.length == saveMap.size()) {
+				status.setStatusCode(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception : ", e);
+			status.setStatusCode(-1);
+			status.setException(e.getMessage());
+		} finally {
+			DBUtils.closeConnection(stmt, conn);
+		}
+		return status;
+	}
+
 	public int getRandomCode() {
 		int min = 10000;
 		int max = 99999;
@@ -198,7 +229,7 @@ public class AppUtils {
 			return df.format(value);
 		return "0.00";
 	}
-	
+
 	public String getGstDecimalFormat(Double value) {
 		DecimalFormat df = new DecimalFormat("#0.000");
 		if (value != null)
@@ -576,6 +607,7 @@ public class AppUtils {
 				gst.setSgst(gstAmt / 2);
 			}
 			gst.setGstAmount(gstAmt);
+			gst.setTaxableAmount(p.getTableDispAmount());
 		}
 
 		return gst;

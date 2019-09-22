@@ -17,6 +17,12 @@ public class ItemDetails {
 	private double amount;
 	
 	private double purchasePrice;
+	
+	private GSTDetails gstDetails ;
+	
+	private double discountPercent;
+	
+	private double discountAmount;
 
 	public int getItemNo() {
 		return itemNo;
@@ -84,6 +90,30 @@ public class ItemDetails {
 
 	public void setBillNumber(int billNumber) {
 		this.billNumber = billNumber;
+	}
+
+	public GSTDetails getGstDetails() {
+		return gstDetails;
+	}
+
+	public void setGstDetails(GSTDetails gstDetails) {
+		this.gstDetails = gstDetails;
+	}
+
+	public double getDiscountPercent() {
+		return discountPercent;
+	}
+
+	public void setDiscountPercent(double discountPercent) {
+		this.discountPercent = discountPercent;
+	}
+
+	public double getDiscountAmount() {
+		return discountAmount;
+	}
+
+	public void setDiscountAmount(double discountAmount) {
+		this.discountAmount = discountAmount;
 	}
 
 	

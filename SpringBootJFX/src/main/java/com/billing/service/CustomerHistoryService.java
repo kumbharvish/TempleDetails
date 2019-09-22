@@ -98,14 +98,14 @@ public class CustomerHistoryService {
 					billDetails.setNoOfItems(rs.getInt("NO_OF_ITEMS"));
 					billDetails.setTotalQuantity(rs.getDouble("BILL_QUANTITY"));
 					billDetails.setTotalAmount(rs.getDouble("TOTAL_AMOUNT"));
-					billDetails.setTax(rs.getDouble("BILL_TAX"));
-					billDetails.setGrandTotal(rs.getDouble("GRAND_TOTAL"));
 					billDetails.setPaymentMode(rs.getString("PAYMENT_MODE"));
 					billDetails.setDiscount(rs.getDouble("BILL_DISCOUNT"));
 					billDetails.setDiscountAmt(rs.getDouble("BILL_DISC_AMOUNT"));
 					billDetails.setNetSalesAmt(rs.getDouble("NET_SALES_AMOUNT"));
 					billDetails.setPurchaseAmt(rs.getDouble("BILL_PURCHASE_AMT"));
-
+					billDetails.setGstType(rs.getString("GST_TYPE"));
+					billDetails.setGstAmount(rs.getDouble("GST_AMOUNT"));
+					
 					billDetailsList.add(billDetails);
 				}
 			}

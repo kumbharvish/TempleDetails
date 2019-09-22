@@ -73,14 +73,14 @@
 														<HBox spacing="40.0" GridPane.columnIndex="1">
 															<children>
 																<RadioButton fx:id="rbBarcode" mnemonicParsing="false" text="Barcode" />
-																<RadioButton fx:id="rbItemName" mnemonicParsing="false" text="Item Name" />
+																<RadioButton fx:id="rbItemName" mnemonicParsing="false" text="Product Name" />
 															</children>
 														</HBox>														
 														<Label styleClass="nodeLabel" text="Customer :" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
 														<VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
 															<children>
 																<AutoCompleteTextField fx:id="txtCustomer" />
-																<Label fx:id="lblCustomerErrMsg" />
+																<Label fx:id="lblCustomerErrMsg" styleClass="errorLabel" wrapText="true"/>
 															</children>
 														</VBox>
 													</children>
@@ -174,7 +174,7 @@
 																</TableColumn>
 															</columns>
 															<placeholder>
-																<Label fx:id="placeholderText" text="&lt; No Item added &gt;" />
+																<Label fx:id="placeholderText" text="&lt; No product added &gt;" />
 															</placeholder>
 														</TableView>
 														<Label fx:id="lblNoItemError" styleClass="errorLabel" />

@@ -549,8 +549,10 @@ public class HomeController extends AppContext {
 	}
 
 	@FXML
-	void onUserSettingsClick(MouseEvent event) {
-
+	void onUserPreferencesClick(MouseEvent event) {
+		if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+			userPreferencesMenuItem.fire();
+		}
 	}
 
 	@FXML

@@ -40,9 +40,7 @@ public class AppConstants {
 
 	public static final String CASHIER_USER_TYPE = "CASHIER";
 
-	public static final String NEW_FOCUS_TO = "NEW_FOCUS_TO";
-
-	public static final String ITEM_NAME = "Item Name";
+	public static final String PRODUCT_NAME = "PRODUCT_NAME";
 
 	public static final String BARCODE = "Barcode";
 
@@ -107,12 +105,21 @@ public class AppConstants {
 	public static final String DATA_SAVE_ERROR = "An error occurred in saving the data !";
 
 	public static final String DATA_FETCH_ERROR = "An error occurred in saving the data !";
-	
-	public static final String INVALID_PRODUCT_KEY = "Invalid product key";
-	
-	public static final String SOFTWARE_ACTIVATED = "Software activated successfully. Please reopen the software.";
-	
-	public static final String LICENSE_UPDATED = "License updated successfully. Valid upto : ";
-	
 
+	public static final String INVALID_PRODUCT_KEY = "Invalid product key";
+
+	public static final String SOFTWARE_ACTIVATED = "Software activated successfully. Please reopen the software.";
+
+	public static final String LICENSE_UPDATED = "License updated successfully. Valid upto : ";
+
+	public static final String GST_INCLUSIVE = "GST_INCLUSIVE";
+
+	public static final String INVOICE_PRODUCT_SEARCH_BY = "INVOICE_PRODUCT_SEARCH_BY";
+
+	public static final String DB_DUMP_INTERVAL = "DB_DUMP_INTERVAL";
+
+	public static final String INVOICE_PRINT_ON_SAVE = "INVOICE_PRINT_ON_SAVE";
+	
+	public static final String PENDING = "PENDING";
+	
 }

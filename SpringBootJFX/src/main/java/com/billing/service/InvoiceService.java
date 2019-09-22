@@ -31,12 +31,12 @@ public class InvoiceService {
 	private static final Logger logger = LoggerFactory.getLogger(InvoiceService.class);
 
 	private static final String INS_BILL_DETAILS = "INSERT INTO CUSTOMER_BILL_DETAILS (BILL_NUMBER,BILL_DATE_TIME,CUST_MOB_NO,CUST_NAME,NO_OF_ITEMS,"
-			+ "BILL_QUANTITY,TOTAL_AMOUNT,BILL_TAX,GRAND_TOTAL,PAYMENT_MODE,"
-			+ "BILL_DISCOUNT,BILL_DISC_AMOUNT,NET_SALES_AMOUNT,BILL_PURCHASE_AMT)"
+			+ "BILL_QUANTITY,TOTAL_AMOUNT,PAYMENT_MODE,"
+			+ "BILL_DISCOUNT,BILL_DISC_AMOUNT,NET_SALES_AMOUNT,BILL_PURCHASE_AMT,GST_TYPE,GST_AMOUNT)"
 			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static final String INS_BILL_ITEM_DETAILS = "INSERT INTO BILL_ITEM_DETAILS (BILL_NUMBER,ITEM_NUMBER,ITEM_NAME,ITEM_MRP,ITEM_RATE,"
-			+ "ITEM_QTY,ITEM_AMOUNT,ITEM_PURCHASE_AMT) VALUES(?,?,?,?,?,?,?,?)";
+			+ "ITEM_QTY,ITEM_AMOUNT,ITEM_PURCHASE_AMT,GST_RATE,GST_NAME,CGST,SGST,GST_AMOUNT,GST_TAXABLE_AMT,GST_INCLUSIVE_FLAG,DISC_PERCENT,DISC_AMOUNT) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static final String UPDATE_PRODUCT_STOCK = "UPDATE PRODUCT_DETAILS SET QUANTITY=QUANTITY-? WHERE PRODUCT_ID=?";
 
@@ -66,13 +66,13 @@ public class InvoiceService {
 				stmt.setInt(5, bill.getNoOfItems());
 				stmt.setDouble(6, bill.getTotalQuantity());
 				stmt.setDouble(7, bill.getTotalAmount());
-				stmt.setDouble(8, bill.getTax());
-				stmt.setDouble(9, bill.getGrandTotal());
-				stmt.setString(10, bill.getPaymentMode());
-				stmt.setDouble(11, bill.getDiscount());
-				stmt.setDouble(12, bill.getDiscountAmt());
-				stmt.setDouble(13, bill.getNetSalesAmt());
-				stmt.setDouble(14, bill.getPurchaseAmt());
+				stmt.setString(8, bill.getPaymentMode());
+				stmt.setDouble(9, bill.getDiscount());
+				stmt.setDouble(10, bill.getDiscountAmt());
+				stmt.setDouble(11, bill.getNetSalesAmt());
+				stmt.setDouble(12, bill.getPurchaseAmt());
+				stmt.setString(13, bill.getGstType());
+				stmt.setDouble(14, bill.getGstAmount());
 				int i = stmt.executeUpdate();
 				if (i > 0) {
 					staus.setStatusCode(0);
@@ -112,6 +112,16 @@ public class InvoiceService {
 					stmt.setDouble(6, item.getQuantity());
 					stmt.setDouble(7, item.getAmount());
 					stmt.setDouble(8, item.getPurchasePrice());
+					stmt.setDouble(9, item.getGstDetails().getRate());
+					stmt.setString(10, item.getGstDetails().getName());
+					stmt.setDouble(11, item.getGstDetails().getCgst());
+					stmt.setDouble(12, item.getGstDetails().getSgst());
+					stmt.setDouble(13, item.getGstDetails().getGstAmount());
+					stmt.setDouble(14, item.getGstDetails().getTaxableAmount());
+					stmt.setString(15, item.getGstDetails().getInclusiveFlag());
+					stmt.setDouble(16, item.getDiscountPercent());
+					stmt.setDouble(17, item.getDiscountAmount());
+
 					stmt.addBatch();
 				}
 
@@ -203,13 +213,13 @@ public class InvoiceService {
 				billDetails.setNoOfItems(rs.getInt("NO_OF_ITEMS"));
 				billDetails.setTotalQuantity(rs.getDouble("BILL_QUANTITY"));
 				billDetails.setTotalAmount(rs.getDouble("TOTAL_AMOUNT"));
-				billDetails.setTax(rs.getDouble("BILL_TAX"));
-				billDetails.setGrandTotal(rs.getDouble("GRAND_TOTAL"));
 				billDetails.setPaymentMode(rs.getString("PAYMENT_MODE"));
 				billDetails.setDiscount(rs.getDouble("BILL_DISCOUNT"));
 				billDetails.setDiscountAmt(rs.getDouble("BILL_DISC_AMOUNT"));
 				billDetails.setNetSalesAmt(rs.getDouble("NET_SALES_AMOUNT"));
 				billDetails.setPurchaseAmt(rs.getDouble("BILL_PURCHASE_AMT"));
+				billDetails.setGstType(rs.getString("GST_TYPE"));
+				billDetails.setGstAmount(rs.getDouble("GST_AMOUNT"));
 
 				billDetailsList.add(billDetails);
 			}
@@ -275,13 +285,13 @@ public class InvoiceService {
 				billDetails.setNoOfItems(rs.getInt("NO_OF_ITEMS"));
 				billDetails.setTotalQuantity(rs.getDouble("BILL_QUANTITY"));
 				billDetails.setTotalAmount(rs.getDouble("TOTAL_AMOUNT"));
-				billDetails.setTax(rs.getDouble("BILL_TAX"));
-				billDetails.setGrandTotal(rs.getDouble("GRAND_TOTAL"));
 				billDetails.setPaymentMode(rs.getString("PAYMENT_MODE"));
 				billDetails.setDiscount(rs.getDouble("BILL_DISCOUNT"));
 				billDetails.setDiscountAmt(rs.getDouble("BILL_DISC_AMOUNT"));
 				billDetails.setNetSalesAmt(rs.getDouble("NET_SALES_AMOUNT"));
 				billDetails.setPurchaseAmt(rs.getDouble("BILL_PURCHASE_AMT"));
+				billDetails.setGstType(rs.getString("GST_TYPE"));
+				billDetails.setGstAmount(rs.getDouble("GST_AMOUNT"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -311,13 +321,13 @@ public class InvoiceService {
 				billDetails.setNoOfItems(rs.getInt("NO_OF_ITEMS"));
 				billDetails.setTotalQuantity(rs.getDouble("BILL_QUANTITY"));
 				billDetails.setTotalAmount(rs.getDouble("TOTAL_AMOUNT"));
-				billDetails.setTax(rs.getDouble("BILL_TAX"));
-				billDetails.setGrandTotal(rs.getDouble("GRAND_TOTAL"));
 				billDetails.setPaymentMode(rs.getString("PAYMENT_MODE"));
 				billDetails.setDiscount(rs.getDouble("BILL_DISCOUNT"));
 				billDetails.setDiscountAmt(rs.getDouble("BILL_DISC_AMOUNT"));
 				billDetails.setNetSalesAmt(rs.getDouble("NET_SALES_AMOUNT"));
 				billDetails.setPurchaseAmt(rs.getDouble("BILL_PURCHASE_AMT"));
+				billDetails.setGstType(rs.getString("GST_TYPE"));
+				billDetails.setGstAmount(rs.getDouble("GST_AMOUNT"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

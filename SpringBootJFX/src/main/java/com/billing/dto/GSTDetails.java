@@ -14,6 +14,8 @@ public class GSTDetails {
 	
 	private String inclusiveFlag;
 	
+	private double taxableAmount;
+	
 	public String getName() {
 		return name;
 	}
@@ -60,6 +62,14 @@ public class GSTDetails {
 
 	public void setInclusiveFlag(String inclusiveFlag) {
 		this.inclusiveFlag = inclusiveFlag;
+	}
+
+	public double getTaxableAmount() {
+		return taxableAmount;
+	}
+
+	public void setTaxableAmount(double taxableAmount) {
+		this.taxableAmount = taxableAmount;
 	}
 
 }

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox alignment="TOP_CENTER" fillHeight="false" stylesheets="@../../../css/userpreferences.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.UserPreferencesController">
+	<children>
+		<BorderPane fx:id="borderPane" styleClass="rootNode">
+			<top>
+				<VBox alignment="TOP_CENTER" spacing="20.0" BorderPane.alignment="CENTER">
+					<children>
+						<Label fx:id="heading" alignment="TOP_CENTER" contentDisplay="CENTER" text="User Preferences" textAlignment="CENTER" />
+						<Label styleClass="note" text="Changes will take effect after software restart." />
+						<GridPane fx:id="gridPane" alignment="TOP_CENTER" hgap="20.0" vgap="15.0">
+							<children>
+								<Label styleClass="nodeLabel" text="GST Calculation Type :" GridPane.halignment="RIGHT" />
+								<HBox spacing="20.0" GridPane.columnIndex="1">
+									<children>
+										<RadioButton fx:id="rbGSTInclusive" mnemonicParsing="false" text="Inclusive" />
+										<RadioButton fx:id="rbGSTExclusive" mnemonicParsing="false" text="Exclusive" />
+									</children>
+								</HBox>
+								<Label styleClass="nodeLabel" text="Invoice Product Search By :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+																
+								<HBox spacing="20.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+									<children>
+										<RadioButton fx:id="rbSearchBarcode" mnemonicParsing="false" text="Barcode" />
+										<RadioButton fx:id="rbSearchName" mnemonicParsing="false" text="Product Name" />
+									</children>
+								</HBox>
+								
+								<Label styleClass="nodeLabel" text="Invoice Print On Save :" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+								<HBox prefHeight="100.0" prefWidth="200.0" spacing="30.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+									<children>
+										<RadioButton fx:id="rbPrintYes" mnemonicParsing="false" text="Yes" />
+										<RadioButton fx:id="rbPrintNo" mnemonicParsing="false" text="No" />
+									</children>
+								</HBox>
+								<Label styleClass="requiredInput" text="Data Backup Interval in (Min) :" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+								<VBox GridPane.columnIndex="1" GridPane.rowIndex="3">
+									<children>
+										<TextField fx:id="txtDBDumpInterval" />
+										<Label styleClass="note" text="Minimum allowed is 30 Min" />
+										<Label fx:id="lblDBDumpErrMsg" styleClass="errorLabel" wrapText="true"/>
+									</children>
+								</VBox>
+								<Label styleClass="requiredInput" text="Sales Return allowed days :" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+								<VBox GridPane.columnIndex="1" GridPane.rowIndex="4">
+									<children>
+										<TextField fx:id="txtSalesReturnDays" />
+										<Label fx:id="lblSalesReturnDaysErrMsg"  styleClass="errorLabel" wrapText="true"/>
+									</children>
+								</VBox>
+								<Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+								<ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="6">
+									<buttons>
+										<Button fx:id="btnUpdate" cancelButton="true" disable="true" mnemonicParsing="true" onAction="#onUpdateCommand" text="Update" />
+										<Button mnemonicParsing="false" onAction="#onCloseCommand" text="Close" />
+									</buttons>
+								</ButtonBar>
+							</children>
+							<VBox.margin>
+								<Insets top="20.0" />
+							</VBox.margin>
+							<padding>
+								<Insets top="10.0" />
+							</padding>
+							<columnConstraints>
+								<ColumnConstraints />
+								<ColumnConstraints prefWidth="250.0" />
+							</columnConstraints>
+							<rowConstraints>
+								<RowConstraints />
+								<RowConstraints />
+								<RowConstraints minHeight="10.0" prefHeight="30.0" />
+								<RowConstraints minHeight="10.0" />
+								<RowConstraints minHeight="10.0" />
+								<RowConstraints />
+								<RowConstraints />
+							</rowConstraints>
+						</GridPane>
+					</children>
+				</VBox>
+			</top>
+		</BorderPane>
+	</children>
+	<padding>
+		<Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+	</padding>
+</HBox>
