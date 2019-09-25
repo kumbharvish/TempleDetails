@@ -1054,15 +1054,6 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		}
 
 		netSalesAmount = (subTotal - discountAmount) + gstAmount;
-		/*
-		 * String discountString = txtDiscountPercent.getText().trim(); if
-		 * (!discountString.isEmpty()) { try { Double totalDiscPercent =
-		 * Double.valueOf(discountString); if (isGSTInclusive && totalDiscPercent > 0) {
-		 * discountAmount = discountAmount + (netSalesAmount * (totalDiscPercent /
-		 * 100)); netSalesAmount = subTotal - discountAmount; } else {
-		 * 
-		 * } } catch (Exception e) { } }
-		 */
 		txtNoOfItems.setText(String.valueOf(noOfItems));
 		txtTotalQty.setText(appUtils.getDecimalFormat(quantity));
 		txtSubTotal.setText(appUtils.getDecimalFormat(subTotal));

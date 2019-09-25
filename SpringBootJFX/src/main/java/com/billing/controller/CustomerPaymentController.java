@@ -217,7 +217,7 @@ public class CustomerPaymentController extends AppContext implements TabContent 
 			txtCustName.setText(cust.getCustName());
 			txtCity.setText(cust.getCustCity());
 			txtEmail.setText(cust.getCustEmail());
-			txtPendingAmt.setText("₹ "+IndianCurrencyFormatting.applyFormatting(cust.getBalanceAmt()));
+			txtPendingAmt.setText(IndianCurrencyFormatting.applyFormattingWithCurrency(cust.getBalanceAmt()));
 			txtMobileNo.setText(String.valueOf(cust.getCustMobileNumber()));
 			txtEntryDate.setText(appUtils.getFormattedDateWithTime(cust.getEntryDate()));
 		}
