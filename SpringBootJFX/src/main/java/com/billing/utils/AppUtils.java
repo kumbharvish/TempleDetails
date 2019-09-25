@@ -607,7 +607,11 @@ public class AppUtils {
 				gst.setSgst(gstAmt / 2);
 			}
 			gst.setGstAmount(gstAmt);
-			gst.setTaxableAmount(p.getTableDispAmount());
+			if ("Y".equals(gst.getInclusiveFlag())) {
+				gst.setTaxableAmount(p.getTableDispAmount() - gstAmt);
+			} else {
+				gst.setTaxableAmount(p.getTableDispAmount());
+			}
 		}
 
 		return gst;

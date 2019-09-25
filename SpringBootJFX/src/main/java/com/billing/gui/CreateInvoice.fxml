@@ -251,7 +251,7 @@
 												<TextField fx:id="txtTotalQty" editable="false" styleClass="totalFields" GridPane.columnIndex="1" GridPane.rowIndex="1" alignment="CENTER_RIGHT"/>												
 												<Label styleClass="nodeLabel" text="Sub Total :" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
 												<TextField fx:id="txtSubTotal" editable="false" styleClass="totalFields" GridPane.columnIndex="1" GridPane.rowIndex="2" alignment="CENTER_RIGHT"/>
-												<Label styleClass="nodeLabel" text="Discount (%) :" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+												<Label styleClass="nodeLabel" text="Disc. All (%) :" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
 												<TextField fx:id="txtDiscountPercent" GridPane.columnIndex="1" GridPane.rowIndex="3" alignment="CENTER_RIGHT" />
 												<Label styleClass="nodeLabel" text="Disc. Amt. (-):" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
 												<TextField fx:id="txtDiscountAmt" editable="false" styleClass="totalFields" GridPane.columnIndex="1" GridPane.rowIndex="4" alignment="CENTER_RIGHT"/>
@@ -276,7 +276,7 @@
 												<RowConstraints />
 											</rowConstraints>
 											<children>
-												<Label styleClass="nodeLabel" text="Net Total in (₹):" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+												<Label styleClass="nodeLabel" text="Net Sales Amount :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
 												<Label styleClass="nodeLabel" GridPane.halignment="RIGHT" />
 												<TextField fx:id="txtNetSalesAmount" editable="false" styleClass="netSalesAmountStyle" GridPane.columnIndex="1" GridPane.rowIndex="1" alignment="CENTER_RIGHT"/>
 												<Separator prefWidth="200.0" GridPane.columnSpan="2" />

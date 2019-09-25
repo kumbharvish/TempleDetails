@@ -74,6 +74,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -405,7 +406,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			public void handle(KeyEvent ke) {
 				if (!txtDiscountPercent.getText().equals("") && !ke.getCode().equals(KeyCode.PERIOD)
 						&& !ke.getCode().equals(KeyCode.DECIMAL)) {
-					updateInvoiceAmount();
+					updateDiscount();
 					isDirty.set(true);
 				}
 			}
@@ -421,7 +422,10 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		tableView.setOnMouseClicked((MouseEvent event) -> {
 			if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
 				// Show pop up with Edit and Delete Row option
-				getTableRowEditDeletePopup();
+				if (!productTableData.isEmpty() && null != tableView.getSelectionModel().getSelectedItem()) {
+					getTableRowEditDeletePopup();
+				}
+
 			}
 		});
 
@@ -439,6 +443,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 
 	protected void addRecordToTable(Product product) {
 		if (validateInvoiceItem(product)) {
+			updateDiscountAllPerToProduct(product);
 			product.setTableDispAmount(Double.valueOf(txtAmount.getText()));
 			product.setTableDispRate(Double.valueOf(txtRate.getText()));
 			product.setTableDispQuantity(Double.valueOf(txtQuantity.getText()));
@@ -457,6 +462,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		} else {
 			if (product.getQuantity() >= 1) {
 				if (!updateRow(product)) {
+					updateDiscountAllPerToProduct(product);
 					product.setTableDispQuantity(1.0);
 					// Total quantity - 1
 					product.setQuantity(product.getQuantity() - 1);
@@ -473,11 +479,18 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 
 	}
 
+	private void updateDiscountAllPerToProduct(Product product) {
+		if (!txtDiscountPercent.getText().equals("") && Double.valueOf(txtDiscountPercent.getText()) > 0) {
+			product.setDiscount(Double.valueOf(txtDiscountPercent.getText()));
+		}
+	}
+
 	private boolean updateRow(Product product) {
 		boolean isUpdated = false;
 		for (int idx = 0; idx < productTableData.size(); idx++) {
 			Product tableProduct = productTableData.get(idx);
 			if (tableProduct.getProductCode() == product.getProductCode()) {
+				updateDiscountAllPerToProduct(product);
 				double newQty = tableProduct.getTableDispQuantity() + 1;
 				double rate = tableProduct.getTableDispRate();
 				double newAmt = rate * newQty;
@@ -590,7 +603,9 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 
 	@FXML
 	void onCashHelpCommand(ActionEvent event) {
-		getCashHelpPopup();
+		if (!txtNetSalesAmount.getText().equals("")) {
+			getCashHelpPopup();
+		}
 	}
 
 	@FXML
@@ -720,7 +735,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		bill.setCustomerName(cust.getCustName());
 		// Prepare Item List
 		bill.setItemDetails(prepareItemList());
-		bill.setTotalAmount(Double.valueOf(IndianCurrencyFormatting.removeFormatting(txtSubTotal.getText())));
+		bill.setTotalAmount(Double.valueOf(txtSubTotal.getText()));
 		bill.setNoOfItems(Integer.valueOf(txtNoOfItems.getText()));
 		bill.setTotalQuantity(Double.valueOf(txtTotalQty.getText()));
 		bill.setDiscount(Double.valueOf(txtDiscountPercent.getText()));
@@ -924,7 +939,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		grid.setVgap(10);
 		grid.setPadding(new Insets(20, 100, 10, 10));
 
-		Label lbl = new Label("Net Total :");
+		Label lbl = new Label("Net Sales Amount :");
 		lbl.getStyleClass().add("nodeLabel");
 		TextField txtNetTotal = new TextField();
 		txtNetTotal.setPrefColumnCount(15);
@@ -987,7 +1002,12 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 
 		Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
 		stage.getIcons().add(new Image(this.getClass().getResource("/images/shop32X32.png").toString()));
-
+		HBox box = new HBox();
+		Label lbl = new Label("Please choose action on product");
+		lbl.getStyleClass().add("nodeLabel");
+		box.getChildren().add(lbl);
+		box.setPrefHeight(55.0);
+		dialog.getDialogPane().setContent(box);
 		// Set the button types.
 		ButtonType updateButtonType = new ButtonType("Edit", ButtonData.OK_DONE);
 		ButtonType deleteButtonType = new ButtonType("Delete", ButtonData.OK_DONE);
@@ -1034,26 +1054,32 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		}
 
 		netSalesAmount = (subTotal - discountAmount) + gstAmount;
-
-		String discountString = txtDiscountPercent.getText().trim();
-		if (!discountString.isEmpty()) {
-			try {
-				Double totalDiscPercent = Double.valueOf(discountString);
-				if (isGSTInclusive && totalDiscPercent > 0) {
-					discountAmount = discountAmount + (netSalesAmount * (totalDiscPercent / 100));
-					netSalesAmount = subTotal - discountAmount;
-				} else {
-
-				}
-			} catch (Exception e) {
-			}
-		}
+		/*
+		 * String discountString = txtDiscountPercent.getText().trim(); if
+		 * (!discountString.isEmpty()) { try { Double totalDiscPercent =
+		 * Double.valueOf(discountString); if (isGSTInclusive && totalDiscPercent > 0) {
+		 * discountAmount = discountAmount + (netSalesAmount * (totalDiscPercent /
+		 * 100)); netSalesAmount = subTotal - discountAmount; } else {
+		 * 
+		 * } } catch (Exception e) { } }
+		 */
 		txtNoOfItems.setText(String.valueOf(noOfItems));
 		txtTotalQty.setText(appUtils.getDecimalFormat(quantity));
-		txtSubTotal.setText(IndianCurrencyFormatting.applyFormatting(subTotal));
+		txtSubTotal.setText(appUtils.getDecimalFormat(subTotal));
 		txtDiscountAmt.setText(IndianCurrencyFormatting.applyFormatting(discountAmount));
 		txtGstAmount.setText(IndianCurrencyFormatting.applyFormatting(gstAmount));
-		txtNetSalesAmount.setText(IndianCurrencyFormatting.applyFormatting(appUtils.getDecimalRoundUp(netSalesAmount)));
+		txtNetSalesAmount.setText(
+				IndianCurrencyFormatting.applyFormattingWithCurrency(appUtils.getDecimalRoundUp(netSalesAmount)));
+	}
+
+	private void updateDiscount() {
+		double discountAllPercent = Double.valueOf(txtDiscountPercent.getText());
+		for (Product p : productTableData) {
+			p.setDiscount(discountAllPercent);
+			p.setGstDetails(appUtils.getGSTDetails(p));
+		}
+		tableView.refresh();
+		updateInvoiceAmount();
 	}
 
 	private void getGSTDetailsPopUp() {

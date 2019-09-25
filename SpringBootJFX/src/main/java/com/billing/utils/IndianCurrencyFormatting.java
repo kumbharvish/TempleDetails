@@ -43,7 +43,6 @@ import java.math.RoundingMode;
         }
 
         public static String applyFormatting(Double amount) {
-
             if (amount == null) {
                 return "";
             }
@@ -57,11 +56,17 @@ import java.math.RoundingMode;
         	if (amount == null) {
                 return "";
             }
-        	String[] array = amount.split(",");
-        	for(String s : array) {
+        	String[] array1 = amount.split("₹  ");
+        	String[] array2 = array1[1].trim().split(",");
+        	for(String s : array2) {
         		result.append(s);
         	}
 			return result.toString();
         	
+        }
+        
+        public static String applyFormattingWithCurrency(Double amount) {
+        	String result = applyFormatting(amount); 
+        	return "₹  "+result;
         }
     } // end of class definition
