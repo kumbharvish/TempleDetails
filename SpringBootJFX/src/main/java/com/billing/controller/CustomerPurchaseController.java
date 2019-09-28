@@ -1,5 +1,6 @@
 package com.billing.controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.SortedSet;
@@ -30,14 +31,19 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 @Controller
@@ -117,23 +123,58 @@ public class CustomerPurchaseController extends AppContext implements TabContent
 		getCustomerNameList();
 		txtCustomer.createTextField(entries, () -> setCustomerDetails());
 		tableView.setOnMouseClicked((MouseEvent event) -> {
-            if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2){
-                System.out.println(tableView.getSelectionModel().getSelectedItem());
-                //Show View Invoice Popup
-            }
-        });
+			if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+				// Show View Invoice Popup
+				getViewInvoicePopup(tableView.getSelectionModel().getSelectedItem());
+			}
+		});
+	}
+
+	private void getViewInvoicePopup(BillDetails bill) {
+		FXMLLoader fxmlLoader = new FXMLLoader();
+		fxmlLoader.setControllerFactory(springContext::getBean);
+		fxmlLoader.setLocation(this.getClass().getResource("/com/billing/gui/ViewInvoice.fxml"));
+
+		Parent rootPane = null;
+		try {
+			rootPane = fxmlLoader.load();
+		} catch (IOException e) {
+			e.printStackTrace();
+			logger.error("getViewInvoicePopup Error in loading the view file :", e);
+			alertHelper.beep();
+
+			alertHelper.showErrorAlert(currentStage, "Error Occurred", "Error in creating user interface",
+					"An error occurred in creating user interface " + "for the selected command");
+
+			return;
+		}
+
+		final Scene scene = new Scene(rootPane);
+		final ViewInvoiceController controller = (ViewInvoiceController) fxmlLoader.getController();
+		controller.bill = bill;
+		final Stage stage = new Stage();
+		stage.initModality(Modality.APPLICATION_MODAL);
+		stage.initOwner(currentStage);
+		stage.setUserData(controller);
+		stage.getIcons().add(new Image("/images/shop32X32.png"));
+		stage.setScene(scene);
+		stage.setTitle("View Invoice");
+		controller.loadData();
+		stage.showAndWait();
 	}
 
 	private void setTableCellFactories() {
 		// Table Column Mapping
-		tcInvoiceNo.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getBillNumber())));
-		tcInvoiceDate.setCellValueFactory(cellData -> new SimpleStringProperty(appUtils.getFormattedDateWithTime(cellData.getValue().getTimestamp())));
+		tcInvoiceNo.setCellValueFactory(
+				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getBillNumber())));
+		tcInvoiceDate.setCellValueFactory(cellData -> new SimpleStringProperty(
+				appUtils.getFormattedDateWithTime(cellData.getValue().getTimestamp())));
 		tcNoOfItems.setCellValueFactory(
 				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getNoOfItems())));
-		tcQuantity.setCellValueFactory(
-				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getTotalQuantity())));
-		tcInvoiceAmount.setCellValueFactory(cellData -> new SimpleStringProperty(
-				appUtils.getDecimalFormat(cellData.getValue().getNetSalesAmt())));
+		tcQuantity.setCellValueFactory(cellData -> new SimpleStringProperty(
+				appUtils.getDecimalFormat(cellData.getValue().getTotalQuantity())));
+		tcInvoiceAmount.setCellValueFactory(
+				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getNetSalesAmt())));
 		// Set CSS
 		tcInvoiceNo.getStyleClass().add("character-cell");
 		tcInvoiceNo.getStyleClass().add("tableCellCursor");
@@ -168,8 +209,7 @@ public class CustomerPurchaseController extends AppContext implements TabContent
 		if (!txtCustName.getText().equals("")) {
 			String custMobile = txtCustomer.getText().split(" : ")[0];
 			txtCustomer.setText("");
-			List<BillDetails> list = customerHistoryService
-					.getBillDetails(Long.valueOf(custMobile));
+			List<BillDetails> list = customerHistoryService.getBillDetails(Long.valueOf(custMobile));
 			ObservableList<BillDetails> tableData = FXCollections.observableArrayList();
 			tableData.addAll(list);
 			tableView.setItems(tableData);

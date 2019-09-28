@@ -3,25 +3,27 @@ package com.billing.dto;
 public class ItemDetails {
 
 	private int itemNo;
-	
+
 	private int billNumber;
-	
+
 	private String itemName;
-	
+
+	private String unit;
+
 	private double MRP;
-	
+
 	private double rate;
-	
+
 	private double quantity;
-	
+
 	private double amount;
-	
+
 	private double purchasePrice;
-	
-	private GSTDetails gstDetails ;
-	
+
+	private GSTDetails gstDetails;
+
 	private double discountPercent;
-	
+
 	private double discountAmount;
 
 	public int getItemNo() {
@@ -65,7 +67,7 @@ public class ItemDetails {
 	}
 
 	public double getAmount() {
-		return quantity*rate;
+		return getGstDetails().getTaxableAmount();
 	}
 
 	public double getPurchasePrice() {
@@ -74,14 +76,6 @@ public class ItemDetails {
 
 	public void setPurchasePrice(double purchasePrice) {
 		this.purchasePrice = purchasePrice;
-	}
-
-	@Override
-	public String toString() {
-		return "ItemDetails [itemNo=" + itemNo + ", itemName=" + itemName
-				+ ", MRP=" + MRP + ", rate=" + rate + ", quantity=" + quantity
-				+ ", amount=" + getAmount() + ", purchasePrice=" + purchasePrice
-				+ "]";
 	}
 
 	public int getBillNumber() {
@@ -116,5 +110,12 @@ public class ItemDetails {
 		this.discountAmount = discountAmount;
 	}
 
-	
+	public String getUnit() {
+		return unit;
+	}
+
+	public void setUnit(String unit) {
+		this.unit = unit;
+	}
+
 }

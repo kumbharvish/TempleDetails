@@ -24,3 +24,9 @@
 	-fx-background-color: antiquewhite;
 	-fx-font-weight: bold;
 }
+
+.dialogRootNode {
+	-fx-padding: 20px 20px 20px 20px;
+	-fx-background-color: -lookupBackground;
+	-fx-border-insets: 15px 30px 15px 30px;
+}

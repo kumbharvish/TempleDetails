@@ -2,11 +2,12 @@ package com.billing.utils;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.swing.ImageIcon;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Component;
 import com.billing.constants.AppConstants;
 import com.billing.dto.Barcode;
 import com.billing.dto.MyStoreDetails;
-import com.billing.service.JasperService;
 import com.billing.service.StoreDetailsService;
 
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -68,15 +68,20 @@ public class JasperUtils {
 			// compile report
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, headerParamsMap, dataSource);
 
-			// view report to UI
-			// JasperViewer.viewReport(jasperPrint, false);
 			// Export To PDF
-			String dirLocation = appUtils.createDirectory(AppConstants.BILL_PRINT_LOCATION);
+			String dirLocation = appUtils.createDirectory(AppConstants.INVOICE_PRINT_LOCATION);
 			String billNumber = (String) dataSourceMap.get(0).get("BillNo");
 
 			JasperExportManager.exportReportToPdfFile(jasperPrint,
-					dirLocation + "Bill_" + billNumber + "_" + appUtils.getFormattedDate(new Date()) + ".pdf");
-			if ("Y".equals(appUtils.getAppDataValues(AppConstants.IS_THERMAL_PRINTER_SET))) {
+					dirLocation + "Invoice_" + billNumber + "_" + appUtils.getFormattedDate(new Date()) + ".pdf");
+			// Show Print Preview 
+			if (appUtils.isTrue(appUtils.getAppDataValues(AppConstants.SHOW_PRINT_PREVIEW))) {
+				JasperViewer jasperViewer = new JasperViewer(jasperPrint,false);
+				jasperViewer.setTitle("Invoice");
+				jasperViewer.setIconImage(new ImageIcon(this.getClass().getResource("/images/shop32X32.png")).getImage());
+				jasperViewer.setVisible(true);
+				
+			} else {
 				JasperPrintManager.printReport(jasperPrint, false);
 			}
 		} catch (Exception e) {

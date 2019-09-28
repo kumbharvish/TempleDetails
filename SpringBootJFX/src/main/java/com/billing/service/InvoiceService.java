@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.billing.dto.BillDetails;
+import com.billing.dto.GSTDetails;
 import com.billing.dto.ItemDetails;
 import com.billing.dto.StatusDTO;
 import com.billing.utils.AppUtils;
@@ -36,7 +37,7 @@ public class InvoiceService {
 			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static final String INS_BILL_ITEM_DETAILS = "INSERT INTO BILL_ITEM_DETAILS (BILL_NUMBER,ITEM_NUMBER,ITEM_NAME,ITEM_MRP,ITEM_RATE,"
-			+ "ITEM_QTY,ITEM_AMOUNT,ITEM_PURCHASE_AMT,GST_RATE,GST_NAME,CGST,SGST,GST_AMOUNT,GST_TAXABLE_AMT,GST_INCLUSIVE_FLAG,DISC_PERCENT,DISC_AMOUNT) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			+ "ITEM_QTY,ITEM_AMOUNT,ITEM_PURCHASE_AMT,GST_RATE,GST_NAME,CGST,SGST,GST_AMOUNT,GST_TAXABLE_AMT,GST_INCLUSIVE_FLAG,DISC_PERCENT,DISC_AMOUNT,UNIT) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static final String UPDATE_PRODUCT_STOCK = "UPDATE PRODUCT_DETAILS SET QUANTITY=QUANTITY-? WHERE PRODUCT_ID=?";
 
@@ -121,6 +122,7 @@ public class InvoiceService {
 					stmt.setString(15, item.getGstDetails().getInclusiveFlag());
 					stmt.setDouble(16, item.getDiscountPercent());
 					stmt.setDouble(17, item.getDiscountAmount());
+					stmt.setString(18, item.getUnit());
 
 					stmt.addBatch();
 				}
@@ -253,6 +255,20 @@ public class InvoiceService {
 				itemDetails.setMRP(rs.getDouble("ITEM_MRP"));
 				itemDetails.setRate(rs.getDouble("ITEM_RATE"));
 				itemDetails.setQuantity(rs.getDouble("ITEM_QTY"));
+				itemDetails.setDiscountPercent(rs.getDouble("DISC_PERCENT"));
+				itemDetails.setDiscountAmount(rs.getDouble("DISC_AMOUNT"));
+				itemDetails.setUnit(rs.getString("UNIT"));
+
+				GSTDetails gstDetails = new GSTDetails();
+
+				gstDetails.setRate(rs.getDouble("GST_RATE"));
+				gstDetails.setName(rs.getString("GST_NAME"));
+				gstDetails.setCgst(rs.getDouble("CGST"));
+				gstDetails.setSgst(rs.getDouble("SGST"));
+				gstDetails.setGstAmount(rs.getDouble("GST_AMOUNT"));
+				gstDetails.setTaxableAmount(rs.getDouble("GST_TAXABLE_AMT"));
+				gstDetails.setInclusiveFlag(rs.getString("GST_INCLUSIVE_FLAG"));
+				itemDetails.setGstDetails(gstDetails);
 
 				itemDetailsList.add(itemDetails);
 			}

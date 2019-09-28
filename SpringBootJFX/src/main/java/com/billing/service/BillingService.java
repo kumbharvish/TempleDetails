@@ -30,7 +30,7 @@ public class BillingService {
 	private static final Logger logger = LoggerFactory.getLogger(BillingService.class);
 
 	private static final String UPDATE_BILL_DETAILS = "UPDATE CUSTOMER_BILL_DETAILS SET CUST_MOB_NO=?,CUST_NAME=?,BILL_TAX=?,BILL_DISCOUNT=?,BILL_DISC_AMOUNT =?,"
-			+ "PAYMENT_MODE=?,GRAND_TOTAL=?,NET_SALES_AMOUNT=? WHERE BILL_NUMBER=?";
+			+ "PAYMENT_MODE=?,GRAND_TOTAL=?,NET_SALES_AMOUNT=?,GST_AMOUNT=?,GST_TYPE=? WHERE BILL_NUMBER=?";
 
 	private static final String DELETE_BILL_DETAILS = "DELETE FROM CUSTOMER_BILL_DETAILS WHERE BILL_NUMBER=?";
 
@@ -53,12 +53,12 @@ public class BillingService {
 				stmt = conn.prepareStatement(UPDATE_BILL_DETAILS);
 				stmt.setLong(1, bill.getCustomerMobileNo());
 				stmt.setString(2, bill.getCustomerName());
-				stmt.setDouble(3, bill.getTax());
-				stmt.setDouble(4, bill.getDiscount());
-				stmt.setDouble(5, bill.getDiscountAmt());
-				stmt.setString(6, bill.getPaymentMode());
-				stmt.setDouble(7, bill.getGrandTotal());
-				stmt.setDouble(8, bill.getNetSalesAmt());
+				stmt.setDouble(3, bill.getDiscount());
+				stmt.setDouble(4, bill.getDiscountAmt());
+				stmt.setString(5, bill.getPaymentMode());
+				stmt.setDouble(6, bill.getNetSalesAmt());
+				stmt.setDouble(7, bill.getGstAmount());
+				stmt.setString(8, bill.getGstType());
 				stmt.setInt(9, bill.getBillNumber());
 				int i = stmt.executeUpdate();
 				if (i > 0) {

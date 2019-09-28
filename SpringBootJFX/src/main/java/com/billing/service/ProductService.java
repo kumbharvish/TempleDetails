@@ -97,6 +97,7 @@ public class ProductService {
 				pc.setSellPrice(rs.getDouble("SELL_PRICE"));
 				pc.setProductMRP(rs.getDouble("PRODUCT_MRP"));
 				pc.setDiscount(rs.getDouble("DISCOUNT"));
+				pc.setOrignalDiscount(rs.getDouble("DISCOUNT"));
 				pc.setEntryDate(rs.getString("ENTRY_DATE"));
 				pc.setLastUpdateDate(rs.getString("LAST_UPDATE_DATE"));
 				pc.setDescription(rs.getString("DESCRIPTION"));
@@ -138,6 +139,7 @@ public class ProductService {
 				pc.setSellPrice(rs.getDouble("SELL_PRICE"));
 				pc.setProductMRP(rs.getDouble("PRODUCT_MRP"));
 				pc.setDiscount(rs.getDouble("DISCOUNT"));
+				pc.setOrignalDiscount(rs.getDouble("DISCOUNT"));
 				pc.setEntryDate(rs.getString("ENTRY_DATE"));
 				pc.setLastUpdateDate(rs.getString("LAST_UPDATE_DATE"));
 				pc.setDescription(rs.getString("DESCRIPTION"));

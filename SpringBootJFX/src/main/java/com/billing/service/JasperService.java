@@ -24,7 +24,7 @@ public class JasperService {
 	@Autowired
 	AppUtils appUtils;
 
-	// Create Bill
+	// Invoice Data Source
 	public List<Map<String, ?>> createDataForBill(BillDetails bill) {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
 		for (ItemDetails item : bill.getItemDetails()) {

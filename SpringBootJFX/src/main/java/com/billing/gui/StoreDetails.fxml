@@ -44,14 +44,15 @@
             <TextField fx:id="txtOwnerName" GridPane.columnIndex="1" GridPane.rowIndex="7" />
             <TextField fx:id="txtMobileNo" GridPane.columnIndex="1" GridPane.rowIndex="8" />
             <Label alignment="TOP_RIGHT" styleClass="nodeLabel" text="GST No :" GridPane.halignment="RIGHT" GridPane.rowIndex="9" />
-            <Separator GridPane.columnSpan="2" GridPane.rowIndex="10" />
+            <Separator GridPane.columnSpan="2" GridPane.rowIndex="11" />
             <TextField fx:id="txtGSTNo" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-            <ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="11">
+            <ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="12">
                <buttons>
                   <Button fx:id="btnSave" defaultButton="true" disable="true" mnemonicParsing="true" onAction="#onSaveCommand" text="_Save" />
                   <Button fx:id="btnClose" cancelButton="true" mnemonicParsing="true" onAction="#onCloseCommand" text="_Close" />
                </buttons>
             </ButtonBar>
+            <Label styleClass="note" text="Note : Updated details will reflect after software restart ." GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="10" />
          </children>
          <columnConstraints>
             <ColumnConstraints />
@@ -68,6 +69,7 @@
             <RowConstraints />
             <RowConstraints />
             <RowConstraints />
+            <RowConstraints minHeight="10.0" />
             <RowConstraints />
             <RowConstraints />
          </rowConstraints>

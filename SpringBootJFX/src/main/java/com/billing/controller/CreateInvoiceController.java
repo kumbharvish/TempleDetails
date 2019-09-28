@@ -24,6 +24,7 @@ import com.billing.dto.UserDetails;
 import com.billing.main.AppContext;
 import com.billing.service.CustomerService;
 import com.billing.service.InvoiceService;
+import com.billing.service.PrinterService;
 import com.billing.service.ProductHistoryService;
 import com.billing.service.ProductService;
 import com.billing.utils.AlertHelper;
@@ -99,6 +100,9 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 
 	@Autowired
 	InvoiceService invoiceService;
+
+	@Autowired
+	PrinterService printerService;
 
 	@Autowired
 	ProductHistoryService productHistoryService;
@@ -256,11 +260,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			txtGstType.setText("Exclusive");
 		}
 
-		if ("Y".equalsIgnoreCase(appUtils.getAppDataValues("INVOICE_PRINT_ON_SAVE"))) {
-			cbPrintOnSave.setSelected(true);
-		} else {
-			cbPrintOnSave.setSelected(false);
-		}
+		cbPrintOnSave.setSelected(appUtils.isTrue(appUtils.getAppDataValues("INVOICE_PRINT_ON_SAVE")));
 
 		productTableData = FXCollections.observableArrayList();
 		ToggleGroup radioButtonGroup = new ToggleGroup();
@@ -308,6 +308,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		txtCustomer.createTextField(customerEntries, () -> {
 			setNewFocus();
 			lblCustomerErrMsg.setText("");
+			isDirty.set(true);
 		});
 		txtItemName.createTextField(productEntries, () -> setProductDetails());
 		txtDiscountPercent.setText("0.0");
@@ -318,6 +319,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		txtDiscountPercent.textProperty().addListener(appUtils.getForceDecimalNumberListner());
 		txtItemBarcode.textProperty().addListener(appUtils.getForceNumberListner());
 		tableView.setItems(productTableData);
+		btnSave.disableProperty().bind(isDirty.not());
 		// Register textfield listners
 
 		cbPaymentModes.focusedProperty().addListener(new ChangeListener<Boolean>() {
@@ -642,6 +644,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 
 	@Override
 	public boolean loadData() {
+		isDirty.set(false);
 		return true;
 	}
 
@@ -706,6 +709,10 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 
 		if (saveStatus) {
 			alertHelper.showSuccessNotification("Invoice saved successfully");
+			// Print Invoice
+			if (cbPrintOnSave.isSelected()) {
+				printerService.printInvoice(bill);
+			}
 			// Reset Invoice UI Fields
 			resetFields();
 		} else {
@@ -771,6 +778,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			item.setPurchasePrice(p.getPurcasePrice());
 			item.setDiscountPercent(p.getDiscount());
 			item.setDiscountAmount(p.getDiscountAmount());
+			item.setUnit(p.getMeasure());
 			itemList.add(item);
 		}
 		return itemList;
@@ -836,6 +844,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 
 	private void resetFields() {
 		resetItemFields();
+		resetOrignalProductDiscount();
 		productTableData.clear();
 		dpInvoiceDate.setValue(LocalDate.now());
 		txtDiscountPercent.setText("0.0");
@@ -850,6 +859,12 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		txtGstAmount.clear();
 		txtNetSalesAmount.clear();
 		isDirty.set(false);
+	}
+
+	private void resetOrignalProductDiscount() {
+		for (Product p : productTableData) {
+			p.setDiscount(p.getOrignalDiscount());
+		}
 	}
 
 	private void resetItemFields() {

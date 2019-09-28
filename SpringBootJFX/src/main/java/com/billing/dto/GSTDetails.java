@@ -1,21 +1,25 @@
 package com.billing.dto;
 
 public class GSTDetails {
-	
+
 	private String name;
-	
+
 	private double rate;
-	
+
 	private double cgst;
-	
+
 	private double sgst;
-	
+
 	private double gstAmount;
-	
+
 	private String inclusiveFlag;
-	
+
 	private double taxableAmount;
-	
+
+	private double cgstPercent;
+
+	private double sgstPercent;
+
 	public String getName() {
 		return name;
 	}
@@ -72,4 +76,11 @@ public class GSTDetails {
 		this.taxableAmount = taxableAmount;
 	}
 
+	public double getCgstPercent() {
+		return rate/2;
+	}
+
+	public double getSgstPercent() {
+		return rate/2;
+	}
 }

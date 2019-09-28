@@ -135,6 +135,13 @@ public class AppUtils {
 		}
 		return data;
 	}
+	
+	public boolean isTrue(String value) {
+		if("Y".equalsIgnoreCase(value)) {
+			return true;
+		}
+		return false;
+	}
 
 	public StatusDTO updateAppData(String dataName, String valueString) {
 		Connection conn = null;

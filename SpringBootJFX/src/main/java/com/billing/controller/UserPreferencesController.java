@@ -19,6 +19,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tab;
@@ -73,10 +74,10 @@ public class UserPreferencesController implements TabContent {
 	private Label lblDBDumpErrMsg;
 
 	@FXML
-	private RadioButton rbPrintYes;
+	private CheckBox cbPrintOnSave;
 
 	@FXML
-	private RadioButton rbPrintNo;
+	private CheckBox cbShowPrintPreview;
 
 	@FXML
 	private TextField txtSalesReturnDays;
@@ -130,15 +131,11 @@ public class UserPreferencesController implements TabContent {
 			rbSearchName.setSelected(true);
 		}
 
-		if ("Y".equals(userPref.get(AppConstants.INVOICE_PRINT_ON_SAVE))) {
-			rbPrintYes.setSelected(true);
-		} else {
-			rbPrintNo.setSelected(true);
-		}
-
+		cbPrintOnSave.setSelected(appUtils.isTrue(userPref.get(AppConstants.INVOICE_PRINT_ON_SAVE)));
+		cbShowPrintPreview.setSelected(appUtils.isTrue(userPref.get(AppConstants.SHOW_PRINT_PREVIEW)));
 		txtDBDumpInterval.setText(userPref.get(AppConstants.DB_DUMP_INTERVAL));
 		txtSalesReturnDays.setText(userPref.get(AppConstants.SALES_RETURN_ALLOWED_DAYS));
-
+		isDirty.set(false);
 		return true;
 	}
 
@@ -158,10 +155,6 @@ public class UserPreferencesController implements TabContent {
 		rbGSTInclusive.setToggleGroup(radioButtonGroupGSTType);
 		rbGSTExclusive.setToggleGroup(radioButtonGroupGSTType);
 
-		ToggleGroup radioButtonGroupPrint = new ToggleGroup();
-		rbPrintNo.setToggleGroup(radioButtonGroupPrint);
-		rbPrintYes.setToggleGroup(radioButtonGroupPrint);
-
 		ToggleGroup radioButtonGroupSearch = new ToggleGroup();
 		rbSearchBarcode.setToggleGroup(radioButtonGroupSearch);
 		rbSearchName.setToggleGroup(radioButtonGroupSearch);
@@ -178,8 +171,8 @@ public class UserPreferencesController implements TabContent {
 
 		rbGSTInclusive.selectedProperty().addListener(this::invalidated);
 		rbGSTExclusive.selectedProperty().addListener(this::invalidated);
-		rbPrintNo.selectedProperty().addListener(this::invalidated);
-		rbPrintYes.selectedProperty().addListener(this::invalidated);
+		cbPrintOnSave.selectedProperty().addListener(this::invalidated);
+		cbShowPrintPreview.selectedProperty().addListener(this::invalidated);
 		rbSearchBarcode.selectedProperty().addListener(this::invalidated);
 		rbSearchName.selectedProperty().addListener(this::invalidated);
 		txtDBDumpInterval.textProperty().addListener(this::invalidated);
@@ -200,10 +193,16 @@ public class UserPreferencesController implements TabContent {
 			saveMap.put(AppConstants.GST_INCLUSIVE, "N");
 		}
 
-		if (rbPrintYes.isSelected()) {
+		if (cbPrintOnSave.isSelected()) {
 			saveMap.put(AppConstants.INVOICE_PRINT_ON_SAVE, "Y");
 		} else {
 			saveMap.put(AppConstants.INVOICE_PRINT_ON_SAVE, "N");
+		}
+		
+		if (cbShowPrintPreview.isSelected()) {
+			saveMap.put(AppConstants.SHOW_PRINT_PREVIEW, "Y");
+		} else {
+			saveMap.put(AppConstants.SHOW_PRINT_PREVIEW, "N");
 		}
 
 		if (rbSearchBarcode.isSelected()) {

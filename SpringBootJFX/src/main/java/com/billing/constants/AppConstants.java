@@ -34,7 +34,7 @@ public class AppConstants {
 
 	public static final String BARCODE_24_JASPER = "Barcode_24.jasper";
 
-	public static final String BILL_PRINT_LOCATION = "Bill_Print";
+	public static final String INVOICE_PRINT_LOCATION = "Invoice Prints";
 
 	public static final String ADMIN_USER_TYPE = "ADMIN";
 
@@ -121,5 +121,7 @@ public class AppConstants {
 	public static final String INVOICE_PRINT_ON_SAVE = "INVOICE_PRINT_ON_SAVE";
 	
 	public static final String PENDING = "PENDING";
+	
+	public static final String SHOW_PRINT_PREVIEW = "SHOW_PRINT_PREVIEW";
 	
 }

@@ -71,6 +71,8 @@ public class Product {
 	private double cgstPercent;
 	
 	private double sgstPercent;
+	
+	private double orignalDiscount;
 
 	public int getProductCode() {
 		return productCode;
@@ -353,6 +355,14 @@ public class Product {
 
 	public double getSgstPercent() {
 		return productTax/2;
+	}
+
+	public double getOrignalDiscount() {
+		return orignalDiscount;
+	}
+
+	public void setOrignalDiscount(double orignalDiscount) {
+		this.orignalDiscount = orignalDiscount;
 	}
 
 	public enum SortParameter {
