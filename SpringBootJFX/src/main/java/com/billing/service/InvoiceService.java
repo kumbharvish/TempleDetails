@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.billing.dto.BillDetails;
 import com.billing.dto.GSTDetails;
+import com.billing.dto.InvoiceSearchCriteria;
 import com.billing.dto.ItemDetails;
 import com.billing.dto.StatusDTO;
 import com.billing.utils.AppUtils;
@@ -33,8 +35,8 @@ public class InvoiceService {
 
 	private static final String INS_BILL_DETAILS = "INSERT INTO CUSTOMER_BILL_DETAILS (BILL_NUMBER,BILL_DATE_TIME,CUST_MOB_NO,CUST_NAME,NO_OF_ITEMS,"
 			+ "BILL_QUANTITY,TOTAL_AMOUNT,PAYMENT_MODE,"
-			+ "BILL_DISCOUNT,BILL_DISC_AMOUNT,NET_SALES_AMOUNT,BILL_PURCHASE_AMT,GST_TYPE,GST_AMOUNT)"
-			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			+ "BILL_DISCOUNT,BILL_DISC_AMOUNT,NET_SALES_AMOUNT,BILL_PURCHASE_AMT,GST_TYPE,GST_AMOUNT,CREATED_BY,LAST_UPDATED)"
+			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static final String INS_BILL_ITEM_DETAILS = "INSERT INTO BILL_ITEM_DETAILS (BILL_NUMBER,ITEM_NUMBER,ITEM_NAME,ITEM_MRP,ITEM_RATE,"
 			+ "ITEM_QTY,ITEM_AMOUNT,ITEM_PURCHASE_AMT,GST_RATE,GST_NAME,CGST,SGST,GST_AMOUNT,GST_TAXABLE_AMT,GST_INCLUSIVE_FLAG,DISC_PERCENT,DISC_AMOUNT,UNIT) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -74,6 +76,8 @@ public class InvoiceService {
 				stmt.setDouble(12, bill.getPurchaseAmt());
 				stmt.setString(13, bill.getGstType());
 				stmt.setDouble(14, bill.getGstAmount());
+				stmt.setString(15, bill.getCreatedBy());
+				stmt.setString(16, appUtils.getCurrentTimestamp());
 				int i = stmt.executeUpdate();
 				if (i > 0) {
 					staus.setStatusCode(0);
@@ -375,6 +379,101 @@ public class InvoiceService {
 			DBUtils.closeConnection(stmt, conn);
 		}
 		return newBillNumber;
+	}
+
+	// Search Invoice
+	public List<BillDetails> getSearchedInvoices(InvoiceSearchCriteria criteria) {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		BillDetails billDetails = null;
+		List<BillDetails> billDetailsList = new ArrayList<BillDetails>();
+
+		String sqlQuery = getQuery(criteria);
+		try {
+			conn = dbUtils.getConnection();
+			stmt = conn.prepareStatement(sqlQuery);
+			ResultSet rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				billDetails = new BillDetails();
+				billDetails.setBillNumber(rs.getInt("BILL_NUMBER"));
+				billDetails.setTimestamp(rs.getString("BILL_DATE_TIME"));
+				billDetails.setCustomerMobileNo(rs.getLong("CUST_MOB_NO"));
+				billDetails.setCustomerName(rs.getString("CUSTOMER_NAME"));
+				billDetails.setNoOfItems(rs.getInt("NO_OF_ITEMS"));
+				billDetails.setTotalQuantity(rs.getDouble("BILL_QUANTITY"));
+				billDetails.setTotalAmount(rs.getDouble("TOTAL_AMOUNT"));
+				billDetails.setPaymentMode(rs.getString("PAYMENT_MODE"));
+				billDetails.setDiscount(rs.getDouble("BILL_DISCOUNT"));
+				billDetails.setDiscountAmt(rs.getDouble("BILL_DISC_AMOUNT"));
+				billDetails.setNetSalesAmt(rs.getDouble("NET_SALES_AMOUNT"));
+				billDetails.setPurchaseAmt(rs.getDouble("BILL_PURCHASE_AMT"));
+				billDetails.setGstType(rs.getString("GST_TYPE"));
+				billDetails.setGstAmount(rs.getDouble("GST_AMOUNT"));
+				billDetails.setCreatedBy(rs.getString("CREATED_BY"));
+				billDetails.setLastUpdated(rs.getString("LAST_UPDATED"));
+
+				billDetailsList.add(billDetails);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception : ", e);
+		} finally {
+			DBUtils.closeConnection(stmt, conn);
+		}
+		return billDetailsList;
+	}
+
+	private static String getQuery(InvoiceSearchCriteria criteria) {
+
+		StringBuilder selectQuery = new StringBuilder(
+				"SELECT CBD.*,CD.CUST_NAME AS CUSTOMER_NAME FROM CUSTOMER_BILL_DETAILS CBD,CUSTOMER_DETAILS CD WHERE  CBD.CUST_MOB_NO=CD.CUST_MOB_NO AND ");
+
+		if (criteria.getInvoiceNumber() != null) {
+			selectQuery.append(" CBD.BILL_NUMBER = ").append(criteria.getInvoiceNumber());
+		} else {
+			boolean conditionApplied = false;
+
+			// date
+			if (criteria.getStartDate() != null) {
+				conditionApplied = true;
+				DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd");
+				String startDateString = criteria.getStartDate().format(dateFormatter);
+				String endDateString = criteria.getEndDate().format(dateFormatter);
+
+				selectQuery.append(" DATE(CBD.BILL_DATE_TIME) BETWEEN '").append(startDateString).append("' AND '")
+						.append(endDateString).append("' ");
+			}
+
+			// Payment Mode
+			if (criteria.getPendingInvoice() != null) {
+				String paymode = "CASH";
+				if ("Y".equals(criteria.getPendingInvoice())) {
+					paymode = "PENDING";
+				}
+				if (conditionApplied) {
+					selectQuery.append(" AND ");
+				}
+				conditionApplied = true;
+				selectQuery.append(" CBD.PAYMENT_MODE = '").append(paymode).append("' ");
+			}
+
+			// amount
+			String amount = criteria.getStartAmount();
+			if (amount != null) {
+				if (conditionApplied) {
+					selectQuery.append(" AND ");
+				}
+				conditionApplied = true;
+				selectQuery.append(" CBD.NET_SALES_AMOUNT BETWEEN ").append(amount).append(" AND ")
+						.append(criteria.getEndAmount());
+
+			}
+
+		}
+		selectQuery.append(" ORDER BY CBD.BILL_DATE_TIME DESC");
+		System.out.println(selectQuery);
+		return selectQuery.toString();
 	}
 
 }

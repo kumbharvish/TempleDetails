@@ -516,7 +516,7 @@ public class CustomersController extends AppContext implements TabContent {
 							}
 						} else {
 							alertHelper.showErrorNotification(
-									"Amount should be greater than Zero (0) and Less than current balance");
+									"Amount should be less than current balance");
 						}
 					}
 

@@ -33,6 +33,10 @@ public class BillDetails {
 	private String gstType;
 	
 	private double gstAmount;
+	
+	private String createdBy;
+	
+	private String lastUpdated;
 
 	public int getBillNumber() {
 		return billNumber;
@@ -152,5 +156,21 @@ public class BillDetails {
 
 	public void setGstAmount(double gstAmount) {
 		this.gstAmount = gstAmount;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getLastUpdated() {
+		return lastUpdated;
+	}
+
+	public void setLastUpdated(String lastUpdated) {
+		this.lastUpdated = lastUpdated;
 	}
 }

@@ -680,7 +680,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			if (status.getStatusCode() == 0) {
 				statusUpdatePayHistory = customerService.addCustomerPaymentHistory(bill.getCustomerMobileNo(),
 						bill.getNetSalesAmt(), 0, AppConstants.CREDIT,
-						"Invoice Amount Based on No : " + bill.getBillNumber());
+						"Invoice Amount based on No : " + bill.getBillNumber());
 				statusAddPendingAmt = customerService.addPendingPaymentToCustomer(bill.getCustomerMobileNo(),
 						bill.getNetSalesAmt());
 			}
@@ -728,7 +728,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			Product product = new Product();
 			product.setProductCode(p.getProductCode());
 			product.setQuantity(p.getTableDispQuantity());
-			product.setDescription("Sales Based on Invoice No.: " + txtInvoiceNumber.getText());
+			product.setDescription("Sales based on Invoice No.: " + txtInvoiceNumber.getText());
 			productList.add(product);
 		}
 		return productList;
@@ -753,6 +753,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		bill.setPurchaseAmt(getBillPurchaseAmount());
 		bill.setGstType(txtGstType.getText());
 		bill.setGstAmount(Double.valueOf(txtGstAmount.getText()));
+		bill.setCreatedBy(userDetails.getFirstName()+" "+userDetails.getLastName());
 		return bill;
 	}
 

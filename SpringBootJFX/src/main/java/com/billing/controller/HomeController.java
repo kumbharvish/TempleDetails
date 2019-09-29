@@ -510,12 +510,14 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onSearchInvoiceClick(MouseEvent event) {
-
+		if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+			searchInvoiceMenuItem.fire();
+		}
 	}
 
 	@FXML
 	void onSearchInvoiceCommand(ActionEvent event) {
-
+		addTab("SearchInvoice","Search Invoice");
 	}
 
 	@FXML
