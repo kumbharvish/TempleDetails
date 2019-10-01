@@ -228,7 +228,6 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 		StatusDTO statusCustBlanceUpdate = new StatusDTO(-1);
 		StatusDTO statusDeleteBill = new StatusDTO(-1);
 		StatusDTO statusUpdatePayHistory = new StatusDTO(-1);
-		StatusDTO statusUpdateStock = new StatusDTO(-1);
 		if (bill != null) {
 			Alert alert = alertHelper.showConfirmAlertWithYesNo(currentStage, null,
 					"Are you sure to delete Invoice No. : " + bill.getBillNumber() + " ?");
@@ -240,10 +239,8 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 					// Added condition to check customer pending balance is greater than or equal to
 					// current return amount
 					if ("PENDING".equals(bill.getPaymentMode()) && customer.getBalanceAmt() >= bill.getNetSalesAmt()) {
-						statusDeleteBill = billingService.deleteBillDetails(bill.getBillNumber());
+						statusDeleteBill = invoiceService.deleteInvoice(bill.getBillNumber(), bill.getItemDetails());
 						if (statusDeleteBill.getStatusCode() == 0) {
-							// Stock Correction
-							statusUpdateStock = billingService.updateDeletedBillProductStock(bill.getItemDetails());
 
 							statusUpdatePayHistory = customerService.addCustomerPaymentHistory(
 									bill.getCustomerMobileNo(), 0, bill.getNetSalesAmt(), AppConstants.DEBIT,
@@ -252,8 +249,7 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 									bill.getNetSalesAmt());
 
 							if (statusCustBlanceUpdate.getStatusCode() == 0
-									&& statusUpdatePayHistory.getStatusCode() == 0
-									&& statusUpdateStock.getStatusCode() == 0) {
+									&& statusUpdatePayHistory.getStatusCode() == 0) {
 								productHistoryService.addProductStockLedger(
 										getProductList(bill.getItemDetails(), bill.getBillNumber()),
 										AppConstants.STOCK_IN, AppConstants.DELETE_BILL);
@@ -274,18 +270,14 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 					}
 					// Cash Bill
 					if (!"PENDING".equals(bill.getPaymentMode())) {
-						statusDeleteBill = billingService.deleteBillDetails(bill.getBillNumber());
+						statusDeleteBill = invoiceService.deleteInvoice(bill.getBillNumber(), bill.getItemDetails());
 						if (statusDeleteBill.getStatusCode() == 0) {
-							// Stock Correction
-							statusUpdateStock = billingService.updateDeletedBillProductStock(bill.getItemDetails());
-							if (statusUpdateStock.getStatusCode() == 0) {
 								productHistoryService.addProductStockLedger(
 										getProductList(bill.getItemDetails(), bill.getBillNumber()),
 										AppConstants.STOCK_IN, AppConstants.DELETE_BILL);
 								alertHelper.showSuccessNotification(
 										"Invoice No. " + bill.getBillNumber() + " deleted successfully");
 								removeDeletedRecord(bill);
-							}
 						} else {
 							alertHelper.showErrorNotification("Error occured while deleting inovice");
 						}

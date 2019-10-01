@@ -53,8 +53,14 @@ public class InvoiceService {
 
 	private static final String NEW_BILL_NUMBER = "SELECT (MAX(BILL_NUMBER)+1) AS BILL_NO FROM CUSTOMER_BILL_DETAILS ";
 
-	// Save Bill Details
-	public StatusDTO saveBillDetails(BillDetails bill) {
+	private static final String DELETE_BILL_DETAILS = "DELETE FROM CUSTOMER_BILL_DETAILS WHERE BILL_NUMBER=?";
+
+	private static final String DELETE_BILL_ITEM_DETAILS = "DELETE FROM BILL_ITEM_DETAILS WHERE BILL_NUMBER=?";
+
+	private static final String UPDATE_DELETED_PRODUCT_STOCK = "UPDATE PRODUCT_DETAILS SET QUANTITY=QUANTITY+? WHERE PRODUCT_ID=?";
+
+	// Save Invoice Details
+	private StatusDTO saveInvoiceDetails(BillDetails bill) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		StatusDTO staus = new StatusDTO();
@@ -81,9 +87,6 @@ public class InvoiceService {
 				int i = stmt.executeUpdate();
 				if (i > 0) {
 					staus.setStatusCode(0);
-					saveBillItemDetails(bill.getItemDetails());
-					updateProductStock(bill.getItemDetails());
-					System.out.println("Bill Details Saved !");
 				}
 			}
 		} catch (Exception e) {
@@ -97,7 +100,24 @@ public class InvoiceService {
 		return staus;
 	}
 
-	// Save Bill Details
+	public StatusDTO saveInvoice(BillDetails bill) {
+		StatusDTO status = saveInvoiceDetails(bill);
+		boolean isItemsSaved = false;
+		boolean isStockUpdated = false;
+		if (status.getStatusCode() == 0) {
+			isItemsSaved = saveBillItemDetails(bill.getItemDetails());
+			isStockUpdated = updateProductStock(bill.getItemDetails());
+			System.out.println("Bill Details Saved !");
+		}
+
+		if (!isStockUpdated || !isItemsSaved) {
+			status.setStatusCode(-1);
+		}
+		return status;
+
+	}
+
+	// Save Invoice Item Details
 	public boolean saveBillItemDetails(List<ItemDetails> itemList) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -279,6 +299,8 @@ public class InvoiceService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
+		} finally {
+			DBUtils.closeConnection(stmt, conn);
 		}
 
 		return itemDetailsList;
@@ -474,6 +496,106 @@ public class InvoiceService {
 		selectQuery.append(" ORDER BY CBD.BILL_DATE_TIME DESC");
 		System.out.println(selectQuery);
 		return selectQuery.toString();
+	}
+
+	public StatusDTO deleteInvoice(int billNumber, List<ItemDetails> itemList) {
+		StatusDTO status = deleteInvoiceDetails(billNumber);
+		StatusDTO statusDeleteItems = new StatusDTO();
+		StatusDTO statusUpdateStock = new StatusDTO();
+		if (status.getStatusCode() == 0) {
+			statusDeleteItems = deleteBillItemDetails(billNumber);
+			statusUpdateStock = updateDeletedBillProductStock(itemList);
+		}
+		if (statusDeleteItems.getStatusCode() != 0 || statusUpdateStock.getStatusCode() != 0) {
+			status.setStatusCode(-1);
+		}
+		return status;
+	}
+
+	// Delete Bill Details including Items
+	public StatusDTO deleteInvoiceDetails(int billNumber) {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		StatusDTO status = new StatusDTO();
+		try {
+			conn = dbUtils.getConnection();
+			stmt = conn.prepareStatement(DELETE_BILL_DETAILS);
+			stmt.setInt(1, billNumber);
+
+			int i = stmt.executeUpdate();
+			if (i > 0) {
+				status.setStatusCode(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			status.setException(e.getMessage());
+			status.setStatusCode(-1);
+			logger.info("Exception : ", e);
+			return status;
+		} finally {
+			DBUtils.closeConnection(stmt, conn);
+		}
+		return status;
+	}
+
+	// Delete bill only Bill Item Details
+	public StatusDTO deleteBillItemDetails(int billNumber) {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		StatusDTO status = new StatusDTO();
+		try {
+			conn = dbUtils.getConnection();
+			stmt = conn.prepareStatement(DELETE_BILL_ITEM_DETAILS);
+			stmt.setInt(1, billNumber);
+
+			int i = stmt.executeUpdate();
+			if (i > 0) {
+				status.setStatusCode(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			status.setException(e.getMessage());
+			status.setStatusCode(-1);
+			logger.info("Exception : ", e);
+			return status;
+		} finally {
+			DBUtils.closeConnection(stmt, conn);
+		}
+		return status;
+	}
+
+	// Update Product Stock for Deleted Invoice
+	private StatusDTO updateDeletedBillProductStock(List<ItemDetails> itemList) {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		StatusDTO status = new StatusDTO();
+		try {
+			if (!itemList.isEmpty()) {
+				conn = dbUtils.getConnection();
+				conn.setAutoCommit(false);
+				stmt = conn.prepareStatement(UPDATE_DELETED_PRODUCT_STOCK);
+				for (ItemDetails item : itemList) {
+					stmt.setInt(2, item.getItemNo());
+					stmt.setDouble(1, item.getQuantity());
+					stmt.addBatch();
+				}
+				int batch[] = stmt.executeBatch();
+				conn.commit();
+				if (batch.length == itemList.size()) {
+					status.setStatusCode(0);
+					System.out.println("Product Stock  updated");
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			status.setStatusCode(-1);
+			status.setException(e.getMessage());
+			logger.info("Exception : ", e);
+			return status;
+		} finally {
+			DBUtils.closeConnection(stmt, conn);
+		}
+		return status;
 	}
 
 }

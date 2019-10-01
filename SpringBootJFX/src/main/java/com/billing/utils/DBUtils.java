@@ -25,6 +25,7 @@ public class DBUtils {
 		Connection con = null;
 		try {
 			con = dataSource.getConnection();
+			System.out.println("GetCon : "+con);
 		} catch (Exception e) {
 			logger.error("Get Connection Exception :", e);
 			e.printStackTrace();
@@ -39,6 +40,7 @@ public class DBUtils {
 				stmt.close();
 			}
 			if (conn != null) {
+				System.out.println("CloseCon : "+conn);
 				conn.close();
 			}
 		} catch (SQLException se2) {

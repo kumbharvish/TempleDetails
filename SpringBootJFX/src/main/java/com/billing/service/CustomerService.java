@@ -280,6 +280,7 @@ public class CustomerService {
 
 			if (records > 0) {
 				status.setStatusCode(0);
+				System.out.println("=> Add customer Pending Amount done");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -445,11 +446,11 @@ public class CustomerService {
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();
 		try {
+			Customer customer = getCustomerDetails(customerMobile);
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(INS_CUSTOMER_PAY_HISTORY);
 			stmt.setLong(1, customerMobile);
 			stmt.setString(2, appUtils.getCurrentTimestamp());
-			Customer customer = getCustomerDetails(customerMobile);
 			if (AppConstants.CREDIT.equals(flag)) {
 				stmt.setDouble(3, customer.getBalanceAmt() + creditAmount);
 			}
@@ -465,6 +466,7 @@ public class CustomerService {
 
 			if (records > 0) {
 				status.setStatusCode(0);
+				System.out.println("=> Add customer payment history done");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

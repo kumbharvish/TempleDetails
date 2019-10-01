@@ -674,7 +674,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		if (AppConstants.PENDING.equals(cbPaymentModes.getSelectionModel().getSelectedItem())) {
 			System.out.println("Bill Details : " + bill);
 			// Save Bill Details
-			StatusDTO status = invoiceService.saveBillDetails(bill);
+			StatusDTO status = invoiceService.saveInvoice(bill);
 			StatusDTO statusAddPendingAmt = new StatusDTO(-1);
 			StatusDTO statusUpdatePayHistory = new StatusDTO(-1);
 			if (status.getStatusCode() == 0) {
@@ -697,7 +697,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		if (!AppConstants.PENDING.equals(cbPaymentModes.getSelectionModel().getSelectedItem())) {
 			System.out.println("Bill Details : " + bill);
 			// Save Bill Details
-			StatusDTO status = invoiceService.saveBillDetails(bill);
+			StatusDTO status = invoiceService.saveInvoice(bill);
 			if (status.getStatusCode() == 0) {
 				productHistoryService.addProductStockLedger(getProductListForStockLedger(), AppConstants.STOCK_OUT,
 						AppConstants.SALES);
