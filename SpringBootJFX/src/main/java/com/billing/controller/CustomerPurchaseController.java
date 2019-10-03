@@ -125,7 +125,9 @@ public class CustomerPurchaseController extends AppContext implements TabContent
 		tableView.setOnMouseClicked((MouseEvent event) -> {
 			if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
 				// Show View Invoice Popup
-				getViewInvoicePopup(tableView.getSelectionModel().getSelectedItem());
+				if (null != tableView.getSelectionModel().getSelectedItem()) {
+					getViewInvoicePopup(tableView.getSelectionModel().getSelectedItem());
+				}
 			}
 		});
 	}

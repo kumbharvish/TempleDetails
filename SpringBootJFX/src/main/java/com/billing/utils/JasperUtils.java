@@ -164,7 +164,10 @@ public class JasperUtils {
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, headerParamsMap, dataSource);
 
 			// view report to UI
-			JasperViewer.viewReport(jasperPrint, false);
+			JasperViewer jasperViewer = new JasperViewer(jasperPrint,false);
+			jasperViewer.setTitle("Print Barcode");
+			jasperViewer.setIconImage(new ImageIcon(this.getClass().getResource("/images/shop32X32.png")).getImage());
+			jasperViewer.setVisible(true);
 
 			// Export To PDF
 			/*
@@ -174,14 +177,6 @@ public class JasperUtils {
 			 * JasperExportManager.exportReportToPdfFile(jasperPrint, filePath);
 			 */
 
-			/*
-			 * String fileLocation =
-			 * homeLocation+"\\"+AppConstants.BARCODE_SHEET_FOLER+"\\"; String filePath=
-			 * fileLocation+pdfName+".doc"; Exporter exporter = new JRDocxExporter();
-			 * exporter.setExporterInput(new SimpleExporterInput(jasperPrint)); File
-			 * exportReportFile = new File(filePath); exporter.setExporterOutput(new
-			 * SimpleOutputStreamExporterOutput(exportReportFile)); exporter.exportReport();
-			 */
 
 			// Export To DOC
 			// PDFUtils.openWindowsDocument(filePath);

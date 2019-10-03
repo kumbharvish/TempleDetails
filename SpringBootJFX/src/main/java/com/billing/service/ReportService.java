@@ -28,7 +28,7 @@ public class ReportService {
 
 	@Autowired
 	DBUtils dbUtils;
-	
+
 	@Autowired
 	AppUtils appUtils;
 
@@ -91,12 +91,14 @@ public class ReportService {
 		try {
 			conn = dbUtils.getConnection();
 			// Opening Cash
-			Double openCash = getOpeningCash(fromDate);
-			if (openCash != null) {
+			stmt = conn.prepareStatement(GET_OPENING_CASH);
+			stmt.setString(1, fromDate);
+			ResultSet rsOC = stmt.executeQuery();
+			if (rsOC.next()) {
 				CashCounter cashTotalSales = new CashCounter();
 				cashTotalSales.setDescription("OPENING_CASH");
-				cashTotalSales.setCreditAmount(openCash);
-				closingBalance = openCash;
+				cashTotalSales.setCreditAmount(rsOC.getDouble("AMOUNT"));
+				closingBalance = rsOC.getDouble("AMOUNT");
 				cashTotalSales.setClosingBalance(closingBalance);
 				cashCounterList.add(cashTotalSales);
 			}
@@ -588,8 +590,7 @@ public class ReportService {
 		StatusDTO status = new StatusDTO(-1);
 		double stockValueAmount = getStockValueAmount();
 		System.out.println("Stock Value Amount : " + stockValueAmount);
-		addOpeningStockAmount(appUtils.getCurrentTimestamp(),
-				appUtils.getDecimalRoundUp2Decimal(stockValueAmount));
+		addOpeningStockAmount(appUtils.getCurrentTimestamp(), appUtils.getDecimalRoundUp2Decimal(stockValueAmount));
 		return status;
 	}
 

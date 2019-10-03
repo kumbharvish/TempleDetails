@@ -237,7 +237,6 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 
 	@Override
 	public boolean loadData() {
-		List<Product> list = productService.getAllProducts();
 		return true;
 	}
 

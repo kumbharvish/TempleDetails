@@ -107,9 +107,9 @@
                <center>
                   <TableView fx:id="tableView" BorderPane.alignment="CENTER">
                     <columns>
-                      <TableColumn fx:id="tcInvoiceNo" minWidth="120.0" prefWidth="150.0" text="Invoice Number" />
+                      <TableColumn fx:id="tcInvoiceNo" minWidth="100.0" prefWidth="150.0" text="Invoice Number" />
                         <TableColumn fx:id="tcInvoiceDate" minWidth="120.0" prefWidth="150.0" text="Invoice Date" />
-						<TableColumn fx:id="tcNoOfItems" minWidth="60.0" prefWidth="150.0" text="No Of Items" />
+						<TableColumn fx:id="tcNoOfItems" minWidth="60.0" prefWidth="140.0" text="No Of Items" />
                         <TableColumn fx:id="tcQuantity" minWidth="60.0" prefWidth="150.0" text="Quantity" />
                         <TableColumn fx:id="tcInvoiceAmount" minWidth="51.0" prefWidth="150.0" text="Invoice Amount" />
                     </columns>

@@ -89,6 +89,8 @@ public class AppUtils {
 
 	static final Logger logger = LoggerFactory.getLogger(AppUtils.class);
 
+	List<String> paymentModes = null;
+
 	public static int getRecordsCount(ResultSet resultset) throws SQLException {
 		if (resultset.last()) {
 			return resultset.getRow();
@@ -133,11 +135,12 @@ public class AppUtils {
 		if (null == data || (data != null && data.isEmpty())) {
 			logger.info("--- ## App Data Configuration Missing for Key ## --- :: " + dataName);
 		}
+		System.out.println("Data Name : "+dataName);
 		return data;
 	}
-	
+
 	public boolean isTrue(String value) {
-		if("Y".equalsIgnoreCase(value)) {
+		if ("Y".equalsIgnoreCase(value)) {
 			return true;
 		}
 		return false;
@@ -550,27 +553,29 @@ public class AppUtils {
 	}
 
 	public List<String> getPaymentModes() {
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		List<String> data = new LinkedList<>();
+		if (paymentModes == null) {
+			Connection conn = null;
+			PreparedStatement stmt = null;
+			paymentModes = new LinkedList<>();
 
-		try {
-			conn = dbUtils.getConnection();
-			stmt = conn.prepareStatement(PAYMENT_MODES);
-			ResultSet rs = stmt.executeQuery();
+			try {
+				conn = dbUtils.getConnection();
+				stmt = conn.prepareStatement(PAYMENT_MODES);
+				ResultSet rs = stmt.executeQuery();
 
-			while (rs.next()) {
-				data.add(rs.getString("NAME"));
+				while (rs.next()) {
+					paymentModes.add(rs.getString("NAME"));
+				}
+				rs.close();
+
+			} catch (Exception e) {
+				logger.error("Exception :" + e);
+				e.printStackTrace();
+			} finally {
+				DBUtils.closeConnection(stmt, conn);
 			}
-			rs.close();
-
-		} catch (Exception e) {
-			logger.error("Exception :" + e);
-			e.printStackTrace();
-		} finally {
-			DBUtils.closeConnection(stmt, conn);
 		}
-		return data;
+		return paymentModes;
 	}
 
 	// Checks if folder does not exist create new folder and returns folder path

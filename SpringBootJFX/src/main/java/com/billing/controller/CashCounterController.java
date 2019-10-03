@@ -169,32 +169,22 @@ public class CashCounterController implements TabContent {
 
 		}
 
-		lblCrOpeningCashAmt.setText(
-				IndianCurrencyFormatting.applyFormatting(openingCashBalance.getCreditAmount()));
-		lblCb_1.setText(
-				IndianCurrencyFormatting.applyFormatting(openingCashBalance.getClosingBalance()));
-		lblCrTotalSalesAmt.setText(
-				IndianCurrencyFormatting.applyFormatting(totalSalesAmount.getCreditAmount()));
-		lblCb_2.setText(
-				IndianCurrencyFormatting.applyFormatting(totalSalesAmount.getClosingBalance()));
-		lblDrTotalSalesReturnAmt.setText(
-				IndianCurrencyFormatting.applyFormatting(totalSalesReturnAmount.getDebitAmount()));
-		lblCb_3.setText(IndianCurrencyFormatting
-				.applyFormatting(totalSalesReturnAmount.getClosingBalance()));
-		lblDrTotalExpenseAmt
-				.setText(IndianCurrencyFormatting.applyFormatting(totalExpense.getDebitAmount()));
+		lblCrOpeningCashAmt.setText(IndianCurrencyFormatting.applyFormatting(openingCashBalance.getCreditAmount()));
+		lblCb_1.setText(IndianCurrencyFormatting.applyFormatting(openingCashBalance.getClosingBalance()));
+		lblCrTotalSalesAmt.setText(IndianCurrencyFormatting.applyFormatting(totalSalesAmount.getCreditAmount()));
+		lblCb_2.setText(IndianCurrencyFormatting.applyFormatting(totalSalesAmount.getClosingBalance()));
+		lblDrTotalSalesReturnAmt
+				.setText(IndianCurrencyFormatting.applyFormatting(totalSalesReturnAmount.getDebitAmount()));
+		lblCb_3.setText(IndianCurrencyFormatting.applyFormatting(totalSalesReturnAmount.getClosingBalance()));
+		lblDrTotalExpenseAmt.setText(IndianCurrencyFormatting.applyFormatting(totalExpense.getDebitAmount()));
 		lblCb_4.setText(IndianCurrencyFormatting.applyFormatting(totalExpense.getClosingBalance()));
 
-		lblCrTotalCustSettleAmt.setText(
-				IndianCurrencyFormatting.applyFormatting(totalCustSettleAmount.getCreditAmount()));
-		lblCb_5.setText(IndianCurrencyFormatting
-				.applyFormatting(totalCustSettleAmount.getClosingBalance()));
-		lblTotalCreditAmount
-				.setText(IndianCurrencyFormatting.applyFormatting(totalAmount.getCreditAmount()));
-		lblTotalDebitAmount
-				.setText(IndianCurrencyFormatting.applyFormatting(totalAmount.getDebitAmount()));
-		lblTotalCashCounterAmt
-				.setText(IndianCurrencyFormatting.applyFormatting(totalAmount.getClosingBalance()));
+		lblCrTotalCustSettleAmt
+				.setText(IndianCurrencyFormatting.applyFormatting(totalCustSettleAmount.getCreditAmount()));
+		lblCb_5.setText(IndianCurrencyFormatting.applyFormatting(totalCustSettleAmount.getClosingBalance()));
+		lblTotalCreditAmount.setText(IndianCurrencyFormatting.applyFormatting(totalAmount.getCreditAmount()));
+		lblTotalDebitAmount.setText(IndianCurrencyFormatting.applyFormatting(totalAmount.getDebitAmount()));
+		lblTotalCashCounterAmt.setText(IndianCurrencyFormatting.applyFormatting(totalAmount.getClosingBalance()));
 
 		return true;
 	}
@@ -357,7 +347,7 @@ public class CashCounterController implements TabContent {
 		final DialogPane dialogPane = dialog.getDialogPane();
 		dialogPane.getStylesheets().add(AlertHelper.class.getResource(styleSheetPath).toExternalForm());
 		dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
-		
+
 		Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
 		stage.getIcons().add(new Image(this.getClass().getResource("/images/shop32X32.png").toString()));
 		TableView<Customer> tableView = new TableView<Customer>();
