@@ -709,12 +709,12 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 
 		if (saveStatus) {
 			alertHelper.showSuccessNotification("Invoice saved successfully");
+			// Reset Invoice UI Fields
+			resetFields();
 			// Print Invoice
 			if (cbPrintOnSave.isSelected()) {
 				printerService.printInvoice(bill);
 			}
-			// Reset Invoice UI Fields
-			resetFields();
 		} else {
 			alertHelper.showErrorNotification("Error occured while saving invoice");
 		}
@@ -753,7 +753,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		bill.setPurchaseAmt(getBillPurchaseAmount());
 		bill.setGstType(txtGstType.getText());
 		bill.setGstAmount(Double.valueOf(txtGstAmount.getText()));
-		bill.setCreatedBy(userDetails.getFirstName()+" "+userDetails.getLastName());
+		bill.setCreatedBy(userDetails.getFirstName() + " " + userDetails.getLastName());
 		return bill;
 	}
 

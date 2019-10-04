@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.ImageIcon;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +17,11 @@ import com.billing.dto.Barcode;
 import com.billing.dto.MyStoreDetails;
 import com.billing.service.StoreDetailsService;
 
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -26,7 +29,8 @@ import net.sf.jasperreports.engine.JasperPrintManager;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
-import net.sf.jasperreports.view.JasperViewer;
+import win.zqxu.jrviewer.JRViewerFX;
+import javafx.geometry.Insets;
 
 @Component
 public class JasperUtils {
@@ -74,13 +78,16 @@ public class JasperUtils {
 
 			JasperExportManager.exportReportToPdfFile(jasperPrint,
 					dirLocation + "Invoice_" + billNumber + "_" + appUtils.getFormattedDate(new Date()) + ".pdf");
-			// Show Print Preview 
+			// Show Print Preview
 			if (appUtils.isTrue(appUtils.getAppDataValues(AppConstants.SHOW_PRINT_PREVIEW))) {
-				JasperViewer jasperViewer = new JasperViewer(jasperPrint,false);
-				jasperViewer.setTitle("Invoice");
-				jasperViewer.setIconImage(new ImageIcon(this.getClass().getResource("/images/shop32X32.png")).getImage());
-				jasperViewer.setVisible(true);
-				
+				/*
+				 * JasperViewer jasperViewer = new JasperViewer(jasperPrint,false);
+				 * jasperViewer.setTitle("Invoice"); jasperViewer.setIconImage(new
+				 * ImageIcon(this.getClass().getResource("/images/shop32X32.png")).getImage());
+				 * jasperViewer.setVisible(true);
+				 */
+				previewPrint(jasperPrint, "Invoice");
+
 			} else {
 				JasperPrintManager.printReport(jasperPrint, false);
 			}
@@ -164,11 +171,13 @@ public class JasperUtils {
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, headerParamsMap, dataSource);
 
 			// view report to UI
-			JasperViewer jasperViewer = new JasperViewer(jasperPrint,false);
-			jasperViewer.setTitle("Print Barcode");
-			jasperViewer.setIconImage(new ImageIcon(this.getClass().getResource("/images/shop32X32.png")).getImage());
-			jasperViewer.setVisible(true);
-
+			/*
+			 * JasperViewer jasperViewer = new JasperViewer(jasperPrint,false);
+			 * jasperViewer.setTitle("Print Barcode"); jasperViewer.setIconImage(new
+			 * ImageIcon(this.getClass().getResource("/images/shop32X32.png")).getImage());
+			 * jasperViewer.setVisible(true);
+			 */
+			previewPrint(jasperPrint, "Barcode Sheet");
 			// Export To PDF
 			/*
 			 * String fileLocation =
@@ -176,7 +185,6 @@ public class JasperUtils {
 			 * fileLocation+pdfName+".pdf";
 			 * JasperExportManager.exportReportToPdfFile(jasperPrint, filePath);
 			 */
-
 
 			// Export To DOC
 			// PDFUtils.openWindowsDocument(filePath);
@@ -186,6 +194,20 @@ public class JasperUtils {
 			logger.error("Jasper Exception: ", e);
 		}
 		return isSucess;
+	}
+
+	public void previewPrint(JasperPrint report, String previewName) {
+		JRViewerFX viewer = new JRViewerFX(report);
+		viewer.setPadding(new Insets(8));
+		Stage preview = new Stage();
+		preview.initOwner(null);
+		preview.initModality(Modality.APPLICATION_MODAL);
+		preview.setScene(new Scene(viewer));
+		preview.setTitle("Print Preview : " + previewName);
+		preview.getIcons().add(new Image(this.getClass().getResource("/images/shop32X32.png").toString()));
+		final String styleSheetPath = "/css/alertDialog.css";
+		preview.getScene().getStylesheets().add(AlertHelper.class.getResource(styleSheetPath).toExternalForm());
+		preview.showAndWait();
 	}
 
 	public static void main(String[] args) {
