@@ -205,7 +205,7 @@ public class JasperUtils {
 		preview.setScene(new Scene(viewer));
 		preview.setTitle("Print Preview : " + previewName);
 		preview.getIcons().add(new Image(this.getClass().getResource("/images/shop32X32.png").toString()));
-		final String styleSheetPath = "/css/alertDialog.css";
+		final String styleSheetPath = "/css/printPreviewDialog.css";
 		preview.getScene().getStylesheets().add(AlertHelper.class.getResource(styleSheetPath).toExternalForm());
 		preview.showAndWait();
 	}

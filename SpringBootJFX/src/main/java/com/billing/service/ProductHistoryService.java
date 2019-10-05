@@ -28,7 +28,7 @@ public class ProductHistoryService {
 	@Autowired
 	AppUtils appUtils;
 	
-	private static final Logger logger = LoggerFactory.getLogger(ProductCategoryService.class);
+	private static final Logger logger = LoggerFactory.getLogger(ProductHistoryService.class);
 	
 	private static final String INS_PRODUCT_PURCHASE_PRICE = "INSERT INTO PRODUCT_PURCHASE_PRICE_HISTORY (PRODUCT_ID,PURCHASE_PRICE,ENTRY_DATE,NARRATION,PURCHASE_RATE,PRODUCT_TAX,SUPPLIER_ID)" +
 			  " VALUES(?,?,?,?,?,?,?)";

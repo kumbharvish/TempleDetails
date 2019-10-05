@@ -473,13 +473,15 @@ public class CustomersController extends AppContext implements TabContent {
 							cust.setCustMobileNumber(Long.valueOf(txtMobileNo.getText()));
 							cust.setCustName(txtCustName.getText());
 							cust.setAmount(Double.valueOf(amount));
-							StatusDTO statusPayHist = customerService.addCustomerPaymentHistory(
-									cust.getCustMobileNumber(), cust.getAmount(), 0, AppConstants.CREDIT,
-									"Added by : " + userDetails.getFirstName() + " " + userDetails.getLastName());
-							StatusDTO statusAddAmt = customerService.addPendingPaymentToCustomer(
-									Long.valueOf(txtMobileNo.getText()), Double.valueOf(txtAmount.getText()));
 
-							if (statusPayHist.getStatusCode() == 0 && statusAddAmt.getStatusCode() == 0) {
+							String narration = "Added by : " + userDetails.getFirstName() + " "
+									+ userDetails.getLastName();
+
+							StatusDTO statusAddAmt = customerService.addCustomerPaymentHistory(
+									Long.valueOf(txtMobileNo.getText()), Double.valueOf(txtAmount.getText()), 0,
+									AppConstants.CREDIT, narration);
+
+							if (statusAddAmt.getStatusCode() == 0) {
 								alertHelper.showSuccessNotification("Pending amount updated successfully");
 								int indexSelected = tableView.getSelectionModel().getSelectedIndex();
 								loadData();
@@ -499,13 +501,13 @@ public class CustomersController extends AppContext implements TabContent {
 							customerSt.setCustMobileNumber(Long.valueOf(txtMobileNo.getText()));
 							customerSt.setCustName(txtCustName.getText());
 							customerSt.setAmount(Double.valueOf(txtAmount.getText()));
-							StatusDTO statusPayHist = customerService.addCustomerPaymentHistory(
-									customerSt.getCustMobileNumber(), 0, customerSt.getAmount(), AppConstants.DEBIT,
-									"Settled up by : " + userDetails.getFirstName() + " " + userDetails.getLastName());
-							StatusDTO statusAddAmt = customerService.settleUpCustomerBalance(
-									Long.valueOf(txtMobileNo.getText()), Double.valueOf(txtAmount.getText()));
+							String narration = "Settled up by : " + userDetails.getFirstName() + " "
+									+ userDetails.getLastName();
+							StatusDTO statusAddAmt = customerService.addCustomerPaymentHistory(
+									Long.valueOf(txtMobileNo.getText()), 0, Double.valueOf(txtAmount.getText()),
+									AppConstants.DEBIT, narration);
 
-							if (statusPayHist.getStatusCode() == 0 && statusAddAmt.getStatusCode() == 0) {
+							if (statusAddAmt.getStatusCode() == 0) {
 								alertHelper.showSuccessNotification("Pending amount updated succesfully");
 								int indexSelected = tableView.getSelectionModel().getSelectedIndex();
 								loadData();
@@ -515,8 +517,7 @@ public class CustomersController extends AppContext implements TabContent {
 								alertHelper.showErrorNotification("Error occured while settling up");
 							}
 						} else {
-							alertHelper.showErrorNotification(
-									"Amount should be less than current balance");
+							alertHelper.showErrorNotification("Amount should be less than current balance");
 						}
 					}
 

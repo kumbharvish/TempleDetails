@@ -25,7 +25,7 @@ public class CustomerService {
 
 	@Autowired
 	DBUtils dbUtils;
-	
+
 	@Autowired
 	AppUtils appUtils;
 
@@ -266,12 +266,10 @@ public class CustomerService {
 	}
 
 	// Add amount to customer balance
-	public StatusDTO addPendingPaymentToCustomer(long custMobileNo, double balance) {
-		Connection conn = null;
+	private boolean addPendingPaymentToCustomer(Connection conn, long custMobileNo, double balance, String narration) {
 		PreparedStatement stmt = null;
-		StatusDTO status = new StatusDTO();
+		boolean status = false;
 		try {
-			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(UPDATE_CUST_BALANCE);
 			stmt.setDouble(1, balance);
 			stmt.setLong(2, custMobileNo);
@@ -279,43 +277,34 @@ public class CustomerService {
 			int records = stmt.executeUpdate();
 
 			if (records > 0) {
-				status.setStatusCode(0);
-				System.out.println("=> Add customer Pending Amount done");
+				status = true;
+				System.out.println("Customer Balance Updated !");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
-			status.setException(e.getMessage());
-			status.setStatusCode(-1);
-		} finally {
-			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
 
 	// Settle Up Customer Balance
-	public StatusDTO settleUpCustomerBalance(long custMobileNo, double amount) {
-		Connection conn = null;
+	public boolean settleUpCustomerBalance(Connection conn, long custMobileNo, double balance, String narration) {
 		PreparedStatement stmt = null;
-		StatusDTO status = new StatusDTO();
+		boolean status = false;
 		try {
-			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(SETTLEUP_CUST_BALANCE);
-			stmt.setDouble(1, amount);
+			stmt.setDouble(1, balance);
 			stmt.setLong(2, custMobileNo);
 
 			int records = stmt.executeUpdate();
 
 			if (records > 0) {
-				status.setStatusCode(0);
+				status = true;
+				System.out.println("Customer Balance Updated settle!");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
-			status.setException(e.getMessage());
-			status.setStatusCode(-1);
-		} finally {
-			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
@@ -444,10 +433,12 @@ public class CustomerService {
 			String flag, String narration) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		StatusDTO status = new StatusDTO();
+		boolean balaceUpdated = false;
+		StatusDTO status = new StatusDTO(-1);
 		try {
 			Customer customer = getCustomerDetails(customerMobile);
 			conn = dbUtils.getConnection();
+			conn.setAutoCommit(false);
 			stmt = conn.prepareStatement(INS_CUSTOMER_PAY_HISTORY);
 			stmt.setLong(1, customerMobile);
 			stmt.setString(2, appUtils.getCurrentTimestamp());
@@ -466,14 +457,26 @@ public class CustomerService {
 
 			if (records > 0) {
 				status.setStatusCode(0);
-				System.out.println("=> Add customer payment history done");
+				System.out.println("Add customer payment history");
+				if ("CREDIT".equals(flag)) {
+					balaceUpdated = addPendingPaymentToCustomer(conn, customerMobile, creditAmount, narration);
+				} else {
+					balaceUpdated = settleUpCustomerBalance(conn, customerMobile, debitAmount, narration);
+				}
+			}
+			if (status.getStatusCode() == 0 && balaceUpdated) {
+				System.out.println("Customer payment update Transaction comitted !");
+				conn.commit();
+			} else {
+				conn.rollback();
+				System.out.println("Customer payment update Transaction rollbacked !");
+				status.setStatusCode(-1);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
-			return status;
 		} finally {
 			DBUtils.closeConnection(stmt, conn);
 		}

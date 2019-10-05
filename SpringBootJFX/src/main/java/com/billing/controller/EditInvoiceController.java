@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.SortedSet;
@@ -14,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.billing.constants.AppConstants;
 import com.billing.dto.BillDetails;
 import com.billing.dto.Customer;
 import com.billing.dto.GSTDetails;
@@ -26,7 +26,6 @@ import com.billing.main.AppContext;
 import com.billing.service.CustomerService;
 import com.billing.service.InvoiceService;
 import com.billing.service.PrinterService;
-import com.billing.service.ProductHistoryService;
 import com.billing.service.ProductService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
@@ -64,7 +63,6 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -81,11 +79,13 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 @Controller
-public class CreateInvoiceController extends AppContext implements TabContent {
+public class EditInvoiceController extends AppContext implements TabContent {
 
-	private static final Logger logger = LoggerFactory.getLogger(CreateInvoiceController.class);
+	private static final Logger logger = LoggerFactory.getLogger(EditInvoiceController.class);
 
 	private BooleanProperty isDirty = new SimpleBooleanProperty(false);
+
+	BillDetails bill;
 
 	@Autowired
 	CustomerService customerService;
@@ -250,7 +250,6 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 
 	@Override
 	public void initialize() {
-
 		if ("Y".equalsIgnoreCase(appUtils.getAppDataValues("GST_INCLUSIVE"))) {
 			isGSTInclusive = true;
 			txtGstType.setText("Inclusive");
@@ -269,14 +268,16 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		} else {
 			rbItemName.setSelected(true);
 		}
-		dpInvoiceDate.setValue(LocalDate.now());
 		dpInvoiceDate.setDayCellFactory(this::getDateCell);
 		dpInvoiceDate.valueProperty().addListener((observable, oldDate, newDate) -> {
 			isDirty.set(true);
 			LocalDate today = LocalDate.now();
-			if (newDate == null || newDate.isAfter(today)) {
-				dpInvoiceDate.setValue(today);
+			if (newDate == null) {
+				Date invoiceDate = appUtils.getDateFromDBTimestamp(bill.getTimestamp());
+				dpInvoiceDate.setValue(appUtils.convertToLocalDateViaInstant(invoiceDate));
 				isDirty.set(true);
+			} else if (newDate.isAfter(today)) {
+				dpInvoiceDate.setValue(today);
 			}
 		});
 		txtItemName.managedProperty().bind(txtItemName.visibleProperty());
@@ -310,7 +311,6 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		});
 		txtItemName.createTextField(productEntries, () -> setProductDetails());
 		txtDiscountPercent.setText("0.0");
-		txtInvoiceNumber.setText(String.valueOf(invoiceService.getNewBillNumber()));
 		// Force Number Listner
 		txtQuantity.textProperty().addListener(appUtils.getForceDecimalNumberListner());
 		txtRate.textProperty().addListener(appUtils.getForceDecimalNumberListner());
@@ -614,7 +614,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	}
 
 	@FXML
-	void onSaveCommand(ActionEvent event) {
+	void onUpdateCommand(ActionEvent event) {
 		if (!saveData()) {
 			return;
 		}
@@ -642,6 +642,31 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 
 	@Override
 	public boolean loadData() {
+		List<ItemDetails> itemList = invoiceService.getItemDetails(bill.getBillNumber());
+		bill.setItemDetails(itemList);
+
+		for (ItemDetails item : bill.getItemDetails()) {
+			Product p = new Product();
+			p.setGstDetails(item.getGstDetails());
+			p.setProductCode(item.getItemNo());
+			p.setProductName(item.getItemName());
+			p.setSellPrice(item.getMRP());
+			p.setTableDispRate(item.getRate());
+			p.setTableDispQuantity(item.getQuantity());
+			p.setPurcasePrice(item.getPurchasePrice());
+			p.setMeasure(item.getUnit());
+			p.setDiscount(item.getDiscountPercent());
+			p.setDiscountAmount(item.getDiscountAmount());
+			p.setTableDispAmount(item.getRate() * item.getQuantity());
+			p.setProductTax(item.getGstDetails().getRate());
+			productTableData.add(p);
+		}
+		txtCustomer.setText(bill.getCustomerMobileNo() + " : " + bill.getCustomerName());
+		Date invoiceDate = appUtils.getDateFromDBTimestamp(bill.getTimestamp());
+		dpInvoiceDate.setValue(appUtils.convertToLocalDateViaInstant(invoiceDate));
+		txtInvoiceNumber.setText(String.valueOf(bill.getBillNumber()));
+		cbPaymentModes.getSelectionModel().select(bill.getPaymentMode());
+		txtDiscountPercent.setText(String.valueOf(bill.getDiscount()));
 		isDirty.set(false);
 		return true;
 	}
@@ -669,20 +694,19 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			return false;
 		}
 		BillDetails bill = prepareBillDetails();
-		StatusDTO status = invoiceService.saveInvoice(bill);
+		StatusDTO status = invoiceService.editInvoice(bill);
 		if (status.getStatusCode() != 0) {
 			saveStatus = false;
 		}
 		if (saveStatus) {
-			alertHelper.showSuccessNotification("Invoice saved successfully");
-			// Reset Invoice UI Fields
-			resetFields();
+			alertHelper.showSuccessNotification("Invoice updated successfully");
 			// Print Invoice
 			if (cbPrintOnSave.isSelected()) {
 				printerService.printInvoice(bill);
 			}
+			closeTab();
 		} else {
-			alertHelper.showErrorNotification("Error occured while saving invoice");
+			alertHelper.showErrorNotification("Error occured while updating invoice");
 		}
 		return saveStatus;
 	}
@@ -702,7 +726,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		bill.setDiscountAmt(Double.valueOf(txtDiscountAmt.getText()));
 		bill.setPaymentMode(cbPaymentModes.getSelectionModel().getSelectedItem());
 		bill.setNetSalesAmt(Double.valueOf(IndianCurrencyFormatting.removeFormatting(txtNetSalesAmount.getText())));
-		
+
 		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd");
 		String invoiceDate = dpInvoiceDate.getValue().format(dateFormatter);
 		String invoiceTime = appUtils.getCurrentTime();
@@ -750,8 +774,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 
 	@Override
 	public void closeTab() {
-		Tab tab = tabPane.selectionModelProperty().get().selectedItemProperty().get();
-		tabPane.getTabs().remove(tab); // close the current tab
+		currentStage.close();
 	}
 
 	@Override
@@ -799,34 +822,6 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		}
 
 		return valid;
-	}
-
-	private void resetFields() {
-		resetItemFields();
-		resetOrignalProductDiscount();
-		productTableData.clear();
-		dpInvoiceDate.setValue(LocalDate.now());
-		txtDiscountPercent.setText("0.0");
-		txtInvoiceNumber.setText(String.valueOf(invoiceService.getNewBillNumber()));
-		txtCustomer.clear();
-		txtCustomer.requestFocus();
-		txtNoOfItems.clear();
-		txtTotalQty.clear();
-		txtSubTotal.clear();
-		txtDiscountAmt.clear();
-		cbPaymentModes.getSelectionModel().select(0);
-		txtGstAmount.clear();
-		txtNetSalesAmount.clear();
-		isDirty.set(false);
-		getProductNameList();
-		txtItemName.createTextField(productEntries, () -> setProductDetails());
-		
-	}
-
-	private void resetOrignalProductDiscount() {
-		for (Product p : productTableData) {
-			p.setDiscount(p.getOrignalDiscount());
-		}
 	}
 
 	private void resetItemFields() {

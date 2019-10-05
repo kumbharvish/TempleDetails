@@ -135,7 +135,7 @@ public class AppUtils {
 		if (null == data || (data != null && data.isEmpty())) {
 			logger.info("--- ## App Data Configuration Missing for Key ## --- :: " + dataName);
 		}
-		System.out.println("Data Name : "+dataName);
+		System.out.println("Data Name : " + dataName);
 		return data;
 	}
 
@@ -303,6 +303,10 @@ public class AppUtils {
 		return date;
 	}
 
+	public LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
+		return dateToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	}
+
 	public String getFormattedDateWithTime(String dt) {
 		SimpleDateFormat inputSdf = new SimpleDateFormat(TIMESTAMP_FORMAT);
 		SimpleDateFormat outputSdf = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
@@ -313,6 +317,17 @@ public class AppUtils {
 			e.printStackTrace();
 		}
 		return outputSdf.format(date);
+	}
+	
+	public Date getDateFromDBTimestamp(String dt) {
+		SimpleDateFormat inputSdf = new SimpleDateFormat(TIMESTAMP_FORMAT);
+		Date date = null;
+		try {
+			date = inputSdf.parse(dt);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return date;
 	}
 
 	public String enc(String value) {
@@ -402,6 +417,12 @@ public class AppUtils {
 
 	public String getCurrentTimestamp() {
 		SimpleDateFormat sdf = new SimpleDateFormat(TIMESTAMP_FORMAT);
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		return sdf.format(timestamp);
+	}
+	
+	public String getCurrentTime() {
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		return sdf.format(timestamp);
 	}
@@ -639,5 +660,5 @@ public class AppUtils {
 		Double gstAmt = (amount * gstRate) / 100;
 		return gstAmt;
 	}
-
+	
 }

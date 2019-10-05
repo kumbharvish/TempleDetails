@@ -14,10 +14,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.billing.constants.AppConstants;
 import com.billing.dto.BillDetails;
 import com.billing.dto.GSTDetails;
 import com.billing.dto.InvoiceSearchCriteria;
 import com.billing.dto.ItemDetails;
+import com.billing.dto.Product;
 import com.billing.dto.StatusDTO;
 import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
@@ -31,12 +33,21 @@ public class InvoiceService {
 	@Autowired
 	AppUtils appUtils;
 
+	@Autowired
+	ProductHistoryService productHistoryService;
+
+	@Autowired
+	CustomerService customerService;
+
 	private static final Logger logger = LoggerFactory.getLogger(InvoiceService.class);
 
 	private static final String INS_BILL_DETAILS = "INSERT INTO CUSTOMER_BILL_DETAILS (BILL_NUMBER,BILL_DATE_TIME,CUST_MOB_NO,CUST_NAME,NO_OF_ITEMS,"
 			+ "BILL_QUANTITY,TOTAL_AMOUNT,PAYMENT_MODE,"
 			+ "BILL_DISCOUNT,BILL_DISC_AMOUNT,NET_SALES_AMOUNT,BILL_PURCHASE_AMT,GST_TYPE,GST_AMOUNT,CREATED_BY,LAST_UPDATED)"
 			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	
+	private static final String UPDATE_BILL_DETAILS = "UPDATE CUSTOMER_BILL_DETAILS SET BILL_DATE_TIME=?,CUST_MOB_NO=?,CUST_NAME=?,NO_OF_ITEMS=?,BILL_QUANTITY=?,TOTAL_AMOUNT=?,PAYMENT_MODE=?,BILL_DISCOUNT=?,BILL_DISC_AMOUNT =?," +
+			"NET_SALES_AMOUNT=? ,BILL_PURCHASE_AMT=?,GST_TYPE=?,GST_AMOUNT=?,CREATED_BY=?,LAST_UPDATED=? WHERE BILL_NUMBER=?";
 
 	private static final String INS_BILL_ITEM_DETAILS = "INSERT INTO BILL_ITEM_DETAILS (BILL_NUMBER,ITEM_NUMBER,ITEM_NAME,ITEM_MRP,ITEM_RATE,"
 			+ "ITEM_QTY,ITEM_AMOUNT,ITEM_PURCHASE_AMT,GST_RATE,GST_NAME,CGST,SGST,GST_AMOUNT,GST_TAXABLE_AMT,GST_INCLUSIVE_FLAG,DISC_PERCENT,DISC_AMOUNT,UNIT) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -59,17 +70,27 @@ public class InvoiceService {
 
 	private static final String UPDATE_DELETED_PRODUCT_STOCK = "UPDATE PRODUCT_DETAILS SET QUANTITY=QUANTITY+? WHERE PRODUCT_ID=?";
 
+	private static final String INS_PRODUCT_STOCK_IN_LEDGER = "INSERT INTO PRODUCT_STOCK_LEDGER (PRODUCT_CODE,TIMESTAMP,STOCK_IN,NARRATION,TRANSACTION_TYPE)"
+			+ " VALUES(?,?,?,?,?)";
+
+	private static final String INS_PRODUCT_STOCK_OUT_LEDGER = "INSERT INTO PRODUCT_STOCK_LEDGER (PRODUCT_CODE,TIMESTAMP,STOCK_OUT,NARRATION,TRANSACTION_TYPE)"
+			+ " VALUES(?,?,?,?,?)";
+
 	// Save Invoice Details
 	private StatusDTO saveInvoiceDetails(BillDetails bill) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		StatusDTO staus = new StatusDTO();
+		boolean isItemsSaved = false;
+		boolean isStockUpdated = false;
+		boolean isStockLedgerUpdated = false;
+		StatusDTO status = new StatusDTO();
 		try {
 			if (bill != null) {
 				conn = dbUtils.getConnection();
+				conn.setAutoCommit(false);
 				stmt = conn.prepareStatement(INS_BILL_DETAILS);
 				stmt.setInt(1, bill.getBillNumber());
-				stmt.setString(2, appUtils.getCurrentTimestamp());
+				stmt.setString(2, bill.getTimestamp());
 				stmt.setLong(3, bill.getCustomerMobileNo());
 				stmt.setString(4, bill.getCustomerName());
 				stmt.setInt(5, bill.getNoOfItems());
@@ -86,47 +107,125 @@ public class InvoiceService {
 				stmt.setString(16, appUtils.getCurrentTimestamp());
 				int i = stmt.executeUpdate();
 				if (i > 0) {
-					staus.setStatusCode(0);
+					status.setStatusCode(0);
+					System.out.println("Invoice Details Saved !");
+					isItemsSaved = saveBillItemDetails(bill.getItemDetails(), conn);
+					isStockUpdated = updateProductStock(bill.getItemDetails(), conn);
+					isStockLedgerUpdated = addProductStockLedger(
+							getProductListForStockLedger(bill.getItemDetails(), "SAVE_INVOICE"), AppConstants.STOCK_OUT,
+							AppConstants.SALES, conn);
 				}
+
+				if (!isStockUpdated || !isItemsSaved || !isStockLedgerUpdated) {
+					status.setStatusCode(-1);
+					// If any step fails rollback Transaction
+					System.out.println("Save Invoice Transaction Rollbacked !");
+					conn.rollback();
+				} else {
+					// Commit Transaction
+					System.out.println("Save Invoice Transaction Committed !");
+					conn.commit();
+				}
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
-			staus.setStatusCode(-1);
-			staus.setException(e.getMessage());
+			status.setStatusCode(-1);
+			status.setException(e.getMessage());
 		} finally {
 			DBUtils.closeConnection(stmt, conn);
 		}
-		return staus;
+		return status;
 	}
 
 	public StatusDTO saveInvoice(BillDetails bill) {
-		StatusDTO status = saveInvoiceDetails(bill);
-		boolean isItemsSaved = false;
-		boolean isStockUpdated = false;
-		if (status.getStatusCode() == 0) {
-			isItemsSaved = saveBillItemDetails(bill.getItemDetails());
-			isStockUpdated = updateProductStock(bill.getItemDetails());
-			System.out.println("Bill Details Saved !");
+		StatusDTO statusSaveInvoice = new StatusDTO();
+		if (AppConstants.PENDING.equals(bill.getPaymentMode())) {
+			// Save Bill Details
+			StatusDTO status = saveInvoiceDetails(bill);
+			StatusDTO statusAddPendingAmt = new StatusDTO(-1);
+			if (status.getStatusCode() == 0) {
+				String narration = "Invoice Amount based on No : " + bill.getBillNumber();
+				statusAddPendingAmt = customerService.addCustomerPaymentHistory(bill.getCustomerMobileNo(),
+						bill.getNetSalesAmt(), 0, AppConstants.CREDIT, narration);
+			}
+			if (status.getStatusCode() != 0 || statusAddPendingAmt.getStatusCode() != 0) {
+				statusSaveInvoice.setStatusCode(-1);
+			}
+		}
+		// Other than PENDING pay mode ex: cash,cheque etc
+		if (!AppConstants.PENDING.equals(bill.getPaymentMode())) {
+			// Save Bill Details
+			StatusDTO status = saveInvoiceDetails(bill);
+			if (status.getStatusCode() != 0) {
+				statusSaveInvoice.setStatusCode(-1);
+			}
 		}
 
-		if (!isStockUpdated || !isItemsSaved) {
-			status.setStatusCode(-1);
-		}
-		return status;
+		return statusSaveInvoice;
 
 	}
 
+	private List<Product> getProductListForStockLedger(List<ItemDetails> itemList, String type) {
+		List<Product> productList = new ArrayList<>();
+		for (ItemDetails p : itemList) {
+			Product product = new Product();
+			product.setProductCode(p.getItemNo());
+			product.setQuantity(p.getQuantity());
+			if ("SAVE_INVOICE".equals(type)) {
+				product.setDescription("Sales based on Invoice No.: " + p.getBillNumber());
+			} else if ("DELETE_INVOICE".equals(type)) {
+				product.setDescription("Delete Invoice based on Invoice No.: " + p.getBillNumber());
+			}
+
+			productList.add(product);
+		}
+		return productList;
+	}
+
+	// Add Product Stock Ledger
+	public boolean addProductStockLedger(List<Product> productList, String stockInOutFlag, String transactionType,
+			Connection conn) {
+		PreparedStatement stmt = null;
+		boolean status = false;
+		try {
+			if (stockInOutFlag.equals(AppConstants.STOCK_IN)) {
+				stmt = conn.prepareStatement(INS_PRODUCT_STOCK_IN_LEDGER);
+			} else {
+				stmt = conn.prepareStatement(INS_PRODUCT_STOCK_OUT_LEDGER);
+			}
+
+			for (Product product : productList) {
+				stmt.setInt(1, product.getProductCode());
+				stmt.setString(2, appUtils.getCurrentTimestamp());
+				stmt.setDouble(3, product.getQuantity());
+				stmt.setString(4, product.getDescription());
+				stmt.setString(5, transactionType);
+				stmt.addBatch();
+			}
+
+			int batch[] = stmt.executeBatch();
+			if (batch.length == productList.size()) {
+				status = true;
+				System.out.println("Product Stock Ledger Added");
+			}
+
+		} catch (Exception e) {
+			status = false;
+			e.printStackTrace();
+			logger.info("Exception : ", e);
+		}
+		return status;
+	}
+
 	// Save Invoice Item Details
-	public boolean saveBillItemDetails(List<ItemDetails> itemList) {
-		Connection conn = null;
+	private boolean saveBillItemDetails(List<ItemDetails> itemList, Connection conn) {
 		PreparedStatement stmt = null;
 		boolean flag = false;
 
 		try {
 			if (!itemList.isEmpty()) {
-				conn = dbUtils.getConnection();
-				conn.setAutoCommit(false);
 				stmt = conn.prepareStatement(INS_BILL_ITEM_DETAILS);
 				for (ItemDetails item : itemList) {
 					stmt.setInt(1, item.getBillNumber());
@@ -152,30 +251,25 @@ public class InvoiceService {
 				}
 
 				int batch[] = stmt.executeBatch();
-				conn.commit();
 				if (batch.length == itemList.size()) {
 					flag = true;
+					System.out.println("Invoice Item saved !");
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
-		} finally {
-			DBUtils.closeConnection(stmt, conn);
 		}
 		return flag;
 	}
 
 	// Update Product Stock
-	public boolean updateProductStock(List<ItemDetails> itemList) {
-		Connection conn = null;
+	public boolean updateProductStock(List<ItemDetails> itemList, Connection conn) {
 		PreparedStatement stmt = null;
 		boolean flag = false;
 
 		try {
 			if (!itemList.isEmpty()) {
-				conn = dbUtils.getConnection();
-				conn.setAutoCommit(false);
 				stmt = conn.prepareStatement(UPDATE_PRODUCT_STOCK);
 				for (ItemDetails item : itemList) {
 					stmt.setInt(2, item.getItemNo());
@@ -183,7 +277,6 @@ public class InvoiceService {
 					stmt.addBatch();
 				}
 				int batch[] = stmt.executeBatch();
-				conn.commit();
 				if (batch.length == itemList.size()) {
 					flag = true;
 					System.out.println("Product Stock  updated");
@@ -192,8 +285,6 @@ public class InvoiceService {
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
-		} finally {
-			DBUtils.closeConnection(stmt, conn);
 		}
 		return flag;
 	}
@@ -282,6 +373,7 @@ public class InvoiceService {
 				itemDetails.setDiscountPercent(rs.getDouble("DISC_PERCENT"));
 				itemDetails.setDiscountAmount(rs.getDouble("DISC_AMOUNT"));
 				itemDetails.setUnit(rs.getString("UNIT"));
+				itemDetails.setBillNumber(rs.getInt("BILL_NUMBER"));
 
 				GSTDetails gstDetails = new GSTDetails();
 
@@ -498,34 +590,62 @@ public class InvoiceService {
 		return selectQuery.toString();
 	}
 
-	public StatusDTO deleteInvoice(int billNumber, List<ItemDetails> itemList) {
-		StatusDTO status = deleteInvoiceDetails(billNumber);
-		StatusDTO statusDeleteItems = new StatusDTO();
-		StatusDTO statusUpdateStock = new StatusDTO();
-		if (status.getStatusCode() == 0) {
-			statusDeleteItems = deleteBillItemDetails(billNumber);
-			statusUpdateStock = updateDeletedBillProductStock(itemList);
+	public StatusDTO deleteInvoice(BillDetails bill) {
+		StatusDTO statusCustBlanceUpdate = new StatusDTO(-1);
+		StatusDTO statusDeleteBill = new StatusDTO(-1);
+		// Pending Invoice 
+		if (AppConstants.PENDING.equals(bill.getPaymentMode())) {
+			statusDeleteBill = deleteInvoiceDetails(bill);
+			if (statusDeleteBill.getStatusCode() == 0) {
+				String narration = "Delete Invoice adjustment based on Invoice No : " + bill.getBillNumber();
+				statusCustBlanceUpdate = customerService.addCustomerPaymentHistory(bill.getCustomerMobileNo(), 0,
+						bill.getNetSalesAmt(), AppConstants.DEBIT, narration);
+
+				if (statusCustBlanceUpdate.getStatusCode() != 0) {
+					statusDeleteBill.setStatusCode(-1);
+				}
+			}
 		}
-		if (statusDeleteItems.getStatusCode() != 0 || statusUpdateStock.getStatusCode() != 0) {
-			status.setStatusCode(-1);
+		// Cash Bill
+		if (!AppConstants.PENDING.equals(bill.getPaymentMode())) {
+			statusDeleteBill = deleteInvoiceDetails(bill);
 		}
-		return status;
+		return statusDeleteBill;
 	}
 
 	// Delete Bill Details including Items
-	public StatusDTO deleteInvoiceDetails(int billNumber) {
+	private StatusDTO deleteInvoiceDetails(BillDetails bill) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();
+		boolean statusDeleteItems = false;
+		boolean statusUpdateStock = false;
+		boolean isStockLedgerUpdated = false;
 		try {
 			conn = dbUtils.getConnection();
+			conn.setAutoCommit(false);
 			stmt = conn.prepareStatement(DELETE_BILL_DETAILS);
-			stmt.setInt(1, billNumber);
+			stmt.setInt(1, bill.getBillNumber());
 
 			int i = stmt.executeUpdate();
 			if (i > 0) {
+				System.out.println("Invoice deleted !");
 				status.setStatusCode(0);
+				statusDeleteItems = deleteBillItemDetails(conn, bill.getBillNumber());
+				statusUpdateStock = updateDeletedBillProductStock(conn, bill.getItemDetails());
+				isStockLedgerUpdated = addProductStockLedger(
+						getProductListForStockLedger(bill.getItemDetails(), "DELETE_INVOICE"), AppConstants.STOCK_IN,
+						AppConstants.DELETE_BILL, conn);
 			}
+			if (!statusDeleteItems || !statusUpdateStock || !isStockLedgerUpdated) {
+				status.setStatusCode(-1);
+				System.out.println("Delete Invoice Transaction Rollbacked !");
+				conn.rollback();
+			} else {
+				System.out.println("Delete Invoice Transaction Comitted !");
+				conn.commit();
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			status.setException(e.getMessage());
@@ -539,40 +659,31 @@ public class InvoiceService {
 	}
 
 	// Delete bill only Bill Item Details
-	public StatusDTO deleteBillItemDetails(int billNumber) {
-		Connection conn = null;
+	private boolean deleteBillItemDetails(Connection conn, int billNumber) {
 		PreparedStatement stmt = null;
-		StatusDTO status = new StatusDTO();
+		boolean status = false;
 		try {
-			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(DELETE_BILL_ITEM_DETAILS);
 			stmt.setInt(1, billNumber);
 
 			int i = stmt.executeUpdate();
 			if (i > 0) {
-				status.setStatusCode(0);
+				status = true;
+				System.out.println("Invoice Items Deleted !");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			status.setException(e.getMessage());
-			status.setStatusCode(-1);
 			logger.info("Exception : ", e);
-			return status;
-		} finally {
-			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
 
 	// Update Product Stock for Deleted Invoice
-	private StatusDTO updateDeletedBillProductStock(List<ItemDetails> itemList) {
-		Connection conn = null;
+	private boolean updateDeletedBillProductStock(Connection conn, List<ItemDetails> itemList) {
 		PreparedStatement stmt = null;
-		StatusDTO status = new StatusDTO();
+		boolean status = false;
 		try {
 			if (!itemList.isEmpty()) {
-				conn = dbUtils.getConnection();
-				conn.setAutoCommit(false);
 				stmt = conn.prepareStatement(UPDATE_DELETED_PRODUCT_STOCK);
 				for (ItemDetails item : itemList) {
 					stmt.setInt(2, item.getItemNo());
@@ -580,22 +691,106 @@ public class InvoiceService {
 					stmt.addBatch();
 				}
 				int batch[] = stmt.executeBatch();
-				conn.commit();
 				if (batch.length == itemList.size()) {
-					status.setStatusCode(0);
+					status = true;
 					System.out.println("Product Stock  updated");
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			status.setStatusCode(-1);
-			status.setException(e.getMessage());
 			logger.info("Exception : ", e);
-			return status;
-		} finally {
-			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}
 
+	//Edit Invoice
+	public StatusDTO editInvoice(BillDetails bill) {
+		StatusDTO statusEditInvoice = new StatusDTO();
+		if (AppConstants.PENDING.equals(bill.getPaymentMode())) {
+			// Save Bill Details
+			StatusDTO status = editInvoiceDetails(bill);
+			StatusDTO statusAddPendingAmt = new StatusDTO(-1);
+			if (status.getStatusCode() == 0) {
+				String narration = "Invoice Amount based on No : " + bill.getBillNumber();
+				statusAddPendingAmt = customerService.addCustomerPaymentHistory(bill.getCustomerMobileNo(),
+						bill.getNetSalesAmt(), 0, AppConstants.CREDIT, narration);
+			}
+			if (status.getStatusCode() != 0 || statusAddPendingAmt.getStatusCode() != 0) {
+				statusEditInvoice.setStatusCode(-1);
+			}
+		}
+		// Other than PENDING pay mode ex: cash,cheque etc
+		if (!AppConstants.PENDING.equals(bill.getPaymentMode())) {
+			// Save Bill Details
+			StatusDTO status = editInvoiceDetails(bill);
+			if (status.getStatusCode() != 0) {
+				statusEditInvoice.setStatusCode(-1);
+			}
+		}
+
+		return statusEditInvoice;
+
+	}
+	// Save Invoice Details
+		private StatusDTO editInvoiceDetails(BillDetails bill) {
+			Connection conn = null;
+			PreparedStatement stmt = null;
+			boolean isItemsSaved = false;
+			boolean isStockUpdated = false;
+			boolean isStockLedgerUpdated = false;
+			StatusDTO status = new StatusDTO();
+			try {
+				if (bill != null) {
+					conn = dbUtils.getConnection();
+					conn.setAutoCommit(false);
+					stmt = conn.prepareStatement(UPDATE_BILL_DETAILS);
+					stmt.setString(1, bill.getTimestamp());
+					stmt.setLong(2, bill.getCustomerMobileNo());
+					stmt.setString(3, bill.getCustomerName());
+					stmt.setInt(4, bill.getNoOfItems());
+					stmt.setDouble(5, bill.getTotalQuantity());
+					stmt.setDouble(6, bill.getTotalAmount());
+					stmt.setString(7, bill.getPaymentMode());
+					stmt.setDouble(8, bill.getDiscount());
+					stmt.setDouble(9, bill.getDiscountAmt());
+					stmt.setDouble(10, bill.getNetSalesAmt());
+					stmt.setDouble(11, bill.getPurchaseAmt());
+					stmt.setString(12, bill.getGstType());
+					stmt.setDouble(13, bill.getGstAmount());
+					stmt.setString(14, bill.getCreatedBy());
+					stmt.setString(15, appUtils.getCurrentTimestamp());
+					stmt.setInt(16, bill.getBillNumber());
+					int i = stmt.executeUpdate();
+					if (i > 0) {
+						status.setStatusCode(0);
+						System.out.println("Invoice Details Saved !");
+						isItemsSaved = saveBillItemDetails(bill.getItemDetails(), conn);
+						isStockUpdated = updateProductStock(bill.getItemDetails(), conn);
+						isStockLedgerUpdated = addProductStockLedger(
+								getProductListForStockLedger(bill.getItemDetails(), "SAVE_INVOICE"), AppConstants.STOCK_OUT,
+								AppConstants.SALES, conn);
+					}
+
+					if (!isStockUpdated || !isItemsSaved || !isStockLedgerUpdated) {
+						status.setStatusCode(-1);
+						// If any step fails rollback Transaction
+						System.out.println("Save Invoice Transaction Rollbacked !");
+						conn.rollback();
+					} else {
+						// Commit Transaction
+						System.out.println("Save Invoice Transaction Committed !");
+						conn.commit();
+					}
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				logger.error("Exception : ", e);
+				status.setStatusCode(-1);
+				status.setException(e.getMessage());
+			} finally {
+				DBUtils.closeConnection(stmt, conn);
+			}
+			return status;
+		}
 }

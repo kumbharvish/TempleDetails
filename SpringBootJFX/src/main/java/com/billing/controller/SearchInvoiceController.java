@@ -218,76 +218,44 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 
 	@FXML
 	void onDelete(ActionEvent event) {
-		BillDetails bill = tableView.getSelectionModel().getSelectedItem();
-		List<ItemDetails> itemList = invoiceService.getItemDetails(bill.getBillNumber());
-		bill.setItemDetails(itemList);
-		deleteBill(bill);
-	}
-
-	protected void deleteBill(BillDetails bill) {
-		StatusDTO statusCustBlanceUpdate = new StatusDTO(-1);
-		StatusDTO statusDeleteBill = new StatusDTO(-1);
-		StatusDTO statusUpdatePayHistory = new StatusDTO(-1);
-		if (bill != null) {
-			Alert alert = alertHelper.showConfirmAlertWithYesNo(currentStage, null,
-					"Are you sure to delete Invoice No. : " + bill.getBillNumber() + " ?");
-			if (alert.getResult() == ButtonType.YES) {
-
-				StatusDTO isSalesReturned = salesReturnService.isSalesReturned(bill.getBillNumber());
-				if (isSalesReturned.getStatusCode() != 0) {
-					Customer customer = customerService.getCustomerDetails(bill.getCustomerMobileNo());
-					// Added condition to check customer pending balance is greater than or equal to
-					// current return amount
-					if ("PENDING".equals(bill.getPaymentMode()) && customer.getBalanceAmt() >= bill.getNetSalesAmt()) {
-						statusDeleteBill = invoiceService.deleteInvoice(bill.getBillNumber(), bill.getItemDetails());
-						if (statusDeleteBill.getStatusCode() == 0) {
-
-							statusUpdatePayHistory = customerService.addCustomerPaymentHistory(
-									bill.getCustomerMobileNo(), 0, bill.getNetSalesAmt(), AppConstants.DEBIT,
-									"Delete Invoice adjustment based on Invoice No : " + bill.getBillNumber());
-							statusCustBlanceUpdate = customerService.settleUpCustomerBalance(bill.getCustomerMobileNo(),
-									bill.getNetSalesAmt());
-
-							if (statusCustBlanceUpdate.getStatusCode() == 0
-									&& statusUpdatePayHistory.getStatusCode() == 0) {
-								productHistoryService.addProductStockLedger(
-										getProductList(bill.getItemDetails(), bill.getBillNumber()),
-										AppConstants.STOCK_IN, AppConstants.DELETE_BILL);
-								alertHelper.showSuccessNotification(
-										"Invoice No. " + bill.getBillNumber() + " deleted successfully");
-								removeDeletedRecord(bill);
-
-							}
-
-						} else {
-							alertHelper.showErrorNotification("Error occured while deleting inovice");
-						}
-					} else {
-						if ("PENDING".equals(bill.getPaymentMode())) {
-							alertHelper.showErrorNotification(
-									"Customer balance is less than invoice amount. Please check customer payment history");
-						}
-					}
-					// Cash Bill
-					if (!"PENDING".equals(bill.getPaymentMode())) {
-						statusDeleteBill = invoiceService.deleteInvoice(bill.getBillNumber(), bill.getItemDetails());
-						if (statusDeleteBill.getStatusCode() == 0) {
-								productHistoryService.addProductStockLedger(
-										getProductList(bill.getItemDetails(), bill.getBillNumber()),
-										AppConstants.STOCK_IN, AppConstants.DELETE_BILL);
-								alertHelper.showSuccessNotification(
-										"Invoice No. " + bill.getBillNumber() + " deleted successfully");
-								removeDeletedRecord(bill);
-						} else {
-							alertHelper.showErrorNotification("Error occured while deleting inovice");
-						}
-					}
-				} else {
-					alertHelper.showErrorNotification(
-							"Sales Return available for this invoice. Delete action not allowed");
-				}
+		Alert alert = alertHelper.showConfirmAlertWithYesNo(currentStage, null, "Are you sure to delete invoice ?");
+		if (alert.getResult() == ButtonType.YES) {
+			BillDetails bill = tableView.getSelectionModel().getSelectedItem();
+			if (!validateInputDelete(bill)) {
+				alertHelper.beep();
+				return;
+			}
+			List<ItemDetails> itemList = invoiceService.getItemDetails(bill.getBillNumber());
+			bill.setItemDetails(itemList);
+			StatusDTO status = invoiceService.deleteInvoice(bill);
+			if (status.getStatusCode() == 0) {
+				alertHelper.showSuccessNotification("Invoice No. " + bill.getBillNumber() + " deleted successfully");
+				removeDeletedRecord(bill);
+			} else {
+				alertHelper.showErrorNotification("Error occured while deleting inovice");
 			}
 		}
+	}
+
+	private boolean validateInputDelete(BillDetails bill) {
+		if (bill == null) {
+			return false;
+		}
+		StatusDTO isSalesReturned = salesReturnService.isSalesReturned(bill.getBillNumber());
+		if (isSalesReturned.getStatusCode() == 0) {
+			alertHelper.showErrorNotification("Sales Return available for this invoice. Delete action not allowed");
+			return false;
+		}
+		if ("PENDING".equals(bill.getPaymentMode())) {
+			Customer customer = customerService.getCustomerDetails(bill.getCustomerMobileNo());
+			if (customer.getBalanceAmt() <= bill.getNetSalesAmt()) {
+				alertHelper.showErrorNotification(
+						"Customer balance is less than invoice amount. Please check customer payment history");
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	private void removeDeletedRecord(BillDetails bill) {
@@ -307,22 +275,45 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 
 	}
 
-	private List<Product> getProductList(List<ItemDetails> itemList, int billNo) {
-		List<Product> productList = new ArrayList<Product>();
-		for (ItemDetails item : itemList) {
-			Product p = new Product();
-			p.setProductCode(item.getItemNo());
-			p.setQuantity(item.getQuantity());
-			p.setDescription("Delete Invoice based on Invoice No.: " + billNo);
-			productList.add(p);
-		}
-		return productList;
-
-	}
-
 	@FXML
 	void onEditAction(ActionEvent event) {
+		BillDetails bill = tableView.getSelectionModel().getSelectedItem();
+		if (bill == null) {
+			return;
+		}
+		
+		FXMLLoader fxmlLoader = new FXMLLoader();
+		fxmlLoader.setControllerFactory(springContext::getBean);
+		fxmlLoader.setLocation(this.getClass().getResource("/com/billing/gui/EditInvoice.fxml"));
 
+		Parent rootPane = null;
+		try {
+			rootPane = fxmlLoader.load();
+		} catch (IOException e) {
+			e.printStackTrace();
+			logger.error("getEditInvoicePopup Error in loading the view file :", e);
+			alertHelper.beep();
+
+			alertHelper.showErrorAlert(currentStage, "Error Occurred", "Error in creating user interface",
+					"An error occurred in creating user interface " + "for the selected command");
+
+			return;
+		}
+
+		final Scene scene = new Scene(rootPane);
+		final EditInvoiceController controller = (EditInvoiceController) fxmlLoader.getController();
+		controller.bill = bill;
+		final Stage stage = new Stage();
+		stage.initModality(Modality.APPLICATION_MODAL);
+		stage.initOwner(currentStage);
+		stage.setUserData(controller);
+		stage.getIcons().add(new Image("/images/shop32X32.png"));
+		stage.setScene(scene);
+		stage.setTitle("Edit Invoice");
+		controller.setMainWindow(stage);
+		controller.setUserDetails(userDetails);
+		controller.loadData();
+		stage.showAndWait();
 	}
 
 	@FXML
