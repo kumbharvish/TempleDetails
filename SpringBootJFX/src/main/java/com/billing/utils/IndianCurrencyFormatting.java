@@ -56,6 +56,19 @@ import java.math.RoundingMode;
         	if (amount == null) {
                 return "";
             }
+        	String[] array = amount.trim().split(",");
+        	for(String s : array) {
+        		result.append(s);
+        	}
+			return result.toString();
+        	
+        }
+        
+        public static String removeFormattingWithCurrency(String amount) {
+        	StringBuffer result = new StringBuffer();
+        	if (amount == null) {
+                return "";
+            }
         	String[] array1 = amount.split("₹  ");
         	String[] array2 = array1[1].trim().split(",");
         	for(String s : array2) {

@@ -484,11 +484,6 @@ public class HomeController extends AppContext {
 	}
 
 	@FXML
-	void onReturnInvoiceCommand(ActionEvent event) {
-
-	}
-
-	@FXML
 	void onSaleReportClick(MouseEvent event) {
 
 	}

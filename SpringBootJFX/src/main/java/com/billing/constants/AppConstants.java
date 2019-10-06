@@ -67,8 +67,10 @@ public class AppConstants {
 	public static final String SALES_RETURN = "SALES RETURN";
 
 	public static final String SALES = "SALES";
+	
+	public static final String EDIT_INVOICE = "EDIT INVOICE";
 
-	public static final String DELETE_BILL = "DELETE BILL";
+	public static final String DELETE_INVOICE = "DELETE INVOICE";
 
 	public static final String PURCHASE = "PURCHASE";
 

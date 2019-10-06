@@ -73,11 +73,6 @@
                               <KeyCodeCombination alt="UP" code="F" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
                            </accelerator>
                         </MenuItem>
-                        <MenuItem fx:id="returnInvoiceMenuItem" onAction="#onReturnInvoiceCommand" text="Invoice _Return">
-                           <accelerator>
-                              <KeyCodeCombination alt="UP" code="R" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
-                           </accelerator>
-                        </MenuItem>
                   </items>
                 </Menu>
                   <Menu fx:id="customersMenu" text="C_ustomers">

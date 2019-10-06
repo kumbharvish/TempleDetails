@@ -14,6 +14,8 @@ public class BillDetails {
 	
 	private List<ItemDetails> itemDetails;
 	
+	private List<ItemDetails> copyItemDetails;
+	
 	private int noOfItems;
 	
 	private double totalQuantity;
@@ -37,6 +39,14 @@ public class BillDetails {
 	private String createdBy;
 	
 	private String lastUpdated;
+	
+	private double copyNetSalesAmt;
+	
+	private long copyCustMobile;
+	
+	private String copyPaymode;
+	
+	private boolean isItemsEdited;
 
 	public int getBillNumber() {
 		return billNumber;
@@ -172,5 +182,45 @@ public class BillDetails {
 
 	public void setLastUpdated(String lastUpdated) {
 		this.lastUpdated = lastUpdated;
+	}
+
+	public List<ItemDetails> getCopyItemDetails() {
+		return copyItemDetails;
+	}
+
+	public void setCopyItemDetails(List<ItemDetails> copyItemDetails) {
+		this.copyItemDetails = copyItemDetails;
+	}
+
+	public double getCopyNetSalesAmt() {
+		return copyNetSalesAmt;
+	}
+
+	public void setCopyNetSalesAmt(double copyNetSalesAmt) {
+		this.copyNetSalesAmt = copyNetSalesAmt;
+	}
+
+	public boolean isItemsEdited() {
+		return isItemsEdited;
+	}
+
+	public void setItemsEdited(boolean isItemsEdited) {
+		this.isItemsEdited = isItemsEdited;
+	}
+
+	public long getCopyCustMobile() {
+		return copyCustMobile;
+	}
+
+	public void setCopyCustMobile(long copyCustMobile) {
+		this.copyCustMobile = copyCustMobile;
+	}
+
+	public String getCopyPaymode() {
+		return copyPaymode;
+	}
+
+	public void setCopyPaymode(String copyPaymode) {
+		this.copyPaymode = copyPaymode;
 	}
 }

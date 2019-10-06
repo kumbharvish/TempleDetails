@@ -63,11 +63,11 @@
                <content>
                   <TableView fx:id="tableView">
                     <columns>
-                      <TableColumn fx:id="tcDate" prefWidth="180.0" text="Date" />
-                      <TableColumn fx:id="tcTransactionType" prefWidth="177.0" text="Transaction Type" />
+                      <TableColumn fx:id="tcDate" prefWidth="165.0" text="Date" />
+                      <TableColumn fx:id="tcTransactionType" prefWidth="150.0" text="Transaction Type" />
                         <TableColumn fx:id="tcStockIn" prefWidth="103.0" text="Stock In" />
                         <TableColumn fx:id="tcStockOut" prefWidth="103.0" text="Stock Out" />
-                        <TableColumn fx:id="tcNarration" prefWidth="182.0" text="Narration" />
+                        <TableColumn fx:id="tcNarration" prefWidth="290.0" text="Narration" />
                     </columns>
 					  <placeholder>
                   <Label fx:id="placeholderText" text="&lt; Stock Ledger not found &gt;" />

@@ -169,6 +169,7 @@
 														<Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onEditAction" text="Edit" />
 														<Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onDelete" text="Delete" />
 														<Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onPrintAction" text="Print" />
+														<Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onAddReturnAction" text="Add Return" />
 													</children>
 													<padding>
 														<Insets left="10.0" />

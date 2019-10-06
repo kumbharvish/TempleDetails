@@ -248,7 +248,7 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 		}
 		if ("PENDING".equals(bill.getPaymentMode())) {
 			Customer customer = customerService.getCustomerDetails(bill.getCustomerMobileNo());
-			if (customer.getBalanceAmt() <= bill.getNetSalesAmt()) {
+			if (customer.getBalanceAmt() < bill.getNetSalesAmt()) {
 				alertHelper.showErrorNotification(
 						"Customer balance is less than invoice amount. Please check customer payment history");
 				return false;
@@ -257,6 +257,29 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 
 		return true;
 	}
+	
+	private boolean validateInputEditInvoice(BillDetails bill) {
+		if (bill == null) {
+			return false;
+		}
+		StatusDTO isSalesReturned = salesReturnService.isSalesReturned(bill.getBillNumber());
+		if (isSalesReturned.getStatusCode() == 0) {
+			alertHelper.showErrorNotification("Sales Return available for this invoice. Edit action not allowed");
+			return false;
+		}
+		if ("PENDING".equals(bill.getPaymentMode())) {
+			Customer customer = customerService.getCustomerDetails(bill.getCustomerMobileNo());
+			if (customer.getBalanceAmt() < bill.getNetSalesAmt()) {
+				alertHelper.showErrorNotification(
+						"Customer balance is less than invoice amount. Please check customer payment history");
+				return false;
+			}
+		}
+
+		return true;
+	}
+	
+	
 
 	private void removeDeletedRecord(BillDetails bill) {
 		if (tableDataList.contains(bill)) {
@@ -278,7 +301,8 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 	@FXML
 	void onEditAction(ActionEvent event) {
 		BillDetails bill = tableView.getSelectionModel().getSelectedItem();
-		if (bill == null) {
+		if (!validateInputEditInvoice(bill)) {
+			alertHelper.beep();
 			return;
 		}
 		
@@ -303,6 +327,7 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 		final Scene scene = new Scene(rootPane);
 		final EditInvoiceController controller = (EditInvoiceController) fxmlLoader.getController();
 		controller.bill = bill;
+		controller.setTask(()->{afterEditInvoiceSuccess();});
 		final Stage stage = new Stage();
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.initOwner(currentStage);
@@ -316,6 +341,11 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 		stage.showAndWait();
 	}
 
+	public void afterEditInvoiceSuccess() {
+		panelSearchCriteria.setExpanded(true);
+		panelSearchResult.setExpanded(false);
+	}
+	
 	@FXML
 	void onPrintAction(ActionEvent event) {
 		BillDetails bill = tableView.getSelectionModel().getSelectedItem();
@@ -323,6 +353,11 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 		bill.setItemDetails(itemList);
 		printerService.printInvoice(bill);
 
+	}
+	
+	@FXML
+	void onAddReturnAction(ActionEvent event) {
+		
 	}
 
 	@FXML

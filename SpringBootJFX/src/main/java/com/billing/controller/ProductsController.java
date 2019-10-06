@@ -561,6 +561,7 @@ public class ProductsController extends AppContext implements TabContent {
 				alertHelper.showSuccessNotification("Product added successfully");
 				resetFields();
 				loadData();
+				txtProductName.requestFocus();
 			} else {
 				if (status.getException().contains("UNIQUE")) {
 					alertHelper.beep();

@@ -25,6 +25,8 @@ public class ItemDetails {
 	private double discountPercent;
 
 	private double discountAmount;
+	
+	private String stockInOutFlag;
 
 	public int getItemNo() {
 		return itemNo;
@@ -116,6 +118,22 @@ public class ItemDetails {
 
 	public void setUnit(String unit) {
 		this.unit = unit;
+	}
+
+	public String getStockInOutFlag() {
+		return stockInOutFlag;
+	}
+
+	public void setStockInOutFlag(String stockInOutFlag) {
+		this.stockInOutFlag = stockInOutFlag;
+	}
+
+	@Override
+	public String toString() {
+		return "ItemDetails [itemNo=" + itemNo + ", billNumber=" + billNumber + ", itemName=" + itemName + ", unit="
+				+ unit + ", MRP=" + MRP + ", rate=" + rate + ", quantity=" + quantity + ", amount=" + amount
+				+ ", purchasePrice=" + purchasePrice + ", gstDetails=" + gstDetails + ", discountPercent="
+				+ discountPercent + ", discountAmount=" + discountAmount + ", stockInOutFlag=" + stockInOutFlag + "]";
 	}
 
 }

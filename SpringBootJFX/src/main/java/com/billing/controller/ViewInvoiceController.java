@@ -1,7 +1,6 @@
 package com.billing.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -193,11 +192,11 @@ public class ViewInvoiceController extends AppContext {
 		txtCustName.setText(bill.getCustomerName());
 		txtNoOfItems.setText(String.valueOf(bill.getNoOfItems()));
 		txtTotalQty.setText(String.valueOf(bill.getTotalQuantity()));
-		txtSubTotal.setText(appUtils.getDecimalFormat(bill.getTotalAmount()));
-		txtDiscountAmt.setText(appUtils.getDecimalFormat(bill.getDiscountAmt()));
+		txtSubTotal.setText(IndianCurrencyFormatting.applyFormatting(bill.getTotalAmount()));
+		txtDiscountAmt.setText(IndianCurrencyFormatting.applyFormatting(bill.getDiscountAmt()));
 		txtDiscountPercent.setText(String.valueOf(bill.getDiscount()));
 		txtPaymentMode.setText(bill.getPaymentMode());
-		txtGstAmount.setText(appUtils.getDecimalFormat(bill.getGstAmount()));
+		txtGstAmount.setText(IndianCurrencyFormatting.applyFormatting(bill.getGstAmount()));
 		txtGstType.setText(bill.getGstType());
 		txtNetSalesAmount.setText(IndianCurrencyFormatting.applyFormattingWithCurrency(bill.getNetSalesAmt()));
 	}

@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.billing.constants.AppConstants;
 import com.billing.dto.BillDetails;
 import com.billing.dto.Customer;
 import com.billing.dto.GSTDetails;
@@ -26,7 +25,6 @@ import com.billing.main.AppContext;
 import com.billing.service.CustomerService;
 import com.billing.service.InvoiceService;
 import com.billing.service.PrinterService;
-import com.billing.service.ProductHistoryService;
 import com.billing.service.ProductService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
@@ -326,6 +324,13 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 				if (newValue) {
 					cbPaymentModes.show();
 				}
+			}
+		});
+
+		cbPaymentModes.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				isDirty.set(true);
 			}
 		});
 
@@ -695,14 +700,15 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		bill.setCustomerName(cust.getCustName());
 		// Prepare Item List
 		bill.setItemDetails(prepareItemList());
-		bill.setTotalAmount(Double.valueOf(txtSubTotal.getText()));
+		bill.setTotalAmount(Double.valueOf(IndianCurrencyFormatting.removeFormatting(txtSubTotal.getText())));
 		bill.setNoOfItems(Integer.valueOf(txtNoOfItems.getText()));
 		bill.setTotalQuantity(Double.valueOf(txtTotalQty.getText()));
 		bill.setDiscount(Double.valueOf(txtDiscountPercent.getText()));
-		bill.setDiscountAmt(Double.valueOf(txtDiscountAmt.getText()));
+		bill.setDiscountAmt(Double.valueOf(IndianCurrencyFormatting.removeFormatting(txtDiscountAmt.getText())));
 		bill.setPaymentMode(cbPaymentModes.getSelectionModel().getSelectedItem());
-		bill.setNetSalesAmt(Double.valueOf(IndianCurrencyFormatting.removeFormatting(txtNetSalesAmount.getText())));
-		
+		bill.setNetSalesAmt(
+				Double.valueOf(IndianCurrencyFormatting.removeFormattingWithCurrency(txtNetSalesAmount.getText())));
+
 		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd");
 		String invoiceDate = dpInvoiceDate.getValue().format(dateFormatter);
 		String invoiceTime = appUtils.getCurrentTime();
@@ -710,7 +716,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		bill.setTimestamp(invoiceDate + " " + invoiceTime);
 		bill.setPurchaseAmt(getBillPurchaseAmount());
 		bill.setGstType(txtGstType.getText());
-		bill.setGstAmount(Double.valueOf(txtGstAmount.getText()));
+		bill.setGstAmount(Double.valueOf(IndianCurrencyFormatting.removeFormatting(txtGstAmount.getText())));
 		bill.setCreatedBy(userDetails.getFirstName() + " " + userDetails.getLastName());
 		return bill;
 	}
@@ -820,7 +826,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		isDirty.set(false);
 		getProductNameList();
 		txtItemName.createTextField(productEntries, () -> setProductDetails());
-		
+
 	}
 
 	private void resetOrignalProductDiscount() {
@@ -957,8 +963,8 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 				txtReturnAmt.setText("");
 				if (!txtCashAmt.getText().equals("") && !ke.getCode().equals(KeyCode.PERIOD)
 						&& !ke.getCode().equals(KeyCode.DECIMAL)) {
-					double netTotal = Double
-							.valueOf(IndianCurrencyFormatting.removeFormatting(txtNetSalesAmount.getText()));
+					double netTotal = Double.valueOf(
+							IndianCurrencyFormatting.removeFormattingWithCurrency(txtNetSalesAmount.getText()));
 					double cashAmt = Double.valueOf(txtCashAmt.getText());
 					txtReturnAmt.setText(appUtils.getDecimalFormat(cashAmt - netTotal));
 				}
@@ -1033,7 +1039,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		netSalesAmount = (subTotal - discountAmount) + gstAmount;
 		txtNoOfItems.setText(String.valueOf(noOfItems));
 		txtTotalQty.setText(appUtils.getDecimalFormat(quantity));
-		txtSubTotal.setText(appUtils.getDecimalFormat(subTotal));
+		txtSubTotal.setText(IndianCurrencyFormatting.applyFormatting(subTotal));
 		txtDiscountAmt.setText(IndianCurrencyFormatting.applyFormatting(discountAmount));
 		txtGstAmount.setText(IndianCurrencyFormatting.applyFormatting(gstAmount));
 		txtNetSalesAmount.setText(
