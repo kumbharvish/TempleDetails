@@ -77,6 +77,8 @@ public class InvoiceService {
 	private static final String INS_PRODUCT_STOCK_OUT_LEDGER = "INSERT INTO PRODUCT_STOCK_LEDGER (PRODUCT_CODE,TIMESTAMP,STOCK_OUT,NARRATION,TRANSACTION_TYPE)"
 			+ " VALUES(?,?,?,?,?)";
 
+	private static final String GET_BILL_DETAILS_WITHIN_DATE_RANGE = "SELECT CBD.*,CD.CUST_NAME AS CUSTOMER_NAME FROM CUSTOMER_BILL_DETAILS CBD,CUSTOMER_DETAILS CD WHERE DATE(CBD.BILL_DATE_TIME) BETWEEN ? AND ?  AND CBD.CUST_MOB_NO=CD.CUST_MOB_NO ORDER BY CBD.BILL_DATE_TIME DESC";
+
 	// Save Invoice Details
 	private StatusDTO saveInvoiceDetails(BillDetails bill) {
 		Connection conn = null;
@@ -290,35 +292,17 @@ public class InvoiceService {
 	}
 
 	// Get Bill Details
-	public List<BillDetails> getBillDetails(String fromDate, String toDate, Long customerMobile) {
+	public List<BillDetails> getBillDetails(String fromDate, String toDate) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		BillDetails billDetails = null;
 		List<BillDetails> billDetailsList = new ArrayList<BillDetails>();
-		StringBuilder SELECT_BILL_DETAILS = new StringBuilder(
-				"SELECT CBD.*,CD.CUST_NAME AS CUSTOMER_NAME FROM CUSTOMER_BILL_DETAILS CBD,CUSTOMER_DETAILS CD WHERE DATE(CBD.BILL_DATE_TIME) BETWEEN ? AND ?  AND CBD.CUST_MOB_NO=CD.CUST_MOB_NO ");
 
-		String ORDER_BY_CLAUSE = "ORDER BY CBD.BILL_DATE_TIME DESC";
-		String CUSTOMER_MOB_QEUERY = " AND CBD.CUST_MOB_NO LIKE ? ";
 		try {
-			if (fromDate == null) {
-				fromDate = "1947-01-01";
-			}
-			if (toDate == null) {
-				toDate = appUtils.getCurrentTimestamp();
-			}
-			if (customerMobile != null) {
-				SELECT_BILL_DETAILS.append(CUSTOMER_MOB_QEUERY);
-			}
-			SELECT_BILL_DETAILS.append(ORDER_BY_CLAUSE);
 			conn = dbUtils.getConnection();
-			stmt = conn.prepareStatement(SELECT_BILL_DETAILS.toString());
+			stmt = conn.prepareStatement(GET_BILL_DETAILS_WITHIN_DATE_RANGE);
 			stmt.setString(1, fromDate);
 			stmt.setString(2, toDate);
-			if (customerMobile != null) {
-				stmt.setString(3, "%" + customerMobile + "%");
-			}
-			System.out.println("SELECT_BILL_DETAILS " + SELECT_BILL_DETAILS);
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
@@ -337,6 +321,8 @@ public class InvoiceService {
 				billDetails.setPurchaseAmt(rs.getDouble("BILL_PURCHASE_AMT"));
 				billDetails.setGstType(rs.getString("GST_TYPE"));
 				billDetails.setGstAmount(rs.getDouble("GST_AMOUNT"));
+				billDetails.setCreatedBy(rs.getString("CREATED_BY"));
+				billDetails.setLastUpdated(rs.getString("LAST_UPDATED"));
 
 				billDetailsList.add(billDetails);
 			}

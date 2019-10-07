@@ -485,12 +485,14 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onSaleReportClick(MouseEvent event) {
-
+		if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+			salesReportMenuItem.fire();
+		}
 	}
 
 	@FXML
 	void onSalesReportCommand(ActionEvent event) {
-
+		addTab("SalesReport","Sales Report");
 	}
 
 	@FXML
