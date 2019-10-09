@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ButtonBar?>
 
 <HBox alignment="TOP_CENTER" stylesheets="@../../../css/cashCounter.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.CashCounterController">
    <children>
@@ -27,14 +28,14 @@
             </VBox>
          </top>
          <bottom>
-            <TilePane alignment="TOP_RIGHT" BorderPane.alignment="BOTTOM_RIGHT">
-               <children>
-                  <Button fx:id="btnClose" mnemonicParsing="false" onAction="#onCloseCommand" text="Close" />
-               </children>
-               <padding>
-                  <Insets bottom="20.0" />
-               </padding>
-            </TilePane>
+            <ButtonBar BorderPane.alignment="CENTER">
+        <buttons>
+          <Button fx:id="btnClose" mnemonicParsing="false" text="Close" onAction="#onCloseCommand"/>
+        </buttons>
+         <padding>
+            <Insets top="10.0" />
+         </padding>
+      </ButtonBar>
          </bottom>
          <right>
             <VBox alignment="TOP_CENTER" spacing="20.0" BorderPane.alignment="TOP_RIGHT">
@@ -111,17 +112,9 @@
                   <Label fx:id="lblDrTotalSalesReturnAmt" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                   <Label fx:id="lblDrTotalExpenseAmt" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                   <Label fx:id="lblCrTotalCustSettleAmt" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                  <Label fx:id="lblTotalCreditAmount" styleClass="nodeLabel" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                  <Label fx:id="lblTotalDebitAmount" styleClass="nodeLabel" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-                  <HBox alignment="CENTER" GridPane.columnIndex="3" GridPane.rowIndex="6">
-                     <children>
-                        <Label fx:id="lblTotalCashCounterAmtRupee" text="₹">
-                           <HBox.margin>
-                              <Insets right="3.0" />
-                           </HBox.margin></Label>
-                        <Label fx:id="lblTotalCashCounterAmt" />
-                     </children>
-                  </HBox>
+                  <Label fx:id="lblTotalCreditAmount" styleClass="summation" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                  <Label fx:id="lblTotalDebitAmount" styleClass="summation" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                  <Label fx:id="lblTotalCashCounterAmt" GridPane.columnIndex="3" GridPane.rowIndex="6"/>
                   <Label fx:id="lblCb_1" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                   <Label fx:id="lblCb_2" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                   <Label fx:id="lblCb_3" GridPane.columnIndex="3" GridPane.rowIndex="3" />

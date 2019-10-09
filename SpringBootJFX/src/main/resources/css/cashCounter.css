@@ -23,9 +23,3 @@
 	-fx-wrap-text: true;
 	-fx-font-size: 15px;
 }
-
-#lblTotalCashCounterAmtRupee {
-	-fx-font-weight: bold;
-	-fx-wrap-text: true;
-	-fx-font-size: 15px;
-}

@@ -7,3 +7,9 @@
 	-fx-border-insets: 15px 30px 15px 30px;
 }
 
+#txtTotalSalesAmount {
+	-fx-font-weight: bold;
+	-fx-wrap-text: true;
+	-fx-font-size: 15px;
+}
+

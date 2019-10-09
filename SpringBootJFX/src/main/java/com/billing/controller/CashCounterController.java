@@ -34,6 +34,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
@@ -184,7 +185,8 @@ public class CashCounterController implements TabContent {
 		lblCb_5.setText(IndianCurrencyFormatting.applyFormatting(totalCustSettleAmount.getClosingBalance()));
 		lblTotalCreditAmount.setText(IndianCurrencyFormatting.applyFormatting(totalAmount.getCreditAmount()));
 		lblTotalDebitAmount.setText(IndianCurrencyFormatting.applyFormatting(totalAmount.getDebitAmount()));
-		lblTotalCashCounterAmt.setText(IndianCurrencyFormatting.applyFormatting(totalAmount.getClosingBalance()));
+		lblTotalCashCounterAmt
+				.setText(IndianCurrencyFormatting.applyFormattingWithCurrency(totalAmount.getClosingBalance()));
 
 		return true;
 	}
@@ -202,7 +204,7 @@ public class CashCounterController implements TabContent {
 	@Override
 	public void initialize() {
 		datePicker.setValue(LocalDate.now());
-
+		datePicker.setDayCellFactory(this::getDateCell);
 		datePicker.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent actionEvent) {
@@ -372,6 +374,10 @@ public class CashCounterController implements TabContent {
 		tableView.setItems(customerTableData);
 		dialog.getDialogPane().setContent(tableView);
 		Optional<String> result = dialog.showAndWait();
+	}
+
+	private DateCell getDateCell(DatePicker datePicker) {
+		return appUtils.getDateCell(datePicker, null, LocalDate.now());
 	}
 
 }

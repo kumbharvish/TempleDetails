@@ -57,6 +57,9 @@
                   <TableColumn fx:id="tcGSTAmt" prefWidth="130.0" text="Tax Amount" />
                   <TableColumn fx:id="tcNetSalesAmt" prefWidth="160.0" text="Net Sales Amount" />
               </columns>
+              <placeholder>
+					<Label fx:id="placeholderText" text="&lt; No Invoices found &gt;" />
+			  </placeholder>
             </TableView>
          </center>
          <top>
@@ -85,14 +88,14 @@
               </rowConstraints>
                <children>
                   <Label styleClass="nodeLabel" text="Total Invoice Count :" GridPane.halignment="RIGHT" />
-                  <TextField fx:id="txtTotalInovoiceCount" alignment="CENTER_RIGHT" editable="false" styleClass="readOnlyField" GridPane.columnIndex="1" />
-                  <TextField fx:id="txtTotalDiscountAmount" alignment="CENTER_RIGHT" editable="false" styleClass="readOnlyField" GridPane.columnIndex="3" />
+                  <TextField fx:id="txtTotalInovoiceCount" alignment="CENTER_RIGHT" editable="false" styleClass="readOnlyField,summation" GridPane.columnIndex="1" />
+                  <TextField fx:id="txtTotalDiscountAmount" alignment="CENTER_RIGHT" editable="false" styleClass="readOnlyField,summation" GridPane.columnIndex="3" />
                   <Label GridPane.columnIndex="2" />
                   <Label styleClass="nodeLabel" text="Total Discount Amount :" GridPane.columnIndex="2" GridPane.halignment="RIGHT" />
                   <Label styleClass="nodeLabel" text="Total TAX Amount :" GridPane.columnIndex="4" GridPane.halignment="RIGHT" />
-                  <TextField fx:id="txtTotalTaxAmount" alignment="CENTER_RIGHT" editable="false" styleClass="readOnlyField" GridPane.columnIndex="5" />
+                  <TextField fx:id="txtTotalTaxAmount" alignment="CENTER_RIGHT" editable="false" styleClass="readOnlyField,summation" GridPane.columnIndex="5" />
                   <Label styleClass="nodeLabel" text="Total Pending Amount :" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
-                  <TextField fx:id="txtTotalPendingAmount" alignment="CENTER_RIGHT" editable="false" styleClass="readOnlyField" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                  <TextField fx:id="txtTotalPendingAmount" alignment="CENTER_RIGHT" editable="false" styleClass="readOnlyField,summation" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                   <Label styleClass="nodeLabel" text="Total Sales Amount :" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
                   <TextField fx:id="txtTotalSalesAmount" alignment="CENTER_RIGHT" editable="false" styleClass="readOnlyField" GridPane.columnIndex="5" GridPane.rowIndex="1" />
                </children>
@@ -106,7 +109,7 @@
    <bottom>
       <ButtonBar BorderPane.alignment="CENTER">
         <buttons>
-          <Button fx:id="btnClose" mnemonicParsing="false" text="Close" />
+          <Button fx:id="btnClose" mnemonicParsing="false" text="Close" onAction="#onCloseAction"/>
         </buttons>
          <padding>
             <Insets top="10.0" />
