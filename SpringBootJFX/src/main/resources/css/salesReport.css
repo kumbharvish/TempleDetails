@@ -13,3 +13,10 @@
 	-fx-font-size: 15px;
 }
 
+#lblExportAsPDF {
+	-fx-graphic: url("/images/PDF.png");
+}
+
+#lblExportAsExcel {
+	-fx-graphic: url("/images/Excel.png");
+}

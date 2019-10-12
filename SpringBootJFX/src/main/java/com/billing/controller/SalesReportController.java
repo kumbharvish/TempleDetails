@@ -11,9 +11,11 @@ import org.springframework.stereotype.Controller;
 
 import com.billing.constants.AppConstants;
 import com.billing.dto.BillDetails;
+import com.billing.dto.SalesReport;
 import com.billing.dto.UserDetails;
 import com.billing.main.AppContext;
 import com.billing.service.InvoiceService;
+import com.billing.service.PrinterService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 import com.billing.utils.IndianCurrencyFormatting;
@@ -57,6 +59,9 @@ public class SalesReportController extends AppContext implements TabContent {
 
 	@Autowired
 	InvoiceService invoiceService;
+
+	@Autowired
+	PrinterService pinterService;
 
 	private UserDetails userDetails;
 
@@ -169,7 +174,7 @@ public class SalesReportController extends AppContext implements TabContent {
 		tcNoOfItems.setCellValueFactory(
 				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getNoOfItems())));
 		tcPaymentMode.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPaymentMode()));
-		
+
 		tcQuantity.setCellFactory(callback);
 		tcDiscountAmt.setCellFactory(callback);
 		tcGSTAmt.setCellFactory(callback);
@@ -276,6 +281,37 @@ public class SalesReportController extends AppContext implements TabContent {
 		closeTab();
 	}
 
+	@FXML
+	void onExportAsPDFClick(MouseEvent event) {
+		if (!validateInput()) {
+			return;
+		}
+		SalesReport salesReport = getSalesReport();
+		pinterService.exportPDF(salesReport,currentStage);
+
+	}
+
+	private SalesReport getSalesReport() {
+		SalesReport salesReport = new SalesReport();
+		salesReport.setBillList(billList);
+		salesReport.setFromDate(dpFromDate.getValue().toString());
+		salesReport.setToDate(dpToDate.getValue().toString());
+		salesReport.setTotalAmt(
+				Double.valueOf(IndianCurrencyFormatting.removeFormattingWithCurrency(txtTotalSalesAmount.getText())));
+		salesReport.setTotalPendingAmt(
+				Double.valueOf(IndianCurrencyFormatting.removeFormatting(txtTotalPendingAmount.getText())));
+		return salesReport;
+	}
+
+	@FXML
+	void onExportAsExcelClick(MouseEvent event) {
+		if (!validateInput()) {
+			return;
+		}
+		SalesReport salesReport = getSalesReport();
+		pinterService.exportExcel(salesReport, currentStage);
+	}
+
 	@Override
 	public void closeTab() {
 		Tab tab = tabPane.selectionModelProperty().get().selectedItemProperty().get();
@@ -284,6 +320,10 @@ public class SalesReportController extends AppContext implements TabContent {
 
 	@Override
 	public boolean validateInput() {
+		if (billList.size() == 0) {
+			alertHelper.showErrorNotification("No records to export");
+			return false;
+		}
 		return true;
 	}
 

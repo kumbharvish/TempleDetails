@@ -8,35 +8,59 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Tooltip?>
 
 <BorderPane styleClass="rootNode" stylesheets="@../../../css/salesReport.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.SalesReportController">
 	<top>
 		<VBox alignment="TOP_CENTER" spacing="20.0" BorderPane.alignment="CENTER">
 			<children>
 				<Label fx:id="heading" text="Sales Report" />
-				<GridPane hgap="10.0" vgap="10.0">
-					<columnConstraints>
-						<ColumnConstraints fillWidth="false" hgrow="NEVER" minWidth="50.0" />
-						<ColumnConstraints fillWidth="false" hgrow="NEVER" minWidth="10.0" />
-						<ColumnConstraints fillWidth="false" hgrow="NEVER" minWidth="50.0" />
-						<ColumnConstraints fillWidth="false" hgrow="NEVER" minWidth="10.0" />
-					</columnConstraints>
-					<rowConstraints>
-						<RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-					</rowConstraints>
+				<AnchorPane>
 					<children>
-						<Label styleClass="nodeLabel" text="From :" GridPane.halignment="RIGHT" />
-						<DatePicker fx:id="dpFromDate" GridPane.columnIndex="1" />
-						<DatePicker fx:id="dpToDate" GridPane.columnIndex="3" />
-						<Label styleClass="nodeLabel" text="To :" GridPane.columnIndex="2" GridPane.halignment="RIGHT" />
+						<GridPane hgap="10.0" vgap="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+							<columnConstraints>
+								<ColumnConstraints fillWidth="false" hgrow="NEVER" minWidth="50.0" />
+								<ColumnConstraints fillWidth="false" hgrow="NEVER" minWidth="10.0" />
+								<ColumnConstraints fillWidth="false" hgrow="NEVER" minWidth="50.0" />
+								<ColumnConstraints fillWidth="false" hgrow="NEVER" minWidth="10.0" />
+							</columnConstraints>
+							<rowConstraints>
+								<RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+							</rowConstraints>
+							<children>
+								<Label styleClass="nodeLabel" text="From :" GridPane.halignment="RIGHT" />
+								<DatePicker fx:id="dpFromDate" GridPane.columnIndex="1" />
+								<DatePicker fx:id="dpToDate" GridPane.columnIndex="3" />
+								<Label styleClass="nodeLabel" text="To :" GridPane.columnIndex="2" GridPane.halignment="RIGHT" />
+							</children>
+						</GridPane>
+						<ToolBar  styleClass="parent" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+
+							<items>
+								<Label fx:id="lblExportAsPDF" onMouseClicked="#onExportAsPDFClick">
+									<tooltip>
+										<Tooltip text="Export PDF" />
+									</tooltip>
+									
+								</Label>
+								<Label fx:id="lblExportAsExcel" onMouseClicked="#onExportAsExcelClick">
+									<tooltip>
+										<Tooltip text="Export Excel" />
+									</tooltip>
+								</Label>
+
+							</items>
+						</ToolBar>
 					</children>
-				</GridPane>
+				</AnchorPane>
 			</children>
 			<padding>
 				<Insets bottom="20.0" />
@@ -48,8 +72,8 @@
 			<center>
 				<TableView fx:id="tableView" BorderPane.alignment="CENTER">
 					<columns>
-						<TableColumn fx:id="tcInvoiceNo" prefWidth="100.0" text="Invoice No" />
-						<TableColumn fx:id="tcDate" prefWidth="150.0" text="Date" />
+						<TableColumn fx:id="tcInvoiceNo" prefWidth="90.0" text="Invoice No" />
+						<TableColumn fx:id="tcDate" prefWidth="150.0" minWidth="150.0" text="Date" />
 						<TableColumn fx:id="tcCustomer" prefWidth="190.0" text="Customer Name" />
 						<TableColumn fx:id="tcNoOfItems" prefWidth="90.0" text="No Of Items" />
 						<TableColumn fx:id="tcQuantity" prefWidth="100.0" text="Quantity">

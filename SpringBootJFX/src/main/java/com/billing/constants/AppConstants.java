@@ -6,11 +6,7 @@ public class AppConstants {
 
 	public static final String DATA_BACKUP_FOLDER = "Data_Backup";
 
-	public static final String REPORT_EXPORT_FOLDER = "Reports";
-
 	public static final String JRXML = "Jrxml";
-
-	public static final String LOGO_NAME = "LOGO_NAME";
 
 	public static final String PRODUCT_PROFIT_REPORT_JRXML = "Product_Profit_Report.jasper";
 
@@ -125,5 +121,8 @@ public class AppConstants {
 	public static final String PENDING = "PENDING";
 	
 	public static final String SHOW_PRINT_PREVIEW = "SHOW_PRINT_PREVIEW";
+	
+	public static final String SALES_REPORT_NAME = "Sales_Report";
+
 	
 }

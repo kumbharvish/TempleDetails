@@ -1,20 +1,30 @@
 package com.billing.service;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.billing.constants.AppConstants;
 import com.billing.dto.BillDetails;
 import com.billing.dto.PrintTemplate;
-import com.billing.dto.StatusDTO;
+import com.billing.dto.ReportMetadata;
+import com.billing.dto.SalesReport;
 import com.billing.utils.AlertHelper;
+import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 import com.billing.utils.JasperUtils;
+
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 @Service
 public class PrinterService {
@@ -26,7 +36,13 @@ public class PrinterService {
 	JasperService jasperService;
 
 	@Autowired
+	ExcelService excelService;
+
+	@Autowired
 	DBUtils dbUtils;
+
+	@Autowired
+	AppUtils appUtils;
 
 	@Autowired
 	AlertHelper alertHelper;
@@ -71,4 +87,82 @@ public class PrinterService {
 			alertHelper.showErrorNotification("Please set defualt print template");
 		}
 	}
+
+	public void exportPDF(Object reportData, Stage currentStage) {
+
+		boolean isSuccess = false;
+
+		ReportMetadata reportMetadata = getReportMetadataForPDF(reportData);
+		FileChooser fileChooser = new FileChooser();
+		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PDF File", "*.pdf");
+		fileChooser.getExtensionFilters().add(extFilter);
+		fileChooser.setInitialFileName(reportMetadata.getReportName());
+		fileChooser.setTitle("Save PDF");
+		// Show save file dialog
+		File file = fileChooser.showSaveDialog(currentStage);
+		if (null != file) {
+			reportMetadata.setFilePath(file.getAbsolutePath());
+			isSuccess = jasperUtils.createPDF(reportMetadata);
+			if (isSuccess) {
+				alertHelper.showSuccessNotification("Report saved succcessfully");
+			} else {
+				alertHelper.showErrorNotification("Error occured in report generation");
+			}
+		}
+
+	}
+
+	private ReportMetadata getReportMetadataForPDF(Object reportData) {
+		ReportMetadata reportMetadata = new ReportMetadata();
+		String todaysDate = "_" + appUtils.getTodaysDate();
+		// Sales Report
+		if (reportData instanceof SalesReport) {
+			SalesReport salesReport = (SalesReport) reportData;
+			reportMetadata.setJasperName(AppConstants.SALES_REPORT_JASPER);
+			reportMetadata.setReportName(AppConstants.SALES_REPORT_NAME + todaysDate + ".pdf");
+			reportMetadata.setDataSourceMap(jasperService.getSalesReportDataSource(salesReport));
+		}
+		return reportMetadata;
+	}
+
+	private ReportMetadata getReportMetadataForExcel(Object reportData) {
+		Workbook workbook = new HSSFWorkbook();
+		ReportMetadata reportMetadata = new ReportMetadata();
+		String todaysDate = "_" + appUtils.getTodaysDate();
+		// Sales Report
+		if (reportData instanceof SalesReport) {
+			SalesReport salesReport = (SalesReport) reportData;
+			reportMetadata.setReportName(AppConstants.SALES_REPORT_NAME + todaysDate + ".xls");
+			reportMetadata.setWorkbook(excelService.getSalesReportWorkBook(salesReport.getBillList(), workbook));
+		}
+		return reportMetadata;
+	}
+
+	public void exportExcel(Object reportData, Stage currentStage) {
+		
+		ReportMetadata reportMetadata = getReportMetadataForExcel(reportData);
+		FileChooser fileChooser = new FileChooser();
+		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Excel File", "*.xls");
+		fileChooser.getExtensionFilters().add(extFilter);
+		fileChooser.setInitialFileName(reportMetadata.getReportName());
+		fileChooser.setTitle("Save Excel Sheet");
+		// Show save file dialog
+		File file = fileChooser.showSaveDialog(currentStage);
+		if (null != file) {
+			FileOutputStream outputStream;
+			try {
+				Workbook workbook = reportMetadata.getWorkbook();
+				outputStream = new FileOutputStream(file.getAbsoluteFile());
+				workbook.write(outputStream);
+				outputStream.close();
+				workbook.close();
+				alertHelper.showSuccessNotification("Report saved succcessfully");
+			} catch (Exception e) {
+				alertHelper.showErrorNotification("Error occured in report generation");
+				e.printStackTrace();
+				logger.info("Exception :", e);
+			}
+		}
+	}
+
 }

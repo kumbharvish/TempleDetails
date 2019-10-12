@@ -1,33 +1,78 @@
 package com.billing.utils;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.billing.constants.AppConstants;
+import com.billing.dto.BillDetails;
 import com.billing.dto.Customer;
 import com.billing.dto.Product;
 import com.billing.dto.ProductCategory;
 
 @Component
-public class ExcelUtils {
+public class ExcelReportMapping {
 
-	@Autowired
-	AppUtils appUtils;
+	private String[] salesReportHeaders = { "Invoice No", "Invoice Date", "Customer Name", "No Of Items", "Quantity",
+			"Payment Mode", "Discount Amount", "Tax Amount", "Net Sales Amount" };
+
+	private void setHeaderFont(Sheet sheet, CellStyle cellStyle) {
+		Font font = sheet.getWorkbook().createFont();
+		font.setBold(true);
+		font.setFontHeightInPoints((short) 10);
+		cellStyle.setFont(font);
+		cellStyle.setAlignment(HorizontalAlignment.CENTER);
+	}
+
+	private void setColumnWidth(Sheet sheet, int noOfColumns) {
+		for (int i = 1; i <= noOfColumns; i++) {
+			sheet.setColumnWidth(i, 6000);
+		}
+	}
+
+	// Sales Report -- [START]
+	public void setHeaderRowForSalesReport(Sheet sheet) {
+
+		CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+		setHeaderFont(sheet, cellStyle);
+
+		setColumnWidth(sheet, salesReportHeaders.length);
+		int columnCount = 0;
+		Row row = sheet.createRow(0);
+		for (String headerName : salesReportHeaders) {
+			Cell cell1 = row.createCell(++columnCount);
+			cell1.setCellStyle(cellStyle);
+			cell1.setCellValue(headerName);
+		}
+	}
+
+	public void addSalesReportRow(BillDetails bill, Row row) {
+		Cell cell = row.createCell(1);
+		cell.setCellValue(bill.getBillNumber());
+		cell = row.createCell(2);
+		cell.setCellValue(bill.getTimestamp());
+		cell = row.createCell(3);
+		cell.setCellValue(bill.getCustomerName());
+		cell = row.createCell(4);
+		cell.setCellValue(bill.getNoOfItems());
+		cell = row.createCell(5);
+		cell.setCellValue(bill.getTotalQuantity());
+		cell = row.createCell(6);
+		cell.setCellValue(bill.getPaymentMode());
+		cell = row.createCell(7);
+		cell.setCellValue(bill.getDiscountAmt());
+		cell = row.createCell(8);
+		cell.setCellValue(bill.getGstAmount());
+		cell = row.createCell(9);
+		cell.setCellValue(bill.getNetSalesAmt());
+	}
+	// Product Profit Report -- [END]
 
 	// Product Profit Report -- [START]
 	public static void createHeaderRowProdProfit(Sheet sheet) {
@@ -337,16 +382,5 @@ public class ExcelUtils {
 		cell.setCellValue(productCategory.getCategoryStockAmount());
 	}
 	// Category Wise Stock Report -- [END]
-
-	public void createExcelFile(Workbook workbook, String reportFileName) throws FileNotFoundException, IOException {
-
-		String directoryPath = appUtils.createDirectory(AppConstants.REPORT_EXPORT_FOLDER);
-		String filePath = directoryPath + reportFileName + "_" + appUtils.getFormattedDate(new Date()) + ".xls";
-		FileOutputStream outputStream = new FileOutputStream(filePath);
-		workbook.write(outputStream);
-		outputStream.close();
-		workbook.close();
-		appUtils.openWindowsDocument(filePath);
-	}
 
 }

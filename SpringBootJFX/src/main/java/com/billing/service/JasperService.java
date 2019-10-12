@@ -16,7 +16,9 @@ import com.billing.dto.ItemDetails;
 import com.billing.dto.Product;
 import com.billing.dto.ProductCategory;
 import com.billing.dto.ReturnDetails;
+import com.billing.dto.SalesReport;
 import com.billing.utils.AppUtils;
+import com.billing.utils.IndianCurrencyFormatting;
 
 @Service
 public class JasperService {
@@ -119,14 +121,12 @@ public class JasperService {
 	}
 
 	// Sales Report
-	public List<Map<String, ?>> createDateForSalesReport(List<BillDetails> billDetailList, String fromDate,
-			String toDate, Double totalPendingAmt, Double totalCashAmt, Double totalAmt, Double totalQty,
-			Integer totalNoOfItems) {
+	public List<Map<String, ?>> getSalesReportDataSource(SalesReport salesReport) {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
-		for (BillDetails bill : billDetailList) {
+		for (BillDetails bill : salesReport.getBillList()) {
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("FromDate", fromDate);
-			map.put("ToDate", toDate);
+			map.put("FromDate", salesReport.getFromDate());
+			map.put("ToDate", salesReport.getToDate());
 			map.put("BillNo", String.valueOf(bill.getBillNumber()));
 			map.put("CustMobile", String.valueOf(bill.getCustomerMobileNo()));
 			map.put("CustName", bill.getCustomerName());
@@ -134,12 +134,12 @@ public class JasperService {
 			map.put("NoOfItems", bill.getNoOfItems());
 			map.put("NetSalesAmt", appUtils.getDecimalFormat(bill.getNetSalesAmt()));
 			map.put("PaymentMode", bill.getPaymentMode());
-			map.put("BillDate", appUtils.getFormattedDate(bill.getTimestamp()));
-			map.put("TotalPendingAmt", appUtils.getDecimalFormat(totalPendingAmt));
-			map.put("TotalCashAmt", appUtils.getDecimalFormat(totalCashAmt));
-			map.put("TotalAmount", appUtils.getDecimalFormat(totalAmt));
-			map.put("TotalQty", appUtils.getDecimalFormat(totalQty));
-			map.put("TotalNoOfItems", String.valueOf(totalNoOfItems));
+			map.put("BillDate", appUtils.getFormattedDateWithTime(bill.getTimestamp()));
+			map.put("TotalPendingAmt", IndianCurrencyFormatting.applyFormatting(salesReport.getTotalPendingAmt()));
+			map.put("TotalCashAmt", IndianCurrencyFormatting.applyFormatting(salesReport.getTotalCashAmt()));
+			map.put("TotalAmount", IndianCurrencyFormatting.applyFormatting(salesReport.getTotalAmt()));
+			map.put("TotalQty", IndianCurrencyFormatting.applyFormatting(salesReport.getTotalQty()));
+			map.put("TotalNoOfItems", String.valueOf(salesReport.getTotalNoOfItems()));
 			dataSourceMaps.add(map);
 		}
 		return dataSourceMaps;

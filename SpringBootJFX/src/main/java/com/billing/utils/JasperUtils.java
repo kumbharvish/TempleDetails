@@ -15,13 +15,14 @@ import org.springframework.stereotype.Component;
 import com.billing.constants.AppConstants;
 import com.billing.dto.Barcode;
 import com.billing.dto.MyStoreDetails;
+import com.billing.dto.ReportMetadata;
 import com.billing.service.StoreDetailsService;
 
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -30,7 +31,6 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
 import win.zqxu.jrviewer.JRViewerFX;
-import javafx.geometry.Insets;
 
 @Component
 public class JasperUtils {
@@ -72,22 +72,16 @@ public class JasperUtils {
 			// compile report
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, headerParamsMap, dataSource);
 
-			// Export To PDF
+			/*// Export To PDF
 			String dirLocation = appUtils.createDirectory(AppConstants.INVOICE_PRINT_LOCATION);
 			String billNumber = (String) dataSourceMap.get(0).get("BillNo");
 
 			JasperExportManager.exportReportToPdfFile(jasperPrint,
-					dirLocation + "Invoice_" + billNumber + "_" + appUtils.getFormattedDate(new Date()) + ".pdf");
+					dirLocation + "Invoice_" + billNumber + "_" + appUtils.getFormattedDate(new Date()) + ".pdf");*/
+			
 			// Show Print Preview
 			if (appUtils.isTrue(appUtils.getAppDataValues(AppConstants.SHOW_PRINT_PREVIEW))) {
-				/*
-				 * JasperViewer jasperViewer = new JasperViewer(jasperPrint,false);
-				 * jasperViewer.setTitle("Invoice"); jasperViewer.setIconImage(new
-				 * ImageIcon(this.getClass().getResource("/images/shop32X32.png")).getImage());
-				 * jasperViewer.setVisible(true);
-				 */
 				previewPrint(jasperPrint, "Invoice");
-
 			} else {
 				JasperPrintManager.printReport(jasperPrint, false);
 			}
@@ -98,22 +92,18 @@ public class JasperUtils {
 		}
 	}
 
-	public boolean createPDF(List<Map<String, ?>> dataSourceMap, String JrxmlLoc, String reportName) {
+	public boolean createPDF(ReportMetadata reportMetadata) {
 		boolean isSucess = true;
 		try {
 			// load report location
 			String directoryPath = appUtils.createDirectory(AppConstants.JRXML);
-			String jrxmlLocation = directoryPath + JrxmlLoc;
-			// With JRXML
-			// JasperReport jasperReport =
-			// JasperCompileManager.compileReport(jrxmlLocation);
+			String jrxmlLocation = directoryPath + reportMetadata.getJasperName();
 
-			// With Jasper File
 			FileInputStream fis = new FileInputStream(jrxmlLocation);
 			BufferedInputStream bufferedInputStream = new BufferedInputStream(fis);
 			JasperReport jasperReport = (JasperReport) JRLoader.loadObject(bufferedInputStream);
 
-			JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource(dataSourceMap);
+			JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource(reportMetadata.getDataSourceMap());
 
 			// Add Report Headers
 			HashMap<String, Object> headerParamsMap = new HashMap<String, Object>();
@@ -127,13 +117,9 @@ public class JasperUtils {
 			// compile report
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, headerParamsMap, dataSource);
 
-			// view report to UI
-			// JasperViewer.viewReport(jasperPrint, false);
 			// Export To PDF
-			String dirLocation = appUtils.createDirectory(AppConstants.REPORT_EXPORT_FOLDER);
-			String filePath = dirLocation + reportName + "_" + appUtils.getFormattedDate(new Date()) + ".pdf";
-			JasperExportManager.exportReportToPdfFile(jasperPrint, filePath);
-			appUtils.openWindowsDocument(filePath);
+			JasperExportManager.exportReportToPdfFile(jasperPrint, reportMetadata.getFilePath());
+			//appUtils.openWindowsDocument(filePath);
 		} catch (Exception e) {
 			e.printStackTrace();
 			isSucess = false;
