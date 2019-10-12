@@ -150,7 +150,7 @@
 									<content>
 										<BorderPane>
 											<center>
-												<TableView fx:id="tableView" prefHeight="320.0" BorderPane.alignment="CENTER">
+												<TableView fx:id="tableView" prefHeight="300.0" BorderPane.alignment="CENTER">
 													<columns>
 														<TableColumn fx:id="tcInvoiceNo" prefWidth="120.0" text="Invoice No" />
 														<TableColumn fx:id="tcDate" prefWidth="150.0" text="Date" />
@@ -177,7 +177,14 @@
 												</VBox>
 											</right>
 											<bottom>
-												<Label fx:id="lblTotalOfInvoices" alignment="TOP_LEFT" styleClass="highlight" BorderPane.alignment="TOP_LEFT" />
+												<VBox>
+													<children>
+														<Label fx:id="lblTotalOfInvoices" alignment="TOP_LEFT" styleClass="highlight" BorderPane.alignment="TOP_LEFT" />
+													</children>
+													<padding>
+														<Insets top="20.0" />
+													</padding>
+												</VBox>
 											</bottom>
 										</BorderPane>
 									</content>

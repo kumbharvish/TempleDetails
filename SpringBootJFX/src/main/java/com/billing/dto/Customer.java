@@ -100,7 +100,7 @@ public class Customer {
 	}
 
 	public enum SortParameter {
-		CUSTOMER_NAME_ASCENDING, CUST_BALANCE_ASCENDING
+		CUSTOMER_NAME_ASCENDING, CUST_BALANCE_DESCENDING
 	}
 
 	private static class CustomerComparator implements Comparator<Customer> {
@@ -119,7 +119,7 @@ public class Customer {
 					if (comparison != 0)
 						return comparison;
 					break;
-				case CUST_BALANCE_ASCENDING:
+				case CUST_BALANCE_DESCENDING:
 					if (o1.getBalanceAmt() < o2.getBalanceAmt()) {
 						return 1;
 					} else if (o1.getBalanceAmt() > o2.getBalanceAmt()) {

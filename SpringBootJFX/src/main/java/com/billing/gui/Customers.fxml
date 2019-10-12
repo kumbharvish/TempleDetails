@@ -17,6 +17,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 
 <BorderPane styleClass="rootNode" stylesheets="@../../../css/customers.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.CustomersController">
 	<top>
@@ -161,7 +162,11 @@
 								<TableColumn fx:id="tcName" minWidth="120.0" prefWidth="187.0" text="Name" />
 								<TableColumn fx:id="tcCity" minWidth="60.0" prefWidth="116.0" text="City" />
 								<TableColumn fx:id="tcEmail" minWidth="60.0" prefWidth="174.0" text="Email" />
-								<TableColumn fx:id="tcPendingAmount" minWidth="51.0" prefWidth="145.0" text="Pending Amount" />
+								<TableColumn fx:id="tcPendingAmount" minWidth="51.0" prefWidth="145.0" text="Pending Amount">
+									<cellValueFactory>
+										<PropertyValueFactory property="balanceAmt" />
+									</cellValueFactory>
+								</TableColumn>
 							</columns>
 							<BorderPane.margin>
 								<Insets bottom="10.0" right="5.0" />

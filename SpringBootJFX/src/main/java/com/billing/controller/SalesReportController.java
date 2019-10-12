@@ -33,6 +33,7 @@ import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -41,6 +42,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 @Controller
 public class SalesReportController extends AppContext implements TabContent {
@@ -86,19 +88,19 @@ public class SalesReportController extends AppContext implements TabContent {
 	private TableColumn<BillDetails, String> tcNoOfItems;
 
 	@FXML
-	private TableColumn<BillDetails, String> tcQuantity;
+	private TableColumn<BillDetails, Double> tcQuantity;
 
 	@FXML
 	private TableColumn<BillDetails, String> tcPaymentMode;
 
 	@FXML
-	private TableColumn<BillDetails, String> tcDiscountAmt;
+	private TableColumn<BillDetails, Double> tcDiscountAmt;
 
 	@FXML
-	private TableColumn<BillDetails, String> tcGSTAmt;
+	private TableColumn<BillDetails, Double> tcGSTAmt;
 
 	@FXML
-	private TableColumn<BillDetails, String> tcNetSalesAmt;
+	private TableColumn<BillDetails, Double> tcNetSalesAmt;
 
 	@FXML
 	private TextField txtTotalInovoiceCount;
@@ -136,32 +138,48 @@ public class SalesReportController extends AppContext implements TabContent {
 	}
 
 	private void setTableCellFactories() {
+
+		final Callback<TableColumn<BillDetails, Double>, TableCell<BillDetails, Double>> callback = new Callback<TableColumn<BillDetails, Double>, TableCell<BillDetails, Double>>() {
+
+			@Override
+			public TableCell<BillDetails, Double> call(TableColumn<BillDetails, Double> param) {
+				TableCell<BillDetails, Double> tableCell = new TableCell<BillDetails, Double>() {
+
+					@Override
+					protected void updateItem(Double item, boolean empty) {
+						super.updateItem(item, empty);
+						if (empty) {
+							super.setText(null);
+						} else {
+							super.setText(IndianCurrencyFormatting.applyFormatting(item));
+						}
+					}
+
+				};
+				tableCell.getStyleClass().add("numeric-cell");
+				return tableCell;
+			}
+		};
+
 		tcInvoiceNo.setCellValueFactory(
 				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getBillNumber())));
 		tcDate.setCellValueFactory(cellData -> new SimpleStringProperty(
 				appUtils.getFormattedDateWithTime(cellData.getValue().getTimestamp())));
-		tcQuantity.setCellValueFactory(cellData -> new SimpleStringProperty(
-				appUtils.getDecimalFormat(cellData.getValue().getTotalQuantity())));
 		tcCustomer.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustomerName()));
 		tcNoOfItems.setCellValueFactory(
 				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getNoOfItems())));
 		tcPaymentMode.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPaymentMode()));
-		tcDiscountAmt.setCellValueFactory(
-				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getDiscountAmt())));
-		tcGSTAmt.setCellValueFactory(
-				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getGstAmount())));
-		tcNetSalesAmt.setCellValueFactory(
-				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getNetSalesAmt())));
+		
+		tcQuantity.setCellFactory(callback);
+		tcDiscountAmt.setCellFactory(callback);
+		tcGSTAmt.setCellFactory(callback);
+		tcNetSalesAmt.setCellFactory(callback);
 
 		tcDate.getStyleClass().add("character-cell");
-		tcQuantity.getStyleClass().add("numeric-cell");
 		tcCustomer.getStyleClass().add("character-cell");
 		tcInvoiceNo.getStyleClass().add("numeric-cell");
 		tcNoOfItems.getStyleClass().add("numeric-cell");
 		tcPaymentMode.getStyleClass().add("character-cell");
-		tcDiscountAmt.getStyleClass().add("numeric-cell");
-		tcNetSalesAmt.getStyleClass().add("numeric-cell");
-		tcGSTAmt.getStyleClass().add("numeric-cell");
 	}
 
 	@Override
@@ -210,7 +228,7 @@ public class SalesReportController extends AppContext implements TabContent {
 			}
 
 		});
-		
+
 		tableView.setOnMouseClicked((MouseEvent event) -> {
 			if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
 				// Show View Invoice Popup
@@ -272,7 +290,7 @@ public class SalesReportController extends AppContext implements TabContent {
 	private DateCell getDateCell(DatePicker datePicker) {
 		return appUtils.getDateCell(datePicker, null, LocalDate.now());
 	}
-	
+
 	private void getViewInvoicePopup(BillDetails bill) {
 		FXMLLoader fxmlLoader = new FXMLLoader();
 		fxmlLoader.setControllerFactory(springContext::getBean);

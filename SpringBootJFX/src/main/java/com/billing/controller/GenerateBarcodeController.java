@@ -63,6 +63,8 @@ public class GenerateBarcodeController extends AppContext implements TabContent 
 	FilteredList<Product> filteredList;
 
 	int productCode = 0;
+	
+	HashMap<Long, Product> productMap;
 
 	@FXML
 	private TextField txtName;
@@ -129,6 +131,7 @@ public class GenerateBarcodeController extends AppContext implements TabContent 
 		});
 		btnUpdate.setDisable(true);
 		btnGenerateBarcode.setDisable(true);
+		productMap = productService.getProductBarCodeMap();
 	}
 
 	private void setTableCellFactories() {
@@ -229,7 +232,6 @@ public class GenerateBarcodeController extends AppContext implements TabContent 
 		Product product = new Product();
 		product.setProductCode(productCode);
 		product.setProductBarCode(Long.valueOf(txtBarcode.getText().trim()));
-		HashMap<Long, Product> productMap = productService.getProductBarCodeMap();
 
 		if (productMap.containsKey(product.getProductBarCode())) {
 			alertHelper.showErrorNotification("Please regenerate barcode");

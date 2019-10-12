@@ -416,7 +416,7 @@ public class CustomerService {
 				customer.setLastUpdateDate(rs.getString("LAST_UPDATE"));
 
 				customerList.add(customer);
-				Comparator<Customer> cp = Customer.getComparator(Customer.SortParameter.CUSTOMER_NAME_ASCENDING);
+				Comparator<Customer> cp = Customer.getComparator(Customer.SortParameter.CUST_BALANCE_DESCENDING);
 				Collections.sort(customerList, cp);
 			}
 			rs.close();

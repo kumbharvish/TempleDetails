@@ -25,6 +25,7 @@ import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -41,15 +42,16 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 @Controller
 public class CustomersController extends AppContext implements TabContent {
@@ -143,7 +145,7 @@ public class CustomersController extends AppContext implements TabContent {
 	private TableColumn<Customer, String> tcEmail;
 
 	@FXML
-	private TableColumn<Customer, String> tcPendingAmount;
+	private TableColumn<Customer, Double> tcPendingAmount;
 
 	@FXML
 	void onASettleUpCommand(ActionEvent event) {
@@ -199,20 +201,39 @@ public class CustomersController extends AppContext implements TabContent {
 	}
 
 	private void setTableCellFactories() {
+
+		final Callback<TableColumn<Customer, Double>, TableCell<Customer, Double>> callback = new Callback<TableColumn<Customer, Double>, TableCell<Customer, Double>>() {
+			@Override
+			public TableCell<Customer, Double> call(TableColumn<Customer, Double> param) {
+				TableCell<Customer, Double> tableCell = new TableCell<Customer, Double>() {
+
+					@Override
+					protected void updateItem(Double item, boolean empty) {
+						super.updateItem(item, empty);
+						if (empty) {
+							super.setText(null);
+						} else {
+							super.setText(IndianCurrencyFormatting.applyFormatting(item));
+						}
+					}
+				};
+				tableCell.getStyleClass().add("numeric-cell");
+				return tableCell;
+			}
+		};
+
 		// Table Column Mapping
 		tcMobileNo.setCellValueFactory(
 				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getCustMobileNumber())));
 		tcName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustName()));
 		tcCity.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustCity()));
 		tcEmail.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustEmail()));
-		tcPendingAmount.setCellValueFactory(
-				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getBalanceAmt())));
+		tcPendingAmount.setCellFactory(callback);
 		// Set CSS
 		tcMobileNo.getStyleClass().add("numeric-cell");
 		tcName.getStyleClass().add("character-cell");
 		tcCity.getStyleClass().add("character-cell");
 		tcEmail.getStyleClass().add("character-cell");
-		tcPendingAmount.getStyleClass().add("numeric-cell");
 	}
 
 	public void onSelectedRowChanged(ObservableValue<? extends Customer> observable, Customer oldValue,

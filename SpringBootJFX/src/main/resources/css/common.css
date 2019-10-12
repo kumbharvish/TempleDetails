@@ -71,7 +71,6 @@
 }
 
 .highlight {
-	-fx-text-fill: darkred;
 	-fx-font-weight: bolder;
 	-fx-underline: true;
 	-fx-font-size: 1.12em;
