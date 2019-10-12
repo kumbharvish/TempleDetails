@@ -17,85 +17,90 @@
 <?import javafx.scene.control.ButtonBar?>
 
 <HBox alignment="TOP_CENTER" stylesheets="@../../../css/taxes.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.TaxesController">
-   <children>
-      <BorderPane fx:id="borderPane" styleClass="rootNode">
-         <top>
-            <VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
-               <children>
-                  <Label fx:id="heading" alignment="TOP_CENTER" contentDisplay="CENTER" text="Taxes" textAlignment="CENTER" />
-                  <GridPane fx:id="gridPane" alignment="TOP_CENTER" hgap="20.0" vgap="15.0">
-                    <children>
-                        <Label styleClass="requiredInput" text="Tax Name :" GridPane.halignment="RIGHT" />
-                        <VBox GridPane.columnIndex="1">
-                           <children>
-                              <TextField fx:id="txtTaxName" />
-                              <Label fx:id="txtTaxNameErrorMsg" styleClass="errorLabel" />
-                           </children>
-                        </VBox>
-                        <Label styleClass="requiredInput" text="Tax (%) :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
-                        <VBox GridPane.columnIndex="1" GridPane.rowIndex="1">
-                           <children>
-                              <TextField fx:id="txtTaxValue" />
-                              <Label fx:id="txtTaxValueErrorMsg" styleClass="errorLabel" />
-                           </children>
-                        </VBox>
-                        <Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                        <ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="3">
-                           <buttons>
-                              <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#onAddCommand" text="Add" />
-                              <Button fx:id="btnUpdate" mnemonicParsing="false" onAction="#onUpdateCommand" text="Update" />
-                              <Button fx:id="btnDelete" mnemonicParsing="false" onAction="#onDeleteCommand" text="Delete" />
-                              <Button fx:id="btnReset" mnemonicParsing="false" onAction="#onResetCommand" text="Reset" />
-                           </buttons>
+	<children>
+		<BorderPane fx:id="borderPane" styleClass="rootNode">
+			<top>
+				<VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
+					<children>
+						<Label fx:id="heading" alignment="TOP_CENTER" contentDisplay="CENTER" text="Taxes" textAlignment="CENTER" />
+						<GridPane fx:id="gridPane" alignment="TOP_CENTER" hgap="20.0" vgap="15.0">
+							<children>
+								<Label styleClass="requiredInput" text="Tax Name :" GridPane.halignment="RIGHT" />
+								<VBox GridPane.columnIndex="1">
+									<children>
+										<TextField fx:id="txtTaxName" />
+										<Label fx:id="txtTaxNameErrorMsg" styleClass="errorLabel" />
+									</children>
+								</VBox>
+								<Label styleClass="requiredInput" text="Tax (%) :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+								<VBox GridPane.columnIndex="1" GridPane.rowIndex="1">
+									<children>
+										<TextField fx:id="txtTaxValue" />
+										<Label fx:id="txtTaxValueErrorMsg" styleClass="errorLabel" />
+									</children>
+								</VBox>
+								<Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+								<ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="3">
+									<buttons>
+										<Button fx:id="btnAdd" mnemonicParsing="false" onAction="#onAddCommand" text="Add" />
+										<Button fx:id="btnUpdate" mnemonicParsing="false" onAction="#onUpdateCommand" text="Update" />
+										<Button fx:id="btnDelete" mnemonicParsing="false" onAction="#onDeleteCommand" text="Delete" />
+										<Button fx:id="btnReset" mnemonicParsing="false" onAction="#onResetCommand" text="Reset" />
+									</buttons>
+								</ButtonBar>
+							</children>
+							<VBox.margin>
+								<Insets top="20.0" />
+							</VBox.margin>
+							<padding>
+								<Insets top="10.0" />
+							</padding>
+							<columnConstraints>
+								<ColumnConstraints />
+								<ColumnConstraints />
+							</columnConstraints>
+							<rowConstraints>
+								<RowConstraints />
+								<RowConstraints />
+								<RowConstraints />
+								<RowConstraints />
+							</rowConstraints>
+						</GridPane>
+					</children>
+				</VBox>
+			</top>
+			<center>
+				<TableView fx:id="tableView" BorderPane.alignment="CENTER">
+					<columns>
+						<TableColumn fx:id="tcTaxName" prefWidth="240.0" text="Tax Name" />
+						<TableColumn fx:id="tcTaxValue" prefWidth="165.0" text="Tax (%)" />
+					</columns>
+					<BorderPane.margin>
+						<Insets bottom="20.0" top="20.0" />
+					</BorderPane.margin>
+					<placeholder>
+						<Label fx:id="placeholderText" text="&lt; No taxes found &gt;" />
+					</placeholder>
+				</TableView>
+			</center>
+			<bottom>
+				<VBox BorderPane.alignment="CENTER">
+					<children>
+						<Separator/>
+						<ButtonBar BorderPane.alignment="CENTER">
+							<buttons>
+								<Button fx:id="btnClose" mnemonicParsing="false" text="Close" onAction="#onCloseCommand"/>
+							</buttons>
+							<padding>
+								<Insets top="10.0" />
+							</padding>
 						</ButtonBar>
-                     </children>
-                     <VBox.margin>
-                        <Insets top="20.0" />
-                     </VBox.margin>
-                     <padding>
-                        <Insets top="10.0" />
-                     </padding>
-                     <columnConstraints>
-                        <ColumnConstraints />
-                        <ColumnConstraints />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                     </rowConstraints>
-                  </GridPane>
-               </children>
-            </VBox>
-         </top>
-         <center>
-            <TableView fx:id="tableView" BorderPane.alignment="CENTER">
-              <columns>
-                <TableColumn fx:id="tcTaxName" prefWidth="240.0" text="Tax Name" />
-                <TableColumn fx:id="tcTaxValue" prefWidth="165.0" text="Tax (%)" />
-              </columns>
-               <BorderPane.margin>
-                  <Insets bottom="20.0" top="20.0" />
-               </BorderPane.margin>
-			   <placeholder>
-                  <Label fx:id="placeholderText" text="&lt; No taxes found &gt;" />
-                </placeholder>
-            </TableView>
-         </center>
-         <bottom>
-            <TilePane alignment="TOP_RIGHT" BorderPane.alignment="BOTTOM_RIGHT">
-               <children>
-                  <Button fx:id="btnClose" mnemonicParsing="false" onAction="#onCloseCommand" text="Close" />
-               </children>
-               <padding>
-                  <Insets bottom="20.0" />
-               </padding>
-            </TilePane>
-         </bottom>
-      </BorderPane>
-   </children>
-   <padding>
-      <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
-   </padding>
+					</children>
+				</VBox>
+			</bottom>
+		</BorderPane>
+	</children>
+	<padding>
+		<Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+	</padding>
 </HBox>

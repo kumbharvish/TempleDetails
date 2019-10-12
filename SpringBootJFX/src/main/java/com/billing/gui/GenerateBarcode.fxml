@@ -18,112 +18,116 @@
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane styleClass="rootNode" stylesheets="@../../../css/barcode.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.GenerateBarcodeController">
-         <top>
-            <VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
-               <children>
-                  <Label fx:id="heading" alignment="TOP_CENTER" contentDisplay="CENTER" text="Generate Barcode" />
-               </children>
-               <BorderPane.margin>
-                  <Insets bottom="10.0" />
-               </BorderPane.margin>
-            </VBox>
-         </top>
-        <center>
-            <SplitPane fx:id="splitPane" dividerPositions="0.37" BorderPane.alignment="CENTER">
-               <items>
-                  <BorderPane styleClass="parent">
-				  <center>
-                        <ScrollPane prefHeight="708.0" prefWidth="585.0" styleClass="parent" BorderPane.alignment="CENTER">
-                           <content>
-      				  <GridPane fx:id="gridPane" alignment="TOP_CENTER" hgap="20.0" vgap="15.0">
-                           <children>				  
-							 
-                              <Label styleClass="nodeLabel" text="Product Name :" GridPane.halignment="RIGHT" />
-							  <TextField fx:id="txtName" editable="false" styleClass="readOnlyField" GridPane.columnIndex="1" />
-                              <Label styleClass="nodeLabel" text="Quantity :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
-							  <TextField fx:id="txtQuantity" editable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Label styleClass="nodeLabel" text="Category :" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-							  <TextField fx:id="txtCategory" editable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <Label styleClass="nodeLabel" text="Barcode :" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
-                              <TextField fx:id="txtBarcode" editable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                      
-                              <Separator GridPane.columnSpan="2" GridPane.rowIndex="4" />
-                              <ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="5">
-                                <buttons>
-                                  <Button fx:id="btnGenerateBarcode" defaultButton="true" mnemonicParsing="true" onAction="#onGenerateBarcodeCommand" text="Generate Barcode" />
-                                    <Button fx:id="btnUpdate" cancelButton="true" mnemonicParsing="true" onAction="#onUpdateCommand" text="Update" />
-                                </buttons>
-                              </ButtonBar>
-                           </children>
-                           <columnConstraints>
-                             <ColumnConstraints hgrow="NEVER" />
-                            <ColumnConstraints hgrow="ALWAYS" prefWidth="250.0" />
-                           </columnConstraints>
-                           <rowConstraints>
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                           </rowConstraints>
-                           <padding>
-                              <Insets top="30.0" />
-                           </padding>
-                        </GridPane>
-                           </content>
-                        </ScrollPane>
-				  </center>
-				  </BorderPane>
-				  
-                  <BorderPane styleClass="parent">
-				   <top>
-                        <TextField fx:id="txtSearchProduct" BorderPane.alignment="CENTER">
-                           <BorderPane.margin>
-                              <Insets bottom="5.0" left="400.0" right="5.0" top="10.0" />
-                           </BorderPane.margin>
-                     <tooltip>
-                        <Tooltip text="Product Search" />
-                     </tooltip>
-                        </TextField>
-                     </top>
-                     <bottom>
-                        <VBox nodeOrientation="RIGHT_TO_LEFT" BorderPane.alignment="CENTER">
-                           <children>
-                              <Separator prefWidth="200.0" />
-                              <Button fx:id="btnClose" cancelButton="true" mnemonicParsing="false" onAction="#onCloseAction" text="Close">
-                                 <VBox.margin>
-                                    <Insets top="15.0" />
-                                 </VBox.margin></Button>
-                           </children>
-                        </VBox>
-                     </bottom>
-                     <opaqueInsets>
-                        <Insets />
-                     </opaqueInsets>
-                     <padding>
-                        <Insets left="10.0" />
-                     </padding>
-                     
-               <center>
-                  <TableView fx:id="tableView" BorderPane.alignment="CENTER">
-                    <columns>
-                      <TableColumn fx:id="tcName" minWidth="120.0" prefWidth="200.0" text="Product Name" />
-                        <TableColumn fx:id="tcCategory" minWidth="120.0" prefWidth="200.0" text="Category" />
-						<TableColumn fx:id="tcQuantity" minWidth="60.0" prefWidth="120.0" text="Quantity" />
-                        <TableColumn fx:id="tcUOM" prefWidth="90.0" text="UOM" />
-                        <TableColumn fx:id="tcDescription" prefWidth="159.0" text="Description" />
-                    </columns>
-                     <BorderPane.margin>
-                        <Insets bottom="10.0" right="5.0" />
-                     </BorderPane.margin>
-					 <placeholder>
-                  <Label fx:id="placeholderText" text="&lt; No products found &gt;" />
-                </placeholder>
-                  </TableView>
-               </center></BorderPane>
-               </items>
-            </SplitPane>
-         </center>
+	<top>
+		<VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
+			<children>
+				<Label fx:id="heading" alignment="TOP_CENTER" contentDisplay="CENTER" text="Generate Barcode" />
+			</children>
+			<BorderPane.margin>
+				<Insets bottom="10.0" />
+			</BorderPane.margin>
+		</VBox>
+	</top>
+	<center>
+		<SplitPane fx:id="splitPane" dividerPositions="0.37" BorderPane.alignment="CENTER">
+			<items>
+				<BorderPane styleClass="parent">
+					<center>
+						<ScrollPane prefHeight="708.0" prefWidth="585.0" styleClass="parent" BorderPane.alignment="CENTER">
+							<content>
+								<GridPane fx:id="gridPane" alignment="TOP_CENTER" hgap="20.0" vgap="15.0">
+									<children>				  
+
+										<Label styleClass="nodeLabel" text="Product Name :" GridPane.halignment="RIGHT" />
+										<TextField fx:id="txtName" editable="false" styleClass="readOnlyField" GridPane.columnIndex="1" />
+										<Label styleClass="nodeLabel" text="Quantity :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+										<TextField fx:id="txtQuantity" editable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+										<Label styleClass="nodeLabel" text="Category :" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+										<TextField fx:id="txtCategory" editable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+										<Label styleClass="nodeLabel" text="Barcode :" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+										<TextField fx:id="txtBarcode" editable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+										<Separator GridPane.columnSpan="2" GridPane.rowIndex="4" />
+										<ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="5">
+											<buttons>
+												<Button fx:id="btnGenerateBarcode" defaultButton="true" mnemonicParsing="true" onAction="#onGenerateBarcodeCommand" text="Generate Barcode" />
+												<Button fx:id="btnUpdate" cancelButton="true" mnemonicParsing="true" onAction="#onUpdateCommand" text="Update" />
+											</buttons>
+										</ButtonBar>
+									</children>
+									<columnConstraints>
+										<ColumnConstraints hgrow="NEVER" />
+										<ColumnConstraints hgrow="ALWAYS" prefWidth="250.0" />
+									</columnConstraints>
+									<rowConstraints>
+										<RowConstraints />
+										<RowConstraints />
+										<RowConstraints />
+										<RowConstraints />
+										<RowConstraints />
+										<RowConstraints />
+										<RowConstraints />
+									</rowConstraints>
+									<padding>
+										<Insets top="30.0" />
+									</padding>
+								</GridPane>
+							</content>
+						</ScrollPane>
+					</center>
+				</BorderPane>
+
+				<BorderPane styleClass="parent">
+					<top>
+						<TextField fx:id="txtSearchProduct" BorderPane.alignment="CENTER">
+							<BorderPane.margin>
+								<Insets bottom="5.0" left="400.0" right="5.0" top="10.0" />
+							</BorderPane.margin>
+							<tooltip>
+								<Tooltip text="Product Search" />
+							</tooltip>
+						</TextField>
+					</top>
+					<bottom>
+						<VBox BorderPane.alignment="CENTER">
+							<children>
+								<Separator/>
+								<ButtonBar BorderPane.alignment="CENTER">
+									<buttons>
+										<Button fx:id="btnClose" mnemonicParsing="false" text="Close" onAction="#onCloseAction"/>
+									</buttons>
+									<padding>
+										<Insets top="10.0" />
+									</padding>
+								</ButtonBar>
+							</children>
+						</VBox>
+					</bottom>
+					<opaqueInsets>
+						<Insets />
+					</opaqueInsets>
+					<padding>
+						<Insets left="10.0" />
+					</padding>
+
+					<center>
+						<TableView fx:id="tableView" BorderPane.alignment="CENTER">
+							<columns>
+								<TableColumn fx:id="tcName" minWidth="120.0" prefWidth="200.0" text="Product Name" />
+								<TableColumn fx:id="tcCategory" minWidth="120.0" prefWidth="200.0" text="Category" />
+								<TableColumn fx:id="tcQuantity" minWidth="60.0" prefWidth="120.0" text="Quantity" />
+								<TableColumn fx:id="tcUOM" prefWidth="90.0" text="UOM" />
+								<TableColumn fx:id="tcDescription" prefWidth="159.0" text="Description" />
+							</columns>
+							<BorderPane.margin>
+								<Insets bottom="10.0" right="5.0" />
+							</BorderPane.margin>
+							<placeholder>
+								<Label fx:id="placeholderText" text="&lt; No products found &gt;" />
+							</placeholder>
+						</TableView>
+					</center></BorderPane>
+			</items>
+		</SplitPane>
+	</center>
 </BorderPane>

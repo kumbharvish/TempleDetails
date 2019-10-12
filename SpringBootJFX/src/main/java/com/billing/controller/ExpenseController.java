@@ -16,6 +16,8 @@ import com.billing.utils.TabContent;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -129,7 +131,7 @@ public class ExpenseController implements TabContent {
 
 	@Override
 	public void putFocusOnNode() {
-		cbCategory.requestFocus();
+		txtAmount.requestFocus();
 	}
 
 	@Override
@@ -137,6 +139,7 @@ public class ExpenseController implements TabContent {
 		expensesService.populateDropdown(cbCategory);
 		cbCategory.getSelectionModel().select(0);
 		dateExpense.setValue(LocalDate.now());
+		isDirty.set(false);
 		return true;
 	}
 
@@ -232,6 +235,17 @@ public class ExpenseController implements TabContent {
 			if (newValue) {
 				cbCategory.show();
 			}
+		});
+		txtAmount.textProperty().addListener(this::invalidated);
+		txtDescription.textProperty().addListener(this::invalidated);
+		cbCategory.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				isDirty.set(true);
+			}
+		});
+		dateExpense.valueProperty().addListener((observable, oldDate, newDate) -> {
+			isDirty.set(true);
 		});
 	}
 

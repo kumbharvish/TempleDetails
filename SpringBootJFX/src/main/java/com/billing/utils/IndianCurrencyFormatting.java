@@ -18,12 +18,22 @@ import java.math.RoundingMode;
             if (decimalIndex == -1) {
                 //Check that the string is atleast 4 characters long
                 if (amount.length() < 4) {
-                    return amount; // return the source string as it is i.e. without any change
+                	// return the source string as it is i.e. without any change
+                	if (negativeNumber) {
+                        return "-" + amount.toString();
+                    } else {
+                        return amount.toString();
+                    }
                 }
                 sb.append(amount);
                 sb.insert(sb.length() - 3, ",");
             } else if (decimalIndex < 4) {
-                return amount; //return the source string as it is
+            	//return the source string as it is
+            	 if (negativeNumber) {
+                     return "-" + amount.toString();
+                 } else {
+                     return amount.toString();
+                 }
             } else {
                 sb.append(amount);
                 sb.insert(decimalIndex - 3, ",");
