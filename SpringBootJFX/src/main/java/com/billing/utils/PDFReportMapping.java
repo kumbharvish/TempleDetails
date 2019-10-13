@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import com.billing.dto.Barcode;
 import com.billing.dto.BillDetails;
 import com.billing.dto.Customer;
+import com.billing.dto.CustomersReport;
 import com.billing.dto.ItemDetails;
 import com.billing.dto.Product;
 import com.billing.dto.ProductCategory;
@@ -75,15 +76,15 @@ public class PDFReportMapping {
 	}
 
 	// Customer Report
-	public List<Map<String, ?>> getDatasourceForCustomerReport(List<Customer> custList) {
+	public List<Map<String, ?>> getDatasourceForCustomersReport(CustomersReport report) {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
-		for (Customer cust : custList) {
+		for (Customer cust : report.getCustomerList()) {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("MobileNo", String.valueOf(cust.getCustMobileNumber()));
 			map.put("Name", cust.getCustName());
 			map.put("City", cust.getCustCity());
 			map.put("Email", cust.getCustEmail());
-			map.put("BalanceAmt", appUtils.getDecimalFormat(cust.getBalanceAmt()));
+			map.put("BalanceAmt", IndianCurrencyFormatting.applyFormatting(cust.getBalanceAmt()));
 			map.put("EntryDate", appUtils.getFormattedDateWithTime(cust.getEntryDate()));
 			dataSourceMaps.add(map);
 		}

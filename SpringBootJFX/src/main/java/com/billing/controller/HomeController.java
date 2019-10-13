@@ -200,7 +200,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onCustomerReportCommand(ActionEvent event) {
-
+		addTab("CustomersReport","Customers Report");
 	}
 
 	@FXML

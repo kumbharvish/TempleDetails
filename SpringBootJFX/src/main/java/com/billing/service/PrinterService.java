@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.billing.constants.AppConstants;
 import com.billing.dto.Barcode;
 import com.billing.dto.BillDetails;
+import com.billing.dto.CustomersReport;
 import com.billing.dto.PrintTemplate;
 import com.billing.dto.ProductProfitReport;
 import com.billing.dto.ReportMetadata;
@@ -178,6 +179,13 @@ public class PrinterService {
 			reportMetadata.setReportName(AppConstants.STOCK_SUMMARY_REPORT_NAME + todaysDate + ".pdf");
 			reportMetadata.setDataSourceMap(pdfReportMapping.getDatasourceForStockSummaryReport(report));
 		}
+		// Customers Report
+		if (reportData instanceof CustomersReport) {
+			CustomersReport report = (CustomersReport) reportData;
+			reportMetadata.setJasperName(AppConstants.CUSTOMERS_REPORT_JASPER);
+			reportMetadata.setReportName(AppConstants.CUSTOMERS_REPORT_NAME + todaysDate + ".pdf");
+			reportMetadata.setDataSourceMap(pdfReportMapping.getDatasourceForCustomersReport(report));
+		}
 		return reportMetadata;
 	}
 
@@ -203,6 +211,12 @@ public class PrinterService {
 			StockSummaryReport report = (StockSummaryReport) reportData;
 			reportMetadata.setReportName(AppConstants.STOCK_SUMMARY_REPORT_NAME + todaysDate + ".xls");
 			reportMetadata.setWorkbook(excelReportService.getStockSummaryReportWorkBook(report, workbook));
+		}
+		// Customers Report
+		if (reportData instanceof CustomersReport) {
+			CustomersReport report = (CustomersReport) reportData;
+			reportMetadata.setReportName(AppConstants.CUSTOMERS_REPORT_NAME + todaysDate + ".xls");
+			reportMetadata.setWorkbook(excelReportService.getCustomersReportWorkBook(report, workbook));
 		}
 		return reportMetadata;
 	}

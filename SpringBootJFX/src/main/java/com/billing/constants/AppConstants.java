@@ -104,6 +104,8 @@ public class AppConstants {
 	public static final String PRODUCT_PROFIT_REPORT_NAME = "Product_Profit_Report";
 
 	public static final String STOCK_SUMMARY_REPORT_NAME = "Stock_Summary_Report";
+	
+	public static final String CUSTOMERS_REPORT_NAME = "Customers_Report";
 
 	// Jasper File Names
 	public static final String PRODUCT_PROFIT_REPORT_JASPER = "Product_Profit_Report.jasper";

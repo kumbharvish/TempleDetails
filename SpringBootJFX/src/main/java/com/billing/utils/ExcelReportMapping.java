@@ -29,8 +29,8 @@ public class ExcelReportMapping {
 	private String[] stockSummaryReportHeaders = { "Product Name", "Stock Quantity", "Sale Price", "Purchase Price",
 			"Stock Value" };
 
-	private String[] customersReportHeaders = { "Mobile Number", "Customer Name", "City", "Email", "Entry Date",
-			"Pending Balance" };
+	private String[] customersReportHeaders = { "Mobile Number", "Name", "City", "Entry Date",
+			"Pending Amount" };
 
 	private String[] zeroStockReportHeaders = { "Product Name", "Category Name" };
 
@@ -224,14 +224,25 @@ public class ExcelReportMapping {
 		cell.setCellValue(cust.getCustCity());
 
 		cell = row.createCell(4);
-		cell.setCellValue(cust.getCustEmail());
-
-		cell = row.createCell(5);
 		cell.setCellValue(appUtils.getFormattedDateWithTime(cust.getEntryDate()));
-
-		cell = row.createCell(6);
+		
+		cell = row.createCell(5);
 		cell.setCellValue(cust.getBalanceAmt());
 
+	}
+	
+	public void addTotalCustomersRow(Sheet sheet, int rowNumber) {
+		CellStyle cellStyleHeader = sheet.getWorkbook().createCellStyle();
+		CellStyle cellStyleTotal = sheet.getWorkbook().createCellStyle();
+		setHeaderFont(sheet, cellStyleHeader);
+		setTotalFont(sheet, cellStyleTotal);
+		Row row = sheet.createRow(rowNumber + 1);
+		Cell cell = row.createCell(4);
+		cell.setCellValue("Total");
+		cell.setCellStyle(cellStyleHeader);
+		cell = row.createCell(5);
+		cell.setCellFormula("SUM(F2:F" + rowNumber + ")");
+		cell.setCellStyle(cellStyleTotal);
 	}
 
 	// Zero Stock Products Report

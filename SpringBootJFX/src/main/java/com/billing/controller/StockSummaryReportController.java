@@ -39,7 +39,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 @Controller
-public class StockSummaryReportController extends AppContext implements TabContent {
+public class StockSummaryReportController implements TabContent {
 
 	private static final Logger logger = LoggerFactory.getLogger(StockSummaryReportController.class);
 

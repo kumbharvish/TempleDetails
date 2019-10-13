@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.billing.dto.BillDetails;
 import com.billing.dto.Customer;
+import com.billing.dto.CustomersReport;
 import com.billing.dto.Product;
 import com.billing.dto.ProductCategory;
 import com.billing.dto.ProductProfitReport;
@@ -84,16 +85,17 @@ public class ExcelReportService {
 	}
 
 	// Customer Report
-	public Workbook getCustomersReportWorkBook(List<Customer> custList, Workbook workbook) {
+	public Workbook getCustomersReportWorkBook(CustomersReport report, Workbook workbook) {
 		Sheet sheet = workbook.createSheet("Customers Report");
 		try {
 			excelReportMapping.setHeaderRowForCustomers(sheet);
 			int rowCount = 0;
 
-			for (Customer cust : custList) {
+			for (Customer cust : report.getCustomerList()) {
 				Row row = sheet.createRow(++rowCount);
 				excelReportMapping.addCustomersRow(cust, row);
 			}
+			excelReportMapping.addTotalCustomersRow(sheet, ++rowCount);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("Exception :", e);
@@ -102,8 +104,8 @@ public class ExcelReportService {
 	}
 
 	// Zero Stock Products Report
-	public Workbook writeZeroStockProductsExcel(List<Product> productList, Workbook workbook) {
-		Sheet sheet = workbook.createSheet();
+	public Workbook getZeroStockProductsReportWorkBook(List<Product> productList, Workbook workbook) {
+		Sheet sheet = workbook.createSheet("Zero Stock Products Report");
 		try {
 			excelReportMapping.setHeaderRowForZeroStock(sheet);
 			int rowCount = 0;
@@ -120,8 +122,8 @@ public class ExcelReportService {
 	}
 
 	// Category Wise Stock Report
-	public Workbook writeCategoryWiseStockExcel(List<ProductCategory> productCategoryList, Workbook workbook) {
-		Sheet sheet = workbook.createSheet();
+	public Workbook getCategoryWiseStockReportWorkBook(List<ProductCategory> productCategoryList, Workbook workbook) {
+		Sheet sheet = workbook.createSheet("Category Wise Stock Report");
 		try {
 			excelReportMapping.setHeaderRowForCategoryWiseStock(sheet);
 			int rowCount = 0;

@@ -1,7 +1,5 @@
 package com.billing.controller;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -9,12 +7,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.billing.dto.Product;
-import com.billing.dto.ProductProfitReport;
+import com.billing.dto.Customer;
+import com.billing.dto.CustomersReport;
 import com.billing.dto.UserDetails;
-import com.billing.main.AppContext;
+import com.billing.service.CustomerService;
 import com.billing.service.PrinterService;
-import com.billing.service.ProductService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 import com.billing.utils.IndianCurrencyFormatting;
@@ -23,6 +20,7 @@ import com.billing.utils.TabContent;
 import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -31,14 +29,15 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
 @Controller
-public class ProductProfitReportController implements TabContent {
+public class CustomersReportController implements TabContent {
 
-	private static final Logger logger = LoggerFactory.getLogger(ProductProfitReportController.class);
+	private static final Logger logger = LoggerFactory.getLogger(CustomersReportController.class);
 
 	@Autowired
 	AlertHelper alertHelper;
@@ -47,7 +46,7 @@ public class ProductProfitReportController implements TabContent {
 	AppUtils appUtils;
 
 	@Autowired
-	ProductService productService;
+	CustomerService customerService;
 
 	@Autowired
 	PrinterService pinterService;
@@ -58,22 +57,31 @@ public class ProductProfitReportController implements TabContent {
 
 	private TabPane tabPane = null;
 
-	ObservableList<Product> productList;
+	ObservableList<Customer> customerList;
 
 	@FXML
-	private TableView<Product> tableView;
+	private TableView<Customer> tableView;
 
 	@FXML
-	private TableColumn<Product, String> tcProductName;
+	private TableColumn<Customer, String> tcCustomerName;
 
 	@FXML
-	private TableColumn<Product, String> tcCategoryName;
+	private TableColumn<Customer, String> tcCustomerMobileNo;
 
 	@FXML
-	private TableColumn<Product, Double> tcStockQuantity;
+	private TableColumn<Customer, String> tcCity;
 
 	@FXML
-	private TableColumn<Product, Double> tcProfitAmount;
+	private TableColumn<Customer, String> tcEntryDate;
+
+	@FXML
+	private TableColumn<Customer, Double> tcPendingAmount;
+
+	@FXML
+	private TextField txtTotalCustomerCount;
+
+	@FXML
+	private TextField txtTotalPendingAmount;
 
 	@Override
 	public boolean shouldClose() {
@@ -87,20 +95,18 @@ public class ProductProfitReportController implements TabContent {
 
 	@Override
 	public boolean loadData() {
-		List<Product> list = productService.getAllProducts();
-		Comparator<Product> cp = Product.getComparator(Product.SortParameter.PROFIT_ASCENDING);
-		Collections.sort(list, cp);
-		productList.addAll(list);
+		List<Customer> list = customerService.getAllCustomers();
+		customerList.addAll(list);
 		return true;
 	}
 
 	private void setTableCellFactories() {
 
-		final Callback<TableColumn<Product, Double>, TableCell<Product, Double>> callback = new Callback<TableColumn<Product, Double>, TableCell<Product, Double>>() {
+		final Callback<TableColumn<Customer, Double>, TableCell<Customer, Double>> callback = new Callback<TableColumn<Customer, Double>, TableCell<Customer, Double>>() {
 
 			@Override
-			public TableCell<Product, Double> call(TableColumn<Product, Double> param) {
-				TableCell<Product, Double> tableCell = new TableCell<Product, Double>() {
+			public TableCell<Customer, Double> call(TableColumn<Customer, Double> param) {
+				TableCell<Customer, Double> tableCell = new TableCell<Customer, Double>() {
 
 					@Override
 					protected void updateItem(Double item, boolean empty) {
@@ -118,37 +124,29 @@ public class ProductProfitReportController implements TabContent {
 			}
 		};
 
-		final Callback<TableColumn<Product, Double>, TableCell<Product, Double>> callbackQty = new Callback<TableColumn<Product, Double>, TableCell<Product, Double>>() {
+		tcCustomerMobileNo.setCellValueFactory(
+				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getCustMobileNumber())));
+		tcCustomerMobileNo.getStyleClass().add("character-cell");
+		tcCustomerName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustName()));
+		tcCustomerName.getStyleClass().add("character-cell");
+		tcCity.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustCity()));
+		tcCity.getStyleClass().add("character-cell");
+		tcEntryDate.setCellValueFactory(cellData -> new SimpleStringProperty(
+				appUtils.getFormattedDateWithTime(cellData.getValue().getEntryDate())));
+		tcEntryDate.getStyleClass().add("character-cell");
 
-			@Override
-			public TableCell<Product, Double> call(TableColumn<Product, Double> param) {
-				TableCell<Product, Double> tableCell = new TableCell<Product, Double>() {
+		tcPendingAmount.setCellFactory(callback);
+	}
 
-					@Override
-					protected void updateItem(Double item, boolean empty) {
-						super.updateItem(item, empty);
-						if (empty) {
-							super.setText(null);
-						} else {
-							super.setText(appUtils.getDecimalFormat(item));
-						}
-					}
+	private void updateTotals() {
 
-				};
-				tableCell.getStyleClass().add("numeric-cell");
-				return tableCell;
-			}
-		};
+		double totalPendingAmount = 0;
 
-		tcProductName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProductName()));
-		tcCategoryName
-				.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProductCategory()));
-
-		tcStockQuantity.setCellFactory(callbackQty);
-		tcProfitAmount.setCellFactory(callback);
-		tcProductName.getStyleClass().add("character-cell");
-		tcCategoryName.getStyleClass().add("character-cell");
-
+		for (Customer customer : customerList) {
+			totalPendingAmount = totalPendingAmount + customer.getBalanceAmt();
+		}
+		txtTotalCustomerCount.setText(String.valueOf(customerList.size()));
+		txtTotalPendingAmount.setText(IndianCurrencyFormatting.applyFormattingWithCurrency(totalPendingAmount));
 	}
 
 	@Override
@@ -169,8 +167,15 @@ public class ProductProfitReportController implements TabContent {
 	@Override
 	public void initialize() {
 		setTableCellFactories();
-		productList = FXCollections.observableArrayList();
-		tableView.setItems(productList);
+		customerList = FXCollections.observableArrayList();
+		tableView.setItems(customerList);
+		customerList.addListener(new ListChangeListener<Customer>() {
+			@Override
+			public void onChanged(ListChangeListener.Change<? extends Customer> c) {
+				updateTotals();
+			}
+
+		});
 	}
 
 	@Override
@@ -193,8 +198,8 @@ public class ProductProfitReportController implements TabContent {
 		if (!validateInput()) {
 			return;
 		}
-		ProductProfitReport report = new ProductProfitReport();
-		report.setProductList(productList);
+		CustomersReport report = new CustomersReport();
+		report.setCustomerList(customerList);
 		pinterService.exportPDF(report, currentStage);
 
 	}
@@ -204,8 +209,8 @@ public class ProductProfitReportController implements TabContent {
 		if (!validateInput()) {
 			return;
 		}
-		ProductProfitReport report = new ProductProfitReport();
-		report.setProductList(productList);
+		CustomersReport report = new CustomersReport();
+		report.setCustomerList(customerList);
 		pinterService.exportExcel(report, currentStage);
 	}
 
@@ -217,7 +222,7 @@ public class ProductProfitReportController implements TabContent {
 
 	@Override
 	public boolean validateInput() {
-		if (productList.size() == 0) {
+		if (customerList.size() == 0) {
 			alertHelper.showErrorNotification("No records to export");
 			return false;
 		}
