@@ -11,56 +11,65 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Separator?>
 
 <HBox alignment="TOP_CENTER" fillHeight="false" styleClass="rootNode" stylesheets="@../../../css/aboutus.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.AboutUsController">
-   <children>
-      <VBox fx:id="contentHolder" spacing="30.0">
-         <children>
-            <HBox spacing="30.0">
-               <children>
-                  <ImageView pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../images/shop64X64.png" />
-                     </image></ImageView>
-                  <VBox spacing="5.0">
-                     <children>
-                        <Text fx:id="txtTitle" strokeType="OUTSIDE" strokeWidth="0.0" />
-                        <Text fx:id="txtVersion" strokeType="OUTSIDE" strokeWidth="0.0" />
-                        <Text fx:id="txtCopyRight" strokeType="OUTSIDE" strokeWidth="0.0" />
-                     </children>
-                  </VBox>
-               </children>
-            </HBox>
-            <GridPane hgap="20.0" styleClass="parent" vgap="15.0">
-                <children>
-                  <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" styleClass="left" text="Developed by :" GridPane.halignment="RIGHT" />
-                  <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" styleClass="left" text="Email Id :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
-                  <Label styleClass="left" text="Mobile No :" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-                  <Label fx:id="lblDevelopedBy" styleClass="right" GridPane.columnIndex="1" />
-                  <Label fx:id="lblEmailId" styleClass="right" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Label fx:id="lblMobileNo" styleClass="right" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <HBox alignment="TOP_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                     <children>
-                        <Button fx:id="btnClose" cancelButton="true" mnemonicParsing="true" onAction="#onCloseTabAction" text="_Close">
-                         </Button>
-                     </children>
-                    </HBox>
-               </children>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <columnConstraints>
-                  <ColumnConstraints />
-                  <ColumnConstraints />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints />
-                  <RowConstraints />
-                  <RowConstraints />
-                  <RowConstraints />
-               </rowConstraints>
-            </GridPane>
-         </children>
-      </VBox>
-   </children>
+	<children>
+		<VBox fx:id="contentHolder" spacing="30.0">
+			<children>
+				<HBox spacing="30.0">
+					<children>
+						<ImageView pickOnBounds="true" preserveRatio="true">
+							<image>
+								<Image url="@../../../images/shop64X64.png" />
+							</image></ImageView>
+						<VBox spacing="5.0">
+							<children>
+								<Text fx:id="txtTitle" strokeType="OUTSIDE" strokeWidth="0.0" />
+								<Text fx:id="txtVersion" strokeType="OUTSIDE" strokeWidth="0.0" />
+								<Text fx:id="txtCopyRight" strokeType="OUTSIDE" strokeWidth="0.0" />
+							</children>
+						</VBox>
+					</children>
+				</HBox>
+				<GridPane hgap="20.0" styleClass="parent" vgap="15.0">
+					<children>
+						<Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" styleClass="left" text="Developed by :" GridPane.halignment="RIGHT" />
+						<Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" styleClass="left" text="Email Id :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+						<Label styleClass="left" text="Mobile No :" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+						<Label fx:id="lblDevelopedBy" styleClass="right" GridPane.columnIndex="1" />
+						<Label fx:id="lblEmailId" styleClass="right" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+						<Label fx:id="lblMobileNo" styleClass="right" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+						<VBox GridPane.columnIndex="1" GridPane.rowIndex="3">
+							<children>
+								<Separator/>
+								<ButtonBar>
+									<buttons>
+										<Button fx:id="btnClose" mnemonicParsing="false" text="Close" onAction="#onCloseAction"/>
+									</buttons>
+									<padding>
+										<Insets top="10.0" />
+									</padding>
+								</ButtonBar>
+							</children>
+						</VBox>
+					</children>
+					<opaqueInsets>
+						<Insets />
+					</opaqueInsets>
+					<columnConstraints>
+						<ColumnConstraints />
+						<ColumnConstraints />
+					</columnConstraints>
+					<rowConstraints>
+						<RowConstraints />
+						<RowConstraints />
+						<RowConstraints />
+						<RowConstraints />
+					</rowConstraints>
+				</GridPane>
+			</children>
+		</VBox>
+	</children>
 </HBox>

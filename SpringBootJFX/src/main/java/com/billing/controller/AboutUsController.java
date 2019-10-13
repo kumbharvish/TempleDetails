@@ -89,7 +89,7 @@ public class AboutUsController implements TabContent {
     }
 
     @FXML
-    private void onCloseTabAction(ActionEvent event) {
+    private void onCloseAction(ActionEvent event) {
         final Tab currentTab = tabPane.getSelectionModel().getSelectedItem();
         tabPane.getTabs().remove(currentTab);
     }
