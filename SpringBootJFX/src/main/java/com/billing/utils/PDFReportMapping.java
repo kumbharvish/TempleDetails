@@ -1,13 +1,12 @@
-package com.billing.service;
+package com.billing.utils;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.billing.dto.Barcode;
 import com.billing.dto.BillDetails;
@@ -15,19 +14,19 @@ import com.billing.dto.Customer;
 import com.billing.dto.ItemDetails;
 import com.billing.dto.Product;
 import com.billing.dto.ProductCategory;
+import com.billing.dto.ProductProfitReport;
 import com.billing.dto.ReturnDetails;
 import com.billing.dto.SalesReport;
-import com.billing.utils.AppUtils;
-import com.billing.utils.IndianCurrencyFormatting;
+import com.billing.dto.StockSummaryReport;
 
-@Service
-public class JasperService {
-	
+@Component
+public class PDFReportMapping {
+
 	@Autowired
 	AppUtils appUtils;
 
 	// Invoice Data Source
-	public List<Map<String, ?>> createDataForBill(BillDetails bill) {
+	public List<Map<String, ?>> getDatasourceForInvoice(BillDetails bill) {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
 		for (ItemDetails item : bill.getItemDetails()) {
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -48,37 +47,36 @@ public class JasperService {
 	}
 
 	// Product Profit Report
-	public List<Map<String, ?>> createDataForProductProfitReport(List<Product> productList) {
+	public List<Map<String, ?>> getDatasourceForProductProfitReport(ProductProfitReport report) {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
-		for (Product item : productList) {
+		for (Product product : report.getProductList()) {
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("ProductName", item.getProductName());
-			map.put("ProductCode", String.valueOf(item.getProductCode()));
-			map.put("ProductProfitAmt", appUtils.getDecimalFormat(item.getProfit()));
+			map.put("ProductName", product.getProductName());
+			map.put("ProductCode", String.valueOf(product.getProductCode()));
+			map.put("ProductProfitAmt", appUtils.getDecimalFormat(product.getProfit()));
 			dataSourceMaps.add(map);
 		}
 		return dataSourceMaps;
 	}
 
-	// Sales Stock Value Report
-	public List<Map<String, ?>> createDataForStockValueReport(List<Product> productList) {
+	// Stock Summary Report
+	public List<Map<String, ?>> getDatasourceForStockSummaryReport(StockSummaryReport report) {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
-		for (Product item : productList) {
+		for (Product item : report.getProductList()) {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("ProductName", item.getProductName());
 			map.put("ProductCode", String.valueOf(item.getProductCode()));
 			map.put("Qty", appUtils.getDecimalFormat(item.getQuantity()));
-			map.put("ProductMRP", appUtils.getDecimalFormat(item.getProductMRP()));
-			map.put("StockValueAmount", appUtils.getDecimalFormat(item.getStockValueAmount()));
+			map.put("ProductMRP", IndianCurrencyFormatting.applyFormatting(item.getProductMRP()));
+			map.put("StockValueAmount", IndianCurrencyFormatting.applyFormatting(item.getStockValueAmount()));
 			dataSourceMaps.add(map);
 		}
 		return dataSourceMaps;
 	}
 
 	// Customer Report
-	public List<Map<String, ?>> createDataForCustomersReport(List<Customer> custList) {
+	public List<Map<String, ?>> getDatasourceForCustomerReport(List<Customer> custList) {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		for (Customer cust : custList) {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("MobileNo", String.valueOf(cust.getCustMobileNumber()));
@@ -86,14 +84,14 @@ public class JasperService {
 			map.put("City", cust.getCustCity());
 			map.put("Email", cust.getCustEmail());
 			map.put("BalanceAmt", appUtils.getDecimalFormat(cust.getBalanceAmt()));
-			map.put("EntryDate", String.valueOf(sdf.format(cust.getEntryDate())));
+			map.put("EntryDate", appUtils.getFormattedDateWithTime(cust.getEntryDate()));
 			dataSourceMaps.add(map);
 		}
 		return dataSourceMaps;
 	}
 
 	// Zero Stock Products Report
-	public List<Map<String, ?>> createDataForZeroStockProductsReport(List<Product> productList) {
+	public List<Map<String, ?>> getDatasourceForZeroStockReport(List<Product> productList) {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
 		for (Product item : productList) {
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -107,7 +105,7 @@ public class JasperService {
 	}
 
 	// Category Wise Stock Report
-	public List<Map<String, ?>> createDataForCategoryWiseStockReport(List<ProductCategory> productCategoryList) {
+	public List<Map<String, ?>> getDatasourceForCategoryWiseStockReport(List<ProductCategory> productCategoryList) {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
 		for (ProductCategory pc : productCategoryList) {
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -121,7 +119,7 @@ public class JasperService {
 	}
 
 	// Sales Report
-	public List<Map<String, ?>> getSalesReportDataSource(SalesReport salesReport) {
+	public List<Map<String, ?>> getDatasourceForSalesReport(SalesReport salesReport) {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
 		for (BillDetails bill : salesReport.getBillList()) {
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -146,7 +144,7 @@ public class JasperService {
 	}
 
 	// Sales Return Report
-	public List<Map<String, ?>> createDateForSalesReturnReport(List<ReturnDetails> returnList, String fromDate,
+	public List<Map<String, ?>> getDatasourceForSalesReturnReport(List<ReturnDetails> returnList, String fromDate,
 			String toDate, Double totalPendingAmt, Double totalCashAmt, Double totalAmt, Double totalQty,
 			Integer totalNoOfItems) {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
@@ -173,7 +171,7 @@ public class JasperService {
 	}
 
 	// Barcode Data Source
-	public List<Map<String, ?>> createDataForBarcode(Barcode barcode, int noOfLabels, int startPosition) {
+	public List<Map<String, ?>> getDatasourceForBarcode(Barcode barcode, int noOfLabels, int startPosition) {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
 
 		for (int i = 1; i < startPosition; i++) {
@@ -189,11 +187,6 @@ public class JasperService {
 			map.put("Price", appUtils.getDecimalFormat(barcode.getPrice()));
 			dataSourceMaps.add(map);
 		}
-		/*
-		 * for(int i=1;i<=noOfLabels;i++) { Map<String,Object> map = new HashMap<String,
-		 * Object>(); map.put("ProductName", String.valueOf(i));
-		 * dataSourceMaps.add(map); }
-		 */
 		return dataSourceMaps;
 	}
 }

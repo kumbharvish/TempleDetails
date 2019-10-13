@@ -1,13 +1,8 @@
 package com.billing.controller;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import javax.swing.JOptionPane;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,12 +14,11 @@ import com.billing.dto.Barcode;
 import com.billing.dto.Product;
 import com.billing.dto.UserDetails;
 import com.billing.main.AppContext;
-import com.billing.service.JasperService;
+import com.billing.service.PrinterService;
 import com.billing.service.ProductService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 import com.billing.utils.AutoCompleteTextField;
-import com.billing.utils.JasperUtils;
 import com.billing.utils.TabContent;
 
 import javafx.beans.Observable;
@@ -59,10 +53,7 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 	AppUtils appUtils;
 
 	@Autowired
-	JasperUtils jasperUtils;
-
-	@Autowired
-	JasperService jasperService;
+	PrinterService printerService;
 
 	private UserDetails userDetails;
 
@@ -168,7 +159,6 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 			alertHelper.showErrorNotification("Please generate the barcode for product");
 		} else {
 
-			String fileName = txtName.getText();
 			String JrxmlName = null;
 			int startPosition = 1;
 			int noOfLabels = 0;
@@ -201,8 +191,7 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 					return;
 				}
 
-				boolean isSuccess = jasperUtils.createPDFForBarcode(
-						jasperService.createDataForBarcode(barcode, noOfLabels, startPosition), JrxmlName, fileName);
+				boolean isSuccess = printerService.printBarcodeSheet(barcode, noOfLabels, startPosition, JrxmlName);
 				if (!isSuccess) {
 					alertHelper
 							.showErrorNotification("Barcode length should be 12 digits! Please correct barcode number");

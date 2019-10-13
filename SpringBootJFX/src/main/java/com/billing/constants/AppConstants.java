@@ -2,33 +2,9 @@ package com.billing.constants;
 
 public class AppConstants {
 
-	public static final String BARCODE_SHEET_FOLER = "Barcode_Sheet";
-
 	public static final String DATA_BACKUP_FOLDER = "Data_Backup";
 
 	public static final String JRXML = "Jrxml";
-
-	public static final String PRODUCT_PROFIT_REPORT_JRXML = "Product_Profit_Report.jasper";
-
-	public static final String CUSTOMERS_REPORT_JRXML = "Customers_Report.jasper";
-
-	public static final String STOCK_VALUE_REPORT_JRXML = "Sales_Stock_Value_Report.jasper";
-
-	public static final String CATEGORY_WISE_STOCK_REPORT = "Category_Wise_Stock_Report.jasper";
-
-	public static final String ZERO_STOCK_PRODUCT_REPORT_JRXML = "Zero_Stock_Product_Report.jasper";
-
-	public static final String SALES_REPORT_JASPER = "Sales_Report.jasper";
-
-	public static final String SALES_RETURN_REPORT_JASPER = "Sales_Return_Report.jasper";
-
-	public static final String BILL_PRINT_JASPER = "Bill_Print.jasper";
-
-	public static final String BARCODE_65_JASPER = "Barcode_65.jasper";
-
-	public static final String BARCODE_40_JASPER = "Barcode_40.jasper";
-
-	public static final String BARCODE_24_JASPER = "Barcode_24.jasper";
 
 	public static final String INVOICE_PRINT_LOCATION = "Invoice Prints";
 
@@ -39,8 +15,6 @@ public class AppConstants {
 	public static final String PRODUCT_NAME = "PRODUCT_NAME";
 
 	public static final String BARCODE = "Barcode";
-
-	public static final String LICENSED_TO = "LICENSED_TO";
 
 	public static final String DATA_BACKUP_ON_MAIL = "DATA_BACKUP_ON_MAIL";
 
@@ -63,7 +37,7 @@ public class AppConstants {
 	public static final String SALES_RETURN = "SALES RETURN";
 
 	public static final String SALES = "SALES";
-	
+
 	public static final String EDIT_INVOICE = "EDIT INVOICE";
 
 	public static final String DELETE_INVOICE = "DELETE INVOICE";
@@ -117,12 +91,41 @@ public class AppConstants {
 	public static final String DB_DUMP_INTERVAL = "DB_DUMP_INTERVAL";
 
 	public static final String INVOICE_PRINT_ON_SAVE = "INVOICE_PRINT_ON_SAVE";
-	
+
 	public static final String PENDING = "PENDING";
-	
+
 	public static final String SHOW_PRINT_PREVIEW = "SHOW_PRINT_PREVIEW";
-	
+
+	public static final String OPEN_REPORT_DOC_ON_SAVE = "OPEN_REPORT_DOC_ON_SAVE";
+
+	// Report Names
 	public static final String SALES_REPORT_NAME = "Sales_Report";
 
-	
+	public static final String PRODUCT_PROFIT_REPORT_NAME = "Product_Profit_Report";
+
+	public static final String STOCK_SUMMARY_REPORT_NAME = "Stock_Summary_Report";
+
+	// Jasper File Names
+	public static final String PRODUCT_PROFIT_REPORT_JASPER = "Product_Profit_Report.jasper";
+
+	public static final String CUSTOMERS_REPORT_JASPER = "Customers_Report.jasper";
+
+	public static final String STOCK_SUMMARY_REPORT_JASPER = "Stock_Summary_Report.jasper";
+
+	public static final String CATEGORY_WISE_STOCK_REPORT = "Category_Wise_Stock_Report.jasper";
+
+	public static final String ZERO_STOCK_PRODUCT_REPORT_JASPER = "Zero_Stock_Product_Report.jasper";
+
+	public static final String SALES_REPORT_JASPER = "Sales_Report.jasper";
+
+	public static final String SALES_RETURN_REPORT_JASPER = "Sales_Return_Report.jasper";
+
+	public static final String BILL_PRINT_JASPER = "Bill_Print.jasper";
+
+	public static final String BARCODE_65_JASPER = "Barcode_65.jasper";
+
+	public static final String BARCODE_40_JASPER = "Barcode_40.jasper";
+
+	public static final String BARCODE_24_JASPER = "Barcode_24.jasper";
+
 }

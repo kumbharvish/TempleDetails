@@ -103,7 +103,7 @@
                      <items>
                         <Menu fx:id="reportsMenu" text="R_eports">
                           <items>
-                            <MenuItem fx:id="salesStockValueReportMenuItem" onAction="#onSalesStockValueReportCommand" text="Sales Stock _Value Report" />
+                            <MenuItem fx:id="stockSummaryReportMenuItem" onAction="#onStockSummaryReportCommand" text="Stock _Summary Report" />
                               <MenuItem fx:id="productProfitReportMenuItem" onAction="#onProductProfitReportCommand" text="Product Pro_fit Report" />
                               <MenuItem fx:id="customersReportMenuItem" onAction="#onCustomerReportCommand" text="_Customers Report" />
                               <MenuItem fx:id="zeroStockProductsReportMenuItem" onAction="#onZeroStockProductsCommand" text="_Zero Stock Products Report" />

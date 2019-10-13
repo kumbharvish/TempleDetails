@@ -57,8 +57,8 @@
 										<Label fx:id="lblSalesReturnDaysErrMsg" styleClass="errorLabel" wrapText="true" />
 									</children>
 								</VBox>
-								<Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="6" />
-								<ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="7">
+								<Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="7" />
+								<ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="8">
 									<buttons>
 										<Button fx:id="btnUpdate" cancelButton="true" disable="true" mnemonicParsing="true" onAction="#onUpdateCommand" text="Update" />
 										<Button mnemonicParsing="false" onAction="#onCloseCommand" text="Close" />
@@ -67,6 +67,8 @@
                         <CheckBox fx:id="cbPrintOnSave" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <CheckBox fx:id="cbShowPrintPreview" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                         <Label styleClass="nodeLabel" text="Show Print Preview :" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+                        <Label styleClass="nodeLabel" text="Open Report Document after save :" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
+                        <CheckBox fx:id="cbOpenDocAfterSave" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="6" />
 							</children>
 							<VBox.margin>
 								<Insets top="20.0" />
@@ -85,6 +87,7 @@
                         <RowConstraints minHeight="10.0" />
 								<RowConstraints minHeight="10.0" />
 								<RowConstraints minHeight="10.0" />
+                        <RowConstraints minHeight="10.0" />
 								<RowConstraints />
 								<RowConstraints />
 							</rowConstraints>

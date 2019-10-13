@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Tooltip?>
 
-<BorderPane styleClass="rootNode" stylesheets="@../../../css/salesReport.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.SalesReportController">
+<BorderPane styleClass="rootNode" stylesheets="@../../../css/reports.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.SalesReportController">
 	<top>
 		<VBox alignment="TOP_CENTER" spacing="20.0" BorderPane.alignment="CENTER">
 			<children>
@@ -141,7 +141,7 @@
 						<Label styleClass="nodeLabel" text="Total Pending Amount :" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
 						<TextField fx:id="txtTotalPendingAmount" alignment="CENTER_RIGHT" editable="false" styleClass="readOnlyField,summation" GridPane.columnIndex="3" GridPane.rowIndex="1" />
 						<Label styleClass="nodeLabel" text="Total Sales Amount :" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
-						<TextField fx:id="txtTotalSalesAmount" alignment="CENTER_RIGHT" editable="false" styleClass="readOnlyField" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+						<TextField fx:id="txtTotalSalesAmount" alignment="CENTER_RIGHT" editable="false" styleClass="readOnlyField,amountWithCurrency" GridPane.columnIndex="5" GridPane.rowIndex="1" />
 					</children>
 					<BorderPane.margin>
 						<Insets top="10.0" />

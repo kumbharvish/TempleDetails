@@ -87,6 +87,9 @@ public class UserPreferencesController implements TabContent {
 
 	@FXML
 	private Button btnUpdate;
+	
+	@FXML
+	private CheckBox cbOpenDocAfterSave;
 
 	@Override
 	public boolean shouldClose() {
@@ -133,6 +136,7 @@ public class UserPreferencesController implements TabContent {
 
 		cbPrintOnSave.setSelected(appUtils.isTrue(userPref.get(AppConstants.INVOICE_PRINT_ON_SAVE)));
 		cbShowPrintPreview.setSelected(appUtils.isTrue(userPref.get(AppConstants.SHOW_PRINT_PREVIEW)));
+		cbOpenDocAfterSave.setSelected(appUtils.isTrue(userPref.get(AppConstants.OPEN_REPORT_DOC_ON_SAVE)));
 		txtDBDumpInterval.setText(userPref.get(AppConstants.DB_DUMP_INTERVAL));
 		txtSalesReturnDays.setText(userPref.get(AppConstants.SALES_RETURN_ALLOWED_DAYS));
 		isDirty.set(false);
@@ -173,6 +177,7 @@ public class UserPreferencesController implements TabContent {
 		rbGSTExclusive.selectedProperty().addListener(this::invalidated);
 		cbPrintOnSave.selectedProperty().addListener(this::invalidated);
 		cbShowPrintPreview.selectedProperty().addListener(this::invalidated);
+		cbOpenDocAfterSave.selectedProperty().addListener(this::invalidated);
 		rbSearchBarcode.selectedProperty().addListener(this::invalidated);
 		rbSearchName.selectedProperty().addListener(this::invalidated);
 		txtDBDumpInterval.textProperty().addListener(this::invalidated);
@@ -203,6 +208,12 @@ public class UserPreferencesController implements TabContent {
 			saveMap.put(AppConstants.SHOW_PRINT_PREVIEW, "Y");
 		} else {
 			saveMap.put(AppConstants.SHOW_PRINT_PREVIEW, "N");
+		}
+		
+		if (cbOpenDocAfterSave.isSelected()) {
+			saveMap.put(AppConstants.OPEN_REPORT_DOC_ON_SAVE, "Y");
+		} else {
+			saveMap.put(AppConstants.OPEN_REPORT_DOC_ON_SAVE, "N");
 		}
 
 		if (rbSearchBarcode.isSelected()) {

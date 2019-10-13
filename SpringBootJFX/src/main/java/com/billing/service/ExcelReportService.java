@@ -1,0 +1,140 @@
+package com.billing.service;
+
+import java.util.List;
+
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.billing.dto.BillDetails;
+import com.billing.dto.Customer;
+import com.billing.dto.Product;
+import com.billing.dto.ProductCategory;
+import com.billing.dto.ProductProfitReport;
+import com.billing.dto.SalesReport;
+import com.billing.dto.StockSummaryReport;
+import com.billing.utils.ExcelReportMapping;
+
+@Service
+public class ExcelReportService {
+
+	@Autowired
+	ExcelReportMapping excelReportMapping;
+
+	private static final Logger logger = LoggerFactory.getLogger(ExcelReportService.class);
+
+	// Sales Report
+	public Workbook getSalesReportWorkBook(SalesReport report, Workbook workbook) {
+		Sheet sheet = workbook.createSheet("Sales Report");
+		try {
+			excelReportMapping.setHeaderRowForSalesReport(sheet);
+			int rowCount = 0;
+
+			for (BillDetails bill : report.getBillList()) {
+				Row row = sheet.createRow(++rowCount);
+				excelReportMapping.addSalesReportRow(bill, row);
+			}
+			excelReportMapping.addTotalSalesReportRow(sheet, ++rowCount);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception:", e);
+		}
+		return workbook;
+	}
+
+	// Product Profit Report
+	public Workbook getProductProfitReportWorkBook(ProductProfitReport report, Workbook workbook) {
+		Sheet sheet = workbook.createSheet("Product Profit Report");
+		try {
+			excelReportMapping.setHeaderRowForProductProfit(sheet);
+			int rowCount = 0;
+
+			for (Product product : report.getProductList()) {
+				Row row = sheet.createRow(++rowCount);
+				excelReportMapping.addProductProfitRow(product, row);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception :", e);
+		}
+		return workbook;
+	}
+
+	// Stock Summary Report
+	public Workbook getStockSummaryReportWorkBook(StockSummaryReport report, Workbook workbook) {
+		Sheet sheet = workbook.createSheet("Stock Summary Report");
+		try {
+			excelReportMapping.setHeaderRowForStockSummary(sheet);
+			int rowCount = 0;
+
+			for (Product product : report.getProductList()) {
+				Row row = sheet.createRow(++rowCount);
+				excelReportMapping.addStockSummaryRow(product, row);
+			}
+			excelReportMapping.addTotalStockSummaryRow(sheet, ++rowCount);
+		} catch (Exception e) {
+			logger.error("Exception :", e);
+			e.printStackTrace();
+		}
+		return workbook;
+	}
+
+	// Customer Report
+	public Workbook getCustomersReportWorkBook(List<Customer> custList, Workbook workbook) {
+		Sheet sheet = workbook.createSheet("Customers Report");
+		try {
+			excelReportMapping.setHeaderRowForCustomers(sheet);
+			int rowCount = 0;
+
+			for (Customer cust : custList) {
+				Row row = sheet.createRow(++rowCount);
+				excelReportMapping.addCustomersRow(cust, row);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception :", e);
+		}
+		return workbook;
+	}
+
+	// Zero Stock Products Report
+	public Workbook writeZeroStockProductsExcel(List<Product> productList, Workbook workbook) {
+		Sheet sheet = workbook.createSheet();
+		try {
+			excelReportMapping.setHeaderRowForZeroStock(sheet);
+			int rowCount = 0;
+
+			for (Product p : productList) {
+				Row row = sheet.createRow(++rowCount);
+				excelReportMapping.addZerotStockRow(p, row);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception :", e);
+		}
+		return workbook;
+	}
+
+	// Category Wise Stock Report
+	public Workbook writeCategoryWiseStockExcel(List<ProductCategory> productCategoryList, Workbook workbook) {
+		Sheet sheet = workbook.createSheet();
+		try {
+			excelReportMapping.setHeaderRowForCategoryWiseStock(sheet);
+			int rowCount = 0;
+
+			for (ProductCategory productCategory : productCategoryList) {
+				Row row = sheet.createRow(++rowCount);
+				excelReportMapping.addCategoryWiseStockRow(productCategory, row);
+			}
+		} catch (Exception e) {
+			logger.error("Exception :", e);
+			e.printStackTrace();
+		}
+		return workbook;
+	}
+
+}

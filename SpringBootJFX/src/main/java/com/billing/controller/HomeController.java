@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.billing.controller;
 
 import java.io.IOException;
@@ -46,10 +41,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-/**
- *
- * @author Vishal
- */
 @SuppressWarnings("restriction")
 @Controller
 public class HomeController extends AppContext {
@@ -75,12 +66,6 @@ public class HomeController extends AppContext {
 	private final static String INVOICE_VIEW_FILE_NAME = "Invoice";
 
 	@FXML
-	private MenuItem manageAccountMenuItem;
-
-	@FXML
-	private MenuItem storeDetailsMenuItem;
-
-	@FXML
 	private MenuItem measurementUnitsMenuItem;
 
 	@FXML
@@ -93,103 +78,16 @@ public class HomeController extends AppContext {
 	private MenuItem quickStockCorrectionMenuItem;
 
 	@FXML
-	private MenuItem taxesMenuItem;
-
-	@FXML
-	private MenuItem expenseMenuItem;
-
-	@FXML
-	private MenuItem exitMenuItem;
-
-	@FXML
 	private MenuItem createInvoiceMenuItem;
 
 	@FXML
 	private MenuItem searchInvoiceMenuItem;
 
 	@FXML
-	private MenuItem returnInvoiceMenuItem;
-
-	@FXML
-	private MenuItem customersMenuItem;
-
-	@FXML
-	private MenuItem customerPaymentHistoryMenuItem;
-
-	@FXML
-	private MenuItem customerPurchaseHistoryMenuItem;
-
-	@FXML
-	private MenuItem generateBarcodeMenuItem;
-
-	@FXML
-	private MenuItem printBarcodeMenuItem;
-
-	@FXML
-	private MenuItem suppliersMenuItem;
-
-	@FXML
-	private MenuItem stockEntryMenuItem;
-
-	@FXML
-	private MenuItem stockHistoryMenuItem;
-
-	@FXML
-	private MenuItem salesStockValueReportMenuItem;
-
-	@FXML
-	private MenuItem productProfitReportMenuItem;
-
-	@FXML
-	private MenuItem customersReportMenuItem;
-
-	@FXML
-	private MenuItem zeroStockProductsReportMenuItem;
-
-	@FXML
-	private MenuItem productCategoryWiseStockReprotMenuItem;
-
-	@FXML
 	private MenuItem salesReportMenuItem;
 
 	@FXML
-	private MenuItem salesReturnReportMenuItem;
-
-	@FXML
-	private MenuItem monthlyReportMenuItem;
-
-	@FXML
-	private MenuItem profitLossReportMenuItem;
-
-	@FXML
 	private MenuItem cashCounterReportMenuItem;
-
-	@FXML
-	private MenuItem expenseReportMenuItem;
-
-	@FXML
-	private MenuItem paymentModeWiseSalesMenuItem;
-
-	@FXML
-	private MenuItem dailySalesMenuItem;
-
-	@FXML
-	private MenuItem monthlySalesMenuItem;
-
-	@FXML
-	private MenuItem productWiseProfitMenuItem;
-
-	@FXML
-	private MenuItem billWiseProfitMenuItem;
-
-	@FXML
-	private MenuItem stockEntryWiseProfitReportMenuItem;
-
-	@FXML
-	private MenuItem customerWiseProfitReportMenuItem;
-
-	@FXML
-	private MenuItem productWiseSalesReportMenuItem;
 
 	@FXML
 	private MenuItem userPreferencesMenuItem;
@@ -201,46 +99,9 @@ public class HomeController extends AppContext {
 	@FXML
 	private MenuItem dataBackupMenuItem;
 
-	@FXML
-	private CheckMenuItem hideToolbarMenuItem;
-
 	// Help Menu
-
-	@FXML
-	private MenuItem aboutUsMenuItem;
-
 	@FXML
 	private ToolBar toolBar;
-
-	@FXML
-	private Label lblCreateInvoice;
-
-	@FXML
-	private Label lblSearchInvoice;
-
-	@FXML
-	private Label lblProducts;
-
-	@FXML
-	private Label lblQuickStockCorrection;
-
-	@FXML
-	private Label lblMeasurementUnits;
-
-	@FXML
-	private Label lblProductCategories;
-
-	@FXML
-	private Label lblSaleReport;
-
-	@FXML
-	private Label lblCashCounter;
-
-	@FXML
-	private Label lblDataBackup;
-
-	@FXML
-	private Label lblUserSettings;
 
 	@FXML
 	private TabPane tabPane;
@@ -264,8 +125,8 @@ public class HomeController extends AppContext {
 		toolBar.managedProperty().bind(toolBar.visibleProperty());
 		appUtils.licenseExpiryAlert();
 		try {
-			lblLicenseValidUpto.setText(
-					"License Valid Upto : " + appUtils.dec(appUtils.getAppDataValues("APP_SECURE_KEY")));
+			lblLicenseValidUpto
+					.setText("License Valid Upto : " + appUtils.dec(appUtils.getAppDataValues("APP_SECURE_KEY")));
 		} catch (Exception e) {
 			logger.error("lblLicenseValidUpto -->" + e);
 		}
@@ -318,23 +179,23 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onCreateInvoiceCommand(ActionEvent event) {
-		addTab("CreateInvoice","Invoice");
+		addTab("CreateInvoice", "Invoice");
 	}
 
 	@FXML
 	void onCustomerCommand(ActionEvent event) {
-		addTab("Customers","Customers");
+		addTab("Customers", "Customers");
 
 	}
 
 	@FXML
 	void onCustomerPaymentHistoryCommand(ActionEvent event) {
-		addTab("CustomerPaymentHistory","Customer Payment History");
+		addTab("CustomerPaymentHistory", "Customer Payment History");
 	}
 
 	@FXML
 	void onCustomerPurchaseHistoryCommand(ActionEvent event) {
-		addTab("CustomerPurchaseHistory","Customer Purchase History");
+		addTab("CustomerPurchaseHistory", "Customer Purchase History");
 	}
 
 	@FXML
@@ -381,7 +242,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onGenerateBarcodeCommand(ActionEvent event) {
-		addTab("GenerateBarcode","Generate Barcode");
+		addTab("GenerateBarcode", "Generate Barcode");
 	}
 
 	@FXML
@@ -424,7 +285,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onPrintBarcodeCommand(ActionEvent event) {
-		addTab("PrintBarcode","Print Barcode");
+		addTab("PrintBarcode", "Print Barcode");
 	}
 
 	@FXML
@@ -453,7 +314,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onProductProfitReportCommand(ActionEvent event) {
-
+		addTab("ProductProfitReport", "Product Profit Report");
 	}
 
 	@FXML
@@ -492,7 +353,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onSalesReportCommand(ActionEvent event) {
-		addTab("SalesReport","Sales Report");
+		addTab("SalesReport", "Sales Report");
 	}
 
 	@FXML
@@ -501,8 +362,8 @@ public class HomeController extends AppContext {
 	}
 
 	@FXML
-	void onSalesStockValueReportCommand(ActionEvent event) {
-
+	void onStockSummaryReportCommand(ActionEvent event) {
+		addTab("StockSummaryReport", "Stock Summary Report");
 	}
 
 	@FXML
@@ -514,7 +375,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onSearchInvoiceCommand(ActionEvent event) {
-		addTab("SearchInvoice","Search Invoice");
+		addTab("SearchInvoice", "Search Invoice");
 	}
 
 	@FXML
@@ -539,7 +400,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onSuppliersCommand(ActionEvent event) {
-		addTab("Suppliers","Suppliers");
+		addTab("Suppliers", "Suppliers");
 	}
 
 	@FXML

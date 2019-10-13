@@ -1,18 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.billing.utils;
 
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 
-/**
- *
- * @author Dinesh
- */
 public class DirectoryTreeCopy extends SimpleFileVisitor<Path> {
     
     private final Path sourcePath;
