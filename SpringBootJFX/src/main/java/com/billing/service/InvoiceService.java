@@ -51,7 +51,7 @@ public class InvoiceService {
 			+ "NET_SALES_AMOUNT=? ,BILL_PURCHASE_AMT=?,GST_TYPE=?,GST_AMOUNT=?,CREATED_BY=?,LAST_UPDATED=? WHERE BILL_NUMBER=?";
 
 	private static final String INS_BILL_ITEM_DETAILS = "INSERT INTO BILL_ITEM_DETAILS (BILL_NUMBER,ITEM_NUMBER,ITEM_NAME,ITEM_MRP,ITEM_RATE,"
-			+ "ITEM_QTY,ITEM_AMOUNT,ITEM_PURCHASE_AMT,GST_RATE,GST_NAME,CGST,SGST,GST_AMOUNT,GST_TAXABLE_AMT,GST_INCLUSIVE_FLAG,DISC_PERCENT,DISC_AMOUNT,UNIT) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			+ "ITEM_QTY,ITEM_AMOUNT,ITEM_PURCHASE_AMT,GST_RATE,GST_NAME,CGST,SGST,GST_AMOUNT,GST_TAXABLE_AMT,GST_INCLUSIVE_FLAG,DISC_PERCENT,DISC_AMOUNT,UNIT,HSN) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static final String UPDATE_PRODUCT_STOCK = "UPDATE PRODUCT_DETAILS SET QUANTITY=QUANTITY-? WHERE PRODUCT_ID=?";
 
@@ -248,6 +248,7 @@ public class InvoiceService {
 					stmt.setDouble(16, item.getDiscountPercent());
 					stmt.setDouble(17, item.getDiscountAmount());
 					stmt.setString(18, item.getUnit());
+					stmt.setString(19,item.getHsn());
 
 					stmt.addBatch();
 				}
@@ -359,6 +360,7 @@ public class InvoiceService {
 				itemDetails.setDiscountPercent(rs.getDouble("DISC_PERCENT"));
 				itemDetails.setDiscountAmount(rs.getDouble("DISC_AMOUNT"));
 				itemDetails.setUnit(rs.getString("UNIT"));
+				itemDetails.setHsn(rs.getString("HSN"));
 				itemDetails.setBillNumber(rs.getInt("BILL_NUMBER"));
 
 				GSTDetails gstDetails = new GSTDetails();

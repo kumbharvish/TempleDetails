@@ -182,6 +182,9 @@ public class ProductsController extends AppContext implements TabContent {
 	private TextField txtDiscount;
 
 	@FXML
+	private TextField txtHSN;
+
+	@FXML
 	private Label lblViewStockLedger;
 
 	@FXML
@@ -216,6 +219,9 @@ public class ProductsController extends AppContext implements TabContent {
 
 	@FXML
 	private TableColumn<Product, String> tcDescription;
+
+	@FXML
+	private TableColumn<Product, String> tcHSN;
 
 	@FXML
 	private TableColumn<Product, String> tcDiscount;
@@ -262,7 +268,7 @@ public class ProductsController extends AppContext implements TabContent {
 		cbTax.focusedProperty().addListener((observable, oldValue, newValue) -> {
 			if (!newValue) {
 				setPurchasePrice();
-			}else {
+			} else {
 				cbTax.show();
 			}
 		});
@@ -318,6 +324,8 @@ public class ProductsController extends AppContext implements TabContent {
 		tcDiscount.setCellValueFactory(
 				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getDiscount())));
 		tcDescription.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription()));
+		tcHSN.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getHsn()));
+
 		// Set CSS
 		tcQuantity.getStyleClass().add("numeric-cell");
 		tcPurchaseRate.getStyleClass().add("numeric-cell");
@@ -328,6 +336,7 @@ public class ProductsController extends AppContext implements TabContent {
 		tcName.getStyleClass().add("character-cell");
 		tcMUnit.getStyleClass().add("character-cell");
 		tcDescription.getStyleClass().add("character-cell");
+		tcHSN.getStyleClass().add("character-cell");
 	}
 
 	private void setPurchasePrice() {
@@ -368,6 +377,7 @@ public class ProductsController extends AppContext implements TabContent {
 			txtSellPrice.setText(appUtils.getDecimalFormat(newValue.getSellPrice()));
 			txtDiscount.setText(newValue.getDiscount() == 0 ? "" : appUtils.getDecimalFormat(newValue.getDiscount()));
 			txtBarcode.setText(newValue.getProductBarCode() == 0 ? "" : String.valueOf(newValue.getProductBarCode()));
+			txtHSN.setText(newValue.getHsn());
 			lblEnteredBy.setText(newValue.getEnterBy());
 			lblEntryDate.setText(appUtils.getFormattedDateWithTime(newValue.getEntryDate()));
 			txtDescription.setText(newValue.getDescription());
@@ -536,6 +546,7 @@ public class ProductsController extends AppContext implements TabContent {
 		productToSave.setEnterBy(userDetails.getFirstName() + " " + userDetails.getLastName());
 		productToSave.setEntryDate(appUtils.getCurrentTimestamp());
 		productToSave.setLastUpdateDate(appUtils.getCurrentTimestamp());
+		productToSave.setHsn(txtHSN.getText());
 		if (txtBarcode.getText().equals("")) {
 			productToSave.setProductBarCode(Long.valueOf(0));
 		} else {
@@ -596,6 +607,7 @@ public class ProductsController extends AppContext implements TabContent {
 		productToUpdate.setSellPrice(Double.parseDouble(txtSellPrice.getText()));
 		productToUpdate.setEnterBy(userDetails.getFirstName() + " " + userDetails.getLastName());
 		productToUpdate.setLastUpdateDate(appUtils.getCurrentTimestamp());
+		productToUpdate.setHsn(txtHSN.getText());
 		if (txtBarcode.getText().equals("")) {
 			productToUpdate.setProductBarCode(Long.valueOf(0));
 		} else {
@@ -730,6 +742,7 @@ public class ProductsController extends AppContext implements TabContent {
 		lblPurchasePrice.setText("");
 		txtSellPrice.setText("");
 		txtDiscount.setText("");
+		txtHSN.setText("");
 		txtBarcode.setText("");
 		lblEnteredBy.setText("");
 		lblEntryDate.setText("");

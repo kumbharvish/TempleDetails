@@ -34,35 +34,24 @@ public class ProductService {
 
 	private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
 
-	private static final String GET_ALL_PRODUCTS = "SELECT  PD.PRODUCT_ID,PD.PRODUCT_NAME,PD.MEASURE,PD.QUANTITY,PD.PURCHASE_PRICE,PD.SELL_PRICE,"
-			+ "PD.PRODUCT_MRP,PD.DISCOUNT,PD.ENTRY_DATE,PD.LAST_UPDATE_DATE,PD.DESCRIPTION,PD.ENTER_BY,"
-			+ "PD.PURCHASE_RATE,PD.PRODUCT_TAX,PD.BAR_CODE,PCD.CATEGORY_NAME "
+	private static final String GET_ALL_PRODUCTS = "SELECT  PD.*,PCD.CATEGORY_NAME "
 			+ "FROM PRODUCT_DETAILS PD,PRODUCT_CATEGORY_DETAILS PCD WHERE PD.CATEGORY_ID = PCD.CATEGORY_ID;";
 
-	private static final String GET_ALL_PRODUCTS_WITH_NO_BARCODE = "SELECT  PD.PRODUCT_ID,PD.PRODUCT_NAME,PD.MEASURE,PD.QUANTITY,PD.PURCHASE_PRICE,PD.SELL_PRICE,"
-			+ "PD.PRODUCT_MRP,PD.DISCOUNT,PD.ENTRY_DATE,PD.LAST_UPDATE_DATE,PD.DESCRIPTION,PD.ENTER_BY,"
-			+ "PD.PURCHASE_RATE,PD.PRODUCT_TAX,PD.BAR_CODE,PCD.CATEGORY_NAME "
+	private static final String GET_ALL_PRODUCTS_WITH_NO_BARCODE = "SELECT  PD.*,PCD.CATEGORY_NAME "
 			+ "FROM PRODUCT_DETAILS PD,PRODUCT_CATEGORY_DETAILS PCD WHERE PD.CATEGORY_ID = PCD.CATEGORY_ID AND BAR_CODE=0;";
 
-	private static final String SEARCH_PRODUCTS = "SELECT  PD.PRODUCT_ID,PD.PRODUCT_NAME,PD.MEASURE,PD.QUANTITY,PD.PURCHASE_PRICE,PD.SELL_PRICE,"
-			+ "PD.PRODUCT_MRP,PD.DISCOUNT,PD.ENTRY_DATE,PD.LAST_UPDATE_DATE,PD.DESCRIPTION,PD.ENTER_BY,"
-			+ "PD.PURCHASE_RATE,PD.PRODUCT_TAX,PD.BAR_CODE,PCD.CATEGORY_NAME "
-			+ "FROM PRODUCT_DETAILS PD,PRODUCT_CATEGORY_DETAILS PCD WHERE PD.CATEGORY_ID = PCD.CATEGORY_ID AND CONCAT(PD.SELL_PRICE,PD.PRODUCT_NAME,PCD.CATEGORY_NAME) LIKE ?;";
-
 	private static final String INS_PRODUCT = "INSERT INTO PRODUCT_DETAILS (PRODUCT_ID,PRODUCT_NAME,MEASURE,QUANTITY,PURCHASE_PRICE,"
-			+ "SELL_PRICE,PRODUCT_MRP,DISCOUNT,ENTRY_DATE,LAST_UPDATE_DATE,DESCRIPTION,ENTER_BY,CATEGORY_ID,PURCHASE_RATE,PRODUCT_TAX,BAR_CODE)"
-			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			+ "SELL_PRICE,PRODUCT_MRP,DISCOUNT,ENTRY_DATE,LAST_UPDATE_DATE,DESCRIPTION,ENTER_BY,CATEGORY_ID,PURCHASE_RATE,PRODUCT_TAX,BAR_CODE,HSN)"
+			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static final String DELETE_PRODUCT = "DELETE FROM PRODUCT_DETAILS WHERE PRODUCT_ID=?";
 
-	private static final String SELECT_PRODUCT = "SELECT  PD.PRODUCT_ID,PD.PRODUCT_NAME,PD.MEASURE,PD.QUANTITY,PD.PURCHASE_PRICE,PD.SELL_PRICE,"
-			+ "PD.PRODUCT_MRP,PD.DISCOUNT,PD.ENTRY_DATE,PD.LAST_UPDATE_DATE,PD.DESCRIPTION,PD.ENTER_BY,"
-			+ "PD.PURCHASE_RATE,PD.PRODUCT_TAX,PD.BAR_CODE,PCD.CATEGORY_NAME "
+	private static final String SELECT_PRODUCT = "SELECT  PD.*,PCD.CATEGORY_NAME "
 			+ "FROM PRODUCT_DETAILS PD,PRODUCT_CATEGORY_DETAILS PCD WHERE PD.CATEGORY_ID = PCD.CATEGORY_ID AND PRODUCT_ID=?;";
 
 	private static final String UPDATE_PRODUCT = "UPDATE PRODUCT_DETAILS SET PRODUCT_NAME=?,MEASURE=?,QUANTITY=?,PURCHASE_PRICE=?,"
 			+ "SELL_PRICE=?,PRODUCT_MRP=?,DISCOUNT=?,LAST_UPDATE_DATE=?,DESCRIPTION=?,"
-			+ "ENTER_BY=?,CATEGORY_ID=?,PURCHASE_RATE=?,PRODUCT_TAX=?,BAR_CODE=? WHERE PRODUCT_ID=?";
+			+ "ENTER_BY=?,CATEGORY_ID=?,PURCHASE_RATE=?,PRODUCT_TAX=?,BAR_CODE=?,HSN=? WHERE PRODUCT_ID=?";
 
 	private static final String UPDATE_PRODUCT_PURCHASE_HISTORY = "UPDATE PRODUCT_DETAILS SET PURCHASE_PRICE=?,LAST_UPDATE_DATE=?,PURCHASE_RATE=?,PRODUCT_TAX=? WHERE PRODUCT_ID=?";
 
@@ -70,9 +59,7 @@ public class ProductService {
 
 	private static final String SAVE_BARCODE = "UPDATE PRODUCT_DETAILS SET BAR_CODE=? WHERE PRODUCT_ID=?";
 
-	private static final String ZERO_STOCK_PRODUCTS = "SELECT  PD.PRODUCT_ID,PD.PRODUCT_NAME,PD.MEASURE,PD.QUANTITY,PD.PURCHASE_PRICE,PD.SELL_PRICE,"
-			+ "PD.PRODUCT_MRP,PD.DISCOUNT,PD.ENTRY_DATE,PD.LAST_UPDATE_DATE,PD.DESCRIPTION,PD.ENTER_BY,"
-			+ "PD.PURCHASE_RATE,PD.PRODUCT_TAX,PD.BAR_CODE,PCD.CATEGORY_NAME "
+	private static final String ZERO_STOCK_PRODUCTS = "SELECT  PD.*,PCD.CATEGORY_NAME "
 			+ "FROM PRODUCT_DETAILS PD,PRODUCT_CATEGORY_DETAILS PCD WHERE PD.CATEGORY_ID = PCD.CATEGORY_ID AND QUANTITY<=0;";
 
 	public List<Product> getAllProducts() {
@@ -104,6 +91,7 @@ public class ProductService {
 				pc.setEnterBy(rs.getString("ENTER_BY"));
 				pc.setProductCategory(rs.getString("CATEGORY_NAME"));
 				pc.setProductBarCode(rs.getLong("BAR_CODE"));
+				pc.setHsn(rs.getString("HSN"));
 
 				productList.add(pc);
 				Comparator<Product> cp = Product.getComparator(Product.SortParameter.CATEGORY_NAME_ASCENDING);
@@ -148,6 +136,8 @@ public class ProductService {
 				pc.setPurcaseRate(rs.getDouble("PURCHASE_RATE"));
 				pc.setProductTax(rs.getDouble("PRODUCT_TAX"));
 				pc.setProductBarCode(rs.getLong("BAR_CODE"));
+				pc.setHsn(rs.getString("HSN"));
+
 			}
 			rs.close();
 		} catch (Exception e) {
@@ -184,6 +174,7 @@ public class ProductService {
 				stmt.setDouble(14, product.getPurcaseRate());
 				stmt.setDouble(15, product.getProductTax());
 				stmt.setLong(16, product.getProductBarCode());
+				stmt.setString(17, product.getHsn());
 
 				int i = stmt.executeUpdate();
 				if (i > 0) {
@@ -246,7 +237,8 @@ public class ProductService {
 				stmt.setDouble(12, product.getPurcaseRate());
 				stmt.setDouble(13, product.getProductTax());
 				stmt.setLong(14, product.getProductBarCode());
-				stmt.setInt(15, product.getProductCode());
+				stmt.setString(15, product.getHsn());
+				stmt.setInt(16, product.getProductCode());
 
 				int i = stmt.executeUpdate();
 				if (i > 0) {
@@ -262,45 +254,6 @@ public class ProductService {
 			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
-	}
-
-	public List<Product> searchProduct(String searchString) {
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		Product pc = null;
-		List<Product> productList = new ArrayList<Product>();
-		try {
-			conn = dbUtils.getConnection();
-			stmt = conn.prepareStatement(SEARCH_PRODUCTS);
-			stmt.setString(1, "%" + searchString + "%");
-			ResultSet rs = stmt.executeQuery();
-
-			while (rs.next()) {
-				pc = new Product();
-				pc.setProductCode(rs.getInt("PRODUCT_ID"));
-				pc.setProductName(rs.getString("PRODUCT_NAME"));
-				pc.setMeasure(rs.getString("MEASURE"));
-				pc.setQuantity(rs.getDouble("QUANTITY"));
-				pc.setPurcasePrice(rs.getDouble("PURCHASE_PRICE"));
-				pc.setSellPrice(rs.getDouble("SELL_PRICE"));
-				pc.setProductMRP(rs.getDouble("PRODUCT_MRP"));
-				pc.setDiscount(rs.getDouble("DISCOUNT"));
-				pc.setEntryDate(rs.getString("ENTRY_DATE"));
-				pc.setLastUpdateDate(rs.getString("LAST_UPDATE_DATE"));
-				pc.setDescription(rs.getString("DESCRIPTION"));
-				pc.setEnterBy(rs.getString("ENTER_BY"));
-				pc.setProductCategory(rs.getString("CATEGORY_NAME"));
-
-				productList.add(pc);
-			}
-			rs.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("Exception : ", e);
-		} finally {
-			DBUtils.closeConnection(stmt, conn);
-		}
-		return productList;
 	}
 
 	// Get product map product code as key
@@ -352,6 +305,7 @@ public class ProductService {
 				pc.setEnterBy(rs.getString("ENTER_BY"));
 				pc.setProductCategory(rs.getString("CATEGORY_NAME"));
 				pc.setProductBarCode(rs.getLong("BAR_CODE"));
+				pc.setHsn(rs.getString("HSN"));
 
 				productList.add(pc);
 				Comparator<Product> cp = Product.getComparator(Product.SortParameter.CATEGORY_NAME_ASCENDING);
@@ -396,6 +350,7 @@ public class ProductService {
 				pc.setEnterBy(rs.getString("ENTER_BY"));
 				pc.setProductCategory(rs.getString("CATEGORY_NAME"));
 				pc.setProductBarCode(rs.getLong("BAR_CODE"));
+				pc.setHsn(rs.getString("HSN"));
 
 				productList.add(pc);
 				Comparator<Product> cp = Product.getComparator(Product.SortParameter.CATEGORY_NAME_ASCENDING);

@@ -744,6 +744,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			item.setDiscountPercent(p.getDiscount());
 			item.setDiscountAmount(p.getDiscountAmount());
 			item.setUnit(p.getMeasure());
+			item.setHsn(p.getHsn());
 			itemList.add(item);
 		}
 		return itemList;

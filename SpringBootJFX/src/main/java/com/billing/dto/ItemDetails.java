@@ -27,6 +27,8 @@ public class ItemDetails {
 	private double discountAmount;
 	
 	private String stockInOutFlag;
+	
+	private String hsn;
 
 	public int getItemNo() {
 		return itemNo;
@@ -134,6 +136,14 @@ public class ItemDetails {
 				+ unit + ", MRP=" + MRP + ", rate=" + rate + ", quantity=" + quantity + ", amount=" + amount
 				+ ", purchasePrice=" + purchasePrice + ", gstDetails=" + gstDetails + ", discountPercent="
 				+ discountPercent + ", discountAmount=" + discountAmount + ", stockInOutFlag=" + stockInOutFlag + "]";
+	}
+
+	public String getHsn() {
+		return hsn;
+	}
+
+	public void setHsn(String hsn) {
+		this.hsn = hsn;
 	}
 
 }

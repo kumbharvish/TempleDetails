@@ -98,17 +98,18 @@
 										<TextField fx:id="txtDiscount" GridPane.columnIndex="1" GridPane.rowIndex="9" />
 										<Label alignment="TOP_RIGHT" styleClass="nodeLabel" text="Barcode :" GridPane.halignment="RIGHT" GridPane.rowIndex="10" />
 										<TextField fx:id="txtBarcode" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+										<Label styleClass="nodeLabel" text="HSN :" GridPane.halignment="RIGHT" GridPane.rowIndex="11" />
+										<TextField fx:id="txtHSN" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+										<Label styleClass="nodeLabel" text="Entered By :" GridPane.halignment="RIGHT" GridPane.rowIndex="12" />
+										<TextField fx:id="lblEnteredBy" editable="false" focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+										<Label styleClass="nodeLabel" text="Entry Date :" GridPane.halignment="RIGHT" GridPane.rowIndex="13" />
+										<TextField fx:id="lblEntryDate" editable="false" focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+										<Label styleClass="nodeLabel" text="Description :" GridPane.halignment="RIGHT" GridPane.rowIndex="14" />
+										<TextField fx:id="txtDescription" GridPane.columnIndex="1" GridPane.rowIndex="14" />
 
-										<Label styleClass="nodeLabel" text="Entered By :" GridPane.halignment="RIGHT" GridPane.rowIndex="11" />
-										<TextField fx:id="lblEnteredBy" editable="false" focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="11" />
-										<Label styleClass="nodeLabel" text="Entry Date :" GridPane.halignment="RIGHT" GridPane.rowIndex="12" />
-										<TextField fx:id="lblEntryDate" editable="false" focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="12" />
-										<Label styleClass="nodeLabel" text="Description :" GridPane.halignment="RIGHT" GridPane.rowIndex="13" />
-										<TextField fx:id="txtDescription" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+										<Separator GridPane.columnSpan="2" GridPane.rowIndex="15" />
 
-										<Separator GridPane.columnSpan="2" GridPane.rowIndex="14" />
-
-										<ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="15">
+										<ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="16">
 											<buttons>
 												<Button fx:id="btnAdd" defaultButton="true" mnemonicParsing="true" onAction="#onAddCommand" text="Add" />
 												<Button fx:id="btnUpdate" cancelButton="true" mnemonicParsing="true" onAction="#onUpdateCommand" text="Update" />
@@ -208,6 +209,7 @@
 								<TableColumn fx:id="tcTax" minWidth="60.0" prefWidth="60.0" text="Tax (%)" />
 								<TableColumn fx:id="tcSellPrice" minWidth="70" prefWidth="100.0" text="Sell Price" />
 								<TableColumn fx:id="tcDiscount" minWidth="90" prefWidth="90" text="Discount(%)" />
+								<TableColumn fx:id="tcHSN" minWidth="70" prefWidth="120" text="HSN" />
 								<TableColumn fx:id="tcDescription" minWidth="70" prefWidth="120" text="Description" />
 							</columns>
 							<BorderPane.margin>

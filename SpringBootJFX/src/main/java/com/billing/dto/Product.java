@@ -73,6 +73,8 @@ public class Product {
 	private double sgstPercent;
 	
 	private double orignalDiscount;
+	
+	private String hsn;
 
 	public int getProductCode() {
 		return productCode;
@@ -363,6 +365,14 @@ public class Product {
 
 	public void setOrignalDiscount(double orignalDiscount) {
 		this.orignalDiscount = orignalDiscount;
+	}
+
+	public String getHsn() {
+		return hsn;
+	}
+
+	public void setHsn(String hsn) {
+		this.hsn = hsn;
 	}
 
 	public enum SortParameter {
