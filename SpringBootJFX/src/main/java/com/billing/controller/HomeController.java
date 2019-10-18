@@ -227,7 +227,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onDataBackupCommand(ActionEvent event) {
-		dbBackupService.createDBDumpSendOnMail(currentStage);
+		dbBackupService.saveDBDumpToChoosenLocation(currentStage);
 	}
 
 	@FXML

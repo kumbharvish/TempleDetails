@@ -1,8 +1,6 @@
 package com.billing.service;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.Date;
 
@@ -37,11 +35,16 @@ public class DBBackupService {
 
 	private static final Logger logger = LoggerFactory.getLogger(DBBackupService.class);
 
-	public boolean createDBDump() {
+	public boolean createDBDump(String dbDumpLocation) {
 		try {
-			String directoryPath = appUtils.createDirectory(AppConstants.DATA_BACKUP_FOLDER);
-			String fileName = directoryPath + "MyStore_" + appUtils.getFormattedDate(new Date()) + "_"
-					+ System.currentTimeMillis() + ".mbf.db";
+			String fileName = null;
+			if (dbDumpLocation == null) {
+				String directoryPath = appUtils.createDirectory(AppConstants.DATA_BACKUP_FOLDER);
+				fileName = directoryPath + "MyStore_" + appUtils.getFormattedDate(new Date()) + "_"
+						+ System.currentTimeMillis() + ".mbf.db";
+			} else {
+				fileName = dbDumpLocation;
+			}
 			Connection con = dbUtils.getConnection();
 			con.createStatement().executeUpdate("backup to database.mbf.db");
 			con.close();
@@ -62,10 +65,15 @@ public class DBBackupService {
 	}
 
 	// Create DB Dump show alert
-	public void createDBDumpSendOnMail(Stage stage) {
-		boolean flag = createDBDump();
-		if (flag) {
-			alertHelper.showInfoAlert(null, "Data Backup", "Backup Success", "Data backup completed sucessfully");
+	public void saveDBDumpToChoosenLocation(Stage currentStage) {
+		String fileName = "MyStore_" + appUtils.getFormattedDate(new Date()) + "_" + System.currentTimeMillis()
+				+ ".mbf.db";
+		File file = appUtils.ChooseFile(currentStage, "Save Database", fileName, "DB File", "*.db");
+		if (file != null) {
+			boolean flag = createDBDump(file.getAbsolutePath());
+			if (flag) {
+				alertHelper.showInfoAlert(null, "Data Backup", "Backup Success", "Data backup completed sucessfully");
+			}
 		}
 	}
 }

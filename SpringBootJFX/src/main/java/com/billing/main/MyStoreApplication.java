@@ -89,7 +89,7 @@ public class MyStoreApplication extends Application {
 	public void stop() throws Exception {
 		System.out.println("---- DATA BACKUP From STOP Method ---");
 		DBBackupService dbBackupService = (DBBackupService)springContext.getBean(DBBackupService.class);
-		dbBackupService.createDBDump();
+		dbBackupService.createDBDump(null);
 		System.out.println("---- Terminate Application ---");
 		System.exit(0);
 	}

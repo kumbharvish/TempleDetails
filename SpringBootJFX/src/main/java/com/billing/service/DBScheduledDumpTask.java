@@ -16,6 +16,6 @@ public class DBScheduledDumpTask extends TimerTask {
 	
 	public void run() {
 		System.out.println("-- Running scheduled DB Dump Task --");
-		dbBackupService.createDBDump();
+		dbBackupService.createDBDump(null);
 	}
 }

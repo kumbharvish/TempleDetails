@@ -27,7 +27,6 @@ import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 import com.billing.utils.PDFReportMapping;
 
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 @Service
@@ -102,15 +101,9 @@ public class PrinterService {
 	public void exportPDF(Object reportData, Stage currentStage) {
 
 		boolean isSuccess = false;
-
 		ReportMetadata reportMetadata = getReportMetadataForPDF(reportData);
-		FileChooser fileChooser = new FileChooser();
-		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PDF File", "*.pdf");
-		fileChooser.getExtensionFilters().add(extFilter);
-		fileChooser.setInitialFileName(reportMetadata.getReportName());
-		fileChooser.setTitle("Save PDF");
 		// Show save file dialog
-		File file = fileChooser.showSaveDialog(currentStage);
+		File file = appUtils.ChooseFile(currentStage, "Save PDF", reportMetadata.getReportName(), "PDF File", "*.pdf");
 		if (null != file) {
 			reportMetadata.setFilePath(file.getAbsolutePath());
 			isSuccess = pdfReportService.exportPDF(reportMetadata);
@@ -127,13 +120,10 @@ public class PrinterService {
 	public void exportExcel(Object reportData, Stage currentStage) {
 
 		ReportMetadata reportMetadata = getReportMetadataForExcel(reportData);
-		FileChooser fileChooser = new FileChooser();
-		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Excel File", "*.xls");
-		fileChooser.getExtensionFilters().add(extFilter);
-		fileChooser.setInitialFileName(reportMetadata.getReportName());
-		fileChooser.setTitle("Save Excel Sheet");
 		// Show save file dialog
-		File file = fileChooser.showSaveDialog(currentStage);
+		File file = appUtils.ChooseFile(currentStage, "Save Excel Sheet", reportMetadata.getReportName(), "Excel File",
+				"*.xls");
+
 		if (null != file) {
 			FileOutputStream outputStream;
 			try {

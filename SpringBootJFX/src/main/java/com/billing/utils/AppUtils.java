@@ -51,6 +51,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import sun.misc.BASE64Decoder;
@@ -318,7 +319,7 @@ public class AppUtils {
 		}
 		return outputSdf.format(date);
 	}
-	
+
 	public Date getDateFromDBTimestamp(String dt) {
 		SimpleDateFormat inputSdf = new SimpleDateFormat(TIMESTAMP_FORMAT);
 		Date date = null;
@@ -420,7 +421,7 @@ public class AppUtils {
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		return sdf.format(timestamp);
 	}
-	
+
 	public String getCurrentTime() {
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -660,5 +661,15 @@ public class AppUtils {
 		Double gstAmt = (amount * gstRate) / 100;
 		return gstAmt;
 	}
-	
+
+	public File ChooseFile(Stage currentStage, String title, String initialFileName, String fileType,
+			String exclusionFilter) {
+		FileChooser fileChooser = new FileChooser();
+		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(fileType, exclusionFilter);
+		fileChooser.getExtensionFilters().add(extFilter);
+		fileChooser.setInitialFileName(initialFileName);
+		fileChooser.setTitle(title);
+		File file = fileChooser.showSaveDialog(currentStage);
+		return file;
+	}
 }
