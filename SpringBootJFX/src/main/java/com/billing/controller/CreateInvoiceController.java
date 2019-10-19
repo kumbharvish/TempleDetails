@@ -214,9 +214,6 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	private ComboBox<String> cbPaymentModes;
 
 	@FXML
-	private Label lblPayModeErrMSg;
-
-	@FXML
 	private TextField txtNoOfItems;
 
 	@FXML
@@ -426,7 +423,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 
 		tableView.setOnMouseClicked((MouseEvent event) -> {
 			if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
-				// Show pop up with Edit and Delete Row option
+				// Show pop up with Edit and Remove Row option
 				if (!productTableData.isEmpty() && null != tableView.getSelectionModel().getSelectedItem()) {
 					getTableRowEditDeletePopup();
 				}
@@ -881,12 +878,14 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			lblQuantityErrMsg.setText("Quantity not specified");
 			alertHelper.beep();
 			valid = false;
-		} else {
-			if (null != product && (product.getQuantity() < Double.valueOf(quantity))) {
-				valid = false;
-				lblQuantityErrMsg.setText("Available stock is : " + appUtils.getDecimalFormat(product.getQuantity()));
-				alertHelper.beep();
-			}
+		} else if (0 == Double.valueOf(quantity)) {
+			lblQuantityErrMsg.setText("Invalid Quantity");
+			alertHelper.beep();
+			valid = false;
+		} else if (null != product && (product.getQuantity() < Double.valueOf(quantity))) {
+			valid = false;
+			lblQuantityErrMsg.setText("Available stock is : " + appUtils.getDecimalFormat(product.getQuantity()));
+			alertHelper.beep();
 		}
 		boolean isMatch = productTableData.stream().anyMatch(i -> i.getProductName().equals(product.getProductName()));
 		if (isMatch) {
@@ -994,7 +993,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		dialog.getDialogPane().setContent(box);
 		// Set the button types.
 		ButtonType updateButtonType = new ButtonType("Edit", ButtonData.OK_DONE);
-		ButtonType deleteButtonType = new ButtonType("Delete", ButtonData.OK_DONE);
+		ButtonType deleteButtonType = new ButtonType("Remove", ButtonData.OK_DONE);
 		dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, deleteButtonType, ButtonType.CANCEL);
 		dialog.setResultConverter(dialogButton -> {
 			if (dialogButton == updateButtonType) {

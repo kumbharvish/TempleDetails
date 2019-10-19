@@ -3,9 +3,10 @@ package com.billing.controller;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import com.billing.dto.BillDetails;
 import com.billing.dto.Customer;
 import com.billing.dto.InvoiceSearchCriteria;
 import com.billing.dto.ItemDetails;
-import com.billing.dto.Product;
+import com.billing.dto.ReturnDetails;
 import com.billing.dto.StatusDTO;
 import com.billing.dto.UserDetails;
 import com.billing.main.AppContext;
@@ -257,7 +258,7 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 
 		return true;
 	}
-	
+
 	private boolean validateInputEditInvoice(BillDetails bill) {
 		if (bill == null) {
 			return false;
@@ -278,8 +279,33 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 
 		return true;
 	}
-	
-	
+
+	private boolean validateInputSalesRetun(BillDetails bill) {
+		if (bill == null) {
+			return false;
+		}
+
+		String allowedDays = appUtils.getAppDataValues(AppConstants.SALES_RETURN_ALLOWED_DAYS);
+		DateTime dateTime = new DateTime();
+		Date backDate = dateTime.minusDays(Integer.valueOf(allowedDays)).toDate();
+		Date invoiceDate = appUtils.getDateFromDBTimestamp(bill.getTimestamp());
+		System.out.println("backDate : "+backDate);
+		System.out.println("invoiceDate : "+invoiceDate);
+
+		if (backDate.after(invoiceDate)) {
+			alertHelper.showErrorNotification("Return allowed days limit is expired for Invoice No. : "+bill.getBillNumber());
+			return false;
+		}
+
+		ReturnDetails rd = salesReturnService.getReturnDetails(Integer.valueOf(bill.getBillNumber()));
+		if (rd != null) {
+			alertHelper.showErrorNotification(
+					"Return No. : " + rd.getReturnNumber() + " already exists for Invoice No. : " + rd.getInvoiceNumber());
+			return false;
+		}
+
+		return true;
+	}
 
 	private void removeDeletedRecord(BillDetails bill) {
 		if (tableDataList.contains(bill)) {
@@ -305,7 +331,7 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 			alertHelper.beep();
 			return;
 		}
-		
+
 		FXMLLoader fxmlLoader = new FXMLLoader();
 		fxmlLoader.setControllerFactory(springContext::getBean);
 		fxmlLoader.setLocation(this.getClass().getResource("/com/billing/gui/EditInvoice.fxml"));
@@ -327,7 +353,9 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 		final Scene scene = new Scene(rootPane);
 		final EditInvoiceController controller = (EditInvoiceController) fxmlLoader.getController();
 		controller.bill = bill;
-		controller.setTask(()->{afterEditInvoiceSuccess();});
+		controller.setTask(() -> {
+			afterEditInvoiceSuccess();
+		});
 		final Stage stage = new Stage();
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.initOwner(currentStage);
@@ -345,7 +373,7 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 		panelSearchCriteria.setExpanded(true);
 		panelSearchResult.setExpanded(false);
 	}
-	
+
 	@FXML
 	void onPrintAction(ActionEvent event) {
 		BillDetails bill = tableView.getSelectionModel().getSelectedItem();
@@ -354,10 +382,53 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 		printerService.printInvoice(bill);
 
 	}
-	
+
 	@FXML
 	void onAddReturnAction(ActionEvent event) {
-		
+		BillDetails bill = tableView.getSelectionModel().getSelectedItem();
+		if (!validateInputSalesRetun(bill)) {
+			alertHelper.beep();
+			return;
+		}
+		getSalesReturnPopup(bill);
+	}
+
+	private void getSalesReturnPopup(BillDetails bill) {
+		FXMLLoader fxmlLoader = new FXMLLoader();
+		fxmlLoader.setControllerFactory(springContext::getBean);
+		fxmlLoader.setLocation(this.getClass().getResource("/com/billing/gui/SalesReturn.fxml"));
+
+		Parent rootPane = null;
+		try {
+			rootPane = fxmlLoader.load();
+		} catch (IOException e) {
+			e.printStackTrace();
+			logger.error("Sales Return popup Error in loading the view file :", e);
+			alertHelper.beep();
+
+			alertHelper.showErrorAlert(currentStage, "Error Occurred", "Error in creating user interface",
+					"An error occurred in creating user interface " + "for the selected command");
+
+			return;
+		}
+
+		final Scene scene = new Scene(rootPane);
+		final SalesReturnController controller = (SalesReturnController) fxmlLoader.getController();
+		controller.bill = bill;
+		controller.setTask(() -> {
+			afterEditInvoiceSuccess();
+		});
+		final Stage stage = new Stage();
+		stage.initModality(Modality.APPLICATION_MODAL);
+		stage.initOwner(currentStage);
+		stage.setUserData(controller);
+		stage.getIcons().add(new Image("/images/shop32X32.png"));
+		stage.setScene(scene);
+		stage.setTitle("Sales Return");
+		controller.setMainWindow(stage);
+		controller.setUserDetails(userDetails);
+		controller.loadData();
+		stage.showAndWait();
 	}
 
 	@FXML

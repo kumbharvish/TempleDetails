@@ -3,48 +3,48 @@ package com.billing.dto;
 import java.util.List;
 
 public class ReturnDetails {
-	
+
 	private int returnNumber;
-	
+
 	private String timestamp;
-	
+
 	private String comments;
-	
-	private int billNumber;
-	
+
+	private int invoiceNumber;
+
 	private long customerMobileNo;
-	
-	private String billDate;
-	
+
+	private String invoiceDate;
+
 	private List<ItemDetails> itemDetails;
-	
-	private String billPaymentMode;
-	
+
+	private String paymentMode;
+
 	private int noOfItems;
-	
+
 	private double totalQuantity;
-	
+
 	private double totalAmount;
-	
-	private String 	returnpaymentMode;
-	
-	private double billNetSalesAmt;
-	
-	private double newBillnetSalesAmt;
-	
-	private String customerName ;
-	
-	private double tax;
-	
+
+	private double invoiceNetSalesAmt;
+
+	private double newInvoiceNetSalesAmt;
+
+	private String customerName;
+
 	private double returnPurchaseAmt;
 	
-	public double getTax() {
-		return tax;
-	}
+	private double discount;
 
-	public void setTax(double tax) {
-		this.tax = tax;
-	}
+	private double discountAmount;
+
+	private double subTotal;
+
+	private String gstType;
+
+	private double gstAmount;
+
+	private String createdBy;
 
 	public double getDiscount() {
 		return discount;
@@ -52,14 +52,6 @@ public class ReturnDetails {
 
 	public void setDiscount(double discount) {
 		this.discount = discount;
-	}
-
-	public double getTaxAmount() {
-		return taxAmount;
-	}
-
-	public void setTaxAmount(double taxAmount) {
-		this.taxAmount = taxAmount;
 	}
 
 	public double getDiscountAmount() {
@@ -78,24 +70,6 @@ public class ReturnDetails {
 		this.subTotal = subTotal;
 	}
 
-	public double getGrandTotal() {
-		return grandTotal;
-	}
-
-	public void setGrandTotal(double grandTotal) {
-		this.grandTotal = grandTotal;
-	}
-
-	private double discount;
-	
-	private double taxAmount;
-	
-	private double discountAmount;
-	
-	private double subTotal;
-	
-	private double grandTotal;
-	
 	public int getReturnNumber() {
 		return returnNumber;
 	}
@@ -120,12 +94,12 @@ public class ReturnDetails {
 		this.comments = comments;
 	}
 
-	public int getBillNumber() {
-		return billNumber;
+	public int getInvoiceNumber() {
+		return invoiceNumber;
 	}
 
-	public void setBillNumber(int billNumber) {
-		this.billNumber = billNumber;
+	public void setInvoiceNumber(int invoiceNumber) {
+		this.invoiceNumber = invoiceNumber;
 	}
 
 	public long getCustomerMobileNo() {
@@ -136,12 +110,12 @@ public class ReturnDetails {
 		this.customerMobileNo = customerMobileNo;
 	}
 
-	public String getBillDate() {
-		return billDate;
+	public String getInvoiceDate() {
+		return invoiceDate;
 	}
 
-	public void setBillDate(String billDate) {
-		this.billDate = billDate;
+	public void setInvoiceDate(String invoiceDate) {
+		this.invoiceDate = invoiceDate;
 	}
 
 	public List<ItemDetails> getItemDetails() {
@@ -152,12 +126,12 @@ public class ReturnDetails {
 		this.itemDetails = itemDetails;
 	}
 
-	public String getBillPaymentMode() {
-		return billPaymentMode;
+	public String getPaymentMode() {
+		return paymentMode;
 	}
 
-	public void setBillPaymentMode(String billPaymentMode) {
-		this.billPaymentMode = billPaymentMode;
+	public void setPaymentMode(String paymentMode) {
+		this.paymentMode = paymentMode;
 	}
 
 	public int getNoOfItems() {
@@ -184,43 +158,6 @@ public class ReturnDetails {
 		this.totalAmount = totalAmount;
 	}
 
-	public String getReturnpaymentMode() {
-		return returnpaymentMode;
-	}
-
-	public void setReturnpaymentMode(String returnpaymentMode) {
-		this.returnpaymentMode = returnpaymentMode;
-	}
-
-	public double getBillNetSalesAmt() {
-		return billNetSalesAmt;
-	}
-
-	public void setBillNetSalesAmt(double billNetSalesAmt) {
-		this.billNetSalesAmt = billNetSalesAmt;
-	}
-
-	public double getNewBillnetSalesAmt() {
-		return newBillnetSalesAmt;
-	}
-
-	public void setNewBillnetSalesAmt(double newBillnetSalesAmt) {
-		this.newBillnetSalesAmt = newBillnetSalesAmt;
-	}
-
-	@Override
-	public String toString() {
-		return "ReturnDetails [returnNumber=" + returnNumber + ", timestamp="
-				+ timestamp + ", comments=" + comments + ", billNumber="
-				+ billNumber + ", customerMobileNo=" + customerMobileNo
-				+ ", billDate=" + billDate + ", itemDetails=" + itemDetails
-				+ ", billPaymentMode=" + billPaymentMode + ", noOfItems="
-				+ noOfItems + ", totalQuanity=" + totalQuantity
-				+ ", totalAmount=" + totalAmount + ", returnpaymentMode="
-				+ returnpaymentMode + ", billNetSalesAmt=" + billNetSalesAmt
-				+ ", newBillnetSalesAmt=" + newBillnetSalesAmt + "]";
-	}
-
 	public String getCustomerName() {
 		return customerName;
 	}
@@ -236,5 +173,45 @@ public class ReturnDetails {
 	public void setReturnPurchaseAmt(double returnPurchaseAmt) {
 		this.returnPurchaseAmt = returnPurchaseAmt;
 	}
-	
+
+	public String getGstType() {
+		return gstType;
+	}
+
+	public void setGstType(String gstType) {
+		this.gstType = gstType;
+	}
+
+	public double getGstAmount() {
+		return gstAmount;
+	}
+
+	public void setGstAmount(double gstAmount) {
+		this.gstAmount = gstAmount;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public double getInvoiceNetSalesAmt() {
+		return invoiceNetSalesAmt;
+	}
+
+	public void setInvoiceNetSalesAmt(double invoiceNetSalesAmt) {
+		this.invoiceNetSalesAmt = invoiceNetSalesAmt;
+	}
+
+	public double getNewInvoiceNetSalesAmt() {
+		return newInvoiceNetSalesAmt;
+	}
+
+	public void setNewInvoiceNetSalesAmt(double newInvoiceNetSalesAmt) {
+		this.newInvoiceNetSalesAmt = newInvoiceNetSalesAmt;
+	}
+
 }

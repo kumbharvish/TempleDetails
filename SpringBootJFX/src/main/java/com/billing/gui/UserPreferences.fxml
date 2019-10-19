@@ -59,7 +59,7 @@
 									<children>
 										<TextField fx:id="txtSalesReturnDays">
                                  <tooltip>
-                                    <Tooltip text="Sales retun will be allowed upto mentioned days " />
+                                    <Tooltip text="Sales return will be allowed upto mentioned days (Including Invoice Date)" />
                                  </tooltip></TextField>
 										<Label fx:id="lblSalesReturnDaysErrMsg" styleClass="errorLabel" wrapText="true" />
 									</children>

@@ -13,7 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.billing.constants.AppConstants;
+import com.billing.dto.BillDetails;
 import com.billing.dto.ItemDetails;
+import com.billing.dto.Product;
 import com.billing.dto.ReturnDetails;
 import com.billing.dto.StatusDTO;
 import com.billing.utils.AppUtils;
@@ -22,67 +25,113 @@ import com.billing.utils.DBUtils;
 @Service
 public class SalesReturnService {
 
+	private static final Logger logger = LoggerFactory.getLogger(SalesReturnService.class);
+
 	@Autowired
 	DBUtils dbUtils;
-	
+
 	@Autowired
 	AppUtils appUtils;
 
-	private static final Logger logger = LoggerFactory.getLogger(SalesReturnService.class);
+	@Autowired
+	CustomerService customerService;
 
-	private static final String INS_BILL_DETAILS = "INSERT INTO SALES_RETURN_DETAILS (RETURN_NUMBER,RETURN_DATE,COMMENTS,BILL_NUMBER,CUST_MOB_NO,BILL_DATE,"
-			+ "BILL_PAYMENT_MODE,NO_OF_ITEMS,TOTAL_QTY,PAYMENT_MODE,RETURN_TOTAL_AMOUNT,BILL_NET_SALES_AMOUNT,NEW_BILL_NET_SALES_AMOUNT,TAX,DISCOUNT,TAX_AMOUNT,DISCOUNT_AMOUNT,SUB_TOTAL,GRAND_TOTAL,RETURN_PURCHASE_AMT)"
-			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	private static final String SAVE_RETURN_DETAILS = "INSERT INTO SALES_RETURN_DETAILS (RETURN_NUMBER,RETURN_DATE,COMMENTS,INVOICE_NUMBER,CUST_MOB_NO,INVOICE_DATE,"
+			+ "GST_TYPE,NO_OF_ITEMS,TOTAL_QTY,PAYMENT_MODE,RETURN_TOTAL_AMOUNT,INVOICE_NET_SALES_AMOUNT,NEW_INVOICE_NET_SALES_AMOUNT,GST_AMOUNT,DISCOUNT,DISCOUNT_AMOUNT,SUB_TOTAL,RETURN_PURCHASE_AMT,CREATED_BY)"
+			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-	private static final String INS_BILL_ITEM_DETAILS = "INSERT INTO SALES_RETURN_ITEMS_DETAILS (RETURN_NUMBER,ITEM_NO,ITEM_MRP,ITEM_RATE,"
-			+ "ITEM_QTY,AMOUNT) VALUES(?,?,?,?,?,?)";
+	private static final String SAVE_RETURN_ITEM_DETAILS = "INSERT INTO SALES_RETURN_ITEMS_DETAILS (RETURN_NUMBER,ITEM_NO,ITEM_MRP,ITEM_RATE,"
+			+ "ITEM_QTY,AMOUNT,PURCHASE_AMOUNT,GST_RATE,GST_NAME,CGST,SGST,GST_AMOUNT,GST_TAXABLE_AMT,GST_INCLUSIVE_FLAG,DISC_PERCENT,DISC_AMOUNT,UNIT,HSN) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static final String UPDATE_PRODUCT_STOCK = "UPDATE PRODUCT_DETAILS SET QUANTITY=QUANTITY+? WHERE PRODUCT_ID=?";
 
 	private static final String GET_RETURN_DETAILS = "SELECT SRD.*,CD.CUST_NAME AS CUSTOMER_NAME FROM SALES_RETURN_DETAILS SRD,CUSTOMER_DETAILS CD WHERE  SRD.CUST_MOB_NO=CD.CUST_MOB_NO"
-			+ " AND BILL_NUMBER=?";
+			+ " AND INVOICE_NUMBER=?";
 
 	private static final String GET_RETURN_DETAILS_FOR_RETURN_NUMBER = "SELECT SRD.*,CD.CUST_NAME AS CUSTOMER_NAME FROM SALES_RETURN_DETAILS SRD,CUSTOMER_DETAILS CD WHERE  SRD.CUST_MOB_NO=CD.CUST_MOB_NO"
 			+ " AND RETURN_NUMBER=?";
 
-	private static final String IS_SALES_RETURED = "SELECT RETURN_NUMBER FROM SALES_RETURN_DETAILS WHERE BILL_NUMBER=?";
+	private static final String IS_SALES_RETURED = "SELECT RETURN_NUMBER FROM SALES_RETURN_DETAILS WHERE INVOICE_NUMBER=?";
 
 	private static final String SELECT_ITEM_DETAILS = "SELECT SRID.*,PD.PRODUCT_NAME FROM SALES_RETURN_ITEMS_DETAILS SRID,PRODUCT_DETAILS PD WHERE RETURN_NUMBER=? AND SRID.ITEM_NO=PD.PRODUCT_ID";
 
+	private static final String NEW_RETURN_NUMBER = "SELECT (MAX(INVOICE_NUMBER)+1) AS RETURN_NUMBER FROM SALES_RETURN_DETAILS ";
+
+	public Integer getNewReturnNumber() {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		Integer newReturnNumber = 0;
+		try {
+			conn = dbUtils.getConnection();
+			stmt = conn.prepareStatement(NEW_RETURN_NUMBER);
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				newReturnNumber = rs.getInt("RETURN_NUMBER");
+				if (newReturnNumber == 0) {
+					newReturnNumber = 1;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return -1;
+		} finally {
+			DBUtils.closeConnection(stmt, conn);
+		}
+		return newReturnNumber;
+	}
+
 	// Save Return Details
-	public StatusDTO saveReturnDetails(ReturnDetails bill) {
+	private StatusDTO saveReturnDetails(ReturnDetails returnDetails) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();
+		boolean isItemsSaved = false;
+		boolean isStockUpdated = false;
+		boolean isStockLedgerUpdated = false;
 		try {
-			if (bill != null) {
+			if (returnDetails != null) {
 				conn = dbUtils.getConnection();
-				stmt = conn.prepareStatement(INS_BILL_DETAILS);
-				stmt.setInt(1, bill.getReturnNumber());
-				stmt.setString(2, appUtils.getCurrentTimestamp());
-				stmt.setString(3, bill.getComments());
-				stmt.setInt(4, bill.getBillNumber());
-				stmt.setLong(5, bill.getCustomerMobileNo());
-				stmt.setString(6, bill.getBillDate());
-				stmt.setString(7, bill.getBillPaymentMode());
-				stmt.setInt(8, bill.getNoOfItems());
-				stmt.setDouble(9, bill.getTotalQuantity());
-				stmt.setString(10, bill.getReturnpaymentMode());
-				stmt.setDouble(11, bill.getTotalAmount());
-				stmt.setDouble(12, bill.getBillNetSalesAmt());
-				stmt.setDouble(13, bill.getNewBillnetSalesAmt());
-				stmt.setDouble(14, bill.getTax());
-				stmt.setDouble(15, bill.getDiscount());
-				stmt.setDouble(16, bill.getTaxAmount());
-				stmt.setDouble(17, bill.getDiscountAmount());
-				stmt.setDouble(18, bill.getSubTotal());
-				stmt.setDouble(19, bill.getGrandTotal());
-				stmt.setDouble(20, bill.getReturnPurchaseAmt());
+				stmt = conn.prepareStatement(SAVE_RETURN_DETAILS);
+				stmt.setInt(1, returnDetails.getReturnNumber());
+				stmt.setString(2, returnDetails.getTimestamp());
+				stmt.setString(3, returnDetails.getComments());
+				stmt.setInt(4, returnDetails.getInvoiceNumber());
+				stmt.setLong(5, returnDetails.getCustomerMobileNo());
+				stmt.setString(6, returnDetails.getInvoiceDate());
+				stmt.setString(7, returnDetails.getGstType());
+				stmt.setInt(8, returnDetails.getNoOfItems());
+				stmt.setDouble(9, returnDetails.getTotalQuantity());
+				stmt.setString(10, returnDetails.getPaymentMode());
+				stmt.setDouble(11, returnDetails.getTotalAmount());
+				stmt.setDouble(12, returnDetails.getInvoiceNetSalesAmt());
+				stmt.setDouble(13, returnDetails.getNewInvoiceNetSalesAmt());
+				stmt.setDouble(14, returnDetails.getGstAmount());
+				stmt.setDouble(15, returnDetails.getDiscount());
+				stmt.setDouble(16, returnDetails.getDiscountAmount());
+				stmt.setDouble(17, returnDetails.getSubTotal());
+				stmt.setDouble(18, returnDetails.getReturnPurchaseAmt());
+				stmt.setString(19, returnDetails.getCreatedBy());
+
 				int i = stmt.executeUpdate();
 				if (i > 0) {
 					status.setStatusCode(0);
-					saveReturnItemDetails(bill.getItemDetails());
-					updateProductStock(bill.getItemDetails());
+					System.out.println("Invoice Details Saved !");
+					isItemsSaved = saveBillItemDetails(returnDetails.getItemDetails(), conn);
+					isStockUpdated = updateProductStock(returnDetails.getItemDetails(), conn);
+					isStockLedgerUpdated = addProductStockLedger(
+							getProductListForStockLedger(returnDetails.getItemDetails(), "SALES_RETURN"),
+							AppConstants.STOCK_IN, AppConstants.SALES_RETURN, conn);
+				}
+
+				if (!isStockUpdated || !isItemsSaved || !isStockLedgerUpdated) {
+					status.setStatusCode(-1);
+					// If any step fails rollback Transaction
+					System.out.println("Save Invoice Transaction Rollbacked !");
+					conn.rollback();
+				} else {
+					// Commit Transaction
+					System.out.println("Save Invoice Transaction Committed !");
+					conn.commit();
 				}
 			}
 		} catch (Exception e) {
@@ -138,7 +187,7 @@ public class SalesReturnService {
 			if (!itemList.isEmpty()) {
 				conn = dbUtils.getConnection();
 				conn.setAutoCommit(false);
-				stmt = conn.prepareStatement(INS_BILL_ITEM_DETAILS);
+				stmt = conn.prepareStatement(SAVE_RETURN_ITEM_DETAILS);
 				for (ItemDetails item : itemList) {
 					stmt.setInt(1, item.getBillNumber());
 					stmt.setInt(2, item.getItemNo());
@@ -181,8 +230,8 @@ public class SalesReturnService {
 			if (rs.next()) {
 				returnDetails = new ReturnDetails();
 				returnDetails.setReturnNumber(rs.getInt("RETURN_NUMBER"));
-				returnDetails.setBillNumber(rs.getInt("BILL_NUMBER"));
-				returnDetails.setBillDate(rs.getString("BILL_DATE"));
+				returnDetails.setInvoiceNumber(rs.getInt("INVOICE_NUMBER"));
+				returnDetails.setInvoiceDate(rs.getString("INVOICE_DATE"));
 				returnDetails.setComments(rs.getString("COMMENTS"));
 				returnDetails.setTimestamp(rs.getString("RETURN_DATE"));
 				returnDetails.setCustomerMobileNo(rs.getLong("CUST_MOB_NO"));
@@ -190,16 +239,15 @@ public class SalesReturnService {
 				returnDetails.setNoOfItems(rs.getInt("NO_OF_ITEMS"));
 				returnDetails.setTotalQuantity(rs.getDouble("TOTAL_QTY"));
 				returnDetails.setTotalAmount(rs.getDouble("RETURN_TOTAL_AMOUNT"));
-				returnDetails.setReturnpaymentMode(rs.getString("PAYMENT_MODE"));
-				returnDetails.setNewBillnetSalesAmt(rs.getDouble("NEW_BILL_NET_SALES_AMOUNT"));
-				returnDetails.setBillNetSalesAmt(rs.getDouble("BILL_NET_SALES_AMOUNT"));
-				returnDetails.setBillPaymentMode(rs.getString("BILL_PAYMENT_MODE"));
-				returnDetails.setTax(rs.getDouble("TAX"));
+				returnDetails.setPaymentMode(rs.getString("PAYMENT_MODE"));
+				returnDetails.setNewInvoiceNetSalesAmt(rs.getDouble("NEW_INVOICE_NET_SALES_AMOUNT"));
+				returnDetails.setInvoiceNetSalesAmt(rs.getDouble("INVOICE_NET_SALES_AMOUNT"));
+				// returnDetails.setTax(rs.getDouble("TAX"));
 				returnDetails.setDiscount(rs.getDouble("DISCOUNT"));
-				returnDetails.setTaxAmount(rs.getDouble("TAX_AMOUNT"));
+				// returnDetails.setTaxAmount(rs.getDouble("TAX_AMOUNT"));
 				returnDetails.setDiscountAmount(rs.getDouble("DISCOUNT_AMOUNT"));
 				returnDetails.setSubTotal(rs.getDouble("SUB_TOTAL"));
-				returnDetails.setGrandTotal(rs.getDouble("GRAND_TOTAL"));
+				// returnDetails.setGrandTotal(rs.getDouble("GRAND_TOTAL"));
 
 			}
 		} catch (Exception e) {
@@ -225,8 +273,8 @@ public class SalesReturnService {
 			if (rs.next()) {
 				returnDetails = new ReturnDetails();
 				returnDetails.setReturnNumber(rs.getInt("RETURN_NUMBER"));
-				returnDetails.setBillNumber(rs.getInt("BILL_NUMBER"));
-				returnDetails.setBillDate(rs.getString("BILL_DATE"));
+				returnDetails.setInvoiceNumber(rs.getInt("INVOICE_NUMBER"));
+				returnDetails.setInvoiceDate(rs.getString("INVOICE_DATE"));
 				returnDetails.setComments(rs.getString("COMMENTS"));
 				returnDetails.setTimestamp(rs.getString("RETURN_DATE"));
 				returnDetails.setCustomerMobileNo(rs.getLong("CUST_MOB_NO"));
@@ -234,16 +282,15 @@ public class SalesReturnService {
 				returnDetails.setNoOfItems(rs.getInt("NO_OF_ITEMS"));
 				returnDetails.setTotalQuantity(rs.getDouble("TOTAL_QTY"));
 				returnDetails.setTotalAmount(rs.getDouble("RETURN_TOTAL_AMOUNT"));
-				returnDetails.setReturnpaymentMode(rs.getString("PAYMENT_MODE"));
-				returnDetails.setNewBillnetSalesAmt(rs.getDouble("NEW_BILL_NET_SALES_AMOUNT"));
-				returnDetails.setBillNetSalesAmt(rs.getDouble("BILL_NET_SALES_AMOUNT"));
-				returnDetails.setBillPaymentMode(rs.getString("BILL_PAYMENT_MODE"));
-				returnDetails.setTax(rs.getDouble("TAX"));
+				returnDetails.setPaymentMode(rs.getString("PAYMENT_MODE"));
+				returnDetails.setNewInvoiceNetSalesAmt(rs.getDouble("NEW_INVOICE_NET_SALES_AMOUNT"));
+				returnDetails.setInvoiceNetSalesAmt(rs.getDouble("INVOICE_NET_SALES_AMOUNT"));
+				// returnDetails.setTax(rs.getDouble("TAX"));
 				returnDetails.setDiscount(rs.getDouble("DISCOUNT"));
-				returnDetails.setTaxAmount(rs.getDouble("TAX_AMOUNT"));
+				// returnDetails.setTaxAmount(rs.getDouble("TAX_AMOUNT"));
 				returnDetails.setDiscountAmount(rs.getDouble("DISCOUNT_AMOUNT"));
 				returnDetails.setSubTotal(rs.getDouble("SUB_TOTAL"));
-				returnDetails.setGrandTotal(rs.getDouble("GRAND_TOTAL"));
+				// returnDetails.setGrandTotal(rs.getDouble("GRAND_TOTAL"));
 
 			}
 		} catch (Exception e) {
@@ -379,8 +426,8 @@ public class SalesReturnService {
 			while (rs.next()) {
 				returnDetails = new ReturnDetails();
 				returnDetails.setReturnNumber(rs.getInt("RETURN_NUMBER"));
-				returnDetails.setBillNumber(rs.getInt("BILL_NUMBER"));
-				returnDetails.setBillDate(rs.getString("BILL_DATE"));
+				returnDetails.setInvoiceNumber(rs.getInt("INVOICE_NUMBER"));
+				returnDetails.setInvoiceDate(rs.getString("INVOICE_DATE"));
 				returnDetails.setComments(rs.getString("COMMENTS"));
 				returnDetails.setTimestamp(rs.getString("RETURN_DATE"));
 				returnDetails.setCustomerMobileNo(rs.getLong("CUST_MOB_NO"));
@@ -388,16 +435,15 @@ public class SalesReturnService {
 				returnDetails.setNoOfItems(rs.getInt("NO_OF_ITEMS"));
 				returnDetails.setTotalQuantity(rs.getDouble("TOTAL_QTY"));
 				returnDetails.setTotalAmount(rs.getDouble("RETURN_TOTAL_AMOUNT"));
-				returnDetails.setReturnpaymentMode(rs.getString("PAYMENT_MODE"));
-				returnDetails.setNewBillnetSalesAmt(rs.getDouble("NEW_BILL_NET_SALES_AMOUNT"));
-				returnDetails.setBillNetSalesAmt(rs.getDouble("BILL_NET_SALES_AMOUNT"));
-				returnDetails.setBillPaymentMode(rs.getString("BILL_PAYMENT_MODE"));
-				returnDetails.setTax(rs.getDouble("TAX"));
+				returnDetails.setPaymentMode(rs.getString("PAYMENT_MODE"));
+				returnDetails.setNewInvoiceNetSalesAmt(rs.getDouble("NEW_INVOICE_NET_SALES_AMOUNT"));
+				returnDetails.setInvoiceNetSalesAmt(rs.getDouble("INVOICE_NET_SALES_AMOUNT"));
+				// returnDetails.setTax(rs.getDouble("TAX"));
 				returnDetails.setDiscount(rs.getDouble("DISCOUNT"));
-				returnDetails.setTaxAmount(rs.getDouble("TAX_AMOUNT"));
+				// returnDetails.setTaxAmount(rs.getDouble("TAX_AMOUNT"));
 				returnDetails.setDiscountAmount(rs.getDouble("DISCOUNT_AMOUNT"));
 				returnDetails.setSubTotal(rs.getDouble("SUB_TOTAL"));
-				returnDetails.setGrandTotal(rs.getDouble("GRAND_TOTAL"));
+				// returnDetails.setGrandTotal(rs.getDouble("GRAND_TOTAL"));
 
 				returnDetailsList.add(returnDetails);
 			}
@@ -410,4 +456,80 @@ public class SalesReturnService {
 		return returnDetailsList;
 	}
 
+	// Save Return Details
+	public StatusDTO saveReturn(ReturnDetails returnDetails) {
+		StatusDTO statusSaveReturn = new StatusDTO();
+		if (AppConstants.PENDING.equals(returnDetails.getPaymentMode())) {
+			// Save Bill Details
+			StatusDTO status = saveReturnDetails(returnDetails);
+			StatusDTO statusAddPendingAmt = new StatusDTO(-1);
+			if (status.getStatusCode() == 0) {
+				String narration = "Sales Return Amount based on Return No : " + returnDetails.getReturnNumber();
+				statusAddPendingAmt = customerService.addCustomerPaymentHistory(returnDetails.getCustomerMobileNo(), 0,
+						returnDetails.getTotalAmount(), AppConstants.DEBIT, narration);
+			}
+			if (status.getStatusCode() != 0 || statusAddPendingAmt.getStatusCode() != 0) {
+				statusSaveReturn.setStatusCode(-1);
+			}
+		}
+		// Other than PENDING pay mode ex: cash,cheque etc
+		if (!AppConstants.PENDING.equals(returnDetails.getPaymentMode())) {
+			// Save Bill Details
+			StatusDTO status = saveReturnDetails(returnDetails);
+			if (status.getStatusCode() != 0) {
+				statusSaveReturn.setStatusCode(-1);
+			}
+		}
+		return statusSaveReturn;
+
+	}
+
+	private List<Product> getProductListForStockLedger(List<ItemDetails> itemList, String type) {
+		List<Product> productList = new ArrayList<>();
+		for (ItemDetails p : itemList) {
+			Product product = new Product();
+			product.setProductCode(p.getItemNo());
+			product.setQuantity(p.getQuantity());
+			if ("SALES_RETURN".equals(type)) {
+				product.setDescription("Sales Return based on Return No.: " + p.getBillNumber());
+			}
+			productList.add(product);
+		}
+		return productList;
+	}
+
+	// Add Product Stock Ledger
+	public boolean addProductStockLedger(List<Product> productList, String stockInOutFlag, String transactionType,
+			Connection conn) {
+		PreparedStatement stmt = null;
+		boolean status = false;
+		try {
+			if (stockInOutFlag.equals(AppConstants.STOCK_IN)) {
+				stmt = conn.prepareStatement(INS_PRODUCT_STOCK_IN_LEDGER);
+			} else {
+				stmt = conn.prepareStatement(INS_PRODUCT_STOCK_OUT_LEDGER);
+			}
+
+			for (Product product : productList) {
+				stmt.setInt(1, product.getProductCode());
+				stmt.setString(2, appUtils.getCurrentTimestamp());
+				stmt.setDouble(3, product.getQuantity());
+				stmt.setString(4, product.getDescription());
+				stmt.setString(5, transactionType);
+				stmt.addBatch();
+			}
+
+			int batch[] = stmt.executeBatch();
+			if (batch.length == productList.size()) {
+				status = true;
+				System.out.println("Product Stock Ledger Added");
+			}
+
+		} catch (Exception e) {
+			status = false;
+			e.printStackTrace();
+			logger.info("Exception : ", e);
+		}
+		return status;
+	}
 }
