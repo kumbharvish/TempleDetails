@@ -23,6 +23,8 @@ public class AppConstants {
 	public static final String IS_THERMAL_PRINTER_SET = "IS_THERMAL_PRINTER_SET";
 
 	public static final String SALES_RETURN_ALLOWED_DAYS = "SALES_RETURN_ALLOWED_DAYS";
+	
+	public static final String LOW_STOCK_QUANTITY_LIMIT = "LOW_STOCK_QUANTITY_LIMIT";
 
 	public static final String DEBIT = "DEBIT";
 
@@ -106,6 +108,8 @@ public class AppConstants {
 	public static final String STOCK_SUMMARY_REPORT_NAME = "Stock_Summary_Report";
 	
 	public static final String CUSTOMERS_REPORT_NAME = "Customers_Report";
+	
+	public static final String LOW_STOCK_SUMMARY_REPORT_NAME = "Low_Stock_Summary_Report";
 
 	// Jasper File Names
 	public static final String PRODUCT_PROFIT_REPORT_JASPER = "Product_Profit_Report.jasper";
@@ -116,7 +120,7 @@ public class AppConstants {
 
 	public static final String CATEGORY_WISE_STOCK_REPORT = "Category_Wise_Stock_Report.jasper";
 
-	public static final String ZERO_STOCK_PRODUCT_REPORT_JASPER = "Zero_Stock_Product_Report.jasper";
+	public static final String LOW_STOCK_SUMMARY_REPORT_JASPER = "Low_Stock_Summary_Report.jasper";
 
 	public static final String SALES_REPORT_JASPER = "Sales_Report.jasper";
 

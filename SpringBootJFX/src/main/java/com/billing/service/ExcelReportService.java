@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.billing.dto.BillDetails;
 import com.billing.dto.Customer;
 import com.billing.dto.CustomersReport;
+import com.billing.dto.LowStockSummaryReport;
 import com.billing.dto.Product;
 import com.billing.dto.ProductCategory;
 import com.billing.dto.ProductProfitReport;
@@ -103,16 +104,16 @@ public class ExcelReportService {
 		return workbook;
 	}
 
-	// Zero Stock Products Report
-	public Workbook getZeroStockProductsReportWorkBook(List<Product> productList, Workbook workbook) {
-		Sheet sheet = workbook.createSheet("Zero Stock Products Report");
+	// Low Stock Summary Report
+	public Workbook getLowStockSummaryReportWorkBook(LowStockSummaryReport lowStockSummaryReport, Workbook workbook) {
+		Sheet sheet = workbook.createSheet("Low Stock Summary Report");
 		try {
-			excelReportMapping.setHeaderRowForZeroStock(sheet);
+			excelReportMapping.setHeaderRowForLowStockSummary(sheet);
 			int rowCount = 0;
 
-			for (Product p : productList) {
+			for (Product p : lowStockSummaryReport.getProductList()) {
 				Row row = sheet.createRow(++rowCount);
-				excelReportMapping.addZerotStockRow(p, row);
+				excelReportMapping.addLowStockSummaryRow(p, row);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

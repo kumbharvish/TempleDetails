@@ -8,6 +8,7 @@
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -42,23 +43,29 @@
 								</HBox>
 								
 								<Label styleClass="nodeLabel" text="Invoice Print On Save :" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-								<Label styleClass="requiredInput" text="Data Backup Interval in (Min) :" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
-								<VBox GridPane.columnIndex="1" GridPane.rowIndex="4">
+								<Label styleClass="requiredInput" text="Data Backup Interval in (Min) :" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
+								<VBox GridPane.columnIndex="1" GridPane.rowIndex="5">
 									<children>
-										<TextField fx:id="txtDBDumpInterval" />
+										<TextField fx:id="txtDBDumpInterval">
+                                 <tooltip>
+                                    <Tooltip text="Application will take data backup automatically in background with mentioned time interval" />
+                                 </tooltip></TextField>
 										<Label styleClass="note" text="Minimum allowed is 30 Min" />
 										<Label fx:id="lblDBDumpErrMsg" styleClass="errorLabel" wrapText="true" />
 									</children>
 								</VBox>
-								<Label styleClass="requiredInput" text="Sales Return allowed days :" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
-								<VBox GridPane.columnIndex="1" GridPane.rowIndex="5">
+								<Label styleClass="requiredInput" text="Sales Return allowed days :" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
+								<VBox GridPane.columnIndex="1" GridPane.rowIndex="6">
 									<children>
-										<TextField fx:id="txtSalesReturnDays" />
+										<TextField fx:id="txtSalesReturnDays">
+                                 <tooltip>
+                                    <Tooltip text="Sales retun will be allowed upto mentioned days " />
+                                 </tooltip></TextField>
 										<Label fx:id="lblSalesReturnDaysErrMsg" styleClass="errorLabel" wrapText="true" />
 									</children>
 								</VBox>
-								<Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="7" />
-								<ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="8">
+								<Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="8" />
+								<ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="9">
 									<buttons>
 										<Button fx:id="btnUpdate" cancelButton="true" disable="true" mnemonicParsing="true" onAction="#onUpdateCommand" text="Update" />
 										<Button mnemonicParsing="false" onAction="#onCloseCommand" text="Close" />
@@ -67,8 +74,19 @@
                         <CheckBox fx:id="cbPrintOnSave" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <CheckBox fx:id="cbShowPrintPreview" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                         <Label styleClass="nodeLabel" text="Show Print Preview :" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
-                        <Label styleClass="nodeLabel" text="Open Report Document after save :" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
-                        <CheckBox fx:id="cbOpenDocAfterSave" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                        <Label styleClass="nodeLabel" text="Open Report Document after save :" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+                        <CheckBox fx:id="cbOpenDocAfterSave" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <VBox layoutX="217.0" layoutY="254.0" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                           <children>
+                              <TextField fx:id="txtLowStockQtyLimit">
+                                 <tooltip>
+                                    <Tooltip text="This stock quantity value will be used to show Low Stock Summary Report" />
+                                 </tooltip>
+                              </TextField>
+                              <Label fx:id="lblLowStockQtyLimitErrMsg" styleClass="errorLabel" wrapText="true" />
+                           </children>
+                        </VBox>
+                        <Label styleClass="requiredInput" text="Low Stock Quantity Limit :" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
 							</children>
 							<VBox.margin>
 								<Insets top="20.0" />
@@ -85,9 +103,10 @@
 								<RowConstraints />
 								<RowConstraints minHeight="10.0" />
                         <RowConstraints minHeight="10.0" />
-								<RowConstraints minHeight="10.0" />
-								<RowConstraints minHeight="10.0" />
                         <RowConstraints minHeight="10.0" />
+								<RowConstraints minHeight="10.0" />
+								<RowConstraints minHeight="10.0" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" />
 								<RowConstraints />
 								<RowConstraints />
 							</rowConstraints>

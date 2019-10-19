@@ -29,10 +29,9 @@ public class ExcelReportMapping {
 	private String[] stockSummaryReportHeaders = { "Product Name", "Stock Quantity", "Sale Price", "Purchase Price",
 			"Stock Value" };
 
-	private String[] customersReportHeaders = { "Mobile Number", "Name", "City", "Entry Date",
-			"Pending Amount" };
+	private String[] customersReportHeaders = { "Mobile Number", "Name", "City", "Entry Date", "Pending Amount" };
 
-	private String[] zeroStockReportHeaders = { "Product Name", "Category Name" };
+	private String[] lowStockSummaryReportHeaders = { "Product Name", "Category Name", "Stock Quantity", "Stock Value" };
 
 	private String[] categoryWiseStockReportHeaders = { "Category Name", "Stock Quantity", "Stock Value" };
 
@@ -225,12 +224,12 @@ public class ExcelReportMapping {
 
 		cell = row.createCell(4);
 		cell.setCellValue(appUtils.getFormattedDateWithTime(cust.getEntryDate()));
-		
+
 		cell = row.createCell(5);
 		cell.setCellValue(cust.getBalanceAmt());
 
 	}
-	
+
 	public void addTotalCustomersRow(Sheet sheet, int rowNumber) {
 		CellStyle cellStyleHeader = sheet.getWorkbook().createCellStyle();
 		CellStyle cellStyleTotal = sheet.getWorkbook().createCellStyle();
@@ -246,27 +245,33 @@ public class ExcelReportMapping {
 	}
 
 	// Zero Stock Products Report
-	public void setHeaderRowForZeroStock(Sheet sheet) {
+	public void setHeaderRowForLowStockSummary(Sheet sheet) {
 
 		CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
 		setHeaderFont(sheet, cellStyle);
-		setColumnWidth(sheet, zeroStockReportHeaders.length);
+		setColumnWidth(sheet, lowStockSummaryReportHeaders.length);
 
 		Row row = sheet.createRow(0);
 		int columnCount = 0;
-		for (String headerName : zeroStockReportHeaders) {
+		for (String headerName : lowStockSummaryReportHeaders) {
 			Cell cell1 = row.createCell(++columnCount);
 			cell1.setCellStyle(cellStyle);
 			cell1.setCellValue(headerName);
 		}
 	}
 
-	public void addZerotStockRow(Product p, Row row) {
+	public void addLowStockSummaryRow(Product p, Row row) {
 		Cell cell = row.createCell(1);
 		cell.setCellValue(p.getProductName());
 
 		cell = row.createCell(2);
 		cell.setCellValue(p.getProductCategory());
+		
+		cell = row.createCell(3);
+		cell.setCellValue(p.getQuantity());
+		
+		cell = row.createCell(4);
+		cell.setCellValue(p.getStockValueAmount());
 	}
 
 	// Category Wise Stock Report

@@ -106,7 +106,7 @@
                             <MenuItem fx:id="stockSummaryReportMenuItem" onAction="#onStockSummaryReportCommand" text="Stock _Summary Report" />
                               <MenuItem fx:id="productProfitReportMenuItem" onAction="#onProductProfitReportCommand" text="Product Pro_fit Report" />
                               <MenuItem fx:id="customersReportMenuItem" onAction="#onCustomerReportCommand" text="_Customers Report" />
-                              <MenuItem fx:id="zeroStockProductsReportMenuItem" onAction="#onZeroStockProductsCommand" text="_Zero Stock Products Report" />
+                              <MenuItem fx:id="lowStockSummaryReportMenuItem" onAction="#onLowStockSummaryCommand" text="_Low Stock Summary Report" />
                               <MenuItem fx:id="productCategoryWiseStockReprotMenuItem" onAction="#onProductCategoryWiseStockCommand" text="Product Category _Wise Stock Report" />
                               <MenuItem fx:id="salesReportMenuItem" onAction="#onSalesReportCommand" text="_Sales Report" />
                               <MenuItem fx:id="salesReturnReportMenuItem" onAction="#onSalesReturnReportCommand" text="Sales _Return Report" />

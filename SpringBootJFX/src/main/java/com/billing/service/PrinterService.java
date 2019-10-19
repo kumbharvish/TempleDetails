@@ -17,6 +17,7 @@ import com.billing.constants.AppConstants;
 import com.billing.dto.Barcode;
 import com.billing.dto.BillDetails;
 import com.billing.dto.CustomersReport;
+import com.billing.dto.LowStockSummaryReport;
 import com.billing.dto.PrintTemplate;
 import com.billing.dto.ProductProfitReport;
 import com.billing.dto.ReportMetadata;
@@ -176,6 +177,13 @@ public class PrinterService {
 			reportMetadata.setReportName(AppConstants.CUSTOMERS_REPORT_NAME + todaysDate + ".pdf");
 			reportMetadata.setDataSourceMap(pdfReportMapping.getDatasourceForCustomersReport(report));
 		}
+		// Low Stock Summary Report
+		if (reportData instanceof LowStockSummaryReport) {
+			LowStockSummaryReport report = (LowStockSummaryReport) reportData;
+			reportMetadata.setJasperName(AppConstants.LOW_STOCK_SUMMARY_REPORT_JASPER);
+			reportMetadata.setReportName(AppConstants.LOW_STOCK_SUMMARY_REPORT_NAME + todaysDate + ".pdf");
+			reportMetadata.setDataSourceMap(pdfReportMapping.getDatasourceForLowStockSummaryReport(report));
+		}
 		return reportMetadata;
 	}
 
@@ -207,6 +215,12 @@ public class PrinterService {
 			CustomersReport report = (CustomersReport) reportData;
 			reportMetadata.setReportName(AppConstants.CUSTOMERS_REPORT_NAME + todaysDate + ".xls");
 			reportMetadata.setWorkbook(excelReportService.getCustomersReportWorkBook(report, workbook));
+		}
+		// Low Stock Summary Report
+		if (reportData instanceof LowStockSummaryReport) {
+			LowStockSummaryReport report = (LowStockSummaryReport) reportData;
+			reportMetadata.setReportName(AppConstants.LOW_STOCK_SUMMARY_REPORT_NAME + todaysDate + ".xls");
+			reportMetadata.setWorkbook(excelReportService.getLowStockSummaryReportWorkBook(report, workbook));
 		}
 		return reportMetadata;
 	}

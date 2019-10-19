@@ -72,7 +72,7 @@ public class DBBackupService {
 		if (file != null) {
 			boolean flag = createDBDump(file.getAbsolutePath());
 			if (flag) {
-				alertHelper.showInfoAlert(null, "Data Backup", "Backup Success", "Data backup completed sucessfully");
+				alertHelper.showSuccessNotification("Data backup completed successfully");
 			}
 		}
 	}

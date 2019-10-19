@@ -1,10 +1,8 @@
 package com.billing.service;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -16,8 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.billing.dto.BillDetails;
-import com.billing.dto.ItemDetails;
 import com.billing.dto.Product;
 import com.billing.dto.StatusDTO;
 import com.billing.utils.AppUtils;
@@ -59,8 +55,8 @@ public class ProductService {
 
 	private static final String SAVE_BARCODE = "UPDATE PRODUCT_DETAILS SET BAR_CODE=? WHERE PRODUCT_ID=?";
 
-	private static final String ZERO_STOCK_PRODUCTS = "SELECT  PD.*,PCD.CATEGORY_NAME "
-			+ "FROM PRODUCT_DETAILS PD,PRODUCT_CATEGORY_DETAILS PCD WHERE PD.CATEGORY_ID = PCD.CATEGORY_ID AND QUANTITY<=0;";
+	private static final String LOW_STOCK_PRODUCTS = "SELECT  PD.*,PCD.CATEGORY_NAME "
+			+ "FROM PRODUCT_DETAILS PD,PRODUCT_CATEGORY_DETAILS PCD WHERE PD.CATEGORY_ID = PCD.CATEGORY_ID AND QUANTITY<=?;";
 
 	public List<Product> getAllProducts() {
 		Connection conn = null;
@@ -276,15 +272,16 @@ public class ProductService {
 		return productMap;
 	}
 
-	// Get Zero Stock Products
-	public List<Product> getZeroStockProducts() {
+	// Get Low Stock Products
+	public List<Product> getZeroStockProducts(Integer lowStockQtyLimit) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		Product pc = null;
 		List<Product> productList = new ArrayList<Product>();
 		try {
 			conn = dbUtils.getConnection();
-			stmt = conn.prepareStatement(ZERO_STOCK_PRODUCTS);
+			stmt = conn.prepareStatement(LOW_STOCK_PRODUCTS);
+			stmt.setInt(1, lowStockQtyLimit);
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {

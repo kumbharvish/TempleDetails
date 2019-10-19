@@ -13,6 +13,7 @@ import com.billing.dto.BillDetails;
 import com.billing.dto.Customer;
 import com.billing.dto.CustomersReport;
 import com.billing.dto.ItemDetails;
+import com.billing.dto.LowStockSummaryReport;
 import com.billing.dto.Product;
 import com.billing.dto.ProductCategory;
 import com.billing.dto.ProductProfitReport;
@@ -91,10 +92,10 @@ public class PDFReportMapping {
 		return dataSourceMaps;
 	}
 
-	// Zero Stock Products Report
-	public List<Map<String, ?>> getDatasourceForZeroStockReport(List<Product> productList) {
+	//Low Stock Summary Report
+	public List<Map<String, ?>> getDatasourceForLowStockSummaryReport(LowStockSummaryReport lowStockSummaryReport) {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
-		for (Product item : productList) {
+		for (Product item : lowStockSummaryReport.getProductList()) {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("ProductName", item.getProductName());
 			map.put("ProductCode", String.valueOf(item.getProductCode()));

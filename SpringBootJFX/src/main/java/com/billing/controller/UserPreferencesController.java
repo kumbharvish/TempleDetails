@@ -86,8 +86,14 @@ public class UserPreferencesController implements TabContent {
 	private Label lblSalesReturnDaysErrMsg;
 
 	@FXML
+	private TextField txtLowStockQtyLimit;
+
+	@FXML
+	private Label lblLowStockQtyLimitErrMsg;
+
+	@FXML
 	private Button btnUpdate;
-	
+
 	@FXML
 	private CheckBox cbOpenDocAfterSave;
 
@@ -139,6 +145,7 @@ public class UserPreferencesController implements TabContent {
 		cbOpenDocAfterSave.setSelected(appUtils.isTrue(userPref.get(AppConstants.OPEN_REPORT_DOC_ON_SAVE)));
 		txtDBDumpInterval.setText(userPref.get(AppConstants.DB_DUMP_INTERVAL));
 		txtSalesReturnDays.setText(userPref.get(AppConstants.SALES_RETURN_ALLOWED_DAYS));
+		txtLowStockQtyLimit.setText(userPref.get(AppConstants.LOW_STOCK_QUANTITY_LIMIT));
 		isDirty.set(false);
 		return true;
 	}
@@ -170,8 +177,13 @@ public class UserPreferencesController implements TabContent {
 		lblSalesReturnDaysErrMsg.visibleProperty()
 				.bind(lblSalesReturnDaysErrMsg.textProperty().length().greaterThanOrEqualTo(1));
 
+		lblLowStockQtyLimitErrMsg.managedProperty().bind(lblLowStockQtyLimitErrMsg.visibleProperty());
+		lblLowStockQtyLimitErrMsg.visibleProperty()
+				.bind(lblLowStockQtyLimitErrMsg.textProperty().length().greaterThanOrEqualTo(1));
+
 		txtDBDumpInterval.textProperty().addListener(appUtils.getForceNumberListner());
 		txtSalesReturnDays.textProperty().addListener(appUtils.getForceNumberListner());
+		txtLowStockQtyLimit.textProperty().addListener(appUtils.getForceNumberListner());
 
 		rbGSTInclusive.selectedProperty().addListener(this::invalidated);
 		rbGSTExclusive.selectedProperty().addListener(this::invalidated);
@@ -182,6 +194,7 @@ public class UserPreferencesController implements TabContent {
 		rbSearchName.selectedProperty().addListener(this::invalidated);
 		txtDBDumpInterval.textProperty().addListener(this::invalidated);
 		txtSalesReturnDays.textProperty().addListener(this::invalidated);
+		txtLowStockQtyLimit.textProperty().addListener(this::invalidated);
 
 		btnUpdate.disableProperty().bind(isDirty.not());
 
@@ -203,13 +216,13 @@ public class UserPreferencesController implements TabContent {
 		} else {
 			saveMap.put(AppConstants.INVOICE_PRINT_ON_SAVE, "N");
 		}
-		
+
 		if (cbShowPrintPreview.isSelected()) {
 			saveMap.put(AppConstants.SHOW_PRINT_PREVIEW, "Y");
 		} else {
 			saveMap.put(AppConstants.SHOW_PRINT_PREVIEW, "N");
 		}
-		
+
 		if (cbOpenDocAfterSave.isSelected()) {
 			saveMap.put(AppConstants.OPEN_REPORT_DOC_ON_SAVE, "Y");
 		} else {
@@ -223,6 +236,7 @@ public class UserPreferencesController implements TabContent {
 		}
 		saveMap.put(AppConstants.DB_DUMP_INTERVAL, txtDBDumpInterval.getText());
 		saveMap.put(AppConstants.SALES_RETURN_ALLOWED_DAYS, txtSalesReturnDays.getText());
+		saveMap.put(AppConstants.LOW_STOCK_QUANTITY_LIMIT, txtLowStockQtyLimit.getText());
 
 		StatusDTO status = appUtils.updateUserPreferences(saveMap);
 
@@ -280,6 +294,18 @@ public class UserPreferencesController implements TabContent {
 			return valid;
 		} else {
 			lblSalesReturnDaysErrMsg.setText("");
+		}
+
+		// Low Stock Quantity Limit
+		int lowQty = txtLowStockQtyLimit.getText().trim().length();
+		if (lowQty == 0) {
+			alertHelper.beep();
+			lblLowStockQtyLimitErrMsg.setText("Please enter Low stock quantity limit");
+			txtLowStockQtyLimit.requestFocus();
+			valid = false;
+			return valid;
+		} else {
+			lblLowStockQtyLimitErrMsg.setText("");
 		}
 		return valid;
 	}

@@ -416,8 +416,8 @@ public class HomeController extends AppContext {
 	}
 
 	@FXML
-	void onZeroStockProductsCommand(ActionEvent event) {
-
+	void onLowStockSummaryCommand(ActionEvent event) {
+		addTab("LowStockSummaryReport", "Low Stock Summary Report");
 	}
 
 	@FXML
