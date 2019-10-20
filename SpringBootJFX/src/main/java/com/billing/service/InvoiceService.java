@@ -40,6 +40,9 @@ public class InvoiceService {
 	@Autowired
 	CustomerService customerService;
 
+	@Autowired
+	ProductService productService;
+
 	private static final Logger logger = LoggerFactory.getLogger(InvoiceService.class);
 
 	private static final String INS_BILL_DETAILS = "INSERT INTO CUSTOMER_BILL_DETAILS (BILL_NUMBER,BILL_DATE_TIME,CUST_MOB_NO,CUST_NAME,NO_OF_ITEMS,"
@@ -52,8 +55,6 @@ public class InvoiceService {
 
 	private static final String INS_BILL_ITEM_DETAILS = "INSERT INTO BILL_ITEM_DETAILS (BILL_NUMBER,ITEM_NUMBER,ITEM_NAME,ITEM_MRP,ITEM_RATE,"
 			+ "ITEM_QTY,ITEM_AMOUNT,ITEM_PURCHASE_AMT,GST_RATE,GST_NAME,CGST,SGST,GST_AMOUNT,GST_TAXABLE_AMT,GST_INCLUSIVE_FLAG,DISC_PERCENT,DISC_AMOUNT,UNIT,HSN) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-
-	private static final String UPDATE_PRODUCT_STOCK = "UPDATE PRODUCT_DETAILS SET QUANTITY=QUANTITY-? WHERE PRODUCT_ID=?";
 
 	private static final String SELECT_BILL_WITH_BILLNO_AND_DATE = "SELECT CBD.*,CD.CUST_NAME AS CUSTOMER_NAME FROM CUSTOMER_BILL_DETAILS CBD,CUSTOMER_DETAILS CD WHERE CBD.BILL_NUMBER=? AND"
 			+ " CBD.CUST_MOB_NO=CD.CUST_MOB_NO AND DATE(BILL_DATE_TIME) BETWEEN ? AND ?";
@@ -68,14 +69,6 @@ public class InvoiceService {
 	private static final String DELETE_BILL_DETAILS = "DELETE FROM CUSTOMER_BILL_DETAILS WHERE BILL_NUMBER=?";
 
 	private static final String DELETE_BILL_ITEM_DETAILS = "DELETE FROM BILL_ITEM_DETAILS WHERE BILL_NUMBER=?";
-
-	private static final String UPDATE_DELETED_PRODUCT_STOCK = "UPDATE PRODUCT_DETAILS SET QUANTITY=QUANTITY+? WHERE PRODUCT_ID=?";
-
-	private static final String INS_PRODUCT_STOCK_IN_LEDGER = "INSERT INTO PRODUCT_STOCK_LEDGER (PRODUCT_CODE,TIMESTAMP,STOCK_IN,NARRATION,TRANSACTION_TYPE)"
-			+ " VALUES(?,?,?,?,?)";
-
-	private static final String INS_PRODUCT_STOCK_OUT_LEDGER = "INSERT INTO PRODUCT_STOCK_LEDGER (PRODUCT_CODE,TIMESTAMP,STOCK_OUT,NARRATION,TRANSACTION_TYPE)"
-			+ " VALUES(?,?,?,?,?)";
 
 	private static final String GET_BILL_DETAILS_WITHIN_DATE_RANGE = "SELECT CBD.*,CD.CUST_NAME AS CUSTOMER_NAME FROM CUSTOMER_BILL_DETAILS CBD,CUSTOMER_DETAILS CD WHERE DATE(CBD.BILL_DATE_TIME) BETWEEN ? AND ?  AND CBD.CUST_MOB_NO=CD.CUST_MOB_NO ORDER BY CBD.BILL_DATE_TIME DESC";
 
@@ -113,10 +106,11 @@ public class InvoiceService {
 					status.setStatusCode(0);
 					System.out.println("Invoice Details Saved !");
 					isItemsSaved = saveBillItemDetails(bill.getItemDetails(), conn);
-					isStockUpdated = updateProductStock(bill.getItemDetails(), conn);
-					isStockLedgerUpdated = addProductStockLedger(
-							getProductListForStockLedger(bill.getItemDetails(), "SAVE_INVOICE"), AppConstants.STOCK_OUT,
-							AppConstants.SALES, conn);
+					isStockUpdated = productService.updateProductStock(bill.getItemDetails(), AppConstants.STOCK_OUT,
+							conn);
+					isStockLedgerUpdated = productService.addProductStockLedger(
+							productService.getProductListForStockLedger(bill.getItemDetails(), "SAVE_INVOICE"),
+							AppConstants.STOCK_OUT, AppConstants.SALES, conn);
 				}
 
 				if (!isStockUpdated || !isItemsSaved || !isStockLedgerUpdated) {
@@ -170,57 +164,6 @@ public class InvoiceService {
 
 	}
 
-	private List<Product> getProductListForStockLedger(List<ItemDetails> itemList, String type) {
-		List<Product> productList = new ArrayList<>();
-		for (ItemDetails p : itemList) {
-			Product product = new Product();
-			product.setProductCode(p.getItemNo());
-			product.setQuantity(p.getQuantity());
-			if ("SAVE_INVOICE".equals(type)) {
-				product.setDescription("Sales based on Invoice No.: " + p.getBillNumber());
-			} else if ("DELETE_INVOICE".equals(type)) {
-				product.setDescription("Delete Invoice based on Invoice No.: " + p.getBillNumber());
-			}
-			productList.add(product);
-		}
-		return productList;
-	}
-
-	// Add Product Stock Ledger
-	public boolean addProductStockLedger(List<Product> productList, String stockInOutFlag, String transactionType,
-			Connection conn) {
-		PreparedStatement stmt = null;
-		boolean status = false;
-		try {
-			if (stockInOutFlag.equals(AppConstants.STOCK_IN)) {
-				stmt = conn.prepareStatement(INS_PRODUCT_STOCK_IN_LEDGER);
-			} else {
-				stmt = conn.prepareStatement(INS_PRODUCT_STOCK_OUT_LEDGER);
-			}
-
-			for (Product product : productList) {
-				stmt.setInt(1, product.getProductCode());
-				stmt.setString(2, appUtils.getCurrentTimestamp());
-				stmt.setDouble(3, product.getQuantity());
-				stmt.setString(4, product.getDescription());
-				stmt.setString(5, transactionType);
-				stmt.addBatch();
-			}
-
-			int batch[] = stmt.executeBatch();
-			if (batch.length == productList.size()) {
-				status = true;
-				System.out.println("Product Stock Ledger Added");
-			}
-
-		} catch (Exception e) {
-			status = false;
-			e.printStackTrace();
-			logger.info("Exception : ", e);
-		}
-		return status;
-	}
-
 	// Save Invoice Item Details
 	private boolean saveBillItemDetails(List<ItemDetails> itemList, Connection conn) {
 		PreparedStatement stmt = null;
@@ -248,7 +191,7 @@ public class InvoiceService {
 					stmt.setDouble(16, item.getDiscountPercent());
 					stmt.setDouble(17, item.getDiscountAmount());
 					stmt.setString(18, item.getUnit());
-					stmt.setString(19,item.getHsn());
+					stmt.setString(19, item.getHsn());
 
 					stmt.addBatch();
 				}
@@ -257,32 +200,6 @@ public class InvoiceService {
 				if (batch.length == itemList.size()) {
 					flag = true;
 					System.out.println("Invoice Item saved !");
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("Exception : ", e);
-		}
-		return flag;
-	}
-
-	// Update Product Stock
-	public boolean updateProductStock(List<ItemDetails> itemList, Connection conn) {
-		PreparedStatement stmt = null;
-		boolean flag = false;
-
-		try {
-			if (!itemList.isEmpty()) {
-				stmt = conn.prepareStatement(UPDATE_PRODUCT_STOCK);
-				for (ItemDetails item : itemList) {
-					stmt.setInt(2, item.getItemNo());
-					stmt.setDouble(1, item.getQuantity());
-					stmt.addBatch();
-				}
-				int batch[] = stmt.executeBatch();
-				if (batch.length == itemList.size()) {
-					flag = true;
-					System.out.println("Product Stock  updated");
 				}
 			}
 		} catch (Exception e) {
@@ -620,10 +537,11 @@ public class InvoiceService {
 				System.out.println("Invoice deleted !");
 				status.setStatusCode(0);
 				statusDeleteItems = deleteBillItemDetails(conn, bill.getBillNumber());
-				statusUpdateStock = updateDeletedBillProductStock(conn, bill.getItemDetails());
-				isStockLedgerUpdated = addProductStockLedger(
-						getProductListForStockLedger(bill.getItemDetails(), "DELETE_INVOICE"), AppConstants.STOCK_IN,
-						AppConstants.DELETE_INVOICE, conn);
+				statusUpdateStock = productService.updateProductStock(bill.getItemDetails(), AppConstants.STOCK_IN,
+						conn);
+				isStockLedgerUpdated = productService.addProductStockLedger(
+						productService.getProductListForStockLedger(bill.getItemDetails(), "DELETE_INVOICE"),
+						AppConstants.STOCK_IN, AppConstants.DELETE_INVOICE, conn);
 			}
 			if (!statusDeleteItems || !statusUpdateStock || !isStockLedgerUpdated) {
 				status.setStatusCode(-1);
@@ -658,31 +576,6 @@ public class InvoiceService {
 			if (i > 0) {
 				status = true;
 				System.out.println("Invoice Items Deleted !");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.info("Exception : ", e);
-		}
-		return status;
-	}
-
-	// Update Product Stock for Deleted Invoice
-	private boolean updateDeletedBillProductStock(Connection conn, List<ItemDetails> itemList) {
-		PreparedStatement stmt = null;
-		boolean status = false;
-		try {
-			if (!itemList.isEmpty()) {
-				stmt = conn.prepareStatement(UPDATE_DELETED_PRODUCT_STOCK);
-				for (ItemDetails item : itemList) {
-					stmt.setInt(2, item.getItemNo());
-					stmt.setDouble(1, item.getQuantity());
-					stmt.addBatch();
-				}
-				int batch[] = stmt.executeBatch();
-				if (batch.length == itemList.size()) {
-					status = true;
-					System.out.println("Product Stock  updated");
-				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -889,11 +782,13 @@ public class InvoiceService {
 			product.setDescription("Edit Invoice correction based on Invoice No.: " + item.getBillNumber());
 			productList.add(product);
 			if (AppConstants.STOCK_IN.equals(item.getStockInOutFlag())) {
-				updateDeletedBillProductStock(conn, itemList);
-				addProductStockLedger(productList, AppConstants.STOCK_IN, AppConstants.EDIT_INVOICE, conn);
+				productService.updateProductStock(bill.getItemDetails(), AppConstants.STOCK_IN, conn);
+				productService.addProductStockLedger(productList, AppConstants.STOCK_IN, AppConstants.EDIT_INVOICE,
+						conn);
 			} else {
-				updateProductStock(itemList, conn);
-				addProductStockLedger(productList, AppConstants.STOCK_OUT, AppConstants.EDIT_INVOICE, conn);
+				productService.updateProductStock(itemList, AppConstants.STOCK_OUT, conn);
+				productService.addProductStockLedger(productList, AppConstants.STOCK_OUT, AppConstants.EDIT_INVOICE,
+						conn);
 			}
 
 		}

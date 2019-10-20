@@ -1,7 +1,6 @@
 package com.billing.service;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,9 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.billing.constants.AppConstants;
-import com.billing.dto.BillDetails;
+import com.billing.dto.GSTDetails;
 import com.billing.dto.ItemDetails;
-import com.billing.dto.Product;
 import com.billing.dto.ReturnDetails;
 import com.billing.dto.StatusDTO;
 import com.billing.utils.AppUtils;
@@ -36,14 +34,15 @@ public class SalesReturnService {
 	@Autowired
 	CustomerService customerService;
 
+	@Autowired
+	ProductService productService;
+
 	private static final String SAVE_RETURN_DETAILS = "INSERT INTO SALES_RETURN_DETAILS (RETURN_NUMBER,RETURN_DATE,COMMENTS,INVOICE_NUMBER,CUST_MOB_NO,INVOICE_DATE,"
 			+ "GST_TYPE,NO_OF_ITEMS,TOTAL_QTY,PAYMENT_MODE,RETURN_TOTAL_AMOUNT,INVOICE_NET_SALES_AMOUNT,NEW_INVOICE_NET_SALES_AMOUNT,GST_AMOUNT,DISCOUNT,DISCOUNT_AMOUNT,SUB_TOTAL,RETURN_PURCHASE_AMT,CREATED_BY)"
 			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-	private static final String SAVE_RETURN_ITEM_DETAILS = "INSERT INTO SALES_RETURN_ITEMS_DETAILS (RETURN_NUMBER,ITEM_NO,ITEM_MRP,ITEM_RATE,"
-			+ "ITEM_QTY,AMOUNT,PURCHASE_AMOUNT,GST_RATE,GST_NAME,CGST,SGST,GST_AMOUNT,GST_TAXABLE_AMT,GST_INCLUSIVE_FLAG,DISC_PERCENT,DISC_AMOUNT,UNIT,HSN) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-
-	private static final String UPDATE_PRODUCT_STOCK = "UPDATE PRODUCT_DETAILS SET QUANTITY=QUANTITY+? WHERE PRODUCT_ID=?";
+	private static final String SAVE_RETURN_ITEM_DETAILS = "INSERT INTO SALES_RETURN_ITEMS_DETAILS (RETURN_NUMBER,ITEM_NO,ITEM_NAME,ITEM_MRP,ITEM_RATE,"
+			+ "ITEM_QTY,AMOUNT,PURCHASE_AMOUNT,GST_RATE,GST_NAME,CGST,SGST,GST_AMOUNT,GST_TAXABLE_AMT,GST_INCLUSIVE_FLAG,DISC_PERCENT,DISC_AMOUNT,UNIT,HSN) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static final String GET_RETURN_DETAILS = "SELECT SRD.*,CD.CUST_NAME AS CUSTOMER_NAME FROM SALES_RETURN_DETAILS SRD,CUSTOMER_DETAILS CD WHERE  SRD.CUST_MOB_NO=CD.CUST_MOB_NO"
 			+ " AND INVOICE_NUMBER=?";
@@ -53,9 +52,9 @@ public class SalesReturnService {
 
 	private static final String IS_SALES_RETURED = "SELECT RETURN_NUMBER FROM SALES_RETURN_DETAILS WHERE INVOICE_NUMBER=?";
 
-	private static final String SELECT_ITEM_DETAILS = "SELECT SRID.*,PD.PRODUCT_NAME FROM SALES_RETURN_ITEMS_DETAILS SRID,PRODUCT_DETAILS PD WHERE RETURN_NUMBER=? AND SRID.ITEM_NO=PD.PRODUCT_ID";
+	private static final String GET_RETURN_ITEM_DETAILS = "SELECT SRID.*,PD.PRODUCT_NAME FROM SALES_RETURN_ITEMS_DETAILS SRID,PRODUCT_DETAILS PD WHERE RETURN_NUMBER=? AND SRID.ITEM_NO=PD.PRODUCT_ID";
 
-	private static final String NEW_RETURN_NUMBER = "SELECT (MAX(INVOICE_NUMBER)+1) AS RETURN_NUMBER FROM SALES_RETURN_DETAILS ";
+	private static final String NEW_RETURN_NUMBER = "SELECT (MAX(RETURN_NUMBER)+1) AS RETURN_NUMBER FROM SALES_RETURN_DETAILS ";
 
 	public Integer getNewReturnNumber() {
 		Connection conn = null;
@@ -91,6 +90,7 @@ public class SalesReturnService {
 		try {
 			if (returnDetails != null) {
 				conn = dbUtils.getConnection();
+				conn.setAutoCommit(false);
 				stmt = conn.prepareStatement(SAVE_RETURN_DETAILS);
 				stmt.setInt(1, returnDetails.getReturnNumber());
 				stmt.setString(2, returnDetails.getTimestamp());
@@ -102,7 +102,7 @@ public class SalesReturnService {
 				stmt.setInt(8, returnDetails.getNoOfItems());
 				stmt.setDouble(9, returnDetails.getTotalQuantity());
 				stmt.setString(10, returnDetails.getPaymentMode());
-				stmt.setDouble(11, returnDetails.getTotalAmount());
+				stmt.setDouble(11, returnDetails.getTotalReturnAmount());
 				stmt.setDouble(12, returnDetails.getInvoiceNetSalesAmt());
 				stmt.setDouble(13, returnDetails.getNewInvoiceNetSalesAmt());
 				stmt.setDouble(14, returnDetails.getGstAmount());
@@ -115,22 +115,23 @@ public class SalesReturnService {
 				int i = stmt.executeUpdate();
 				if (i > 0) {
 					status.setStatusCode(0);
-					System.out.println("Invoice Details Saved !");
-					isItemsSaved = saveBillItemDetails(returnDetails.getItemDetails(), conn);
-					isStockUpdated = updateProductStock(returnDetails.getItemDetails(), conn);
-					isStockLedgerUpdated = addProductStockLedger(
-							getProductListForStockLedger(returnDetails.getItemDetails(), "SALES_RETURN"),
+					System.out.println("Sales Return Details Saved !");
+					isItemsSaved = saveReturnItemDetails(returnDetails.getItemDetails(), conn);
+					isStockUpdated = productService.updateProductStock(returnDetails.getItemDetails(),
+							AppConstants.STOCK_IN, conn);
+					isStockLedgerUpdated = productService.addProductStockLedger(
+							productService.getProductListForStockLedger(returnDetails.getItemDetails(), "SALES_RETURN"),
 							AppConstants.STOCK_IN, AppConstants.SALES_RETURN, conn);
 				}
 
 				if (!isStockUpdated || !isItemsSaved || !isStockLedgerUpdated) {
 					status.setStatusCode(-1);
 					// If any step fails rollback Transaction
-					System.out.println("Save Invoice Transaction Rollbacked !");
+					System.out.println("Save Return Transaction Rollbacked !");
 					conn.rollback();
 				} else {
 					// Commit Transaction
-					System.out.println("Save Invoice Transaction Committed !");
+					System.out.println("Save Return Transaction Committed !");
 					conn.commit();
 				}
 			}
@@ -145,75 +146,47 @@ public class SalesReturnService {
 		return status;
 	}
 
-	// Update Item Stock
-	private StatusDTO updateProductStock(List<ItemDetails> itemList) {
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		StatusDTO status = new StatusDTO();
-		try {
-			if (!itemList.isEmpty()) {
-				conn = dbUtils.getConnection();
-				conn.setAutoCommit(false);
-				stmt = conn.prepareStatement(UPDATE_PRODUCT_STOCK);
-				for (ItemDetails item : itemList) {
-					stmt.setInt(2, item.getItemNo());
-					stmt.setDouble(1, item.getQuantity());
-					stmt.addBatch();
-				}
-				int batch[] = stmt.executeBatch();
-				conn.commit();
-				if (batch.length == itemList.size()) {
-					status.setStatusCode(0);
-					System.out.println("Sales Return Product Stock  updated");
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("Exception : ", e);
-			status.setException(e.getMessage());
-			status.setStatusCode(-1);
-		} finally {
-			DBUtils.closeConnection(stmt, conn);
-		}
-		return status;
-	}
-
 	// Save Return Item Details
-	private StatusDTO saveReturnItemDetails(List<ItemDetails> itemList) {
-		Connection conn = null;
+	private boolean saveReturnItemDetails(List<ItemDetails> itemList, Connection conn) {
 		PreparedStatement stmt = null;
-		StatusDTO status = new StatusDTO();
+		boolean flag = false;
 		try {
 			if (!itemList.isEmpty()) {
-				conn = dbUtils.getConnection();
-				conn.setAutoCommit(false);
 				stmt = conn.prepareStatement(SAVE_RETURN_ITEM_DETAILS);
 				for (ItemDetails item : itemList) {
 					stmt.setInt(1, item.getBillNumber());
 					stmt.setInt(2, item.getItemNo());
-					stmt.setDouble(3, item.getMRP());
-					stmt.setDouble(4, item.getRate());
-					stmt.setDouble(5, item.getQuantity());
-					stmt.setDouble(6, item.getAmount());
+					stmt.setString(3, item.getItemName());
+					stmt.setDouble(4, item.getMRP());
+					stmt.setDouble(5, item.getRate());
+					stmt.setDouble(6, item.getQuantity());
+					stmt.setDouble(7, item.getAmount());
+					stmt.setDouble(8, item.getPurchasePrice());
+					stmt.setDouble(9, item.getGstDetails().getRate());
+					stmt.setString(10, item.getGstDetails().getName());
+					stmt.setDouble(11, item.getGstDetails().getCgst());
+					stmt.setDouble(12, item.getGstDetails().getSgst());
+					stmt.setDouble(13, item.getGstDetails().getGstAmount());
+					stmt.setDouble(14, item.getGstDetails().getTaxableAmount());
+					stmt.setString(15, item.getGstDetails().getInclusiveFlag());
+					stmt.setDouble(16, item.getDiscountPercent());
+					stmt.setDouble(17, item.getDiscountAmount());
+					stmt.setString(18, item.getUnit());
+					stmt.setString(19, item.getHsn());
 					stmt.addBatch();
 				}
 
 				int batch[] = stmt.executeBatch();
-				conn.commit();
 				if (batch.length == itemList.size()) {
-					status.setStatusCode(0);
+					flag = true;
 					System.out.println("Sales Return Items Details saved!");
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
-			status.setException(e.getMessage());
-			status.setStatusCode(-1);
-		} finally {
-			DBUtils.closeConnection(stmt, conn);
 		}
-		return status;
+		return flag;
 	}
 
 	// Get Sales Return Details for bill Number
@@ -238,16 +211,17 @@ public class SalesReturnService {
 				returnDetails.setCustomerName(rs.getString("CUSTOMER_NAME"));
 				returnDetails.setNoOfItems(rs.getInt("NO_OF_ITEMS"));
 				returnDetails.setTotalQuantity(rs.getDouble("TOTAL_QTY"));
-				returnDetails.setTotalAmount(rs.getDouble("RETURN_TOTAL_AMOUNT"));
+				returnDetails.setTotalReturnAmount(rs.getDouble("RETURN_TOTAL_AMOUNT"));
 				returnDetails.setPaymentMode(rs.getString("PAYMENT_MODE"));
 				returnDetails.setNewInvoiceNetSalesAmt(rs.getDouble("NEW_INVOICE_NET_SALES_AMOUNT"));
 				returnDetails.setInvoiceNetSalesAmt(rs.getDouble("INVOICE_NET_SALES_AMOUNT"));
-				// returnDetails.setTax(rs.getDouble("TAX"));
 				returnDetails.setDiscount(rs.getDouble("DISCOUNT"));
-				// returnDetails.setTaxAmount(rs.getDouble("TAX_AMOUNT"));
 				returnDetails.setDiscountAmount(rs.getDouble("DISCOUNT_AMOUNT"));
 				returnDetails.setSubTotal(rs.getDouble("SUB_TOTAL"));
-				// returnDetails.setGrandTotal(rs.getDouble("GRAND_TOTAL"));
+				returnDetails.setReturnPurchaseAmt(rs.getDouble("RETURN_PURCHASE_AMT"));
+				returnDetails.setGstType(rs.getString("GST_TYPE"));
+				returnDetails.setGstAmount(rs.getDouble("GST_AMOUNT"));
+				returnDetails.setCreatedBy(rs.getString("CREATED_BY"));
 
 			}
 		} catch (Exception e) {
@@ -281,7 +255,7 @@ public class SalesReturnService {
 				returnDetails.setCustomerName(rs.getString("CUSTOMER_NAME"));
 				returnDetails.setNoOfItems(rs.getInt("NO_OF_ITEMS"));
 				returnDetails.setTotalQuantity(rs.getDouble("TOTAL_QTY"));
-				returnDetails.setTotalAmount(rs.getDouble("RETURN_TOTAL_AMOUNT"));
+				returnDetails.setTotalReturnAmount(rs.getDouble("RETURN_TOTAL_AMOUNT"));
 				returnDetails.setPaymentMode(rs.getString("PAYMENT_MODE"));
 				returnDetails.setNewInvoiceNetSalesAmt(rs.getDouble("NEW_INVOICE_NET_SALES_AMOUNT"));
 				returnDetails.setInvoiceNetSalesAmt(rs.getDouble("INVOICE_NET_SALES_AMOUNT"));
@@ -300,39 +274,6 @@ public class SalesReturnService {
 			DBUtils.closeConnection(stmt, conn);
 		}
 		return returnDetails;
-	}
-
-	// Update Bill Items details
-	private StatusDTO updateBillItemsDetails(List<ItemDetails> itemList) {
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		StatusDTO status = new StatusDTO();
-		try {
-			if (!itemList.isEmpty()) {
-				conn = dbUtils.getConnection();
-				conn.setAutoCommit(false);
-				stmt = conn.prepareStatement(UPDATE_PRODUCT_STOCK);
-				for (ItemDetails item : itemList) {
-					stmt.setInt(2, item.getItemNo());
-					stmt.setDouble(1, item.getQuantity());
-					stmt.addBatch();
-				}
-				int batch[] = stmt.executeBatch();
-				conn.commit();
-				if (batch.length == itemList.size()) {
-					status.setStatusCode(0);
-					System.out.println("Sales Return Product Stock  updated");
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("Exception : ", e);
-			status.setException(e.getMessage());
-			status.setStatusCode(-1);
-		} finally {
-			DBUtils.closeConnection(stmt, conn);
-		}
-		return status;
 	}
 
 	// Is Sales Return Available for this Bill
@@ -360,7 +301,7 @@ public class SalesReturnService {
 		return status;
 	}
 
-	// Get Item Details for Bill Number
+	// Get Returned Item Details for Return Number
 	public List<ItemDetails> getReturnedItemDetails(Integer returnNumber) {
 		List<ItemDetails> itemDetailsList = new ArrayList<ItemDetails>();
 		Connection conn = null;
@@ -369,7 +310,7 @@ public class SalesReturnService {
 
 		conn = dbUtils.getConnection();
 		try {
-			stmt = conn.prepareStatement(SELECT_ITEM_DETAILS);
+			stmt = conn.prepareStatement(GET_RETURN_ITEM_DETAILS);
 
 			stmt.setInt(1, returnNumber);
 			ResultSet rs = stmt.executeQuery();
@@ -381,12 +322,30 @@ public class SalesReturnService {
 				itemDetails.setMRP(rs.getDouble("ITEM_MRP"));
 				itemDetails.setRate(rs.getDouble("ITEM_RATE"));
 				itemDetails.setQuantity(rs.getDouble("ITEM_QTY"));
+				itemDetails.setDiscountPercent(rs.getDouble("DISC_PERCENT"));
+				itemDetails.setDiscountAmount(rs.getDouble("DISC_AMOUNT"));
+				itemDetails.setUnit(rs.getString("UNIT"));
+				itemDetails.setHsn(rs.getString("HSN"));
+				itemDetails.setBillNumber(rs.getInt("RETURN_NUMBER"));
+
+				GSTDetails gstDetails = new GSTDetails();
+
+				gstDetails.setRate(rs.getDouble("GST_RATE"));
+				gstDetails.setName(rs.getString("GST_NAME"));
+				gstDetails.setCgst(rs.getDouble("CGST"));
+				gstDetails.setSgst(rs.getDouble("SGST"));
+				gstDetails.setGstAmount(rs.getDouble("GST_AMOUNT"));
+				gstDetails.setTaxableAmount(rs.getDouble("GST_TAXABLE_AMT"));
+				gstDetails.setInclusiveFlag(rs.getString("GST_INCLUSIVE_FLAG"));
+				itemDetails.setGstDetails(gstDetails);
 
 				itemDetailsList.add(itemDetails);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
+		} finally {
+			DBUtils.closeConnection(stmt, conn);
 		}
 
 		return itemDetailsList;
@@ -434,7 +393,7 @@ public class SalesReturnService {
 				returnDetails.setCustomerName(rs.getString("CUSTOMER_NAME"));
 				returnDetails.setNoOfItems(rs.getInt("NO_OF_ITEMS"));
 				returnDetails.setTotalQuantity(rs.getDouble("TOTAL_QTY"));
-				returnDetails.setTotalAmount(rs.getDouble("RETURN_TOTAL_AMOUNT"));
+				returnDetails.setTotalReturnAmount(rs.getDouble("RETURN_TOTAL_AMOUNT"));
 				returnDetails.setPaymentMode(rs.getString("PAYMENT_MODE"));
 				returnDetails.setNewInvoiceNetSalesAmt(rs.getDouble("NEW_INVOICE_NET_SALES_AMOUNT"));
 				returnDetails.setInvoiceNetSalesAmt(rs.getDouble("INVOICE_NET_SALES_AMOUNT"));
@@ -456,17 +415,17 @@ public class SalesReturnService {
 		return returnDetailsList;
 	}
 
-	// Save Return Details
+	// Save Return
 	public StatusDTO saveReturn(ReturnDetails returnDetails) {
 		StatusDTO statusSaveReturn = new StatusDTO();
 		if (AppConstants.PENDING.equals(returnDetails.getPaymentMode())) {
-			// Save Bill Details
+			// Save Return Details
 			StatusDTO status = saveReturnDetails(returnDetails);
 			StatusDTO statusAddPendingAmt = new StatusDTO(-1);
 			if (status.getStatusCode() == 0) {
 				String narration = "Sales Return Amount based on Return No : " + returnDetails.getReturnNumber();
 				statusAddPendingAmt = customerService.addCustomerPaymentHistory(returnDetails.getCustomerMobileNo(), 0,
-						returnDetails.getTotalAmount(), AppConstants.DEBIT, narration);
+						returnDetails.getTotalReturnAmount(), AppConstants.DEBIT, narration);
 			}
 			if (status.getStatusCode() != 0 || statusAddPendingAmt.getStatusCode() != 0) {
 				statusSaveReturn.setStatusCode(-1);
@@ -482,54 +441,5 @@ public class SalesReturnService {
 		}
 		return statusSaveReturn;
 
-	}
-
-	private List<Product> getProductListForStockLedger(List<ItemDetails> itemList, String type) {
-		List<Product> productList = new ArrayList<>();
-		for (ItemDetails p : itemList) {
-			Product product = new Product();
-			product.setProductCode(p.getItemNo());
-			product.setQuantity(p.getQuantity());
-			if ("SALES_RETURN".equals(type)) {
-				product.setDescription("Sales Return based on Return No.: " + p.getBillNumber());
-			}
-			productList.add(product);
-		}
-		return productList;
-	}
-
-	// Add Product Stock Ledger
-	public boolean addProductStockLedger(List<Product> productList, String stockInOutFlag, String transactionType,
-			Connection conn) {
-		PreparedStatement stmt = null;
-		boolean status = false;
-		try {
-			if (stockInOutFlag.equals(AppConstants.STOCK_IN)) {
-				stmt = conn.prepareStatement(INS_PRODUCT_STOCK_IN_LEDGER);
-			} else {
-				stmt = conn.prepareStatement(INS_PRODUCT_STOCK_OUT_LEDGER);
-			}
-
-			for (Product product : productList) {
-				stmt.setInt(1, product.getProductCode());
-				stmt.setString(2, appUtils.getCurrentTimestamp());
-				stmt.setDouble(3, product.getQuantity());
-				stmt.setString(4, product.getDescription());
-				stmt.setString(5, transactionType);
-				stmt.addBatch();
-			}
-
-			int batch[] = stmt.executeBatch();
-			if (batch.length == productList.size()) {
-				status = true;
-				System.out.println("Product Stock Ledger Added");
-			}
-
-		} catch (Exception e) {
-			status = false;
-			e.printStackTrace();
-			logger.info("Exception : ", e);
-		}
-		return status;
 	}
 }

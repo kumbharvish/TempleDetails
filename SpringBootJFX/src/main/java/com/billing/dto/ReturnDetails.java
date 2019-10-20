@@ -24,7 +24,7 @@ public class ReturnDetails {
 
 	private double totalQuantity;
 
-	private double totalAmount;
+	private double totalReturnAmount;
 
 	private double invoiceNetSalesAmt;
 
@@ -150,12 +150,12 @@ public class ReturnDetails {
 		this.totalQuantity = totalQuantity;
 	}
 
-	public double getTotalAmount() {
-		return totalAmount;
+	public double getTotalReturnAmount() {
+		return totalReturnAmount;
 	}
 
-	public void setTotalAmount(double totalAmount) {
-		this.totalAmount = totalAmount;
+	public void setTotalReturnAmount(double totalReturnAmount) {
+		this.totalReturnAmount = totalReturnAmount;
 	}
 
 	public String getCustomerName() {

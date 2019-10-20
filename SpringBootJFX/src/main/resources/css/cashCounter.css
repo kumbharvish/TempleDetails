@@ -2,11 +2,11 @@
 
 .stackPaneHeader {
 	-fx-border-width: 1px;
-	-fx-background-color: darksalmon;
+	-fx-background-color: bisque;
 }
 
 .gridHeaderTxt {
-	-fx-text-fill: white;
+	-fx-text-fill: maroon;
 	-fx-font-weight: bold;
 	-fx-wrap-text: true;
 	-fx-font-size: 14px;

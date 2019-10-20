@@ -252,7 +252,7 @@
 												<RowConstraints />
 											</rowConstraints>
 											<children>
-												<Label styleClass="nodeLabel" text="Return Total Amount :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+												<Label styleClass="nodeLabel" text="Total Return Amount :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
 												<Label styleClass="nodeLabel" GridPane.halignment="RIGHT" />
 												<TextField fx:id="txtReturnTotalAmount" alignment="CENTER_RIGHT" editable="false" styleClass="netSalesAmountStyle" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 												<Separator prefWidth="200.0" GridPane.columnSpan="2" />

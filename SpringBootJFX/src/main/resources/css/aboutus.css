@@ -22,12 +22,12 @@
 
 #txtTitle{
     -fx-font-size: 2.5em;
-    -fx-fill: linear-gradient(to right, darkorange, orange);
+    -fx-fill: maroon;
     -fx-font-weight: bold;
 }
 
 #txtVersion{
-    -fx-font-size: 1.3em;
+    -fx-font-size: 1em;
     -fx-font-weight: bold;
     -fx-fill: #660033;
 }
@@ -35,19 +35,4 @@
     -fx-font-size: 1em;
     -fx-font-weight: bold;
     -fx-fill: #660033;
-}
-
-.hyperlink{
-    -fx-font-weight: bold;
-    -fx-text-fill: navy;
-}
-
-.hyperlink:visited{
-    -fx-text-fill: blueviolet;
-    -fx-underline: false;
-    -fx-border-width: 0;
-}
-
-.hyperlink:visited:hover{
-    -fx-underline: true;
 }

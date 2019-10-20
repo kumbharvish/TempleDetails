@@ -159,8 +159,8 @@ public class PDFReportMapping {
 			map.put("CustName", bill.getCustomerName());
 			map.put("Qty", appUtils.getDecimalFormat(bill.getTotalQuantity()));
 			map.put("NoOfItems", bill.getNoOfItems());
-			map.put("ReturnTotalAmoount", appUtils.getDecimalFormat(bill.getTotalAmount()));
-			map.put("PaymentMode", bill.getReturnpaymentMode());
+			map.put("ReturnTotalAmoount", appUtils.getDecimalFormat(bill.getTotalReturnAmount()));
+			map.put("PaymentMode", bill.getPaymentMode());
 			map.put("ReturnDate", appUtils.getFormattedDate(bill.getTimestamp()));
 			map.put("TotalPendingAmt", appUtils.getDecimalFormat(totalPendingAmt));
 			map.put("TotalCashAmt", appUtils.getDecimalFormat(totalCashAmt));

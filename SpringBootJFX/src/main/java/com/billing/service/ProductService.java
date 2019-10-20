@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.billing.constants.AppConstants;
+import com.billing.dto.ItemDetails;
 import com.billing.dto.Product;
 import com.billing.dto.StatusDTO;
 import com.billing.utils.AppUtils;
@@ -57,6 +59,16 @@ public class ProductService {
 
 	private static final String LOW_STOCK_PRODUCTS = "SELECT  PD.*,PCD.CATEGORY_NAME "
 			+ "FROM PRODUCT_DETAILS PD,PRODUCT_CATEGORY_DETAILS PCD WHERE PD.CATEGORY_ID = PCD.CATEGORY_ID AND QUANTITY<=?;";
+
+	private static final String INS_PRODUCT_STOCK_IN_LEDGER = "INSERT INTO PRODUCT_STOCK_LEDGER (PRODUCT_CODE,TIMESTAMP,STOCK_IN,NARRATION,TRANSACTION_TYPE)"
+			+ " VALUES(?,?,?,?,?)";
+
+	private static final String INS_PRODUCT_STOCK_OUT_LEDGER = "INSERT INTO PRODUCT_STOCK_LEDGER (PRODUCT_CODE,TIMESTAMP,STOCK_OUT,NARRATION,TRANSACTION_TYPE)"
+			+ " VALUES(?,?,?,?,?)";
+
+	private static final String ADD_PRODUCT_QUANTITY = "UPDATE PRODUCT_DETAILS SET QUANTITY=QUANTITY+? WHERE PRODUCT_ID=?";
+
+	private static final String DECREASE_PRODUCT_QUANTITY = "UPDATE PRODUCT_DETAILS SET QUANTITY=QUANTITY-? WHERE PRODUCT_ID=?";
 
 	public List<Product> getAllProducts() {
 		Connection conn = null;
@@ -452,4 +464,86 @@ public class ProductService {
 		}
 		return status;
 	}
+
+	// Add Product Stock Ledger
+	public boolean addProductStockLedger(List<Product> productList, String stockInOutFlag, String transactionType,
+			Connection conn) {
+		PreparedStatement stmt = null;
+		boolean status = false;
+		try {
+			if (stockInOutFlag.equals(AppConstants.STOCK_IN)) {
+				stmt = conn.prepareStatement(INS_PRODUCT_STOCK_IN_LEDGER);
+			} else {
+				stmt = conn.prepareStatement(INS_PRODUCT_STOCK_OUT_LEDGER);
+			}
+
+			for (Product product : productList) {
+				stmt.setInt(1, product.getProductCode());
+				stmt.setString(2, appUtils.getCurrentTimestamp());
+				stmt.setDouble(3, product.getQuantity());
+				stmt.setString(4, product.getDescription());
+				stmt.setString(5, transactionType);
+				stmt.addBatch();
+			}
+
+			int batch[] = stmt.executeBatch();
+			if (batch.length == productList.size()) {
+				status = true;
+				System.out.println("Product Stock Ledger Added");
+			}
+
+		} catch (Exception e) {
+			status = false;
+			e.printStackTrace();
+			logger.info("Exception : ", e);
+		}
+		return status;
+	}
+
+	// Update Product Stock
+	public boolean updateProductStock(List<ItemDetails> itemList, String stockInOutFlag, Connection conn) {
+		PreparedStatement stmt = null;
+		boolean flag = false;
+
+		try {
+			if (stockInOutFlag.equals(AppConstants.STOCK_IN)) {
+				stmt = conn.prepareStatement(ADD_PRODUCT_QUANTITY);
+			} else {
+				stmt = conn.prepareStatement(DECREASE_PRODUCT_QUANTITY);
+			}
+			for (ItemDetails item : itemList) {
+				stmt.setInt(2, item.getItemNo());
+				stmt.setDouble(1, item.getQuantity());
+				stmt.addBatch();
+			}
+			int batch[] = stmt.executeBatch();
+			if (batch.length == itemList.size()) {
+				flag = true;
+				System.out.println("Product Stock  updated");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception : ", e);
+		}
+		return flag;
+	}
+
+	public List<Product> getProductListForStockLedger(List<ItemDetails> itemList, String type) {
+		List<Product> productList = new ArrayList<>();
+		for (ItemDetails p : itemList) {
+			Product product = new Product();
+			product.setProductCode(p.getItemNo());
+			product.setQuantity(p.getQuantity());
+			if ("SAVE_INVOICE".equals(type)) {
+				product.setDescription("Sales based on Invoice No.: " + p.getBillNumber());
+			} else if ("DELETE_INVOICE".equals(type)) {
+				product.setDescription("Delete Invoice based on Invoice No.: " + p.getBillNumber());
+			} else if ("SALES_RETURN".equals(type)) {
+				product.setDescription("Sales Return based on Return No.: " + p.getBillNumber());
+			}
+			productList.add(product);
+		}
+		return productList;
+	}
+
 }

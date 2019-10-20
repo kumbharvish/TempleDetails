@@ -36,9 +36,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 @Controller
-public class ViewInvoiceController extends AppContext {
+public class ViewSalesReturnController extends AppContext {
 
-	BillDetails bill;
+	ReturnDetails returnDetails;
 
 	private static final Logger logger = LoggerFactory.getLogger(CreateInvoiceController.class);
 
@@ -46,21 +46,22 @@ public class ViewInvoiceController extends AppContext {
 
 	ObservableList<Product> productList;
 
-	private ReturnDetails returnDetails;
-
 	@Autowired
 	AlertHelper alertHelper;
 
 	@Autowired
 	AppUtils appUtils;
 
-	@Autowired
-	InvoiceService invoiceService;
-
 	ObservableList<ItemDetails> productTableData;
 
 	@Autowired
 	SalesReturnService salesReturnService;
+
+	@FXML
+	private TextField txtReturnNo;
+
+	@FXML
+	private TextField txtReturnDate;
 
 	@FXML
 	private TextField txtInvoiceNo;
@@ -69,10 +70,10 @@ public class ViewInvoiceController extends AppContext {
 	private TextField txtInvoiceDate;
 
 	@FXML
-	private TextField txtCustName;
+	private TextField txtComments;
 
 	@FXML
-	private TextField txtCustMobile;
+	private TextField txtCustomer;
 
 	@FXML
 	private TableView<ItemDetails> tableView;
@@ -135,10 +136,7 @@ public class ViewInvoiceController extends AppContext {
 	private TextField txtGstType;
 
 	@FXML
-	private TextField txtNetSalesAmount;
-
-	@FXML
-	private Button btnViewSalesReturn;
+	private TextField txtTotalReturnAmount;
 
 	public void initialize() {
 
@@ -185,79 +183,39 @@ public class ViewInvoiceController extends AppContext {
 	}
 
 	public void loadData() {
-		currentStage = (Stage) txtCustMobile.getScene().getWindow();
+		currentStage = (Stage) txtCustomer.getScene().getWindow();
 
-		List<ItemDetails> itemList = invoiceService.getItemDetails(bill.getBillNumber());
-		bill.setItemDetails(itemList);
+		List<ItemDetails> itemList = salesReturnService.getReturnedItemDetails(returnDetails.getReturnNumber());
+		returnDetails.setItemDetails(itemList);
 
-		for (ItemDetails item : bill.getItemDetails()) {
+		for (ItemDetails item : returnDetails.getItemDetails()) {
 			Product p = new Product();
 			p.setGstDetails(item.getGstDetails());
 			productTableData.add(item);
 			productList.add(p);
 		}
-
-		txtInvoiceNo.setText(String.valueOf(bill.getBillNumber()));
-		txtInvoiceDate.setText(appUtils.getFormattedDateWithTime(bill.getTimestamp()));
-		txtCustMobile.setText(String.valueOf(bill.getCustomerMobileNo()));
-		txtCustName.setText(bill.getCustomerName());
-		txtNoOfItems.setText(String.valueOf(bill.getNoOfItems()));
-		txtTotalQty.setText(String.valueOf(bill.getTotalQuantity()));
-		txtSubTotal.setText(IndianCurrencyFormatting.applyFormatting(bill.getTotalAmount()));
-		txtDiscountAmt.setText(IndianCurrencyFormatting.applyFormatting(bill.getDiscountAmt()));
-		txtDiscountPercent.setText(String.valueOf(bill.getDiscount()));
-		txtPaymentMode.setText(bill.getPaymentMode());
-		txtGstAmount.setText(IndianCurrencyFormatting.applyFormatting(bill.getGstAmount()));
-		txtGstType.setText(bill.getGstType());
-		txtNetSalesAmount.setText(IndianCurrencyFormatting.applyFormattingWithCurrency(bill.getNetSalesAmt()));
-
-		returnDetails = salesReturnService.getReturnDetails(bill.getBillNumber());
-		if (returnDetails == null) {
-			btnViewSalesReturn.setVisible(false);
-		}
+		
+		txtComments.setText(returnDetails.getComments());
+		txtInvoiceNo.setText(String.valueOf(returnDetails.getInvoiceNumber()));
+		txtInvoiceDate.setText(appUtils.getFormattedDateWithTime(returnDetails.getInvoiceDate()));
+		txtReturnNo.setText(String.valueOf(returnDetails.getReturnNumber()));
+		txtReturnDate.setText(appUtils.getFormattedDateWithTime(returnDetails.getTimestamp()));
+		txtCustomer.setText(String.valueOf(returnDetails.getCustomerMobileNo())+" : "+String.valueOf(returnDetails.getCustomerName()));
+		txtNoOfItems.setText(String.valueOf(returnDetails.getNoOfItems()));
+		txtTotalQty.setText(String.valueOf(returnDetails.getTotalQuantity()));
+		txtSubTotal.setText(IndianCurrencyFormatting.applyFormatting(returnDetails.getSubTotal()));
+		txtDiscountAmt.setText(IndianCurrencyFormatting.applyFormatting(returnDetails.getDiscountAmount()));
+		txtDiscountPercent.setText(String.valueOf(returnDetails.getDiscount()));
+		txtPaymentMode.setText(returnDetails.getPaymentMode());
+		txtGstAmount.setText(IndianCurrencyFormatting.applyFormatting(returnDetails.getGstAmount()));
+		txtGstType.setText(returnDetails.getGstType());
+		txtTotalReturnAmount
+				.setText(IndianCurrencyFormatting.applyFormattingWithCurrency(returnDetails.getTotalReturnAmount()));
 	}
 
 	@FXML
 	void onViewGSTDetailsAction(ActionEvent event) {
 		getGSTDetailsPopUp();
-	}
-
-	@FXML
-	void onViewSalesReturnAction(ActionEvent event) {
-		getViewSalesReturnPopUp(returnDetails);
-	}
-
-	private void getViewSalesReturnPopUp(ReturnDetails retunDtls) {
-		FXMLLoader fxmlLoader = new FXMLLoader();
-		fxmlLoader.setControllerFactory(springContext::getBean);
-		fxmlLoader.setLocation(this.getClass().getResource("/com/billing/gui/ViewSalesReturn.fxml"));
-
-		Parent rootPane = null;
-		try {
-			rootPane = fxmlLoader.load();
-		} catch (IOException e) {
-			e.printStackTrace();
-			logger.error("getViewSalesReturnPopUp Error in loading the view file :", e);
-			alertHelper.beep();
-
-			alertHelper.showErrorAlert(currentStage, "Error Occurred", "Error in creating user interface",
-					"An error occurred in creating user interface " + "for the selected command");
-
-			return;
-		}
-
-		final Scene scene = new Scene(rootPane);
-		final ViewSalesReturnController controller = (ViewSalesReturnController) fxmlLoader.getController();
-		controller.returnDetails = retunDtls;
-		final Stage stage = new Stage();
-		stage.initModality(Modality.APPLICATION_MODAL);
-		stage.initOwner(currentStage);
-		stage.setUserData(controller);
-		stage.getIcons().add(new Image("/images/shop32X32.png"));
-		stage.setScene(scene);
-		stage.setTitle("View Return");
-		controller.loadData();
-		stage.showAndWait();
 	}
 
 	private void getGSTDetailsPopUp() {

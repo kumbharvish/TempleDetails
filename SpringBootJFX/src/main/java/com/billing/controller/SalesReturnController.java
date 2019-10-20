@@ -309,7 +309,7 @@ public class SalesReturnController extends AppContext implements TabContent {
 			@Override
 			public void onChanged(ListChangeListener.Change<? extends Product> c) {
 				isDirty.set(true);
-				updateInvoiceAmount();
+				updateReturnAmount();
 				lblNoItemError.setText("");
 				if (tableLoaded) {
 					bill.setItemsEdited(true);
@@ -339,7 +339,7 @@ public class SalesReturnController extends AppContext implements TabContent {
 	}
 
 	protected void addRecordToTable(Product product) {
-		if (validateInvoiceItem(product)) {
+		if (validateReturnItem(product)) {
 			// updateDiscountAllPerToProduct(product);
 			product.setTableDispAmount(Double.valueOf(txtAmount.getText()));
 			product.setTableDispRate(Double.valueOf(txtRate.getText()));
@@ -477,7 +477,7 @@ public class SalesReturnController extends AppContext implements TabContent {
 			p.setSellPrice(item.getMRP());
 			p.setTableDispRate(item.getRate());
 			p.setTableDispQuantity(item.getQuantity());
-			p.setPurcasePrice(item.getPurchasePrice());
+			p.setPurcasePrice(productMap.get(item.getItemName()).getPurcasePrice());
 			p.setMeasure(item.getUnit());
 			p.setDiscount(item.getDiscountPercent());
 			p.setDiscountAmount(item.getDiscountAmount());
@@ -536,13 +536,14 @@ public class SalesReturnController extends AppContext implements TabContent {
 		ReturnDetails returnDetails = new ReturnDetails();
 		returnDetails.setReturnNumber(Integer.valueOf(txtReturnNumber.getText()));
 		returnDetails.setInvoiceNumber(bill.getBillNumber());
+		returnDetails.setInvoiceDate(bill.getTimestamp());
 		returnDetails.setCustomerMobileNo(bill.getCustomerMobileNo());
 		returnDetails.setCustomerName(bill.getCustomerName());
 		returnDetails.setComments(txtComments.getText());
 		// Prepare Item List
 		returnDetails.setItemDetails(prepareItemList());
-		returnDetails.setTotalAmount(
-				Double.valueOf(IndianCurrencyFormatting.removeFormatting(txtReturnTotalAmount.getText())));
+		returnDetails.setTotalReturnAmount(
+				Double.valueOf(IndianCurrencyFormatting.removeFormattingWithCurrency(txtReturnTotalAmount.getText())));
 		returnDetails.setNoOfItems(Integer.valueOf(txtNoOfItems.getText()));
 		returnDetails.setTotalQuantity(Double.valueOf(txtTotalQty.getText()));
 		returnDetails.setDiscount(Double.valueOf(txtDiscountPercent.getText()));
@@ -552,8 +553,7 @@ public class SalesReturnController extends AppContext implements TabContent {
 		returnDetails.setSubTotal(Double.valueOf(IndianCurrencyFormatting.removeFormatting(txtSubTotal.getText())));
 		returnDetails.setInvoiceNetSalesAmt(bill.getNetSalesAmt());
 		// New Invoice Amount
-		double newInvoiceNetSalesAmt = bill.getNetSalesAmt()
-				- Double.valueOf(IndianCurrencyFormatting.removeFormattingWithCurrency(txtReturnTotalAmount.getText()));
+		double newInvoiceNetSalesAmt = bill.getNetSalesAmt() - returnDetails.getTotalReturnAmount();
 		returnDetails.setNewInvoiceNetSalesAmt(Double.valueOf(newInvoiceNetSalesAmt));
 
 		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd");
@@ -610,7 +610,7 @@ public class SalesReturnController extends AppContext implements TabContent {
 	@Override
 	public boolean validateInput() {
 		boolean valid = true;
-		clearInvoiceErrorFields();
+		clearReturnErrorFields();
 
 		final LocalDate date = dpReturnDate.getValue();
 		if (date == null) {
@@ -653,12 +653,12 @@ public class SalesReturnController extends AppContext implements TabContent {
 		txtUnit.clear();
 	}
 
-	private void clearInvoiceErrorFields() {
+	private void clearReturnErrorFields() {
 		lblReturnDateErrMsg.setText("");
 		lblNoItemError.setText("");
 	}
 
-	private boolean validateInvoiceItem(Product product) {
+	private boolean validateReturnItem(Product product) {
 		clearItemErrorFields();
 		boolean valid = true;
 		String quantity = txtQuantity.getText().trim();
@@ -801,13 +801,13 @@ public class SalesReturnController extends AppContext implements TabContent {
 		dialog.showAndWait();
 	}
 
-	private void updateInvoiceAmount() {
+	private void updateReturnAmount() {
 		double subTotal = 0.0;
 		double quantity = 0.0;
 		int noOfItems = 0;
 		double gstAmount = 0.0;
 		double discountAmount = 0.0;
-		double netSalesAmount = 0.0;
+		double totalReturnAmount = 0.0;
 		noOfItems = productTableData.size();
 		for (Product product : productTableData) {
 			GSTDetails gst = product.getGstDetails();
@@ -820,14 +820,14 @@ public class SalesReturnController extends AppContext implements TabContent {
 			subTotal = subTotal - gstAmount;
 		}
 
-		netSalesAmount = (subTotal - discountAmount) + gstAmount;
+		totalReturnAmount = (subTotal - discountAmount) + gstAmount;
 		txtNoOfItems.setText(String.valueOf(noOfItems));
 		txtTotalQty.setText(appUtils.getDecimalFormat(quantity));
 		txtSubTotal.setText(IndianCurrencyFormatting.applyFormatting(subTotal));
 		txtDiscountAmt.setText(IndianCurrencyFormatting.applyFormatting(discountAmount));
 		txtGstAmount.setText(IndianCurrencyFormatting.applyFormatting(gstAmount));
 		txtReturnTotalAmount.setText(
-				IndianCurrencyFormatting.applyFormattingWithCurrency(appUtils.getDecimalRoundUp(netSalesAmount)));
+				IndianCurrencyFormatting.applyFormattingWithCurrency(appUtils.getDecimalRoundUp(totalReturnAmount)));
 	}
 
 	private void getGSTDetailsPopUp() {

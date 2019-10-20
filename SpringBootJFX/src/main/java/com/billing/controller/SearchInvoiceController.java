@@ -219,13 +219,13 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 
 	@FXML
 	void onDelete(ActionEvent event) {
+		BillDetails bill = tableView.getSelectionModel().getSelectedItem();
+		if (!validateInputDelete(bill)) {
+			alertHelper.beep();
+			return;
+		}
 		Alert alert = alertHelper.showConfirmAlertWithYesNo(currentStage, null, "Are you sure to delete invoice ?");
 		if (alert.getResult() == ButtonType.YES) {
-			BillDetails bill = tableView.getSelectionModel().getSelectedItem();
-			if (!validateInputDelete(bill)) {
-				alertHelper.beep();
-				return;
-			}
 			List<ItemDetails> itemList = invoiceService.getItemDetails(bill.getBillNumber());
 			bill.setItemDetails(itemList);
 			StatusDTO status = invoiceService.deleteInvoice(bill);

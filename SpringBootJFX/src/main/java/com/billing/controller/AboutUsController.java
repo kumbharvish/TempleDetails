@@ -21,7 +21,7 @@ public class AboutUsController implements TabContent {
 
     private TabPane tabPane;
     
-    private double version = 1.0;
+    private String version = "(1.0.0)";
     
     private static final String DEVELOPED_BY = "Vishal Kumbhar / Adhir Shishupal";
     
@@ -29,7 +29,7 @@ public class AboutUsController implements TabContent {
     
     private static final String EMAIL_ID = "Kumbharvish@gmail.com";
     
-    private static final String MY_STORE ="My Store Billing";
+    private static final String MY_STORE ="My Store";
     
     private static final String COPYRIGHT ="Copyright "+"\u00a9"+" 2017";
     

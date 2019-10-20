@@ -151,12 +151,12 @@
 }
 
 .table-view .column-header {
-	-fx-background-color: darksalmon;
+	-fx-background-color: bisque;
 }
 
 .table-view .column-header .label {
-	-fx-background-color: darksalmon;
-	-fx-text-fill: white;
+	-fx-background-color: bisque;
+    -fx-text-fill: maroon;
 }
 
 .list-view .list-cell:odd {
