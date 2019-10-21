@@ -22,6 +22,7 @@ import com.billing.dto.PrintTemplate;
 import com.billing.dto.ProductProfitReport;
 import com.billing.dto.ReportMetadata;
 import com.billing.dto.SalesReport;
+import com.billing.dto.SalesReturnReport;
 import com.billing.dto.StockSummaryReport;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
@@ -184,6 +185,13 @@ public class PrinterService {
 			reportMetadata.setReportName(AppConstants.LOW_STOCK_SUMMARY_REPORT_NAME + todaysDate + ".pdf");
 			reportMetadata.setDataSourceMap(pdfReportMapping.getDatasourceForLowStockSummaryReport(report));
 		}
+		// Sales Return Report
+		if (reportData instanceof SalesReturnReport) {
+			SalesReturnReport report = (SalesReturnReport) reportData;
+			reportMetadata.setJasperName(AppConstants.SALES_RETURN_REPORT_JASPER);
+			reportMetadata.setReportName(AppConstants.SALES_RETURN_REPORT_NAME + todaysDate + ".pdf");
+			reportMetadata.setDataSourceMap(pdfReportMapping.getDatasourceForSalesReturnReport(report));
+		}
 		return reportMetadata;
 	}
 
@@ -221,6 +229,12 @@ public class PrinterService {
 			LowStockSummaryReport report = (LowStockSummaryReport) reportData;
 			reportMetadata.setReportName(AppConstants.LOW_STOCK_SUMMARY_REPORT_NAME + todaysDate + ".xls");
 			reportMetadata.setWorkbook(excelReportService.getLowStockSummaryReportWorkBook(report, workbook));
+		}
+		// Sales Return Report
+		if (reportData instanceof SalesReturnReport) {
+			SalesReturnReport report = (SalesReturnReport) reportData;
+			reportMetadata.setReportName(AppConstants.SALES_RETURN_REPORT_NAME + todaysDate + ".xls");
+			reportMetadata.setWorkbook(excelReportService.getSalesReturnReportWorkBook(report, workbook));
 		}
 		return reportMetadata;
 	}

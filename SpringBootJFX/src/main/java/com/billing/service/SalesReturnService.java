@@ -56,6 +56,8 @@ public class SalesReturnService {
 
 	private static final String NEW_RETURN_NUMBER = "SELECT (MAX(RETURN_NUMBER)+1) AS RETURN_NUMBER FROM SALES_RETURN_DETAILS ";
 
+	private static final String GET_RETURN_DETAILS_WITHIN_DATE_RANGE = "SELECT SRD.*,CD.CUST_NAME AS CUSTOMER_NAME FROM SALES_RETURN_DETAILS SRD,CUSTOMER_DETAILS CD WHERE DATE(SRD.RETURN_DATE) BETWEEN ? AND ?  AND SRD.CUST_MOB_NO=CD.CUST_MOB_NO ORDER BY SRD.RETURN_DATE DESC";
+
 	public Integer getNewReturnNumber() {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -351,35 +353,17 @@ public class SalesReturnService {
 		return itemDetailsList;
 	}
 
-	// Get Bill Details
-	public List<ReturnDetails> getReturnDetails(String fromDate, String toDate, Long customerMobile) {
+	// Get Return Details
+	public List<ReturnDetails> getReturnDetails(String fromDate, String toDate) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ReturnDetails returnDetails = null;
 		List<ReturnDetails> returnDetailsList = new ArrayList<ReturnDetails>();
-		StringBuilder SELECT_BILL_DETAILS = new StringBuilder(
-				"SELECT SRD.*,CD.CUST_NAME AS CUSTOMER_NAME FROM SALES_RETURN_DETAILS SRD,CUSTOMER_DETAILS CD WHERE DATE(SRD.RETURN_DATE) BETWEEN ? AND ?  AND SRD.CUST_MOB_NO=CD.CUST_MOB_NO ");
-
-		String ORDER_BY_CLAUSE = "ORDER BY SRD.RETURN_DATE ASC";
-		String CUSTOMER_MOB_QEUERY = " AND SRD.CUST_MOB_NO LIKE ? ";
 		try {
-			if (fromDate == null) {
-				fromDate = "1947-01-01";
-			}
-			if (toDate == null) {
-				toDate = appUtils.getCurrentTimestamp();
-			}
-			if (customerMobile != null) {
-				SELECT_BILL_DETAILS.append(CUSTOMER_MOB_QEUERY);
-			}
-			SELECT_BILL_DETAILS.append(ORDER_BY_CLAUSE);
 			conn = dbUtils.getConnection();
-			stmt = conn.prepareStatement(SELECT_BILL_DETAILS.toString());
+			stmt = conn.prepareStatement(GET_RETURN_DETAILS_WITHIN_DATE_RANGE);
 			stmt.setString(1, fromDate);
 			stmt.setString(2, toDate);
-			if (customerMobile != null) {
-				stmt.setString(3, "%" + customerMobile + "%");
-			}
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
@@ -397,12 +381,13 @@ public class SalesReturnService {
 				returnDetails.setPaymentMode(rs.getString("PAYMENT_MODE"));
 				returnDetails.setNewInvoiceNetSalesAmt(rs.getDouble("NEW_INVOICE_NET_SALES_AMOUNT"));
 				returnDetails.setInvoiceNetSalesAmt(rs.getDouble("INVOICE_NET_SALES_AMOUNT"));
-				// returnDetails.setTax(rs.getDouble("TAX"));
 				returnDetails.setDiscount(rs.getDouble("DISCOUNT"));
-				// returnDetails.setTaxAmount(rs.getDouble("TAX_AMOUNT"));
 				returnDetails.setDiscountAmount(rs.getDouble("DISCOUNT_AMOUNT"));
 				returnDetails.setSubTotal(rs.getDouble("SUB_TOTAL"));
-				// returnDetails.setGrandTotal(rs.getDouble("GRAND_TOTAL"));
+				returnDetails.setReturnPurchaseAmt(rs.getDouble("RETURN_PURCHASE_AMT"));
+				returnDetails.setGstType(rs.getString("GST_TYPE"));
+				returnDetails.setGstAmount(rs.getDouble("GST_AMOUNT"));
+				returnDetails.setCreatedBy(rs.getString("CREATED_BY"));
 
 				returnDetailsList.add(returnDetails);
 			}

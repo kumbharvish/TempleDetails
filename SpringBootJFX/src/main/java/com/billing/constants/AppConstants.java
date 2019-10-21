@@ -110,6 +110,8 @@ public class AppConstants {
 	public static final String CUSTOMERS_REPORT_NAME = "Customers_Report";
 	
 	public static final String LOW_STOCK_SUMMARY_REPORT_NAME = "Low_Stock_Summary_Report";
+	
+	public static final String SALES_RETURN_REPORT_NAME = "Sales_Return_Report";
 
 	// Jasper File Names
 	public static final String PRODUCT_PROFIT_REPORT_JASPER = "Product_Profit_Report.jasper";

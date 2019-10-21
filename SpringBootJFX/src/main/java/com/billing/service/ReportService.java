@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.billing.constants.AppConstants;
-import com.billing.dto.CashCounter;
+import com.billing.dto.CashReport;
 import com.billing.dto.Customer;
 import com.billing.dto.MonthlyReport;
 import com.billing.dto.ProfitLossData;
@@ -82,10 +82,10 @@ public class ReportService {
 	private static final String GET_TOTAL_EXP = "SELECT ED.CATEGORY,ED.AMOUNT FROM EXPENSE_DETAILS ED,APP_EXPENSE_TYPES ET WHERE DATE(DATE) BETWEEN ? and ? and ED.CATEGORY=ET.NAME AND ET.TYPE !='SAVINGS';";
 
 	// Get Total Amount of Sales except pending bills
-	public List<CashCounter> getCashCounterDetails(String fromDate, String toDate) {
+	public List<CashReport> getCashCounterDetails(String fromDate, String toDate) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		List<CashCounter> cashCounterList = new ArrayList<CashCounter>();
+		List<CashReport> cashCounterList = new ArrayList<CashReport>();
 		Double closingBalance = 0.00;
 
 		try {
@@ -95,7 +95,7 @@ public class ReportService {
 			stmt.setString(1, fromDate);
 			ResultSet rsOC = stmt.executeQuery();
 			if (rsOC.next()) {
-				CashCounter cashTotalSales = new CashCounter();
+				CashReport cashTotalSales = new CashReport();
 				cashTotalSales.setDescription("OPENING_CASH");
 				cashTotalSales.setCreditAmount(rsOC.getDouble("AMOUNT"));
 				closingBalance = rsOC.getDouble("AMOUNT");
@@ -108,7 +108,7 @@ public class ReportService {
 			stmt.setString(2, toDate);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
-				CashCounter cashTotalSales = new CashCounter();
+				CashReport cashTotalSales = new CashReport();
 				cashTotalSales.setDescription("TOTAL_SALES_AMOUNT");
 				cashTotalSales.setCreditAmount(rs.getDouble("TOTAL_SALES_CASH_AMOUNT"));
 				closingBalance += rs.getDouble("TOTAL_SALES_CASH_AMOUNT");
@@ -121,7 +121,7 @@ public class ReportService {
 			stmt.setString(2, toDate);
 			ResultSet rs2 = stmt.executeQuery();
 			if (rs2.next()) {
-				CashCounter cashTotalSalesReturn = new CashCounter();
+				CashReport cashTotalSalesReturn = new CashReport();
 				cashTotalSalesReturn.setDescription("TOTAL_SALES_RETURN_AMOUNT");
 				cashTotalSalesReturn.setDebitAmount(rs2.getDouble("TOTAL_SALES_RETURN_AMOUNT"));
 				cashTotalSalesReturn.setClosingBalance(closingBalance - rs2.getDouble("TOTAL_SALES_RETURN_AMOUNT"));
@@ -134,7 +134,7 @@ public class ReportService {
 			stmt.setString(2, toDate);
 			ResultSet rs3 = stmt.executeQuery();
 			if (rs3.next()) {
-				CashCounter cashTotalExpense = new CashCounter();
+				CashReport cashTotalExpense = new CashReport();
 				cashTotalExpense.setDescription("TOTAL_EXPENSE_AMOUNT");
 				cashTotalExpense.setDebitAmount(rs3.getDouble("TOTAL_EXPENSE_AMOUNT"));
 				cashTotalExpense.setClosingBalance(closingBalance - rs3.getDouble("TOTAL_EXPENSE_AMOUNT"));
@@ -147,7 +147,7 @@ public class ReportService {
 			stmt.setString(2, toDate);
 			ResultSet rs4 = stmt.executeQuery();
 			if (rs4.next()) {
-				CashCounter cashTotalCustSettlement = new CashCounter();
+				CashReport cashTotalCustSettlement = new CashReport();
 				cashTotalCustSettlement.setDescription("TOTAL_CUST_SETTLEMENT_AMOUNT");
 				cashTotalCustSettlement.setCreditAmount(rs4.getDouble("TOTAL_CUST_SETTLEMENT_AMOUNT"));
 				cashTotalCustSettlement
@@ -155,11 +155,11 @@ public class ReportService {
 				closingBalance += rs4.getDouble("TOTAL_CUST_SETTLEMENT_AMOUNT");
 				cashCounterList.add(cashTotalCustSettlement);
 			}
-			CashCounter total = new CashCounter();
+			CashReport total = new CashReport();
 			total.setDescription("TOTAL");
 			double totalCredit = 0;
 			double totalDebit = 0;
-			for (CashCounter cash : cashCounterList) {
+			for (CashReport cash : cashCounterList) {
 				if (cash.getCreditAmount() > 0) {
 					totalCredit += cash.getCreditAmount();
 				}

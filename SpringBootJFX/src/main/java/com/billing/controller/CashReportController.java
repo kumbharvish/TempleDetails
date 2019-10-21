@@ -8,7 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.billing.dto.CashCounter;
+import com.billing.dto.CashReport;
 import com.billing.dto.Customer;
 import com.billing.dto.StatusDTO;
 import com.billing.dto.UserDetails;
@@ -51,7 +51,7 @@ import javafx.stage.Stage;
 
 @SuppressWarnings("restriction")
 @Controller
-public class CashCounterController implements TabContent {
+public class CashReportController implements TabContent {
 
 	@Autowired
 	ReportService reportService;
@@ -140,14 +140,14 @@ public class CashCounterController implements TabContent {
 
 	@Override
 	public boolean loadData() {
-		CashCounter totalSalesAmount = new CashCounter();
-		CashCounter totalSalesReturnAmount = new CashCounter();
-		CashCounter totalCustSettleAmount = new CashCounter();
-		CashCounter openingCashBalance = new CashCounter();
-		CashCounter totalAmount = new CashCounter();
-		CashCounter totalExpense = new CashCounter();
+		CashReport totalSalesAmount = new CashReport();
+		CashReport totalSalesReturnAmount = new CashReport();
+		CashReport totalCustSettleAmount = new CashReport();
+		CashReport openingCashBalance = new CashReport();
+		CashReport totalAmount = new CashReport();
+		CashReport totalExpense = new CashReport();
 
-		for (CashCounter cash : reportService.getCashCounterDetails(datePicker.getValue().toString(),
+		for (CashReport cash : reportService.getCashCounterDetails(datePicker.getValue().toString(),
 				datePicker.getValue().toString())) {
 			if (cash.getDescription().equals("TOTAL_SALES_AMOUNT")) {
 				totalSalesAmount = cash;

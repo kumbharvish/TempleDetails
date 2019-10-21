@@ -110,7 +110,7 @@
       						<RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
       					</rowConstraints>
       					<children>
-      						<Label styleClass="nodeLabel" text="Total Product Count :" GridPane.halignment="RIGHT" />
+      						<Label styleClass="nodeLabel" text="Total Product(s) :" GridPane.halignment="RIGHT" />
       						<TextField fx:id="txtTotalProductCount" alignment="CENTER_RIGHT" editable="false" styleClass="readOnlyField,summation" GridPane.columnIndex="1" />
       					</children>
       				</GridPane>

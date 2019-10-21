@@ -523,7 +523,7 @@ public class SalesReturnController extends AppContext implements TabContent {
 			saveStatus = false;
 		}
 		if (saveStatus) {
-			alertHelper.showInfoAlert(currentStage, "Sales Return", "Saved", "Return saved successfully");
+			alertHelper.showInfoAlert(currentStage, "Sales Return", "Return Saved", "Return saved successfully");
 			task.doTask();
 			closeTab();
 		} else {

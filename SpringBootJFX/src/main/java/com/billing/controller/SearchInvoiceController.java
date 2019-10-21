@@ -354,7 +354,7 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 		final EditInvoiceController controller = (EditInvoiceController) fxmlLoader.getController();
 		controller.bill = bill;
 		controller.setTask(() -> {
-			afterEditInvoiceSuccess();
+			afterSuccessTask();
 		});
 		final Stage stage = new Stage();
 		stage.initModality(Modality.APPLICATION_MODAL);
@@ -369,7 +369,7 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 		stage.showAndWait();
 	}
 
-	public void afterEditInvoiceSuccess() {
+	public void afterSuccessTask() {
 		panelSearchCriteria.setExpanded(true);
 		panelSearchResult.setExpanded(false);
 	}
@@ -416,7 +416,7 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 		final SalesReturnController controller = (SalesReturnController) fxmlLoader.getController();
 		controller.bill = bill;
 		controller.setTask(() -> {
-			afterEditInvoiceSuccess();
+			afterSuccessTask();
 		});
 		final Stage stage = new Stage();
 		stage.initModality(Modality.APPLICATION_MODAL);

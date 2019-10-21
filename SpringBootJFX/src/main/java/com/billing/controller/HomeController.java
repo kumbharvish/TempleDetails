@@ -87,7 +87,7 @@ public class HomeController extends AppContext {
 	private MenuItem salesReportMenuItem;
 
 	@FXML
-	private MenuItem cashCounterReportMenuItem;
+	private MenuItem cashReportMenuItem;
 
 	@FXML
 	private MenuItem userPreferencesMenuItem;
@@ -154,15 +154,15 @@ public class HomeController extends AppContext {
 	}
 
 	@FXML
-	void onCashCounterClick(MouseEvent event) {
+	void onCashReportClick(MouseEvent event) {
 		if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
-			cashCounterReportMenuItem.fire();
+			cashReportMenuItem.fire();
 		}
 	}
 
 	@FXML
-	void onCashCounterCommand(ActionEvent event) {
-		addTab("CashCounter", "Cash Counter Report");
+	void onCashReportCommand(ActionEvent event) {
+		addTab("CashReport", "Cash Report");
 	}
 
 	@FXML
@@ -358,7 +358,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onSalesReturnReportCommand(ActionEvent event) {
-
+		addTab("SalesReturnReport","Sales Return Report");
 	}
 
 	@FXML

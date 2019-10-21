@@ -227,8 +227,8 @@
     -fx-graphic: url("/images/SaleReport_24.png");
 }
 
-#lblCashCounter{
-    -fx-graphic: url("/images/CashCounter_24.png");
+#lblCashReport{
+    -fx-graphic: url("/images/CashReport_24.png");
 }
 
 #lblDataBackup{

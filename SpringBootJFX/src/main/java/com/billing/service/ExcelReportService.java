@@ -17,7 +17,9 @@ import com.billing.dto.LowStockSummaryReport;
 import com.billing.dto.Product;
 import com.billing.dto.ProductCategory;
 import com.billing.dto.ProductProfitReport;
+import com.billing.dto.ReturnDetails;
 import com.billing.dto.SalesReport;
+import com.billing.dto.SalesReturnReport;
 import com.billing.dto.StockSummaryReport;
 import com.billing.utils.ExcelReportMapping;
 
@@ -136,6 +138,25 @@ public class ExcelReportService {
 		} catch (Exception e) {
 			logger.error("Exception :", e);
 			e.printStackTrace();
+		}
+		return workbook;
+	}
+
+	// Sales Return Report
+	public Workbook getSalesReturnReportWorkBook(SalesReturnReport report, Workbook workbook) {
+		Sheet sheet = workbook.createSheet("Sales Return Report");
+		try {
+			excelReportMapping.setHeaderRowForSalesReturnReport(sheet);
+			int rowCount = 0;
+
+			for (ReturnDetails rd : report.getReturnList()) {
+				Row row = sheet.createRow(++rowCount);
+				excelReportMapping.addSalesReturnReportRow(rd, row);
+			}
+			excelReportMapping.addTotalSalesReturnReportRow(sheet, ++rowCount);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception:", e);
 		}
 		return workbook;
 	}

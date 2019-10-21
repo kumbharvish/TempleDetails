@@ -19,6 +19,7 @@ import com.billing.dto.ProductCategory;
 import com.billing.dto.ProductProfitReport;
 import com.billing.dto.ReturnDetails;
 import com.billing.dto.SalesReport;
+import com.billing.dto.SalesReturnReport;
 import com.billing.dto.StockSummaryReport;
 
 @Component
@@ -92,7 +93,7 @@ public class PDFReportMapping {
 		return dataSourceMaps;
 	}
 
-	//Low Stock Summary Report
+	// Low Stock Summary Report
 	public List<Map<String, ?>> getDatasourceForLowStockSummaryReport(LowStockSummaryReport lowStockSummaryReport) {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
 		for (Product item : lowStockSummaryReport.getProductList()) {
@@ -146,14 +147,12 @@ public class PDFReportMapping {
 	}
 
 	// Sales Return Report
-	public List<Map<String, ?>> getDatasourceForSalesReturnReport(List<ReturnDetails> returnList, String fromDate,
-			String toDate, Double totalPendingAmt, Double totalCashAmt, Double totalAmt, Double totalQty,
-			Integer totalNoOfItems) {
+	public List<Map<String, ?>> getDatasourceForSalesReturnReport(SalesReturnReport report) {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
-		for (ReturnDetails bill : returnList) {
+		for (ReturnDetails bill : report.getReturnList()) {
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("FromDate", fromDate);
-			map.put("ToDate", toDate);
+			map.put("FromDate", report.getFromDate());
+			map.put("ToDate", report.getToDate());
 			map.put("ReturnNo", String.valueOf(bill.getReturnNumber()));
 			map.put("CustMobile", String.valueOf(bill.getCustomerMobileNo()));
 			map.put("CustName", bill.getCustomerName());
@@ -162,11 +161,11 @@ public class PDFReportMapping {
 			map.put("ReturnTotalAmoount", appUtils.getDecimalFormat(bill.getTotalReturnAmount()));
 			map.put("PaymentMode", bill.getPaymentMode());
 			map.put("ReturnDate", appUtils.getFormattedDate(bill.getTimestamp()));
-			map.put("TotalPendingAmt", appUtils.getDecimalFormat(totalPendingAmt));
-			map.put("TotalCashAmt", appUtils.getDecimalFormat(totalCashAmt));
-			map.put("TotalAmount", appUtils.getDecimalFormat(totalAmt));
-			map.put("TotalQty", appUtils.getDecimalFormat(totalQty));
-			map.put("TotalNoOfItems", String.valueOf(totalNoOfItems));
+			map.put("TotalPendingAmt", appUtils.getDecimalFormat(0.0));
+			map.put("TotalCashAmt", appUtils.getDecimalFormat(0.0));
+			map.put("TotalAmount", appUtils.getDecimalFormat(report.getTotalReturnAmount()));
+			map.put("TotalQty", appUtils.getDecimalFormat(0.0));
+			map.put("TotalNoOfItems", String.valueOf(0.0));
 			dataSourceMaps.add(map);
 		}
 		return dataSourceMaps;

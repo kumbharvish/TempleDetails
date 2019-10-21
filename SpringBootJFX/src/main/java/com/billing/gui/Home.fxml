@@ -103,16 +103,16 @@
                      <items>
                         <Menu fx:id="reportsMenu" text="R_eports">
                           <items>
-                            <MenuItem fx:id="stockSummaryReportMenuItem" onAction="#onStockSummaryReportCommand" text="Stock _Summary Report" />
-                              <MenuItem fx:id="productProfitReportMenuItem" onAction="#onProductProfitReportCommand" text="Product Pro_fit Report" />
+                          	  <MenuItem fx:id="salesReportMenuItem" onAction="#onSalesReportCommand" text="_Sales Report" />
+                              <MenuItem fx:id="salesReturnReportMenuItem" onAction="#onSalesReturnReportCommand" text="Sales _Return Report" />
+                              <MenuItem fx:id="cashReportMenuItem" onAction="#onCashReportCommand" text="Cash Report" />
                               <MenuItem fx:id="customersReportMenuItem" onAction="#onCustomerReportCommand" text="_Customers Report" />
+                              <MenuItem fx:id="stockSummaryReportMenuItem" onAction="#onStockSummaryReportCommand" text="Stock _Summary Report" />
+                              <MenuItem fx:id="productProfitReportMenuItem" onAction="#onProductProfitReportCommand" text="Product Pro_fit Report" />
                               <MenuItem fx:id="lowStockSummaryReportMenuItem" onAction="#onLowStockSummaryCommand" text="_Low Stock Summary Report" />
                               <MenuItem fx:id="productCategoryWiseStockReprotMenuItem" onAction="#onProductCategoryWiseStockCommand" text="Product Category _Wise Stock Report" />
-                              <MenuItem fx:id="salesReportMenuItem" onAction="#onSalesReportCommand" text="_Sales Report" />
-                              <MenuItem fx:id="salesReturnReportMenuItem" onAction="#onSalesReturnReportCommand" text="Sales _Return Report" />
                               <MenuItem fx:id="monthlyReportMenuItem" onAction="#onMonthlyReportCommand" text="_Monthly Report" />
                               <MenuItem fx:id="profitLossReportMenuItem" onAction="#onProfitLossCommand" text="Profit _Loss Report" />
-                              <MenuItem fx:id="cashCounterReportMenuItem" onAction="#onCashCounterCommand" text="Cash Cou_nter Report" />
                               <MenuItem fx:id="expenseReportMenuItem" onAction="#onExpenseReportCommand" text="_Expense Report" />
                           </items>
                         </Menu>
@@ -189,9 +189,9 @@
                         <Tooltip text="Sales Report" />
                      </tooltip>
                   </Label>
-                  <Label fx:id="lblCashCounter" onMouseClicked="#onCashCounterClick">
+                  <Label fx:id="lblCashReport" onMouseClicked="#onCashReportClick">
                      <tooltip>
-                        <Tooltip text="Cash Counter Report" />
+                        <Tooltip text="Cash Report" />
                      </tooltip>
                   </Label>
                   <Separator maxHeight="24.0" orientation="VERTICAL" />

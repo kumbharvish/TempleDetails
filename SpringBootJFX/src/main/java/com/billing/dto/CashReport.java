@@ -1,6 +1,6 @@
 package com.billing.dto;
 
-public class CashCounter {
+public class CashReport {
 	
 	private String description;
 	

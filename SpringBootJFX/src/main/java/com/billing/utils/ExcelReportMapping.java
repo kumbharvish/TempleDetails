@@ -13,6 +13,7 @@ import com.billing.dto.BillDetails;
 import com.billing.dto.Customer;
 import com.billing.dto.Product;
 import com.billing.dto.ProductCategory;
+import com.billing.dto.ReturnDetails;
 
 @Component
 public class ExcelReportMapping {
@@ -23,6 +24,9 @@ public class ExcelReportMapping {
 	private String[] salesReportHeaders = { "Invoice No", "Invoice Date", "Payment Mode", "Customer Name",
 			"No Of Items", "Quantity", "Discount Amount", "Tax Amount", "Net Sales Amount" };
 
+	private String[] salesReturnReportHeaders = { "Return No", "Return Date", "Invoice No", "Customer Name",
+			"No Of Items", "Quantity", "Payment Mode", "Return Amount" };
+
 	private String[] productProfitReportHeaders = { "Product Name", "Category Name", "Stock Quantity",
 			"Profit Amount" };
 
@@ -31,7 +35,8 @@ public class ExcelReportMapping {
 
 	private String[] customersReportHeaders = { "Mobile Number", "Name", "City", "Entry Date", "Pending Amount" };
 
-	private String[] lowStockSummaryReportHeaders = { "Product Name", "Category Name", "Stock Quantity", "Stock Value" };
+	private String[] lowStockSummaryReportHeaders = { "Product Name", "Category Name", "Stock Quantity",
+			"Stock Value" };
 
 	private String[] categoryWiseStockReportHeaders = { "Category Name", "Stock Quantity", "Stock Value" };
 
@@ -115,6 +120,54 @@ public class ExcelReportMapping {
 		cell.setCellStyle(cellStyleTotal);
 		cell = row.createCell(9);
 		cell.setCellFormula("SUM(J2:J" + rowNumber + ")");
+		cell.setCellStyle(cellStyleTotal);
+	}
+
+	// Sales Return Report
+	public void setHeaderRowForSalesReturnReport(Sheet sheet) {
+		CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+		setHeaderFont(sheet, cellStyle);
+		setColumnWidth(sheet, salesReturnReportHeaders.length);
+
+		int columnCount = 0;
+		Row row = sheet.createRow(0);
+		for (String headerName : salesReturnReportHeaders) {
+			Cell cell1 = row.createCell(++columnCount);
+			cell1.setCellStyle(cellStyle);
+			cell1.setCellValue(headerName);
+		}
+	}
+
+	public void addSalesReturnReportRow(ReturnDetails rd, Row row) {
+		Cell cell = row.createCell(1);
+		cell.setCellValue(rd.getReturnNumber());
+		cell = row.createCell(2);
+		cell.setCellValue(appUtils.getFormattedDateWithTime(rd.getTimestamp()));
+		cell = row.createCell(3);
+		cell.setCellValue(rd.getInvoiceNumber());
+		cell = row.createCell(4);
+		cell.setCellValue(rd.getCustomerName());
+		cell = row.createCell(5);
+		cell.setCellValue(rd.getNoOfItems());
+		cell = row.createCell(6);
+		cell.setCellValue(rd.getTotalQuantity());
+		cell = row.createCell(7);
+		cell.setCellValue(rd.getPaymentMode());
+		cell = row.createCell(8);
+		cell.setCellValue(rd.getTotalReturnAmount());
+	}
+
+	public void addTotalSalesReturnReportRow(Sheet sheet, int rowNumber) {
+		CellStyle cellStyleHeader = sheet.getWorkbook().createCellStyle();
+		CellStyle cellStyleTotal = sheet.getWorkbook().createCellStyle();
+		setHeaderFont(sheet, cellStyleHeader);
+		setTotalFont(sheet, cellStyleTotal);
+		Row row = sheet.createRow(rowNumber + 1);
+		Cell cell = row.createCell(7);
+		cell.setCellValue("Total");
+		cell.setCellStyle(cellStyleHeader);
+		cell = row.createCell(8);
+		cell.setCellFormula("SUM(I2:I" + rowNumber + ")");
 		cell.setCellStyle(cellStyleTotal);
 	}
 
@@ -266,10 +319,10 @@ public class ExcelReportMapping {
 
 		cell = row.createCell(2);
 		cell.setCellValue(p.getProductCategory());
-		
+
 		cell = row.createCell(3);
 		cell.setCellValue(p.getQuantity());
-		
+
 		cell = row.createCell(4);
 		cell.setCellValue(p.getStockValueAmount());
 	}

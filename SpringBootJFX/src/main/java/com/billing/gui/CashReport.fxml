@@ -14,13 +14,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.ButtonBar?>
 
-<HBox alignment="TOP_CENTER" stylesheets="@../../../css/cashCounter.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.CashCounterController">
+<HBox alignment="TOP_CENTER" stylesheets="@../../../css/cashReport.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.CashReportController">
    <children>
       <BorderPane fx:id="borderPane" styleClass="rootNode">
          <top>
             <VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
                <children>
-                  <Label fx:id="heading" alignment="TOP_CENTER" contentDisplay="CENTER" text="Cash Counter Report" textAlignment="CENTER">
+                  <Label fx:id="heading" alignment="TOP_CENTER" contentDisplay="CENTER" text="Cash Report" textAlignment="CENTER">
                      <padding>
                         <Insets bottom="20.0" />
                      </padding></Label>
@@ -41,7 +41,7 @@
             <VBox alignment="TOP_CENTER" spacing="20.0" BorderPane.alignment="TOP_RIGHT">
                <children>
                   <Button fx:id="btnUpdateOpeningCash" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onUpdateOpeningCashCommand" text="Update Opening Cash" />
-                  <Button fx:id="btnViewSettlementDetails" mnemonicParsing="false" onAction="#onViewSettlementDetailsCommand" text="View Settlement Details" />
+                  <Button fx:id="btnViewSettlementDetails" mnemonicParsing="false" onAction="#onViewSettlementDetailsCommand" text="View Customer Settlement" />
                </children>
                <padding>
                   <Insets left="20.0" />
