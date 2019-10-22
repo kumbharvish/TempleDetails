@@ -81,15 +81,6 @@ public class ProductsController extends AppContext implements TabContent {
 	@Autowired
 	AppUtils appUtils;
 
-	@Autowired
-	ProductCategoryService productCategoryService;
-
-	@Autowired
-	MeasurementUnitsService measurementUnitsService;
-
-	@Autowired
-	TaxesService taxesService;
-
 	private UserDetails userDetails;
 
 	public Stage currentStage = null;
@@ -256,9 +247,11 @@ public class ProductsController extends AppContext implements TabContent {
 		tableView.getSelectionModel().selectedItemProperty().addListener(this::onSelectedRowChanged);
 		cbProductCategory.prefWidthProperty().bind(cbMeasuringUnit.widthProperty());
 		cbTax.prefWidthProperty().bind(cbMeasuringUnit.widthProperty());
-		populateCategoryComboBox();
-		populateMUnitComboBox();
-		populateTaxtComboBox();
+		// Fetch comboxes data
+		HashMap<String, List> dataMap = productService.getComboboxData();
+		populateCategoryComboBox(dataMap.get("CATEGORIES"));
+		populateMUnitComboBox(dataMap.get("UOMS"));
+		populateTaxtComboBox(dataMap.get("TAXES"));
 		// Register textfield listners
 		txtPurchaseRate.focusedProperty().addListener((observable, oldValue, newValue) -> {
 			if (!newValue) {
@@ -384,28 +377,28 @@ public class ProductsController extends AppContext implements TabContent {
 		}
 	}
 
-	public void populateCategoryComboBox() {
+	public void populateCategoryComboBox(List<ProductCategory> list) {
 		productCategoryMap = new HashMap<String, Integer>();
 		cbProductCategory.getItems().add("-- Select Category --");
-		for (ProductCategory s : productCategoryService.getAllCategories()) {
+		for (ProductCategory s : list) {
 			cbProductCategory.getItems().add(s.getCategoryName());
 			productCategoryMap.put(s.getCategoryName(), s.getCategoryCode());
 		}
 		cbProductCategory.getSelectionModel().select(0);
 	}
 
-	public void populateMUnitComboBox() {
+	public void populateMUnitComboBox(List<MeasurementUnit> list) {
 		cbMeasuringUnit.getItems().add("-- Select Measurement Unit --");
-		for (MeasurementUnit u : measurementUnitsService.getAllUOM()) {
+		for (MeasurementUnit u : list) {
 			cbMeasuringUnit.getItems().add(u.getName());
 		}
 		cbMeasuringUnit.getSelectionModel().select(0);
 	}
 
-	public void populateTaxtComboBox() {
+	public void populateTaxtComboBox(List<Tax> list) {
 		cbTax.getItems().add("-- Select Tax --");
 		cbTax.getItems().add("0.00");
-		for (Tax u : taxesService.getAllTax()) {
+		for (Tax u : list) {
 			cbTax.getItems().add(appUtils.getDecimalFormat(u.getValue()));
 		}
 		cbTax.getSelectionModel().select(0);

@@ -29,10 +29,9 @@ public class MeasurementUnitsService {
 
 	private static final String DELETE_UOM = "DELETE FROM MEASUREMENT_UNITS WHERE ID=?";
 
-	private static final String UPDATE_UOM = "UPDATE MEASUREMENT_UNITS SET NAME=?," + "DESCRIPTION=?"
-			+ " WHERE ID=?";
-	
-	
+	private static final String UPDATE_UOM = "UPDATE MEASUREMENT_UNITS SET NAME=?," + "DESCRIPTION=?" + " WHERE ID=?";
+
+	// Fetch all Units of Measure
 	public List<MeasurementUnit> getAllUOM() {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -61,6 +60,32 @@ public class MeasurementUnitsService {
 		return uomList;
 	}
 	
+	// Fetch all Units of Measure : Overloaded with connection
+	public List<MeasurementUnit> getAllUOM(Connection conn) {
+		PreparedStatement stmt = null;
+		MeasurementUnit uom = null;
+		List<MeasurementUnit> uomList = new ArrayList<MeasurementUnit>();
+		try {
+			stmt = conn.prepareStatement(GET_ALL_UOM);
+			ResultSet rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				uom = new MeasurementUnit();
+				uom.setId(rs.getInt("ID"));
+				uom.setName(rs.getString("NAME"));
+				uom.setDescription(rs.getString("DESCRIPTION"));
+
+				uomList.add(uom);
+			}
+			rs.close();
+			stmt.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception : ", e);
+		} 
+		return uomList;
+	}
+
 	public StatusDTO addUOM(MeasurementUnit unit) {
 		Connection conn = null;
 		PreparedStatement stmt = null;

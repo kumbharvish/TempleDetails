@@ -34,6 +34,7 @@ public class TaxesService {
 
 	private HashMap<Double, String> taxMap;
 
+	// Fetch all Taxes
 	public List<Tax> getAllTax() {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -58,6 +59,32 @@ public class TaxesService {
 			logger.error("Exception : ", e);
 		} finally {
 			DBUtils.closeConnection(stmt, conn);
+		}
+		return taxList;
+	}
+
+	// Fetch all Taxes : Overloaded with Connection
+	public List<Tax> getAllTax(Connection conn) {
+		PreparedStatement stmt = null;
+		Tax tax = null;
+		List<Tax> taxList = new ArrayList<Tax>();
+		try {
+			stmt = conn.prepareStatement(GET_ALL_TAXES);
+			ResultSet rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				tax = new Tax();
+				tax.setId(rs.getInt("ID"));
+				tax.setName(rs.getString("NAME"));
+				tax.setValue(rs.getDouble("VALUE"));
+
+				taxList.add(tax);
+			}
+			rs.close();
+			stmt.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception : ", e);
 		}
 		return taxList;
 	}

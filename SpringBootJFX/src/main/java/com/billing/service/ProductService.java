@@ -16,8 +16,11 @@ import org.springframework.stereotype.Service;
 
 import com.billing.constants.AppConstants;
 import com.billing.dto.ItemDetails;
+import com.billing.dto.MeasurementUnit;
 import com.billing.dto.Product;
+import com.billing.dto.ProductCategory;
 import com.billing.dto.StatusDTO;
+import com.billing.dto.Tax;
 import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 
@@ -29,6 +32,15 @@ public class ProductService {
 
 	@Autowired
 	AppUtils appUtils;
+
+	@Autowired
+	ProductCategoryService productCategoryService;
+
+	@Autowired
+	MeasurementUnitsService measurementUnitsService;
+
+	@Autowired
+	TaxesService taxesService;
 
 	private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
 
@@ -544,6 +556,21 @@ public class ProductService {
 			productList.add(product);
 		}
 		return productList;
+	}
+
+	public HashMap<String, List> getComboboxData() {
+		HashMap<String, List> dataMap = new HashMap<>();
+		Connection conn = dbUtils.getConnection();
+		List<ProductCategory> categoryList = productCategoryService.getAllCategories(conn);
+		List<MeasurementUnit> uomList = measurementUnitsService.getAllUOM(conn);
+		List<Tax> taxList = taxesService.getAllTax(conn);
+		DBUtils.closeConnection(null, conn);
+
+		dataMap.put("CATEGORIES", categoryList);
+		dataMap.put("UOMS", uomList);
+		dataMap.put("TAXES", taxList);
+
+		return dataMap;
 	}
 
 }

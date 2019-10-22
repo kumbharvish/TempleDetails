@@ -20,10 +20,10 @@ import com.billing.utils.DBUtils;
 
 @Service
 public class ProductCategoryService {
-	
+
 	@Autowired
 	DBUtils dbUtils;
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(ProductCategoryService.class);
 
 	private static final String GET_ALL_CATEGORIES = "SELECT * FROM PRODUCT_CATEGORY_DETAILS";
@@ -43,6 +43,7 @@ public class ProductCategoryService {
 
 	private static final String CATEGORY_WISE_STOCK_REPORT = "SELECT PCD.CATEGORY_ID,PCD.CATEGORY_NAME,SUM(PD.QUANTITY) AS CATEGORY_STOCK_QTY,SUM(PD.QUANTITY * PD.PRODUCT_MRP) AS CATEGORY_STOCK_AMOUNT FROM PRODUCT_DETAILS PD,PRODUCT_CATEGORY_DETAILS PCD WHERE PCD.CATEGORY_ID=PD.CATEGORY_ID GROUP BY PD.CATEGORY_ID";
 
+	// Fetch All Categories
 	public List<ProductCategory> getAllCategories() {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -67,9 +68,39 @@ public class ProductCategoryService {
 			rs.close();
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.info("Exception : ",e);
+			logger.info("Exception : ", e);
 		} finally {
 			DBUtils.closeConnection(stmt, conn);
+		}
+		return productCategoryList;
+	}
+
+	// Fetch All Categories : Overloaded with connection
+	public List<ProductCategory> getAllCategories(Connection conn) {
+		PreparedStatement stmt = null;
+		ProductCategory pc = null;
+		List<ProductCategory> productCategoryList = new ArrayList<ProductCategory>();
+		try {
+			stmt = conn.prepareStatement(GET_ALL_CATEGORIES);
+			ResultSet rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				pc = new ProductCategory();
+				pc.setCategoryName(rs.getString("CATEGORY_NAME"));
+				pc.setCategoryCode(Integer.parseInt(rs.getString("CATEGORY_ID")));
+				pc.setCategoryDescription(rs.getString("CATEGORY_DESCRIPTION"));
+				productCategoryList.add(pc);
+			}
+
+			Comparator<ProductCategory> cp = ProductCategory
+					.getComparator(ProductCategory.SortParameter.CATEGORY_NAME_ASCENDING);
+			Collections.sort(productCategoryList, cp);
+			rs.close();
+			stmt.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info("Exception : ", e);
 		}
 		return productCategoryList;
 	}
@@ -95,7 +126,7 @@ public class ProductCategoryService {
 			e.printStackTrace();
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
-			logger.info("Exception : ",e);
+			logger.info("Exception : ", e);
 		} finally {
 			DBUtils.closeConnection(stmt, conn);
 		}
@@ -117,7 +148,7 @@ public class ProductCategoryService {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.info("Exception : ",e);
+			logger.info("Exception : ", e);
 		} finally {
 			DBUtils.closeConnection(stmt, conn);
 		}
@@ -145,7 +176,7 @@ public class ProductCategoryService {
 			e.printStackTrace();
 			status.setException(e.getMessage());
 			status.setStatusCode(-1);
-			logger.info("Exception : ",e);
+			logger.info("Exception : ", e);
 		} finally {
 			DBUtils.closeConnection(stmt, conn);
 		}
@@ -189,7 +220,7 @@ public class ProductCategoryService {
 			rs.close();
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.info("Exception : ",e);
+			logger.info("Exception : ", e);
 		} finally {
 			DBUtils.closeConnection(stmt, conn);
 		}
@@ -223,7 +254,7 @@ public class ProductCategoryService {
 			rs.close();
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.info("Exception : ",e);
+			logger.info("Exception : ", e);
 		} finally {
 			DBUtils.closeConnection(stmt, conn);
 		}
