@@ -90,6 +90,8 @@ public class ProductsController extends AppContext implements TabContent {
 	private HashMap<String, Integer> productCategoryMap;
 
 	FilteredList<Product> filteredList;
+	
+	private String productCode;
 
 	@FXML
 	private Label heading;
@@ -123,9 +125,6 @@ public class ProductsController extends AppContext implements TabContent {
 
 	@FXML
 	private Button btnReset;
-
-	@FXML
-	private TextField lblProductCode;
 
 	@FXML
 	private TextField txtProductName;
@@ -219,6 +218,7 @@ public class ProductsController extends AppContext implements TabContent {
 
 	@Override
 	public void initialize() {
+		productCode = "";
 		// Error Messages
 		lblProductCategoryErrMsg.managedProperty().bind(lblProductCategoryErrMsg.visibleProperty());
 		lblProductCategoryErrMsg.visibleProperty()
@@ -359,7 +359,7 @@ public class ProductsController extends AppContext implements TabContent {
 		resetFields();
 		if (newValue != null) {
 			txtProductName.setText(newValue.getProductName());
-			lblProductCode.setText(String.valueOf(newValue.getProductCode()));
+			productCode = String.valueOf(newValue.getProductCode());
 			cbProductCategory.getSelectionModel().select(newValue.getProductCategory());
 			cbMeasuringUnit.getSelectionModel().select(newValue.getMeasure());
 			txtQuantity.setText(appUtils.getDecimalFormat(newValue.getQuantity()));
@@ -408,7 +408,7 @@ public class ProductsController extends AppContext implements TabContent {
 	void onPurchasePriceHistClick(MouseEvent event) {
 		if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
 			Product product = tableView.getSelectionModel().getSelectedItem();
-			if (lblProductCode.getText().equals("")) {
+			if (productCode.equals("")) {
 				alertHelper.showErrorNotification("Please select product");
 			} else {
 				getPurchasePriceHistPopUp(product);
@@ -420,7 +420,7 @@ public class ProductsController extends AppContext implements TabContent {
 	void onViewStockLedgertClick(MouseEvent event) {
 		if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
 			Product product = tableView.getSelectionModel().getSelectedItem();
-			if (lblProductCode.getText().equals("")) {
+			if (productCode.equals("")) {
 				alertHelper.showErrorNotification("Please select product");
 			} else {
 				getViewStockLedgerPopUp(product);
@@ -430,7 +430,7 @@ public class ProductsController extends AppContext implements TabContent {
 
 	@FXML
 	void onAddCommand(ActionEvent event) {
-		if (lblProductCode.getText().equals("")) {
+		if (productCode.equals("")) {
 			if (!validateInput()) {
 				return;
 			}
@@ -442,12 +442,12 @@ public class ProductsController extends AppContext implements TabContent {
 
 	@FXML
 	void onDeleteCommand(ActionEvent event) {
-		if (lblProductCode.getText().equals("")) {
+		if (productCode.equals("")) {
 			alertHelper.showErrorNotification("Please select product");
 		} else {
 			Alert alert = alertHelper.showConfirmAlertWithYesNo(currentStage, null, "Are you sure?");
 			if (alert.getResult() == ButtonType.YES) {
-				productService.deleteProduct(Integer.parseInt(lblProductCode.getText()));
+				productService.deleteProduct(Integer.parseInt(productCode));
 				alertHelper.showSuccessNotification("Product deleted successfully");
 				resetFields();
 				loadData();
@@ -471,7 +471,7 @@ public class ProductsController extends AppContext implements TabContent {
 
 	@FXML
 	void onUpdateCommand(ActionEvent event) {
-		if (lblProductCode.getText().equals("")) {
+		if (productCode.equals("")) {
 			alertHelper.showErrorNotification("Please select product");
 		} else {
 			if (!validateInput()) {
@@ -581,7 +581,7 @@ public class ProductsController extends AppContext implements TabContent {
 
 	private void updateData() {
 		Product productToUpdate = new Product();
-		productToUpdate.setProductCode(Integer.valueOf(lblProductCode.getText()));
+		productToUpdate.setProductCode(Integer.valueOf(productCode));
 		productToUpdate.setProductName(txtProductName.getText());
 		productToUpdate.setDescription(txtDescription.getText());
 		productToUpdate.setMeasure(cbMeasuringUnit.getSelectionModel().getSelectedItem());
@@ -725,7 +725,7 @@ public class ProductsController extends AppContext implements TabContent {
 
 	private void resetFields() {
 		txtProductName.setText("");
-		lblProductCode.setText("");
+		productCode = "";
 		cbProductCategory.getSelectionModel().select(0);
 		cbMeasuringUnit.getSelectionModel().select(0);
 		txtQuantity.setText("");

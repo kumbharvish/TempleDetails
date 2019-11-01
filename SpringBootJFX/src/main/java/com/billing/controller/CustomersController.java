@@ -240,13 +240,17 @@ public class CustomersController extends AppContext implements TabContent {
 			Customer newValue) {
 		resetFields();
 		if (newValue != null) {
-			txtMobileNo.setText(String.valueOf(newValue.getCustMobileNumber()));
-			txtMobileNo.setDisable(true);
-			txtCustName.setText(newValue.getCustName());
-			txtCity.setText(newValue.getCustCity());
-			txtEmail.setText(newValue.getCustEmail());
-			lblPendingAmount.setText(IndianCurrencyFormatting.applyFormatting(newValue.getBalanceAmt()));
+			setCustomerDetails(newValue);
 		}
+	}
+
+	private void setCustomerDetails(Customer customer) {
+		txtMobileNo.setText(String.valueOf(customer.getCustMobileNumber()));
+		txtMobileNo.setDisable(true);
+		txtCustName.setText(customer.getCustName());
+		txtCity.setText(customer.getCustCity());
+		txtEmail.setText(customer.getCustEmail());
+		lblPendingAmount.setText(IndianCurrencyFormatting.applyFormatting(customer.getBalanceAmt()));
 	}
 
 	@FXML
@@ -504,10 +508,13 @@ public class CustomersController extends AppContext implements TabContent {
 
 							if (statusAddAmt.getStatusCode() == 0) {
 								alertHelper.showSuccessNotification("Pending amount updated successfully");
-								int indexSelected = tableView.getSelectionModel().getSelectedIndex();
+								Customer cust1  = tableView.getSelectionModel().getSelectedItem();
 								loadData();
-								tableView.getSelectionModel().select(indexSelected);
-								setUpdatedCustBalance(Long.valueOf(txtMobileNo.getText()));
+								// customer is not selected in table
+								if(cust1 == null) {
+									cust1 = cust;
+								}
+								setUpdatedCustBalance(cust1.getCustMobileNumber());
 							} else {
 								alertHelper.showErrorNotification("Error occured while adding amount");
 							}
@@ -530,10 +537,13 @@ public class CustomersController extends AppContext implements TabContent {
 
 							if (statusAddAmt.getStatusCode() == 0) {
 								alertHelper.showSuccessNotification("Pending amount updated succesfully");
-								int indexSelected = tableView.getSelectionModel().getSelectedIndex();
+								Customer cust  = tableView.getSelectionModel().getSelectedItem();
 								loadData();
-								tableView.getSelectionModel().select(indexSelected);
-								setUpdatedCustBalance(Long.valueOf(txtMobileNo.getText()));
+								// customer is not selected in table
+								if(cust == null) {
+									cust = customerSt;
+								}
+								setUpdatedCustBalance(cust.getCustMobileNumber());
 							} else {
 								alertHelper.showErrorNotification("Error occured while settling up");
 							}
@@ -553,7 +563,7 @@ public class CustomersController extends AppContext implements TabContent {
 
 	protected void setUpdatedCustBalance(Long custMobileNumber) {
 		Customer customer = customerService.getCustomerDetails(custMobileNumber);
-		lblPendingAmount.setText(IndianCurrencyFormatting.applyFormatting(customer.getBalanceAmt()));
+		setCustomerDetails(customer);
 	}
 
 }
