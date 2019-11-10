@@ -395,7 +395,7 @@ public class SalesReturnController extends AppContext implements TabContent {
 
 	public void getProductNameList() {
 		productMap = new HashMap<String, Product>();
-		for (Product p : productService.getAllProducts()) {
+		for (Product p : productService.getAll()) {
 			productMap.put(p.getProductName(), p);
 		}
 	}

@@ -45,9 +45,9 @@ public class DBBackupService {
 			} else {
 				fileName = dbDumpLocation;
 			}
-			Connection con = dbUtils.getConnection();
-			con.createStatement().executeUpdate("backup to database.mbf.db");
-			con.close();
+			Connection conn = dbUtils.getConnection();
+			conn.createStatement().executeUpdate("backup to database.mbf.db");
+			DBUtils.closeConnection(null, conn);
 			System.out.println("folderLocation+fileName : " + fileName);
 			File inputFile = new File("database.mbf.db");
 			File outputFile = new File(fileName);

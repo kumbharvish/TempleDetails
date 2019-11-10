@@ -294,7 +294,7 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 	public void getProductsName() {
 		entries = new TreeSet<String>();
 		productMap = new HashMap<String, Product>();
-		for (Product product : productService.getAllProducts()) {
+		for (Product product : productService.getAll()) {
 			entries.add(product.getProductName());
 			productMap.put(product.getProductName(), product);
 		}

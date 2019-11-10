@@ -87,7 +87,7 @@ public class ProductProfitReportController implements TabContent {
 
 	@Override
 	public boolean loadData() {
-		List<Product> list = productService.getAllProducts();
+		List<Product> list = productService.getAll();
 		Comparator<Product> cp = Product.getComparator(Product.SortParameter.PROFIT_ASCENDING);
 		Collections.sort(list, cp);
 		productList.addAll(list);

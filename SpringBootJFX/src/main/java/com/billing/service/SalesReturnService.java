@@ -88,7 +88,6 @@ public class SalesReturnService {
 		StatusDTO status = new StatusDTO();
 		boolean isItemsSaved = false;
 		boolean isStockUpdated = false;
-		boolean isStockLedgerUpdated = false;
 		try {
 			if (returnDetails != null) {
 				conn = dbUtils.getConnection();
@@ -119,14 +118,11 @@ public class SalesReturnService {
 					status.setStatusCode(0);
 					System.out.println("Sales Return Details Saved !");
 					isItemsSaved = saveReturnItemDetails(returnDetails.getItemDetails(), conn);
-					isStockUpdated = productService.updateProductStock(returnDetails.getItemDetails(),
-							AppConstants.STOCK_IN, conn);
-					isStockLedgerUpdated = productService.addProductStockLedger(
-							productService.getProductListForStockLedger(returnDetails.getItemDetails(), "SALES_RETURN"),
+					isStockUpdated = productService.updateStockAndLedger(returnDetails.getItemDetails(),
 							AppConstants.STOCK_IN, AppConstants.SALES_RETURN, conn);
 				}
 
-				if (!isStockUpdated || !isItemsSaved || !isStockLedgerUpdated) {
+				if (!isStockUpdated || !isItemsSaved) {
 					status.setStatusCode(-1);
 					// If any step fails rollback Transaction
 					System.out.println("Save Return Transaction Rollbacked !");

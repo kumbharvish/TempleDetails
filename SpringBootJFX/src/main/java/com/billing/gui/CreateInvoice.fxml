@@ -146,7 +146,7 @@
 											<center>
 												<VBox spacing="5.0">
 													<children>
-														<TableView fx:id="tableView" minHeight="-Infinity" prefHeight="300.0">
+														<TableView fx:id="tableView" minHeight="-Infinity" prefHeight="300.0" prefWidth="970.0">
 															<columns>
 																<TableColumn fx:id="tcItemName" prefWidth="250.0" text="Product Name" />
 																<TableColumn fx:id="tcUnit" prefWidth="70.0" text="Unit" />

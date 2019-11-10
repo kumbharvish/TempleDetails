@@ -37,12 +37,6 @@ public class ProductHistoryService {
 			",PD.ENTRY_DATE,PD.NARRATION,PD.PURCHASE_RATE,PD.PRODUCT_TAX,SP.SUPPLIER_NAME " +
 			"FROM PRODUCT_PURCHASE_PRICE_HISTORY PD,SUPPLIER_DETAILS SP WHERE PD.PRODUCT_ID=? AND PD.SUPPLIER_ID = SP.SUPPLIER_ID ORDER BY PD.ENTRY_DATE DESC";
 	
-	private static final String INS_PRODUCT_STOCK_IN_LEDGER = "INSERT INTO PRODUCT_STOCK_LEDGER (PRODUCT_CODE,TIMESTAMP,STOCK_IN,NARRATION,TRANSACTION_TYPE)" +
-			  " VALUES(?,?,?,?,?)";
-	
-	private static final String INS_PRODUCT_STOCK_OUT_LEDGER = "INSERT INTO PRODUCT_STOCK_LEDGER (PRODUCT_CODE,TIMESTAMP,STOCK_OUT,NARRATION,TRANSACTION_TYPE)" +
-			  " VALUES(?,?,?,?,?)";
-	
 	private static final String PRODUCT_STOCK_LEDGER = "SELECT * FROM PRODUCT_STOCK_LEDGER WHERE PRODUCT_CODE=? AND DATE(TIMESTAMP) BETWEEN ? AND ? ORDER BY TIMESTAMP DESC";
 	
 	//Add Product Purchase Price History
@@ -118,47 +112,6 @@ public class ProductHistoryService {
 		}
 		
 		return productList;
-	}
-	
-	//Add Product Stock Ledger
-	public StatusDTO addProductStockLedger(List<Product> productList,String stockInOutFlag,String transactionType) {
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		StatusDTO status= new StatusDTO();
-		try {
-			conn = dbUtils.getConnection();
-			conn.setAutoCommit(false);
-			if(stockInOutFlag.equals(AppConstants.STOCK_IN)){
-				stmt = conn.prepareStatement(INS_PRODUCT_STOCK_IN_LEDGER);
-			}else{
-				stmt = conn.prepareStatement(INS_PRODUCT_STOCK_OUT_LEDGER);
-			}
-			
-			for(Product product:productList){
-				stmt.setInt(1,product.getProductCode());
-				stmt.setString(2, appUtils.getCurrentTimestamp());
-				stmt.setDouble(3, product.getQuantity());
-				stmt.setString(4, product.getDescription());
-				stmt.setString(5,transactionType);
-				stmt.addBatch();
-			}
-			
-			int batch[] = stmt.executeBatch();
-			conn.commit();
-			if(batch.length == productList.size()){
-				status.setStatusCode(0);
-				System.out.println("Product Stock Ledger Added");
-			}
-			
-		} catch (Exception e) {
-			status.setStatusCode(-1);
-			status.setException(e.getMessage());
-			e.printStackTrace();
-			logger.info("Exception : ",e);
-		} finally {
-			DBUtils.closeConnection(stmt, conn);
-		}
-		return status;
 	}
 	
 	//Get Stock Ledger for Product

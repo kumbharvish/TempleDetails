@@ -78,7 +78,6 @@ public class InvoiceService {
 		PreparedStatement stmt = null;
 		boolean isItemsSaved = false;
 		boolean isStockUpdated = false;
-		boolean isStockLedgerUpdated = false;
 		StatusDTO status = new StatusDTO();
 		try {
 			if (bill != null) {
@@ -106,14 +105,11 @@ public class InvoiceService {
 					status.setStatusCode(0);
 					System.out.println("Invoice Details Saved !");
 					isItemsSaved = saveBillItemDetails(bill.getItemDetails(), conn);
-					isStockUpdated = productService.updateProductStock(bill.getItemDetails(), AppConstants.STOCK_OUT,
-							conn);
-					isStockLedgerUpdated = productService.addProductStockLedger(
-							productService.getProductListForStockLedger(bill.getItemDetails(), "SAVE_INVOICE"),
-							AppConstants.STOCK_OUT, AppConstants.SALES, conn);
+					isStockUpdated = productService.updateStockAndLedger(bill.getItemDetails(), AppConstants.STOCK_OUT,
+							AppConstants.SALES, conn);
 				}
 
-				if (!isStockUpdated || !isItemsSaved || !isStockLedgerUpdated) {
+				if (!isStockUpdated || !isItemsSaved) {
 					status.setStatusCode(-1);
 					// If any step fails rollback Transaction
 					System.out.println("Save Invoice Transaction Rollbacked !");
@@ -525,7 +521,6 @@ public class InvoiceService {
 		StatusDTO status = new StatusDTO();
 		boolean statusDeleteItems = false;
 		boolean statusUpdateStock = false;
-		boolean isStockLedgerUpdated = false;
 		try {
 			conn = dbUtils.getConnection();
 			conn.setAutoCommit(false);
@@ -537,13 +532,10 @@ public class InvoiceService {
 				System.out.println("Invoice deleted !");
 				status.setStatusCode(0);
 				statusDeleteItems = deleteBillItemDetails(conn, bill.getBillNumber());
-				statusUpdateStock = productService.updateProductStock(bill.getItemDetails(), AppConstants.STOCK_IN,
-						conn);
-				isStockLedgerUpdated = productService.addProductStockLedger(
-						productService.getProductListForStockLedger(bill.getItemDetails(), "DELETE_INVOICE"),
-						AppConstants.STOCK_IN, AppConstants.DELETE_INVOICE, conn);
+				statusUpdateStock = productService.updateStockAndLedger(bill.getItemDetails(), AppConstants.STOCK_IN,
+						AppConstants.DELETE_INVOICE, conn);
 			}
-			if (!statusDeleteItems || !statusUpdateStock || !isStockLedgerUpdated) {
+			if (!statusDeleteItems || !statusUpdateStock) {
 				status.setStatusCode(-1);
 				System.out.println("Delete Invoice Transaction Rollbacked !");
 				conn.rollback();
@@ -782,7 +774,7 @@ public class InvoiceService {
 			product.setDescription("Edit Invoice correction based on Invoice No.: " + item.getBillNumber());
 			productList.add(product);
 			if (AppConstants.STOCK_IN.equals(item.getStockInOutFlag())) {
-				productService.updateProductStock(bill.getItemDetails(), AppConstants.STOCK_IN, conn);
+				productService.updateProductStock(itemList, AppConstants.STOCK_IN, conn);
 				productService.addProductStockLedger(productList, AppConstants.STOCK_IN, AppConstants.EDIT_INVOICE,
 						conn);
 			} else {

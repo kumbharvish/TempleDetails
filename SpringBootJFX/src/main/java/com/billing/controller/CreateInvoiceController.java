@@ -568,7 +568,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		productEntries = new TreeSet<String>();
 		productMap = new HashMap<String, Product>();
 		productMapWithBarcode = new HashMap<Long, Product>();
-		for (Product p : productService.getAllProducts()) {
+		for (Product p : productService.getAll()) {
 			productEntries.add(p.getProductName());
 			productMap.put(p.getProductName(), p);
 			productMapWithBarcode.put(p.getProductBarCode(), p);

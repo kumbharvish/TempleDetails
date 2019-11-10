@@ -1,7 +1,6 @@
 package com.billing.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -10,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.billing.constants.AppConstants;
 import com.billing.dto.MeasurementUnit;
 import com.billing.dto.Product;
 import com.billing.dto.ProductCategory;
@@ -18,12 +16,8 @@ import com.billing.dto.StatusDTO;
 import com.billing.dto.Tax;
 import com.billing.dto.UserDetails;
 import com.billing.main.AppContext;
-import com.billing.service.MeasurementUnitsService;
-import com.billing.service.ProductCategoryService;
-import com.billing.service.ProductHistoryService;
-import com.billing.service.ProductService;
-import com.billing.service.TaxesService;
 import com.billing.service.CustomerService;
+import com.billing.service.ProductService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
@@ -76,9 +70,6 @@ public class ProductsController extends AppContext implements TabContent {
 	ProductService productService;
 
 	@Autowired
-	ProductHistoryService productHistoryService;
-
-	@Autowired
 	AppUtils appUtils;
 
 	private UserDetails userDetails;
@@ -90,7 +81,7 @@ public class ProductsController extends AppContext implements TabContent {
 	private HashMap<String, Integer> productCategoryMap;
 
 	FilteredList<Product> filteredList;
-	
+
 	private String productCode;
 
 	@FXML
@@ -447,10 +438,17 @@ public class ProductsController extends AppContext implements TabContent {
 		} else {
 			Alert alert = alertHelper.showConfirmAlertWithYesNo(currentStage, null, "Are you sure?");
 			if (alert.getResult() == ButtonType.YES) {
-				productService.deleteProduct(Integer.parseInt(productCode));
-				alertHelper.showSuccessNotification("Product deleted successfully");
-				resetFields();
-				loadData();
+				Product product = new Product();
+				product.setProductCode(Integer.parseInt(productCode));
+				StatusDTO status = productService.delete(product);
+				if (status.getStatusCode() == 0) {
+					alertHelper.showSuccessNotification("Product deleted successfully");
+					resetFields();
+					loadData();
+				} else {
+					alertHelper.showErrorNotification("Error occured during delete product");
+				}
+
 			} else {
 				resetFields();
 			}
@@ -494,7 +492,7 @@ public class ProductsController extends AppContext implements TabContent {
 
 	@Override
 	public boolean loadData() {
-		List<Product> list = productService.getAllProducts();
+		List<Product> list = productService.getAll();
 		ObservableList<Product> productTableData = FXCollections.observableArrayList();
 		productTableData.addAll(list);
 		filteredList = new FilteredList(productTableData, null);
@@ -551,17 +549,8 @@ public class ProductsController extends AppContext implements TabContent {
 			alertHelper.showErrorNotification("Entered product barcode already exists");
 			txtBarcode.requestFocus();
 		} else {
-			StatusDTO status = productService.addProduct(productToSave);
+			StatusDTO status = productService.add(productToSave);
 			if (status.getStatusCode() == 0) {
-				List<Product> list = new ArrayList<Product>();
-				productToSave.setDescription("Add Product Opening Stock");
-				list.add(productToSave);
-				// Update Stock Ledger
-				productHistoryService.addProductStockLedger(list, AppConstants.STOCK_IN, AppConstants.ADD_PRODUCT);
-				// Add Product Purchase price history
-				productToSave.setDescription(AppConstants.ADD_PRODUCT);
-				productToSave.setSupplierId(001);
-				productHistoryService.addProductPurchasePriceHistory(list);
 				alertHelper.showSuccessNotification("Product added successfully");
 				resetFields();
 				loadData();
@@ -606,14 +595,14 @@ public class ProductsController extends AppContext implements TabContent {
 		} else {
 			productToUpdate.setProductBarCode(Long.valueOf(txtBarcode.getText()));
 		}
-		if (productService.getProductBarCodeMap().containsKey(productToUpdate.getProductBarCode())
-				&& productService.getProductBarCodeMap().get(productToUpdate.getProductBarCode())
-						.getProductCode() != productToUpdate.getProductCode()) {
+		HashMap<Long, Product> productMap = productService.getProductBarCodeMap();
+		if (productMap.containsKey(productToUpdate.getProductBarCode()) && productMap
+				.get(productToUpdate.getProductBarCode()).getProductCode() != productToUpdate.getProductCode()) {
 			alertHelper.beep();
 			alertHelper.showErrorNotification("Entered product barcode already exists");
 			txtBarcode.requestFocus();
 		} else {
-			StatusDTO status = productService.updateProduct(productToUpdate);
+			StatusDTO status = productService.update(productToUpdate);
 
 			if (status.getStatusCode() == 0) {
 				alertHelper.showSuccessNotification("Product updated successfully");

@@ -147,7 +147,7 @@ public class QuickStockCorrectionController implements TabContent {
 		txtSearchByItemName.visibleProperty().bind(rbName.selectedProperty());
 		txtSearchByBarcode.managedProperty().bind(txtSearchByBarcode.visibleProperty());
 		txtSearchByBarcode.visibleProperty().bind(rbBarcode.selectedProperty());
-		
+
 		txtQuantityErrMsg.managedProperty().bind(txtQuantityErrMsg.visibleProperty());
 		txtQuantityErrMsg.visibleProperty().bind(txtQuantityErrMsg.textProperty().length().greaterThanOrEqualTo(1));
 		txtSearchByItemName.prefWidthProperty().bind(txtQuantity.widthProperty());
@@ -278,24 +278,9 @@ public class QuickStockCorrectionController implements TabContent {
 	private void updateData() {
 		Product product = new Product();
 		product.setProductCode(productMap.get(txtName.getText()).getProductCode());
-		product.setQuantity(Double.valueOf(txtQuantity.getText()));
-		List<Product> productList = new ArrayList<Product>();
-		Product p = productService.getProduct(product.getProductCode());
-		product.setDescription("Existing Stock: " + appUtils.getDecimalFormat(p.getQuantity()) + " Correction Qty: "
-				+ appUtils.getDecimalFormat(product.getQuantity()));
-		if (product.getQuantity() < p.getQuantity()) {
-			product.setQuantity(p.getQuantity() - product.getQuantity());
-			productList.add(product);
-			productHistoryService.addProductStockLedger(productList, AppConstants.STOCK_OUT,
-					AppConstants.QUICK_STOCK_CORR);
-		} else {
-			product.setQuantity(product.getQuantity() - p.getQuantity());
-			productList.add(product);
-			productHistoryService.addProductStockLedger(productList, AppConstants.STOCK_IN,
-					AppConstants.QUICK_STOCK_CORR);
-		}
-		product.setQuantity(Double.valueOf(txtQuantity.getText()));
-		boolean flag = productService.quickStockCorrection(product);
+		double qty = Double.valueOf(txtQuantity.getText());
+		product.setQuantity(qty);
+		boolean flag = productService.doQuickStockCorrection(product, qty);
 		if (flag) {
 			resetFields();
 			alertHelper.showSuccessNotification("Product stock updated successfully");
@@ -310,7 +295,7 @@ public class QuickStockCorrectionController implements TabContent {
 		entries = new TreeSet<String>();
 		productMap = new HashMap<String, Product>();
 		productMapWithBarcode = new HashMap<Long, Product>();
-		for (Product product : productService.getAllProducts()) {
+		for (Product product : productService.getAll()) {
 			entries.add(product.getProductName());
 			productMap.put(product.getProductName(), product);
 			productMapWithBarcode.put(product.getProductBarCode(), product);
