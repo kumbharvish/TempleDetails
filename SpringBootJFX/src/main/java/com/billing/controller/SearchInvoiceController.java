@@ -226,9 +226,9 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 		}
 		Alert alert = alertHelper.showConfirmAlertWithYesNo(currentStage, null, "Are you sure to delete invoice ?");
 		if (alert.getResult() == ButtonType.YES) {
-			List<ItemDetails> itemList = invoiceService.getItemDetails(bill.getBillNumber());
+			List<ItemDetails> itemList = invoiceService.getItemList(bill);
 			bill.setItemDetails(itemList);
-			StatusDTO status = invoiceService.deleteInvoice(bill);
+			StatusDTO status = invoiceService.delete(bill);
 			if (status.getStatusCode() == 0) {
 				alertHelper.showSuccessNotification("Invoice No. " + bill.getBillNumber() + " deleted successfully");
 				removeDeletedRecord(bill);
@@ -377,7 +377,7 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 	@FXML
 	void onPrintAction(ActionEvent event) {
 		BillDetails bill = tableView.getSelectionModel().getSelectedItem();
-		List<ItemDetails> itemList = invoiceService.getItemDetails(bill.getBillNumber());
+		List<ItemDetails> itemList = invoiceService.getItemList(bill);
 		bill.setItemDetails(itemList);
 		printerService.printInvoice(bill);
 

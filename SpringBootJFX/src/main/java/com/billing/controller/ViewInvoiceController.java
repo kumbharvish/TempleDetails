@@ -187,7 +187,7 @@ public class ViewInvoiceController extends AppContext {
 	public void loadData() {
 		currentStage = (Stage) txtCustMobile.getScene().getWindow();
 
-		List<ItemDetails> itemList = invoiceService.getItemDetails(bill.getBillNumber());
+		List<ItemDetails> itemList = invoiceService.getItemList(bill);
 		bill.setItemDetails(itemList);
 
 		for (ItemDetails item : bill.getItemDetails()) {

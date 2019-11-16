@@ -305,7 +305,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		});
 		txtItemName.createTextField(productEntries, () -> setProductDetails());
 		txtDiscountPercent.setText("0.0");
-		txtInvoiceNumber.setText(String.valueOf(invoiceService.getNewBillNumber()));
+		txtInvoiceNumber.setText(String.valueOf(invoiceService.getNewInvoiceNumber()));
 		// Force Number Listner
 		txtQuantity.textProperty().addListener(appUtils.getForceDecimalNumberListner());
 		txtRate.textProperty().addListener(appUtils.getForceDecimalNumberListner());
@@ -671,7 +671,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			return false;
 		}
 		BillDetails bill = prepareBillDetails();
-		StatusDTO status = invoiceService.saveInvoice(bill);
+		StatusDTO status = invoiceService.add(bill);
 		if (status.getStatusCode() != 0) {
 			saveStatus = false;
 		}
@@ -811,7 +811,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		productTableData.clear();
 		dpInvoiceDate.setValue(LocalDate.now());
 		txtDiscountPercent.setText("0.0");
-		txtInvoiceNumber.setText(String.valueOf(invoiceService.getNewBillNumber()));
+		txtInvoiceNumber.setText(String.valueOf(invoiceService.getNewInvoiceNumber()));
 		txtCustomer.clear();
 		txtCustomer.requestFocus();
 		txtNoOfItems.clear();

@@ -41,6 +41,7 @@ import org.springframework.stereotype.Component;
 
 import com.billing.constants.AppConstants;
 import com.billing.dto.GSTDetails;
+import com.billing.dto.ItemDetails;
 import com.billing.dto.Product;
 import com.billing.dto.StatusDTO;
 import com.billing.service.TaxesService;
@@ -671,5 +672,22 @@ public class AppUtils {
 		fileChooser.setTitle(title);
 		File file = fileChooser.showSaveDialog(currentStage);
 		return file;
+	}
+
+	public Product mapItemToProduct(ItemDetails item) {
+		Product p = new Product();
+		p.setGstDetails(item.getGstDetails());
+		p.setProductCode(item.getItemNo());
+		p.setProductName(item.getItemName());
+		p.setSellPrice(item.getMRP());
+		p.setTableDispRate(item.getRate());
+		p.setTableDispQuantity(item.getQuantity());
+		p.setPurcasePrice(item.getPurchasePrice());
+		p.setMeasure(item.getUnit());
+		p.setDiscount(item.getDiscountPercent());
+		p.setDiscountAmount(item.getDiscountAmount());
+		p.setTableDispAmount(item.getRate() * item.getQuantity());
+		p.setProductTax(item.getGstDetails().getRate());
+		return p;
 	}
 }

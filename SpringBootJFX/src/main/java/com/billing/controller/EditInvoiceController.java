@@ -653,26 +653,14 @@ public class EditInvoiceController extends AppContext implements TabContent {
 
 	@Override
 	public boolean loadData() {
-		List<ItemDetails> itemList = invoiceService.getItemDetails(bill.getBillNumber());
+		List<ItemDetails> itemList = invoiceService.getItemList(bill);
 		bill.setItemDetails(itemList);
 		bill.setCopyItemDetails(itemList);
 		bill.setCopyNetSalesAmt(bill.getNetSalesAmt());
 		bill.setCopyCustMobile(bill.getCustomerMobileNo());
 		bill.setCopyPaymode(bill.getPaymentMode());
 		for (ItemDetails item : bill.getItemDetails()) {
-			Product p = new Product();
-			p.setGstDetails(item.getGstDetails());
-			p.setProductCode(item.getItemNo());
-			p.setProductName(item.getItemName());
-			p.setSellPrice(item.getMRP());
-			p.setTableDispRate(item.getRate());
-			p.setTableDispQuantity(item.getQuantity());
-			p.setPurcasePrice(item.getPurchasePrice());
-			p.setMeasure(item.getUnit());
-			p.setDiscount(item.getDiscountPercent());
-			p.setDiscountAmount(item.getDiscountAmount());
-			p.setTableDispAmount(item.getRate() * item.getQuantity());
-			p.setProductTax(item.getGstDetails().getRate());
+			Product p = appUtils.mapItemToProduct(item);
 			productTableData.add(p);
 		}
 		txtCustomer.setText(bill.getCustomerMobileNo() + " : " + bill.getCustomerName());
@@ -709,7 +697,7 @@ public class EditInvoiceController extends AppContext implements TabContent {
 			return false;
 		}
 		BillDetails bill = prepareBillDetails();
-		StatusDTO status = invoiceService.editInvoice(bill);
+		StatusDTO status = invoiceService.update(bill);
 		if (status.getStatusCode() != 0) {
 			saveStatus = false;
 		}
