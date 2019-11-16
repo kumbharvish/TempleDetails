@@ -13,6 +13,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import com.billing.constants.AppConstants;
@@ -28,7 +29,7 @@ import com.billing.service.ProductService;
 import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
 
-@Service
+@Repository
 public class InvoiceRepository {
 
 	@Autowired

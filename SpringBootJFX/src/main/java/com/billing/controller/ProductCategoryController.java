@@ -113,7 +113,7 @@ public class ProductCategoryController implements TabContent {
 
 	@Override
 	public boolean loadData() {
-		List<ProductCategory> list = productCategoryService.getAllCategories();
+		List<ProductCategory> list = productCategoryService.getAll();
 		ObservableList<ProductCategory> productCategoryTableData = FXCollections.observableArrayList();
 		productCategoryTableData.addAll(list);
 		tableView.setItems(productCategoryTableData);
@@ -142,11 +142,11 @@ public class ProductCategoryController implements TabContent {
 
 	private void setTableCellFactories() {
 		tcCategoryName.setCellValueFactory(cellData -> cellData.getValue().categoryNameProperty());
-		tcCategoryDesc.setCellValueFactory(cellData -> cellData.getValue().categoryDescProperty());	
-		//Set CSS
+		tcCategoryDesc.setCellValueFactory(cellData -> cellData.getValue().categoryDescProperty());
+		// Set CSS
 		tcCategoryName.getStyleClass().add("character-cell");
 		tcCategoryDesc.getStyleClass().add("character-cell");
-		
+
 	}
 
 	public void onSelectedRowChanged(ObservableValue<? extends ProductCategory> observable, ProductCategory oldValue,
@@ -163,7 +163,7 @@ public class ProductCategoryController implements TabContent {
 		ProductCategory productCategory = new ProductCategory();
 		productCategory.setCategoryName(txtCategoryName.getText());
 		productCategory.setCategoryDescription(txtCategoryDesc.getText());
-		StatusDTO status = productCategoryService.addCategory(productCategory);
+		StatusDTO status = productCategoryService.add(productCategory);
 		if (status.getStatusCode() == 0) {
 			restFields();
 			loadData();
@@ -229,15 +229,22 @@ public class ProductCategoryController implements TabContent {
 		} else {
 			Alert alert = alertHelper.showConfirmAlertWithYesNo(currentStage, null, "Are you sure?");
 			if (alert.getResult() == ButtonType.YES) {
-				List<Product> productList = productCategoryService.getAllProductsForCategory(categoryCode);
+				ProductCategory productCategory = new ProductCategory();
+				productCategory.setCategoryCode(categoryCode);
+				List<Product> productList = productCategoryService.getProductsUnterCategory(productCategory);
 				if (productList.size() > 0) {
 					alertHelper.showErrorAlert(currentStage, "Error", null, "Total " + productList.size()
 							+ " Products under this category. Please delete the products first in order to delete the category.");
 				} else {
-					productCategoryService.deleteCategory(categoryCode);
-					alertHelper.showSuccessNotification("Category deleted successfully");
-					loadData();
-					restFields();
+					StatusDTO status = productCategoryService.delete(productCategory);
+					if (status.getStatusCode() == 0) {
+						alertHelper.showSuccessNotification("Category deleted successfully");
+						loadData();
+						restFields();
+					} else {
+						alertHelper.showDataDeleteErrAlert(currentStage);
+					}
+
 				}
 
 			} else {
@@ -277,7 +284,7 @@ public class ProductCategoryController implements TabContent {
 		productCategory.setCategoryName(txtCategoryName.getText());
 		productCategory.setCategoryDescription(txtCategoryDesc.getText());
 
-		StatusDTO status = productCategoryService.updateCategory(productCategory);
+		StatusDTO status = productCategoryService.update(productCategory);
 		if (status.getStatusCode() == 0) {
 			restFields();
 			loadData();
@@ -294,7 +301,7 @@ public class ProductCategoryController implements TabContent {
 	@Override
 	public void setUserDetails(UserDetails user) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

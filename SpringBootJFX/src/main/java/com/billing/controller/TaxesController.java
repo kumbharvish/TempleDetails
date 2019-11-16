@@ -242,10 +242,15 @@ public class TaxesController implements TabContent {
 			if (alert.getResult() == ButtonType.YES) {
 				Tax tax = new Tax();
 				tax.setId(taxCode);
-				taxesService.delete(tax);
-				alertHelper.showSuccessNotification("Tax deleted successfully");
-				loadData();
-				restFields();
+				StatusDTO status = taxesService.delete(tax);
+				if (status.getStatusCode() == 0) {
+					alertHelper.showSuccessNotification("Tax deleted successfully");
+					loadData();
+					restFields();
+				} else {
+					alertHelper.showDataDeleteErrAlert(currentStage);
+				}
+
 			}
 
 		}

@@ -77,6 +77,8 @@ public class AppConstants {
 	public static final String RENEW_LICENESE = "Renew License";
 
 	public static final String DATA_SAVE_ERROR = "An error occurred in saving the data !";
+	
+	public static final String DATA_DELETE_ERROR = "An error occurred in deleting the data !";
 
 	public static final String DATA_FETCH_ERROR = "An error occurred in saving the data !";
 

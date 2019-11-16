@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.billing.dto.Customer;
 import com.billing.dto.StatusDTO;
 import com.billing.dto.Supplier;
 import com.billing.dto.UserDetails;
@@ -160,17 +159,16 @@ public class SuppliersController extends AppContext implements TabContent {
 					if (newValue == null || newValue.isEmpty()) {
 						filteredList.setPredicate(null);
 					} else {
-						filteredList.setPredicate(
-								(Supplier t) -> {
-									// Compare name and Mobile number
-									String lowerCaseFilter = newValue.toLowerCase();
-									if (t.getSupplierName().toLowerCase().contains(lowerCaseFilter)) {
-										return true;
-									}else if(String.valueOf(t.getSupplierMobile()).contains(lowerCaseFilter)) {
-										return true;
-									}
-									return false;
-								});
+						filteredList.setPredicate((Supplier t) -> {
+							// Compare name and Mobile number
+							String lowerCaseFilter = newValue.toLowerCase();
+							if (t.getSupplierName().toLowerCase().contains(lowerCaseFilter)) {
+								return true;
+							} else if (String.valueOf(t.getSupplierMobile()).contains(lowerCaseFilter)) {
+								return true;
+							}
+							return false;
+						});
 					}
 				});
 	}
@@ -244,10 +242,17 @@ public class SuppliersController extends AppContext implements TabContent {
 		} else {
 			Alert alert = alertHelper.showConfirmAlertWithYesNo(currentStage, null, "Are you sure?");
 			if (alert.getResult() == ButtonType.YES) {
-				supplierService.deleteSupplier(supplierId);
-				resetFields();
-				loadData();
-				alertHelper.showSuccessNotification("Supplier deleted successfully");
+				Supplier supplier = new Supplier();
+				supplier.setSupplierID(supplierId);
+				StatusDTO statusDelete = supplierService.delete(supplier);
+				if (statusDelete.getStatusCode() == 0) {
+					resetFields();
+					loadData();
+					alertHelper.showSuccessNotification("Supplier deleted successfully");
+				} else {
+					alertHelper.showDataDeleteErrAlert(currentStage);
+				}
+
 			} else {
 				resetFields();
 			}
@@ -290,7 +295,7 @@ public class SuppliersController extends AppContext implements TabContent {
 
 	@Override
 	public boolean loadData() {
-		List<Supplier> list = supplierService.getAllSuppliers();
+		List<Supplier> list = supplierService.getAll();
 		ObservableList<Supplier> tableData = FXCollections.observableArrayList();
 		tableData.addAll(list);
 		filteredList = new FilteredList(tableData, null);
@@ -315,23 +320,23 @@ public class SuppliersController extends AppContext implements TabContent {
 
 	@Override
 	public boolean saveData() {
-			Supplier sp = new Supplier();
-			sp.setSupplierName(txtName.getText());
-			sp.setCity(txtCity.getText());
-			sp.setSupplierAddress(txtAddress.getText());
-			sp.setEmailId(txtEmail.getText());
-			sp.setComments(txtComments.getText());
-			sp.setSupplierMobile(Long.parseLong(txtMobileNo.getText()));
-			sp.setPanNo(txtPAN.getText());
-			sp.setGstNo(txtGSTNo.getText());
-			boolean flag = supplierService.addSupplier(sp);
-			if (flag) {
-				resetFields();
-				loadData();
-				alertHelper.showSuccessNotification("Supplier added successfully");
-			} else {
-				alertHelper.showDataSaveErrAlert(currentStage);
-			}
+		Supplier sp = new Supplier();
+		sp.setSupplierName(txtName.getText());
+		sp.setCity(txtCity.getText());
+		sp.setSupplierAddress(txtAddress.getText());
+		sp.setEmailId(txtEmail.getText());
+		sp.setComments(txtComments.getText());
+		sp.setSupplierMobile(Long.parseLong(txtMobileNo.getText()));
+		sp.setPanNo(txtPAN.getText());
+		sp.setGstNo(txtGSTNo.getText());
+		StatusDTO status = supplierService.add(sp);
+		if (status.getStatusCode() == 0) {
+			resetFields();
+			loadData();
+			alertHelper.showSuccessNotification("Supplier added successfully");
+		} else {
+			alertHelper.showDataSaveErrAlert(currentStage);
+		}
 		return true;
 	}
 
@@ -347,8 +352,8 @@ public class SuppliersController extends AppContext implements TabContent {
 		sp.setGstNo(txtGSTNo.getText());
 		sp.setSupplierID(supplierId);
 
-		boolean flag = supplierService.updateSupplier(sp);
-		if (flag) {
+		StatusDTO status = supplierService.update(sp);
+		if (status.getStatusCode() == 0) {
 			resetFields();
 			loadData();
 			alertHelper.showSuccessNotification("Supplier updated successfully");

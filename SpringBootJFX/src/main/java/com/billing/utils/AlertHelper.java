@@ -145,6 +145,11 @@ public class AlertHelper {
 		showErrorAlert(alertOwner, "Error", "Error in saving data", AppConstants.DATA_SAVE_ERROR);
 	}
 	
+	public void showDataDeleteErrAlert(Stage alertOwner) {
+		beep();
+		showErrorAlert(alertOwner, "Error", "Error in delete data", AppConstants.DATA_DELETE_ERROR);
+	}
+	
 	public void showWarningNotification(String contextText){
 		Notifications.create()
         .title("Warning")

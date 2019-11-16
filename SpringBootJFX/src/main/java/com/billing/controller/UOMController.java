@@ -115,7 +115,7 @@ public class UOMController implements TabContent {
 
 	@Override
 	public boolean loadData() {
-		List<MeasurementUnit> list = measurementUnitsService.getAllUOM();
+		List<MeasurementUnit> list = measurementUnitsService.getAll();
 		ObservableList<MeasurementUnit> uomTableData = FXCollections.observableArrayList();
 		uomTableData.addAll(list);
 		tableView.setItems(uomTableData);
@@ -164,7 +164,7 @@ public class UOMController implements TabContent {
 		MeasurementUnit uom = new MeasurementUnit();
 		uom.setName(txtUOMName.getText());
 		uom.setDescription(txtUOMDesc.getText());
-		StatusDTO status = measurementUnitsService.addUOM(uom);
+		StatusDTO status = measurementUnitsService.add(uom);
 		if (status.getStatusCode() == 0) {
 			restFields();
 			loadData();
@@ -229,10 +229,16 @@ public class UOMController implements TabContent {
 		} else {
 			Alert alert = alertHelper.showConfirmAlertWithYesNo(currentStage, null, "Are you sure?");
 			if (alert.getResult() == ButtonType.YES) {
-				measurementUnitsService.deleteUOM(uomCode);
-				alertHelper.showSuccessNotification("Unit of measure deleted sucessfully");
-				loadData();
-				restFields();
+				MeasurementUnit uom = new MeasurementUnit();
+				uom.setId(uomCode);
+				StatusDTO status = measurementUnitsService.delete(uom);
+				if (status.getStatusCode() == 0) {
+					alertHelper.showSuccessNotification("Unit of measure deleted sucessfully");
+					loadData();
+					restFields();
+				} else {
+					alertHelper.showDataDeleteErrAlert(currentStage);
+				}
 			}
 
 		}
@@ -268,7 +274,7 @@ public class UOMController implements TabContent {
 		uom.setName(txtUOMName.getText());
 		uom.setDescription(txtUOMDesc.getText());
 
-		StatusDTO status = measurementUnitsService.updateUOM(uom);
+		StatusDTO status = measurementUnitsService.update(uom);
 		if (status.getStatusCode() == 0) {
 			restFields();
 			loadData();

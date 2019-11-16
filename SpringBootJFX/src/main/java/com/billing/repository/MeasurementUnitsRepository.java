@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -13,44 +12,44 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import com.billing.dto.Tax;
+import com.billing.dto.MeasurementUnit;
 import com.billing.dto.StatusDTO;
 import com.billing.utils.DBUtils;
 
 @Repository
-public class TaxesRepository {
+public class MeasurementUnitsRepository {
 
 	@Autowired
 	DBUtils dbUtils;
 
-	private static final Logger logger = LoggerFactory.getLogger(TaxesRepository.class);
+	private static final Logger logger = LoggerFactory.getLogger(MeasurementUnitsRepository.class);
 
-	private static final String GET_ALL_TAXES = "SELECT * FROM TAXES";
+	private static final String GET_ALL_UOM = "SELECT * FROM MEASUREMENT_UNITS";
 
-	private static final String ADD_TAX = "INSERT INTO TAXES " + "(NAME,VALUE)" + " VALUES(?,?)";
+	private static final String ADD_UOM = "INSERT INTO MEASUREMENT_UNITS " + "(NAME,DESCRIPTION)" + " VALUES(?,?)";
 
-	private static final String DELETE_TAX = "DELETE FROM TAXES WHERE ID=?";
+	private static final String DELETE_UOM = "DELETE FROM MEASUREMENT_UNITS WHERE ID=?";
 
-	private static final String UPDATE_TAX = "UPDATE TAXES SET NAME=?," + "VALUE=?" + " WHERE ID=?";
+	private static final String UPDATE_UOM = "UPDATE MEASUREMENT_UNITS SET NAME=?," + "DESCRIPTION=?" + " WHERE ID=?";
 
-	// Fetch all Taxes
-	public List<Tax> getAllTax() {
+	// Fetch all Units of Measure
+	public List<MeasurementUnit> getAllUOM() {
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		Tax tax = null;
-		List<Tax> taxList = new ArrayList<Tax>();
+		MeasurementUnit uom = null;
+		List<MeasurementUnit> uomList = new ArrayList<MeasurementUnit>();
 		try {
 			conn = dbUtils.getConnection();
-			stmt = conn.prepareStatement(GET_ALL_TAXES);
+			stmt = conn.prepareStatement(GET_ALL_UOM);
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				tax = new Tax();
-				tax.setId(rs.getInt("ID"));
-				tax.setName(rs.getString("NAME"));
-				tax.setValue(rs.getDouble("VALUE"));
+				uom = new MeasurementUnit();
+				uom.setId(rs.getInt("ID"));
+				uom.setName(rs.getString("NAME"));
+				uom.setDescription(rs.getString("DESCRIPTION"));
 
-				taxList.add(tax);
+				uomList.add(uom);
 			}
 			rs.close();
 		} catch (Exception e) {
@@ -59,25 +58,25 @@ public class TaxesRepository {
 		} finally {
 			DBUtils.closeConnection(stmt, conn);
 		}
-		return taxList;
+		return uomList;
 	}
 
-	// Fetch all Taxes : Overloaded with Connection
-	public List<Tax> getAllTax(Connection conn) {
+	// Fetch all Units of Measure : Overloaded with connection
+	public List<MeasurementUnit> getAllUOM(Connection conn) {
 		PreparedStatement stmt = null;
-		Tax tax = null;
-		List<Tax> taxList = new ArrayList<Tax>();
+		MeasurementUnit uom = null;
+		List<MeasurementUnit> uomList = new ArrayList<MeasurementUnit>();
 		try {
-			stmt = conn.prepareStatement(GET_ALL_TAXES);
+			stmt = conn.prepareStatement(GET_ALL_UOM);
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				tax = new Tax();
-				tax.setId(rs.getInt("ID"));
-				tax.setName(rs.getString("NAME"));
-				tax.setValue(rs.getDouble("VALUE"));
+				uom = new MeasurementUnit();
+				uom.setId(rs.getInt("ID"));
+				uom.setName(rs.getString("NAME"));
+				uom.setDescription(rs.getString("DESCRIPTION"));
 
-				taxList.add(tax);
+				uomList.add(uom);
 			}
 			rs.close();
 			stmt.close();
@@ -85,19 +84,19 @@ public class TaxesRepository {
 			e.printStackTrace();
 			logger.error("Exception : ", e);
 		}
-		return taxList;
+		return uomList;
 	}
 
-	public StatusDTO addTax(Tax tax) {
+	public StatusDTO addUOM(MeasurementUnit unit) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();
 		try {
-			if (tax != null) {
+			if (unit != null) {
 				conn = dbUtils.getConnection();
-				stmt = conn.prepareStatement(ADD_TAX);
-				stmt.setString(1, tax.getName());
-				stmt.setDouble(2, tax.getValue());
+				stmt = conn.prepareStatement(ADD_UOM);
+				stmt.setString(1, unit.getName());
+				stmt.setString(2, unit.getDescription());
 
 				int i = stmt.executeUpdate();
 				if (i > 0) {
@@ -115,14 +114,14 @@ public class TaxesRepository {
 		return status;
 	}
 
-	public StatusDTO deleteTax(int taxId) {
+	public StatusDTO deleteUOM(int uomId) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();
 		try {
 			conn = dbUtils.getConnection();
-			stmt = conn.prepareStatement(DELETE_TAX);
-			stmt.setInt(1, taxId);
+			stmt = conn.prepareStatement(DELETE_UOM);
+			stmt.setInt(1, uomId);
 
 			int i = stmt.executeUpdate();
 			if (i > 0) {
@@ -139,17 +138,17 @@ public class TaxesRepository {
 		return status;
 	}
 
-	public StatusDTO updateTax(Tax tax) {
+	public StatusDTO updateUOM(MeasurementUnit uom) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();
 		try {
-			if (tax != null) {
+			if (uom != null) {
 				conn = dbUtils.getConnection();
-				stmt = conn.prepareStatement(UPDATE_TAX);
-				stmt.setString(1, tax.getName());
-				stmt.setDouble(2, tax.getValue());
-				stmt.setInt(3, tax.getId());
+				stmt = conn.prepareStatement(UPDATE_UOM);
+				stmt.setString(1, uom.getName());
+				stmt.setString(2, uom.getDescription());
+				stmt.setInt(3, uom.getId());
 
 				int i = stmt.executeUpdate();
 				if (i > 0) {

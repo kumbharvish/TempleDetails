@@ -160,8 +160,8 @@ public class ProductService implements AppService<Product> {
 	public HashMap<String, List> getComboboxData() {
 		HashMap<String, List> dataMap = new HashMap<>();
 		Connection conn = dbUtils.getConnection();
-		List<ProductCategory> categoryList = productCategoryService.getAllCategories(conn);
-		List<MeasurementUnit> uomList = measurementUnitsService.getAllUOM(conn);
+		List<ProductCategory> categoryList = productCategoryService.getAll(conn);
+		List<MeasurementUnit> uomList = measurementUnitsService.getAll(conn);
 		List<Tax> taxList = taxesService.getAll(conn);
 		DBUtils.closeConnection(null, conn);
 
