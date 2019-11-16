@@ -558,7 +558,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	public void getCustomerNameList() {
 		customerEntries = new TreeSet<String>();
 		customerMap = new HashMap<String, Customer>();
-		for (Customer cust : customerService.getAllCustomers()) {
+		for (Customer cust : customerService.getAll()) {
 			customerEntries.add(cust.getCustMobileNumber() + " : " + cust.getCustName());
 			customerMap.put(cust.getCustMobileNumber() + " : " + cust.getCustName(), cust);
 		}

@@ -621,7 +621,7 @@ public class SalesReturnController extends AppContext implements TabContent {
 		}
 
 		if ("PENDING".equals(bill.getPaymentMode())) {
-			Customer cust = customerService.getCustomerDetails(bill.getCustomerMobileNo());
+			Customer cust = customerService.getCustomer(bill.getCustomerMobileNo());
 			double returnTotalAmt = Double
 					.valueOf(IndianCurrencyFormatting.removeFormattingWithCurrency(txtReturnTotalAmount.getText()));
 			if (cust.getBalanceAmt() < returnTotalAmt) {

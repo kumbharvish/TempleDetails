@@ -14,7 +14,7 @@ import com.billing.main.AppContext;
 import com.billing.main.Global;
 import com.billing.service.AppLicenseService;
 import com.billing.service.StoreDetailsService;
-import com.billing.service.CustomerService;
+import com.billing.service.UserService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
@@ -54,7 +54,7 @@ public class LoginController extends AppContext{
 	AppUtils appUtils;
 	
 	@Autowired
-	CustomerService userService;
+	UserService userService;
 	
 	@Autowired
 	AppLicenseService appLicenseService;

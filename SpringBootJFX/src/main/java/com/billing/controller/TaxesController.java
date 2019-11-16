@@ -58,7 +58,7 @@ public class TaxesController implements TabContent {
 
 	@FXML
 	private TextField txtTaxValue;
-	
+
 	@FXML
 	private Label txtTaxValueErrorMsg;
 
@@ -116,7 +116,7 @@ public class TaxesController implements TabContent {
 
 	@Override
 	public boolean loadData() {
-		List<Tax> list = taxesService.getAllTax();
+		List<Tax> list = taxesService.getAll();
 		ObservableList<Tax> taxTableData = FXCollections.observableArrayList();
 		taxTableData.addAll(list);
 		tableView.setItems(taxTableData);
@@ -139,9 +139,9 @@ public class TaxesController implements TabContent {
 		txtTaxNameErrorMsg.visibleProperty().bind(txtTaxNameErrorMsg.textProperty().length().greaterThanOrEqualTo(1));
 		txtTaxValueErrorMsg.managedProperty().bind(txtTaxValueErrorMsg.visibleProperty());
 		txtTaxValueErrorMsg.visibleProperty().bind(txtTaxValueErrorMsg.textProperty().length().greaterThanOrEqualTo(1));
-		
+
 		txtTaxValue.textProperty().addListener(appUtils.getForceDecimalNumberListner());
-		
+
 		setTableCellFactories();
 		tableView.getSelectionModel().selectedItemProperty().addListener(this::onSelectedRowChanged);
 		taxCode = 0;
@@ -149,15 +149,15 @@ public class TaxesController implements TabContent {
 
 	private void setTableCellFactories() {
 		tcTaxName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
-		tcTaxValue.setCellValueFactory(cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getValue())));
+		tcTaxValue.setCellValueFactory(
+				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getValue())));
 		// Set CSS
 		tcTaxName.getStyleClass().add("character-cell");
 		tcTaxValue.getStyleClass().add("numeric-cell");
 
 	}
 
-	public void onSelectedRowChanged(ObservableValue<? extends Tax> observable, Tax oldValue,
-			Tax newValue) {
+	public void onSelectedRowChanged(ObservableValue<? extends Tax> observable, Tax oldValue, Tax newValue) {
 		if (newValue != null) {
 			txtTaxName.setText(newValue.getName());
 			txtTaxValue.setText(appUtils.getDecimalFormat(newValue.getValue()));
@@ -170,13 +170,13 @@ public class TaxesController implements TabContent {
 		Tax tax = new Tax();
 		tax.setName(txtTaxName.getText());
 		tax.setValue(Double.valueOf(txtTaxValue.getText()));
-		StatusDTO status = taxesService.addTax(tax);
+		StatusDTO status = taxesService.add(tax);
 		if (status.getStatusCode() == 0) {
 			restFields();
 			loadData();
 			alertHelper.showSuccessNotification("Tax added successfully");
 		} else {
-				alertHelper.showDataSaveErrAlert(currentStage);
+			alertHelper.showDataSaveErrAlert(currentStage);
 		}
 		return false;
 	}
@@ -240,7 +240,9 @@ public class TaxesController implements TabContent {
 		} else {
 			Alert alert = alertHelper.showConfirmAlertWithYesNo(currentStage, null, "Are you sure?");
 			if (alert.getResult() == ButtonType.YES) {
-				taxesService.deleteTax(taxCode);
+				Tax tax = new Tax();
+				tax.setId(taxCode);
+				taxesService.delete(tax);
 				alertHelper.showSuccessNotification("Tax deleted successfully");
 				loadData();
 				restFields();
@@ -279,13 +281,13 @@ public class TaxesController implements TabContent {
 		tax.setName(txtTaxName.getText());
 		tax.setValue(Double.valueOf(txtTaxValue.getText()));
 
-		StatusDTO status = taxesService.updateTax(tax);
+		StatusDTO status = taxesService.update(tax);
 		if (status.getStatusCode() == 0) {
 			restFields();
 			loadData();
 			alertHelper.showSuccessNotification("Tax updated successfully");
 		} else {
-				alertHelper.showDataSaveErrAlert(currentStage);
+			alertHelper.showDataSaveErrAlert(currentStage);
 		}
 	}
 

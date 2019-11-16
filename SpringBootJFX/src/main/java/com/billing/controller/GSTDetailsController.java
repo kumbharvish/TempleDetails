@@ -71,7 +71,7 @@ public class GSTDetailsController {
 				gstMapWithAmounts.put(gst.getName(), gst.getTaxableAmount());
 			}
 		}
-		taxList = taxesService.getAllTax();
+		taxList = taxesService.getAll();
 		int i = 0;
 		for (Tax t : taxList) {
 			String taxName = t.getName() + " (" + t.getValue() + "%)";

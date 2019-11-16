@@ -273,7 +273,9 @@ public class CustomersController extends AppContext implements TabContent {
 			} else {
 				Alert alert = alertHelper.showConfirmAlertWithYesNo(currentStage, null, "Are you sure?");
 				if (alert.getResult() == ButtonType.YES) {
-					customerService.deleteCustomer(Long.parseLong(txtMobileNo.getText()));
+					Customer customer = new Customer();
+					customer.setCustMobileNumber(Long.parseLong(txtMobileNo.getText()));
+					customerService.delete(customer);
 					alertHelper.showSuccessNotification("Customer deleted successfully");
 					resetFields();
 					loadData();
@@ -321,7 +323,7 @@ public class CustomersController extends AppContext implements TabContent {
 
 	@Override
 	public boolean loadData() {
-		List<Customer> list = customerService.getAllCustomers();
+		List<Customer> list = customerService.getAll();
 		ObservableList<Customer> tableData = FXCollections.observableArrayList();
 		tableData.addAll(list);
 		filteredList = new FilteredList(tableData, null);
@@ -351,7 +353,7 @@ public class CustomersController extends AppContext implements TabContent {
 		customer.setCustName(txtCustName.getText());
 		customer.setCustCity(txtCity.getText());
 		customer.setCustEmail(txtEmail.getText());
-		StatusDTO status = customerService.addCustomer(customer);
+		StatusDTO status = customerService.add(customer);
 		if (status.getStatusCode() == 0) {
 			alertHelper.showSuccessNotification("Customer added successfully");
 			resetFields();
@@ -374,8 +376,8 @@ public class CustomersController extends AppContext implements TabContent {
 		customer.setCustCity(txtCity.getText());
 		customer.setCustEmail(txtEmail.getText());
 
-		boolean isCustUpdated = customerService.updateCustomer(customer);
-		if (isCustUpdated) {
+		StatusDTO status = customerService.update(customer);
+		if (status.getStatusCode() == 0) {
 			alertHelper.showSuccessNotification("Customer updated successfully");
 			resetFields();
 			loadData();
@@ -508,10 +510,10 @@ public class CustomersController extends AppContext implements TabContent {
 
 							if (statusAddAmt.getStatusCode() == 0) {
 								alertHelper.showSuccessNotification("Pending amount updated successfully");
-								Customer cust1  = tableView.getSelectionModel().getSelectedItem();
+								Customer cust1 = tableView.getSelectionModel().getSelectedItem();
 								loadData();
 								// customer is not selected in table
-								if(cust1 == null) {
+								if (cust1 == null) {
 									cust1 = cust;
 								}
 								setUpdatedCustBalance(cust1.getCustMobileNumber());
@@ -537,10 +539,10 @@ public class CustomersController extends AppContext implements TabContent {
 
 							if (statusAddAmt.getStatusCode() == 0) {
 								alertHelper.showSuccessNotification("Pending amount updated succesfully");
-								Customer cust  = tableView.getSelectionModel().getSelectedItem();
+								Customer cust = tableView.getSelectionModel().getSelectedItem();
 								loadData();
 								// customer is not selected in table
-								if(cust == null) {
+								if (cust == null) {
 									cust = customerSt;
 								}
 								setUpdatedCustBalance(cust.getCustMobileNumber());
@@ -562,7 +564,7 @@ public class CustomersController extends AppContext implements TabContent {
 	}
 
 	protected void setUpdatedCustBalance(Long custMobileNumber) {
-		Customer customer = customerService.getCustomerDetails(custMobileNumber);
+		Customer customer = customerService.getCustomer(custMobileNumber);
 		setCustomerDetails(customer);
 	}
 

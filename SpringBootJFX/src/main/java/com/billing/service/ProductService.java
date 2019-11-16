@@ -42,7 +42,8 @@ public class ProductService implements AppService<Product> {
 
 	@Autowired
 	TaxesService taxesService;
-
+	
+	@Override
 	public List<Product> getAll() {
 		return productRepository.getAllProducts();
 	}
@@ -161,7 +162,7 @@ public class ProductService implements AppService<Product> {
 		Connection conn = dbUtils.getConnection();
 		List<ProductCategory> categoryList = productCategoryService.getAllCategories(conn);
 		List<MeasurementUnit> uomList = measurementUnitsService.getAllUOM(conn);
-		List<Tax> taxList = taxesService.getAllTax(conn);
+		List<Tax> taxList = taxesService.getAll(conn);
 		DBUtils.closeConnection(null, conn);
 
 		dataMap.put("CATEGORIES", categoryList);

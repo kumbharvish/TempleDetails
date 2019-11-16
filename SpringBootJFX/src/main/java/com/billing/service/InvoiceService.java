@@ -181,4 +181,10 @@ public class InvoiceService implements AppService<BillDetails> {
 	public Integer getNewInvoiceNumber() {
 		return invoiceRepository.getNewInvoiceNumber();
 	}
+
+	@Override
+	public List<BillDetails> getAll() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

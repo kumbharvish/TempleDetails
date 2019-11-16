@@ -227,7 +227,7 @@ public class CustomerPaymentController extends AppContext implements TabContent 
 	public void getCustomerNameList() {
 		entries = new TreeSet<String>();
 		customerMap = new HashMap<Long, Customer>();
-		for (Customer cust : customerService.getAllCustomers()) {
+		for (Customer cust : customerService.getAll()) {
 			entries.add(cust.getCustMobileNumber() + " : " + cust.getCustName());
 			customerMap.put(cust.getCustMobileNumber(), cust);
 		}

@@ -159,7 +159,7 @@ public class CustomerHistoryService {
 
 	public HashMap<Long, Customer> getCustomerMap() {
 		HashMap<Long, Customer> customerMap = new HashMap<Long, Customer>();
-		for (Customer cust : userService.getAllCustomers()) {
+		for (Customer cust : userService.getAll()) {
 			customerMap.put(cust.getCustMobileNumber(), cust);
 		}
 		return customerMap;

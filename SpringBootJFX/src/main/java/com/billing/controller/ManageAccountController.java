@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 
 import com.billing.dto.StatusDTO;
 import com.billing.dto.UserDetails;
-import com.billing.service.CustomerService;
+import com.billing.service.UserService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
@@ -38,7 +38,7 @@ public class ManageAccountController implements TabContent {
 	private BooleanProperty isDirty = new SimpleBooleanProperty(false);
 
 	@Autowired
-	CustomerService userService;
+	UserService userService;
 
 	@Autowired
 	AlertHelper alertHelper;
@@ -296,8 +296,8 @@ public class ManageAccountController implements TabContent {
 			userDtls.setEmail(txtEmail.getText());
 			userDtls.setMobileNo(txtMobile.getText().equals("") ? 0 : Long.valueOf(txtMobile.getText()));
 			userDtls.setUserId(userDetails.getUserId());
-			boolean isDetailsUpded = userService.updatePersonalDetails(userDtls);
-			if (isDetailsUpded) {
+			StatusDTO status = userService.update(userDtls);
+			if (status.getStatusCode() == 0) {
 				alertHelper.showSuccessNotification("Personal details updated successfully");
 			} else {
 				alertHelper.showDataSaveErrAlert(currentStage);
@@ -305,11 +305,10 @@ public class ManageAccountController implements TabContent {
 			}
 		} else if (rbChangePassword.isSelected()) {
 			UserDetails userDtls = new UserDetails();
-			boolean isPwdChanged = false;
 			userDtls.setUserId(userDetails.getUserId());
-			isPwdChanged = userService.changePassword(userDtls, appUtils.enc(txtExistingPwd.getText()),
+			StatusDTO status = userService.changePassword(userDtls, appUtils.enc(txtExistingPwd.getText()),
 					appUtils.enc(txtConfirmPassword.getText()));
-			if (isPwdChanged) {
+			if (status.getStatusCode() == 0) {
 				lblExistingPwdErrorMsg.setText("");
 				alertHelper.showSuccessNotification("Password changed successfully");
 			} else {

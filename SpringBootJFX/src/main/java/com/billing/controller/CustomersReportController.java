@@ -95,7 +95,7 @@ public class CustomersReportController implements TabContent {
 
 	@Override
 	public boolean loadData() {
-		List<Customer> list = customerService.getAllCustomers();
+		List<Customer> list = customerService.getAll();
 		customerList.addAll(list);
 		return true;
 	}
