@@ -2,8 +2,6 @@ package com.billing.controller;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -36,8 +34,6 @@ import javafx.util.Callback;
 
 @Controller
 public class CustomersReportController implements TabContent {
-
-	private static final Logger logger = LoggerFactory.getLogger(CustomersReportController.class);
 
 	@Autowired
 	AlertHelper alertHelper;

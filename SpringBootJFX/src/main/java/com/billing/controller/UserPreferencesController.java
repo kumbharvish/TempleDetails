@@ -27,7 +27,6 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 @SuppressWarnings("restriction")
@@ -48,12 +47,6 @@ public class UserPreferencesController implements TabContent {
 
 	@FXML
 	private BorderPane borderPane;
-
-	@FXML
-	private Label heading;
-
-	@FXML
-	private GridPane gridPane;
 
 	@FXML
 	private RadioButton rbGSTInclusive;

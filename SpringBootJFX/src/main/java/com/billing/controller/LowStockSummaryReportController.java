@@ -37,8 +37,6 @@ import javafx.util.Callback;
 @Controller
 public class LowStockSummaryReportController implements TabContent {
 
-	private static final Logger logger = LoggerFactory.getLogger(LowStockSummaryReportController.class);
-
 	@Autowired
 	AlertHelper alertHelper;
 

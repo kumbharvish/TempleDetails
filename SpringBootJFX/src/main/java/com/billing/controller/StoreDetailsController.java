@@ -26,11 +26,6 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-/**
- * FXML Controller class
- *
- * @author Vishal
- */
 @SuppressWarnings("restriction")
 @Controller
 public class StoreDetailsController implements TabContent {
@@ -87,9 +82,6 @@ public class StoreDetailsController implements TabContent {
 
 	@FXML
 	private Button btnSave;
-
-	@FXML
-	private Button btnClose;
 
 	private BooleanProperty isDirty = new SimpleBooleanProperty(false);
 

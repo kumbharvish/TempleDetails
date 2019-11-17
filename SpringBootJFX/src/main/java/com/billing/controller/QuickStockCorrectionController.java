@@ -1,18 +1,14 @@
 package com.billing.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.billing.constants.AppConstants;
 import com.billing.dto.Product;
 import com.billing.dto.UserDetails;
-import com.billing.service.ProductHistoryService;
 import com.billing.service.ProductService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
@@ -34,7 +30,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 @SuppressWarnings("restriction")
@@ -45,9 +40,6 @@ public class QuickStockCorrectionController implements TabContent {
 	ProductService productService;
 
 	@Autowired
-	ProductHistoryService productHistoryService;
-
-	@Autowired
 	AlertHelper alertHelper;
 
 	@Autowired
@@ -56,12 +48,6 @@ public class QuickStockCorrectionController implements TabContent {
 	public Stage currentStage = null;
 
 	private TabPane tabPane = null;
-
-	@FXML
-	private BorderPane borderPane;
-
-	@FXML
-	private Label heading;
 
 	@FXML
 	private RadioButton rbBarcode;
@@ -77,9 +63,6 @@ public class QuickStockCorrectionController implements TabContent {
 
 	@FXML
 	private Button btnUpdate;
-
-	@FXML
-	private Button btnClose;
 
 	@FXML
 	private TextField txtName;

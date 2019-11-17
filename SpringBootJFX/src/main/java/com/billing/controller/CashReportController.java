@@ -43,7 +43,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -65,19 +64,7 @@ public class CashReportController implements TabContent {
 	private TabPane tabPane = null;
 
 	@FXML
-	private BorderPane borderPane;
-
-	@FXML
-	private Label heading;
-
-	@FXML
-	private Button btnClose;
-
-	@FXML
 	private Button btnUpdateOpeningCash;
-
-	@FXML
-	private Button btnViewSettlementDetails;
 
 	@FXML
 	private DatePicker datePicker;

@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,9 +26,6 @@ public class AppProperties {
 	
 	@Autowired
 	AlertHelper alertHelper;
-	
-	
-	private static final Logger logger = LoggerFactory.getLogger(AppProperties.class);
 	
 	private static final String USER="USER";
 	private static final String COMPUTER="COMPUTER";

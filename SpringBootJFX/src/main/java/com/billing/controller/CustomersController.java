@@ -3,8 +3,6 @@ package com.billing.controller;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -25,7 +23,6 @@ import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -56,8 +53,6 @@ import javafx.util.Callback;
 @Controller
 public class CustomersController extends AppContext implements TabContent {
 
-	private static final Logger logger = LoggerFactory.getLogger(CustomersController.class);
-
 	private BooleanProperty isDirty = new SimpleBooleanProperty(false);
 
 	private final String ADD = "ADD";
@@ -83,9 +78,6 @@ public class CustomersController extends AppContext implements TabContent {
 	private TabPane tabPane = null;
 
 	FilteredList<Customer> filteredList;
-
-	@FXML
-	private Label heading;
 
 	@FXML
 	private TextField txtCustName;
@@ -125,9 +117,6 @@ public class CustomersController extends AppContext implements TabContent {
 
 	@FXML
 	private TextField txtSearchCustomer;
-
-	@FXML
-	private Button btnClose;
 
 	@FXML
 	private TableView<Customer> tableView;

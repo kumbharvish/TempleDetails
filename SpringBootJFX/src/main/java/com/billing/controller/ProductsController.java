@@ -49,7 +49,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -83,12 +82,6 @@ public class ProductsController extends AppContext implements TabContent {
 	FilteredList<Product> filteredList;
 
 	private String productCode;
-
-	@FXML
-	private Label heading;
-
-	@FXML
-	private GridPane gridPane;
 
 	@FXML
 	private ComboBox<String> cbProductCategory;

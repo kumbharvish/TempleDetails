@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -40,8 +38,6 @@ import javafx.stage.Stage;
 
 @Controller
 public class CustomerPaymentController extends AppContext implements TabContent {
-
-	private static final Logger logger = LoggerFactory.getLogger(CustomerPaymentController.class);
 
 	private BooleanProperty isDirty = new SimpleBooleanProperty(false);
 
@@ -87,9 +83,6 @@ public class CustomerPaymentController extends AppContext implements TabContent 
 
 	@FXML
 	private AutoCompleteTextField txtCustomer;
-
-	@FXML
-	private Button btnClose;
 
 	@FXML
 	private TableView<CustomerPaymentHistory> tableView;

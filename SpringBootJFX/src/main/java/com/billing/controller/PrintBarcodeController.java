@@ -101,9 +101,6 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 	private TextField txtSellPrice;
 
 	@FXML
-	private Button btnClose;
-
-	@FXML
 	private ImageView imageView;
 
 	@Override

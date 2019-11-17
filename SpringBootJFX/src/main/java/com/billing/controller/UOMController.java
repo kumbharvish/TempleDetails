@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.billing.dto.MeasurementUnit;
-import com.billing.dto.Product;
-import com.billing.dto.ProductCategory;
 import com.billing.dto.StatusDTO;
 import com.billing.dto.UserDetails;
 import com.billing.service.MeasurementUnitsService;

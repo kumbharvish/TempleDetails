@@ -76,9 +76,6 @@ public class LoginController extends AppContext {
 	private FXMLLoader fxmlLoader;
 
 	@FXML
-	private Button btnClose;
-
-	@FXML
 	private Button btnLogin;
 
 	@FXML

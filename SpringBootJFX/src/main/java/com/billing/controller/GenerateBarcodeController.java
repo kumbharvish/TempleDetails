@@ -3,8 +3,6 @@ package com.billing.controller;
 import java.util.HashMap;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -28,20 +26,15 @@ import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 @Controller
 public class GenerateBarcodeController extends AppContext implements TabContent {
-
-	private static final Logger logger = LoggerFactory.getLogger(GenerateBarcodeController.class);
 
 	private BooleanProperty isDirty = new SimpleBooleanProperty(false);
 
@@ -86,9 +79,6 @@ public class GenerateBarcodeController extends AppContext implements TabContent 
 
 	@FXML
 	private TextField txtSearchProduct;
-
-	@FXML
-	private Button btnClose;
 
 	@FXML
 	private TableView<Product> tableView;

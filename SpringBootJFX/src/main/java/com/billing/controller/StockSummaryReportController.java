@@ -4,16 +4,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.billing.dto.Product;
-import com.billing.dto.ProductProfitReport;
 import com.billing.dto.StockSummaryReport;
 import com.billing.dto.UserDetails;
-import com.billing.main.AppContext;
 import com.billing.service.PrinterService;
 import com.billing.service.ProductService;
 import com.billing.utils.AlertHelper;
@@ -40,8 +36,6 @@ import javafx.util.Callback;
 
 @Controller
 public class StockSummaryReportController implements TabContent {
-
-	private static final Logger logger = LoggerFactory.getLogger(StockSummaryReportController.class);
 
 	@Autowired
 	AlertHelper alertHelper;

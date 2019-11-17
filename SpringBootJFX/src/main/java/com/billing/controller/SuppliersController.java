@@ -2,8 +2,6 @@ package com.billing.controller;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -40,8 +38,6 @@ import javafx.stage.Stage;
 @Controller
 public class SuppliersController extends AppContext implements TabContent {
 
-	private static final Logger logger = LoggerFactory.getLogger(SuppliersController.class);
-
 	private BooleanProperty isDirty = new SimpleBooleanProperty(false);
 
 	@Autowired
@@ -62,9 +58,6 @@ public class SuppliersController extends AppContext implements TabContent {
 	private TabPane tabPane = null;
 
 	FilteredList<Supplier> filteredList;
-
-	@FXML
-	private Label heading;
 
 	@FXML
 	private TextField txtName;
@@ -107,9 +100,6 @@ public class SuppliersController extends AppContext implements TabContent {
 
 	@FXML
 	private TextField txtCity;
-
-	@FXML
-	private Button btnClose;
 
 	@FXML
 	private TableView<Supplier> tableView;

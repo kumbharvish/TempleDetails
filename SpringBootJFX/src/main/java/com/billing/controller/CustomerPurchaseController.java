@@ -34,7 +34,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
@@ -95,9 +94,6 @@ public class CustomerPurchaseController extends AppContext implements TabContent
 
 	@FXML
 	private AutoCompleteTextField txtCustomer;
-
-	@FXML
-	private Button btnClose;
 
 	@FXML
 	private TableView<BillDetails> tableView;

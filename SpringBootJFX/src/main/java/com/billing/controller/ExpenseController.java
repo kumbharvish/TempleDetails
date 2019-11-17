@@ -71,9 +71,6 @@ public class ExpenseController implements TabContent {
 	@FXML
 	private Button btnSave;
 
-	@FXML
-	private Button btnClose;
-
 	private BooleanProperty isDirty = new SimpleBooleanProperty(false);
 
 	@FXML

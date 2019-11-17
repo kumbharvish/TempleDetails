@@ -52,7 +52,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
@@ -103,9 +102,6 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 	private TabPane tabPane = null;
 
 	private ObservableList<BillDetails> tableDataList;
-
-	@FXML
-	private ScrollPane scrollPane;
 
 	@FXML
 	private RadioButton rbSearchByInvoiceNo;
