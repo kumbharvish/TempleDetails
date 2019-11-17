@@ -63,6 +63,8 @@ public class AppConstants {
 	public static final String LICENSE_ERROR = "License Error";
 
 	public static final String COMP_DATE = "Computer Date";
+	
+	public static final String ADD_USER_MSG = "Please add new user to use this software";
 
 	public static final String LICENSE_EXPIRED = "License Expired";
 

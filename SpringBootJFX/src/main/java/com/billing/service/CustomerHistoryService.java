@@ -31,7 +31,7 @@ public class CustomerHistoryService {
 	AppUtils appUtils;
 	
 	@Autowired
-	CustomerService userService;
+	CustomerService customerService;
 
 	private static final Logger logger = LoggerFactory.getLogger(CustomerHistoryService.class);
 
@@ -159,7 +159,7 @@ public class CustomerHistoryService {
 
 	public HashMap<Long, Customer> getCustomerMap() {
 		HashMap<Long, Customer> customerMap = new HashMap<Long, Customer>();
-		for (Customer cust : userService.getAll()) {
+		for (Customer cust : customerService.getAll()) {
 			customerMap.put(cust.getCustMobileNumber(), cust);
 		}
 		return customerMap;

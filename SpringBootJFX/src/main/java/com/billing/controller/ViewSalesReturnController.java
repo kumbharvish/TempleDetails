@@ -185,7 +185,7 @@ public class ViewSalesReturnController extends AppContext {
 	public void loadData() {
 		currentStage = (Stage) txtCustomer.getScene().getWindow();
 
-		List<ItemDetails> itemList = salesReturnService.getReturnedItemDetails(returnDetails.getReturnNumber());
+		List<ItemDetails> itemList = salesReturnService.getReturnedItemList(returnDetails.getReturnNumber());
 		returnDetails.setItemDetails(itemList);
 
 		for (ItemDetails item : returnDetails.getItemDetails()) {

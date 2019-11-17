@@ -507,7 +507,7 @@ public class SalesReturnController extends AppContext implements TabContent {
 			return false;
 		}
 		ReturnDetails returnDetails = prepareReturnDetails();
-		StatusDTO status = salesReturnService.saveReturn(returnDetails);
+		StatusDTO status = salesReturnService.add(returnDetails);
 		if (status.getStatusCode() != 0) {
 			saveStatus = false;
 		}

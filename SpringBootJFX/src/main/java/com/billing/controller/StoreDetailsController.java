@@ -205,12 +205,12 @@ public class StoreDetailsController implements TabContent {
 		myStoreDetails.setMobileNo(!txtMobileNo.getText().equals("") ? Long.valueOf(txtMobileNo.getText()) : 0);
 		myStoreDetails.setGstNo(txtGSTNo.getText());
 
-		StatusDTO statusUpdate = myStoreService.updateStoreDetails(myStoreDetails);
+		StatusDTO statusUpdate = myStoreService.update(myStoreDetails);
 		StatusDTO statusAdd = null;
 		if (statusUpdate.getStatusCode()==0) {
 			alertHelper.showSuccessNotification("Details updated successfully");
 		} else if(statusUpdate.getStatusCode()==1){
-			statusAdd = myStoreService.addStoreDetails(myStoreDetails);
+			statusAdd = myStoreService.add(myStoreDetails);
 			if(statusAdd.getStatusCode()==0){
 				alertHelper.showSuccessNotification("Details saved successfully");
 			}else {

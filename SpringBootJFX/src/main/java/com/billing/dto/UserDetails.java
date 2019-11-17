@@ -10,6 +10,7 @@ public class UserDetails {
 	private Long mobileNo;
 	private String email;
 	private String userType;
+	private String isActive;
 	
 	public int getUserId() {
 		return userId;
@@ -58,6 +59,12 @@ public class UserDetails {
 	}
 	public void setUserType(String userType) {
 		this.userType = userType;
+	}
+	public String getIsActive() {
+		return isActive;
+	}
+	public void setIsActive(String isActive) {
+		this.isActive = isActive;
 	}
 	
 	
