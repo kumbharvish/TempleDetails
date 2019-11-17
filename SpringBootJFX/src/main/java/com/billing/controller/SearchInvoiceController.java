@@ -21,7 +21,6 @@ import com.billing.dto.ReturnDetails;
 import com.billing.dto.StatusDTO;
 import com.billing.dto.UserDetails;
 import com.billing.main.AppContext;
-import com.billing.service.BillingService;
 import com.billing.service.CustomerService;
 import com.billing.service.InvoiceService;
 import com.billing.service.PrinterService;
@@ -93,9 +92,6 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 
 	@Autowired
 	ProductHistoryService productHistoryService;
-
-	@Autowired
-	BillingService billingService;
 
 	@Autowired
 	PrinterService printerService;

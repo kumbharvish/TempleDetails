@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import com.billing.constants.AppConstants;
 import com.billing.dto.CashReport;
 import com.billing.dto.Customer;
+import com.billing.dto.GraphDTO;
 import com.billing.dto.MonthlyReport;
 import com.billing.dto.ProfitLossData;
 import com.billing.dto.ProfitLossDetails;
@@ -80,6 +81,73 @@ public class ReportRepository {
 	private static final String GET_SALES_RETURN_PROFIT_AMT = "SELECT  SUM(RETURN_TOTAL_AMOUNT-RETURN_PURCHASE_AMT) AS NEGATIVE_PROFIT FROM SALES_RETURN_DETAILS  WHERE DATE(RETURN_DATE) BETWEEN ? AND ? AND RETURN_PURCHASE_AMT!=0";
 
 	private static final String GET_TOTAL_EXP = "SELECT ED.CATEGORY,ED.AMOUNT FROM EXPENSE_DETAILS ED,APP_EXPENSE_TYPES ET WHERE DATE(DATE) BETWEEN ? and ? and ED.CATEGORY=ET.NAME AND ET.TYPE !='SAVINGS';";
+
+	private static final String INS_OPENING_CASH = "INSERT INTO CASH_COUNTER " + "(DATE,AMOUNT)" + " VALUES(?,?)";
+
+	private static final String UPDATE_OPENING_CASH = "UPDATE CASH_COUNTER SET AMOUNT=?" + " WHERE DATE=?";
+
+	// Graphic Report
+
+	private static final String PAYMENT_MODE_AMOUNT = "SELECT PAYMENT_MODE,SUM(NET_SALES_AMOUNT) AS TOTAL_AMT FROM CUSTOMER_BILL_DETAILS WHERE "
+			+ "DATE(BILL_DATE_TIME) BETWEEN ? AND ?  GROUP BY PAYMENT_MODE ORDER BY SUM(NET_SALES_AMOUNT) DESC";
+
+	private static final String DAILY_SALES_AMOUNT_REPORT = "SELECT DATE_FORMAT(BILL_DATE_TIME,'%d %b %y') AS BILL_DATE,SUM(NET_SALES_AMOUNT) AS TOTAL_AMT,SUM(BILL_PURCHASE_AMT) AS TOTAL_PUR_AMT FROM CUSTOMER_BILL_DETAILS "
+			+ "GROUP BY DATE_FORMAT(BILL_DATE_TIME,'%d %b %y') ORDER BY BILL_DATE_TIME DESC ;";
+
+	private static final String MONTHLY_SALES_AMOUNT_REPORT = "SELECT DATE_FORMAT(BILL_DATE_TIME,'%b %y') AS BILL_DATE,SUM(NET_SALES_AMOUNT) AS TOTAL_AMT,SUM(BILL_PURCHASE_AMT) AS TOTAL_PUR_AMT FROM CUSTOMER_BILL_DETAILS "
+			+ "GROUP BY DATE_FORMAT(BILL_DATE_TIME,'%b %y') ORDER BY BILL_DATE_TIME DESC ;";
+
+	// Add Opening Cash
+	public StatusDTO addOpeningCash(double amount) {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		StatusDTO status = new StatusDTO();
+		try {
+			conn = dbUtils.getConnection();
+			stmt = conn.prepareStatement(INS_OPENING_CASH);
+			stmt.setString(1, appUtils.getTodaysDate());
+			stmt.setDouble(2, amount);
+
+			int i = stmt.executeUpdate();
+			if (i > 0) {
+				status.setStatusCode(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			status.setException(e.getMessage());
+			status.setStatusCode(-1);
+			logger.info("Exception : ", e);
+		} finally {
+			DBUtils.closeConnection(stmt, conn);
+		}
+		return status;
+	}
+
+	// Update Opening Cash
+	public StatusDTO updateOpeningCash(double amount, String date) {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		StatusDTO status = new StatusDTO();
+		try {
+			conn = dbUtils.getConnection();
+			stmt = conn.prepareStatement(UPDATE_OPENING_CASH);
+			stmt.setDouble(1, amount);
+			stmt.setString(2, date);
+
+			int i = stmt.executeUpdate();
+			if (i > 0) {
+				status.setStatusCode(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			status.setException(e.getMessage());
+			status.setStatusCode(-1);
+			logger.info("Exception : ", e);
+		} finally {
+			DBUtils.closeConnection(stmt, conn);
+		}
+		return status;
+	}
 
 	// Get Total Amount of Sales except pending bills
 	public List<CashReport> getCashCounterDetails(String fromDate, String toDate) {
@@ -596,14 +664,14 @@ public class ReportRepository {
 
 	}
 
-	/*private StatusDTO doRecurrsiveInsertOpeningAmount() {
-		StatusDTO status = new StatusDTO(-1);
-		double stockValueAmount = getStockValueAmount();
-		System.out.println("Stock Value Amount : " + stockValueAmount);
-		addOpeningStockAmount(appUtils.getCurrentTimestamp(), appUtils.getDecimalRoundUp2Decimal(stockValueAmount));
-		return status;
-	}
-*/
+	/*
+	 * private StatusDTO doRecurrsiveInsertOpeningAmount() { StatusDTO status = new
+	 * StatusDTO(-1); double stockValueAmount = getStockValueAmount();
+	 * System.out.println("Stock Value Amount : " + stockValueAmount);
+	 * addOpeningStockAmount(appUtils.getCurrentTimestamp(),
+	 * appUtils.getDecimalRoundUp2Decimal(stockValueAmount)); return status; }
+	 */
+	
 	// Get Stock Value Amount
 	public List<Customer> getSettledCustomerList(String date) {
 		List<Customer> customerList = new ArrayList<Customer>();
@@ -631,5 +699,98 @@ public class ReportRepository {
 			DBUtils.closeConnection(stmt, conn);
 		}
 		return customerList;
+	}
+
+	//Graphic Reports
+	// Get Payment mode wise collection
+	public List<GraphDTO> getPaymentModeAmounts(String fromDate, String toDate) {
+		List<GraphDTO> list = new ArrayList<GraphDTO>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		GraphDTO graph = null;
+		try {
+			if (fromDate == null) {
+				fromDate = "1947-01-01";
+			}
+			if (toDate == null) {
+				toDate = appUtils.getCurrentTimestamp();
+			}
+
+			conn = dbUtils.getConnection();
+			stmt = conn.prepareStatement(PAYMENT_MODE_AMOUNT);
+			stmt.setString(1, fromDate);
+			stmt.setString(2, toDate);
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				graph = new GraphDTO();
+				graph.setPaymentMode(rs.getString("PAYMENT_MODE"));
+				graph.setTotalAmount(rs.getDouble("TOTAL_AMT"));
+
+				list.add(graph);
+			}
+			rs.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception : ", e);
+		} finally {
+			DBUtils.closeConnection(stmt, conn);
+		}
+		return list;
+	}
+
+	// Get Daily Sales Amount & Profit Amount Bar Graph
+	public List<GraphDTO> getDailySalesReport() {
+		List<GraphDTO> list = new ArrayList<GraphDTO>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		GraphDTO graph = null;
+		try {
+			conn = dbUtils.getConnection();
+			stmt = conn.prepareStatement(DAILY_SALES_AMOUNT_REPORT);
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				graph = new GraphDTO();
+				graph.setDate(rs.getString("BILL_DATE"));
+				graph.setTotalCollection((int) rs.getDouble("TOTAL_AMT"));
+				graph.setTotalPurchaseAmt((int) rs.getDouble("TOTAL_PUR_AMT"));
+
+				list.add(graph);
+			}
+			rs.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception : ", e);
+		} finally {
+			DBUtils.closeConnection(stmt, conn);
+		}
+		return list;
+	}
+
+	// Get Monthly Sales Amount & Profit Amount Bar Graph
+	public List<GraphDTO> getMonthlySalesReport() {
+		List<GraphDTO> list = new ArrayList<GraphDTO>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		GraphDTO graph = null;
+		try {
+			conn = dbUtils.getConnection();
+			stmt = conn.prepareStatement(MONTHLY_SALES_AMOUNT_REPORT);
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				graph = new GraphDTO();
+				graph.setDate(rs.getString("BILL_DATE"));
+				graph.setTotalCollection((int) rs.getDouble("TOTAL_AMT"));
+				graph.setTotalPurchaseAmt((int) rs.getDouble("TOTAL_PUR_AMT"));
+
+				list.add(graph);
+			}
+			rs.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception : ", e);
+		} finally {
+			DBUtils.closeConnection(stmt, conn);
+		}
+		return list;
 	}
 }

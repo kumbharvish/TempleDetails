@@ -136,7 +136,7 @@ public class ExpenseController implements TabContent {
 
 	@Override
 	public boolean loadData() {
-		expensesService.populateDropdown(cbCategory);
+		expensesService.fillExpenseTypes(cbCategory);
 		cbCategory.getSelectionModel().select(0);
 		dateExpense.setValue(LocalDate.now());
 		isDirty.set(false);
@@ -161,7 +161,7 @@ public class ExpenseController implements TabContent {
 		expense.setAmount(Double.parseDouble(txtAmount.getText()));
 		expense.setDescription(txtDescription.getText());
 
-		StatusDTO status = expensesService.addExpense(expense);
+		StatusDTO status = expensesService.add(expense);
 		if (status.getStatusCode() == 0) {
 			alertHelper.showSuccessNotification("Expense saved successfully");
 		} else {

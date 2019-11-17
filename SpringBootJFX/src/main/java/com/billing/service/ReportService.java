@@ -8,8 +8,10 @@ import org.springframework.stereotype.Service;
 
 import com.billing.dto.CashReport;
 import com.billing.dto.Customer;
+import com.billing.dto.GraphDTO;
 import com.billing.dto.MonthlyReport;
 import com.billing.dto.ProfitLossDetails;
+import com.billing.dto.StatusDTO;
 import com.billing.repository.ReportRepository;
 
 @Service
@@ -36,6 +38,32 @@ public class ReportService {
 
 	public List<Customer> getSettledCustomerList(String date) {
 		return reportRepository.getSettledCustomerList(date);
+	}
+
+	// Cash Report : Add Opening Cash
+	public StatusDTO addOpeningCash(double amount) {
+		return reportRepository.addOpeningCash(amount);
+	}
+
+	// Cash Report : Update Opening Cash Amount
+	public StatusDTO updateOpeningCash(double amount, String date) {
+		return reportRepository.updateOpeningCash(amount, date);
+
+	}
+
+	// Graphic Report : Monthly Sales Report
+	public List<GraphDTO> getMonthlySalesReport() {
+		return reportRepository.getMonthlySalesReport();
+	}
+
+	// Graphic Report : Daily Sales Report
+	public List<GraphDTO> getDailySalesReport() {
+		return reportRepository.getDailySalesReport();
+	}
+
+	// Graphic Report : Payment Mode Wise Amount
+	public List<GraphDTO> getPaymentModeAmounts(String fromDate, String toDate) {
+		return reportRepository.getPaymentModeAmounts(fromDate, toDate);
 	}
 
 }

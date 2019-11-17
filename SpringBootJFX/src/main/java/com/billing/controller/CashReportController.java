@@ -1,6 +1,5 @@
 package com.billing.controller;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +11,6 @@ import com.billing.dto.CashReport;
 import com.billing.dto.Customer;
 import com.billing.dto.StatusDTO;
 import com.billing.dto.UserDetails;
-import com.billing.service.BillingService;
 import com.billing.service.ReportService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
@@ -58,9 +56,6 @@ public class CashReportController implements TabContent {
 
 	@Autowired
 	AlertHelper alertHelper;
-
-	@Autowired
-	BillingService billingService;
 
 	@Autowired
 	AppUtils appUtils;
@@ -300,7 +295,7 @@ public class CashReportController implements TabContent {
 			openingCashAmt.setText(appUtils.getDecimalFormat(openCash));
 		} else {
 			openingCashAmt.setText("0.00");
-			billingService.addOpeningCash(0);
+			reportService.addOpeningCash(0);
 		}
 
 		Node validateButton = dialog.getDialogPane().lookupButton(updateButtonType);
@@ -326,7 +321,7 @@ public class CashReportController implements TabContent {
 			try {
 				if (key != null && key != "") {
 					double newopenCash = Double.valueOf(key);
-					StatusDTO status = billingService.updateOpeningCash(newopenCash, appUtils.getTodaysDate());
+					StatusDTO status = reportService.updateOpeningCash(newopenCash, appUtils.getTodaysDate());
 					if (status.getStatusCode() == 0) {
 						loadData();
 					}
