@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import com.billing.dto.BillDetails;
 import com.billing.dto.Customer;
 import com.billing.dto.CustomersReport;
+import com.billing.dto.Expense;
+import com.billing.dto.ExpenseReport;
 import com.billing.dto.LowStockSummaryReport;
 import com.billing.dto.Product;
 import com.billing.dto.ProductCategory;
@@ -154,6 +156,25 @@ public class ExcelReportService {
 				excelReportMapping.addSalesReturnReportRow(rd, row);
 			}
 			excelReportMapping.addTotalSalesReturnReportRow(sheet, ++rowCount);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception:", e);
+		}
+		return workbook;
+	}
+
+	// Expense Report
+	public Workbook getExpenseReportWorkBook(ExpenseReport report, Workbook workbook) {
+		Sheet sheet = workbook.createSheet("Expense Report");
+		try {
+			excelReportMapping.setHeaderRowForExpenseReport(sheet);
+			int rowCount = 0;
+
+			for (Expense ex : report.getExpenseList()) {
+				Row row = sheet.createRow(++rowCount);
+				excelReportMapping.addExpenseReportRow(ex, row);
+			}
+			excelReportMapping.addTotalExpenseReportRow(sheet, ++rowCount);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("Exception:", e);

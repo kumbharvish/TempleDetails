@@ -56,12 +56,6 @@ public class ExpensesRepository {
 		String ORDER_BY_CLAUSE = "ORDER BY DATE ASC";
 		String CATEGORY = " AND CATEGORY = ? ";
 		try {
-			if (fromDate == null) {
-				fromDate = "1947-01-01";
-			}
-			if (toDate == null) {
-				toDate = appUtils.getCurrentTimestamp();
-			}
 			if (expenseCategory != null) {
 				query1.append(CATEGORY);
 			}

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.billing.dto.BillDetails;
 import com.billing.dto.Customer;
+import com.billing.dto.Expense;
 import com.billing.dto.Product;
 import com.billing.dto.ProductCategory;
 import com.billing.dto.ReturnDetails;
@@ -39,6 +40,8 @@ public class ExcelReportMapping {
 			"Stock Value" };
 
 	private String[] categoryWiseStockReportHeaders = { "Category Name", "Stock Quantity", "Stock Value" };
+
+	private String[] expenseReportHeaders = { "Expense Category", "Date", "Description", "Amount" };
 
 	private void setHeaderFont(Sheet sheet, CellStyle cellStyle) {
 		Font font = sheet.getWorkbook().createFont();
@@ -168,6 +171,46 @@ public class ExcelReportMapping {
 		cell.setCellStyle(cellStyleHeader);
 		cell = row.createCell(8);
 		cell.setCellFormula("SUM(I2:I" + rowNumber + ")");
+		cell.setCellStyle(cellStyleTotal);
+	}
+
+	// Expense Report
+	public void setHeaderRowForExpenseReport(Sheet sheet) {
+		CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+		setHeaderFont(sheet, cellStyle);
+		setColumnWidth(sheet, expenseReportHeaders.length);
+
+		int columnCount = 0;
+		Row row = sheet.createRow(0);
+		for (String headerName : expenseReportHeaders) {
+			Cell cell1 = row.createCell(++columnCount);
+			cell1.setCellStyle(cellStyle);
+			cell1.setCellValue(headerName);
+		}
+	}
+
+	public void addExpenseReportRow(Expense ex, Row row) {
+		Cell cell = row.createCell(1);
+		cell.setCellValue(ex.getCategory());
+		cell = row.createCell(2);
+		cell.setCellValue(ex.getDate());
+		cell = row.createCell(3);
+		cell.setCellValue(ex.getDescription());
+		cell = row.createCell(4);
+		cell.setCellValue(ex.getAmount());
+	}
+
+	public void addTotalExpenseReportRow(Sheet sheet, int rowNumber) {
+		CellStyle cellStyleHeader = sheet.getWorkbook().createCellStyle();
+		CellStyle cellStyleTotal = sheet.getWorkbook().createCellStyle();
+		setHeaderFont(sheet, cellStyleHeader);
+		setTotalFont(sheet, cellStyleTotal);
+		Row row = sheet.createRow(rowNumber + 1);
+		Cell cell = row.createCell(3);
+		cell.setCellValue("Total");
+		cell.setCellStyle(cellStyleHeader);
+		cell = row.createCell(4);
+		cell.setCellFormula("SUM(E2:E" + rowNumber + ")");
 		cell.setCellStyle(cellStyleTotal);
 	}
 

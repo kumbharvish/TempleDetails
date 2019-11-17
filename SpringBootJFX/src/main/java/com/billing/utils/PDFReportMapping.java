@@ -12,6 +12,8 @@ import com.billing.dto.Barcode;
 import com.billing.dto.BillDetails;
 import com.billing.dto.Customer;
 import com.billing.dto.CustomersReport;
+import com.billing.dto.Expense;
+import com.billing.dto.ExpenseReport;
 import com.billing.dto.ItemDetails;
 import com.billing.dto.LowStockSummaryReport;
 import com.billing.dto.Product;
@@ -166,6 +168,18 @@ public class PDFReportMapping {
 			map.put("TotalAmount", appUtils.getDecimalFormat(report.getTotalReturnAmount()));
 			map.put("TotalQty", appUtils.getDecimalFormat(0.0));
 			map.put("TotalNoOfItems", String.valueOf(0.0));
+			dataSourceMaps.add(map);
+		}
+		return dataSourceMaps;
+	}
+
+	// Expense Report
+	public List<Map<String, ?>> getDatasourceForExpenseReport(ExpenseReport report) {
+		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
+		for (Expense expense : report.getExpenseList()) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("FromDate", report.getFromDate());
+			map.put("ToDate", report.getToDate());
 			dataSourceMaps.add(map);
 		}
 		return dataSourceMaps;

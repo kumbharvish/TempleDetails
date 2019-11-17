@@ -167,7 +167,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onExpenseReportCommand(ActionEvent event) {
-
+		addTab("ExpensesReport", "Expense Report");
 	}
 
 	@FXML

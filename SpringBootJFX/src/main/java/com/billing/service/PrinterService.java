@@ -17,6 +17,7 @@ import com.billing.constants.AppConstants;
 import com.billing.dto.Barcode;
 import com.billing.dto.BillDetails;
 import com.billing.dto.CustomersReport;
+import com.billing.dto.ExpenseReport;
 import com.billing.dto.LowStockSummaryReport;
 import com.billing.dto.PrintTemplate;
 import com.billing.dto.ProductProfitReport;
@@ -192,6 +193,13 @@ public class PrinterService {
 			reportMetadata.setReportName(AppConstants.SALES_RETURN_REPORT_NAME + todaysDate + ".pdf");
 			reportMetadata.setDataSourceMap(pdfReportMapping.getDatasourceForSalesReturnReport(report));
 		}
+		// Expense Return Report
+		if (reportData instanceof ExpenseReport) {
+			ExpenseReport report = (ExpenseReport) reportData;
+			reportMetadata.setJasperName(AppConstants.EXPENSE_REPORT_JASPER);
+			reportMetadata.setReportName(AppConstants.EXPENSE_REPORT_NAME + todaysDate + ".pdf");
+			reportMetadata.setDataSourceMap(pdfReportMapping.getDatasourceForExpenseReport(report));
+		}
 		return reportMetadata;
 	}
 
@@ -235,6 +243,12 @@ public class PrinterService {
 			SalesReturnReport report = (SalesReturnReport) reportData;
 			reportMetadata.setReportName(AppConstants.SALES_RETURN_REPORT_NAME + todaysDate + ".xls");
 			reportMetadata.setWorkbook(excelReportService.getSalesReturnReportWorkBook(report, workbook));
+		}
+		// Expense Report
+		if (reportData instanceof ExpenseReport) {
+			ExpenseReport report = (ExpenseReport) reportData;
+			reportMetadata.setReportName(AppConstants.EXPENSE_REPORT_NAME + todaysDate + ".xls");
+			reportMetadata.setWorkbook(excelReportService.getExpenseReportWorkBook(report, workbook));
 		}
 		return reportMetadata;
 	}

@@ -23,8 +23,10 @@ public class AppConstants {
 	public static final String IS_THERMAL_PRINTER_SET = "IS_THERMAL_PRINTER_SET";
 
 	public static final String SALES_RETURN_ALLOWED_DAYS = "SALES_RETURN_ALLOWED_DAYS";
-	
+
 	public static final String LOW_STOCK_QUANTITY_LIMIT = "LOW_STOCK_QUANTITY_LIMIT";
+
+	public static final String SELECT_EXPENSE_CATEGORY = "-- Select Category --";
 
 	public static final String DEBIT = "DEBIT";
 
@@ -63,7 +65,7 @@ public class AppConstants {
 	public static final String LICENSE_ERROR = "License Error";
 
 	public static final String COMP_DATE = "Computer Date";
-	
+
 	public static final String ADD_USER_MSG = "Please add new user to use this software";
 
 	public static final String LICENSE_EXPIRED = "License Expired";
@@ -79,7 +81,7 @@ public class AppConstants {
 	public static final String RENEW_LICENESE = "Renew License";
 
 	public static final String DATA_SAVE_ERROR = "An error occurred in saving the data !";
-	
+
 	public static final String DATA_DELETE_ERROR = "An error occurred in deleting the data !";
 
 	public static final String DATA_FETCH_ERROR = "An error occurred in saving the data !";
@@ -110,12 +112,15 @@ public class AppConstants {
 	public static final String PRODUCT_PROFIT_REPORT_NAME = "Product_Profit_Report";
 
 	public static final String STOCK_SUMMARY_REPORT_NAME = "Stock_Summary_Report";
-	
+
 	public static final String CUSTOMERS_REPORT_NAME = "Customers_Report";
-	
+
 	public static final String LOW_STOCK_SUMMARY_REPORT_NAME = "Low_Stock_Summary_Report";
-	
+
 	public static final String SALES_RETURN_REPORT_NAME = "Sales_Return_Report";
+	
+	public static final String EXPENSE_REPORT_NAME = "Expense_Report";
+
 
 	// Jasper File Names
 	public static final String PRODUCT_PROFIT_REPORT_JASPER = "Product_Profit_Report.jasper";
@@ -131,6 +136,8 @@ public class AppConstants {
 	public static final String SALES_REPORT_JASPER = "Sales_Report.jasper";
 
 	public static final String SALES_RETURN_REPORT_JASPER = "Sales_Return_Report.jasper";
+	
+	public static final String EXPENSE_REPORT_JASPER = "Expense_Report.jasper";
 
 	public static final String BILL_PRINT_JASPER = "Bill_Print.jasper";
 

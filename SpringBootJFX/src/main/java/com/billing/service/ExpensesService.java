@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.billing.constants.AppConstants;
 import com.billing.dto.Expense;
 import com.billing.dto.ExpenseType;
 import com.billing.dto.StatusDTO;
@@ -19,7 +20,7 @@ public class ExpensesService implements AppService<Expense> {
 	ExpensesRepository expensesRepository;
 
 	public void fillExpenseTypes(ComboBox<String> combobox) {
-		combobox.getItems().add("-- Select Category --");
+		combobox.getItems().add(AppConstants.SELECT_EXPENSE_CATEGORY);
 		for (ExpenseType s : getExpenseTypes()) {
 			combobox.getItems().add(s.getName());
 		}
@@ -46,6 +47,9 @@ public class ExpensesService implements AppService<Expense> {
 	}
 
 	public List<Expense> getExpenses(String fromDate, String toDate, String expenseCategory) {
+		if (AppConstants.SELECT_EXPENSE_CATEGORY.equals(expenseCategory)) {
+			expenseCategory = null;
+		}
 		return expensesRepository.getExpenses(fromDate, toDate, expenseCategory);
 	}
 
