@@ -112,8 +112,16 @@
     -fx-graphic: url("/images/Products_24.png");
 }
 
-#expenseMenuItem > .label{
+#createExpenseMenuItem > .label{
     -fx-graphic: url("/images/Expense_24.png");
+}
+
+#searchExpenseMenuItem > .label{
+    -fx-graphic: url("/images/SearchExpense_24.png");
+}
+
+#invoiceTemplatesMenuItem > .label{
+    -fx-graphic: url("/images/InvoiceTemplates_24.png");
 }
 
 #exitMenuItem > .label{
@@ -215,12 +223,8 @@
      -fx-graphic: url("/images/Products_24.png");
 }
 
-#lblMeasurementUnits{
-    -fx-graphic: url("/images/Measurement_unit_24.png");
-}
-
-#lblProductCategories{
-    -fx-graphic: url("/images/ProductCategories_24.png");
+#lblCustomers{
+    -fx-graphic: url("/images/customer_24.png");
 }
 
 #lblSaleReport{

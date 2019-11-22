@@ -45,13 +45,7 @@
                         </MenuItem>
                         <MenuItem fx:id="quickStockCorrectionMenuItem" onAction="#onQuickStockCorrectionCommand" text="_Quick Stock Correction">
                            <accelerator>
-                              <KeyCodeCombination alt="UP" code="U" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
-                           </accelerator>
-                        </MenuItem>
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem fx:id="expenseMenuItem" onAction="#onExpenseCommand" text="Expe_nse">
-                           <accelerator>
-                              <KeyCodeCombination alt="UP" code="N" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+                              <KeyCodeCombination alt="UP" code="Q" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
                            </accelerator>
                         </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
@@ -62,7 +56,7 @@
                         </MenuItem>
                   </items>
                 </Menu>
-                <Menu fx:id="invoiceMenu" text="_Invoice">
+                <Menu fx:id="invoiceMenu" text="_Sale">
                   <items>
                     <MenuItem fx:id="createInvoiceMenuItem" onAction="#onCreateInvoiceCommand" text="_Create Invoice">
                            <accelerator>
@@ -75,6 +69,23 @@
                         </MenuItem>
                   </items>
                 </Menu>
+                  <Menu fx:id="purchaseMenu" text="_Purchase">
+                    <items>
+                        <MenuItem fx:id="suppliersMenuItem" onAction="#onSuppliersCommand" text="_Suppliers" />
+                      <MenuItem fx:id="stockEntryMenuItem" onAction="#onStockEntryCommand" text="Stock Purchase _Entry" />
+                        <MenuItem fx:id="stockHistoryMenuItem" onAction="#onStockHistoryCommand" text="Stock Purchase _History" />
+                    </items>
+                  </Menu>
+                  <Menu fx:id="expenseMenu" text="_Expense">
+                     <items>
+                        <MenuItem fx:id="createExpenseMenuItem" onAction="#onCreateExpenseCommand" text="Create Expense">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="N" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem fx:id="searchExpenseMenuItem" onAction="#onSearchExpenseCommand" text="Search Expense" />
+                     </items>
+                  </Menu>
                   <Menu fx:id="customersMenu" text="C_ustomers">
                     <items>
                       <MenuItem fx:id="customersMenuItem" onAction="#onCustomerCommand" text="C_ustomers">
@@ -92,13 +103,6 @@
                         <MenuItem fx:id="printBarcodeMenuItem" onAction="#onPrintBarcodeCommand" text="Print Barc_ode" />
                   </items>
                 </Menu>
-                  <Menu fx:id="purchaseMenu" text="_Purchase">
-                    <items>
-                        <MenuItem fx:id="suppliersMenuItem" onAction="#onSuppliersCommand" text="_Suppliers" />
-                      <MenuItem fx:id="stockEntryMenuItem" onAction="#onStockEntryCommand" text="Stock Purchase _Entry" />
-                        <MenuItem fx:id="stockHistoryMenuItem" onAction="#onStockHistoryCommand" text="Stock Purchase _History" />
-                    </items>
-                  </Menu>
                   <Menu fx:id="reportsHomeMenu" text="_Reports">
                      <items>
                         <Menu fx:id="reportsMenu" text="R_eports">
@@ -134,18 +138,19 @@
                         </Menu>
                      </items>
                   </Menu>
-                  <Menu fx:id="settingsMenu" mnemonicParsing="false" text="_Settings">
+                  <Menu fx:id="settingsMenu" mnemonicParsing="false" text="Se_ttings">
                     <items>
                         <MenuItem fx:id="storeDetailsMenuItem" onAction="#onStoreDetailsCommand" text="_Store Details" />
                       <MenuItem fx:id="userPreferencesMenuItem" onAction="#onUserPreferencesCommand" text="User Preferences" />
                         <MenuItem fx:id="dataBackupMenuItem" onAction="#onDataBackupCommand" text="Da_ta Backup" />
                         <MenuItem fx:id="taxesMenuItem" onAction="#onTaxesCommand" text="_Taxes" />
+                        <MenuItem fx:id="invoiceTemplatesMenuItem" onAction="#onInvoiceTemplatesCommand" text="Invoice Templates" />
                         <CheckMenuItem fx:id="hideToolbarMenuItem" onAction="#onHideToolbarCommand" text="Hide _Toolbar" />
                     </items>
                   </Menu>
-                  <Menu fx:id="helpMenu" text="_Help">
+                  <Menu fx:id="helpMenu" text="He_lp">
                     <items>
-                      <MenuItem fx:id="aboutUsMenuItem" onAction="#onAboutUsCommand" text="About _Us" />
+                      <MenuItem fx:id="aboutUsMenuItem" onAction="#onAboutUsCommand" text="_About Us" />
                     </items>
                   </Menu>
               </menus>
@@ -168,16 +173,6 @@
                         <Tooltip text="Products" />
                      </tooltip>
                   </Label>
-                  <Label fx:id="lblMeasurementUnits" onMouseClicked="#onMeasuermentUnitsClick">
-                     <tooltip>
-                        <Tooltip text="Measurement Units" />
-                     </tooltip>
-                  </Label>
-                  <Label fx:id="lblProductCategories" onMouseClicked="#onProductCategoriesClick">
-                     <tooltip>
-                        <Tooltip text="Product Categories" />
-                     </tooltip>
-                  </Label>
                   <Label fx:id="lblQuickStockCorrection" onMouseClicked="#onQuickStockCorrectionClick">
                      <tooltip>
                         <Tooltip text="Quick Stock Correction" />
@@ -195,6 +190,12 @@
                      </tooltip>
                   </Label>
                   <Separator maxHeight="24.0" orientation="VERTICAL" />
+                  <Label fx:id="lblCustomers" layoutX="68.0" layoutY="10.0" onMouseClicked="#onCustomersClick">
+                     <tooltip>
+                        <Tooltip text="Customers" />
+                     </tooltip>
+                  </Label>
+                  <Separator layoutX="54.0" layoutY="10.0" maxHeight="24.0" orientation="VERTICAL" />
                   <Label fx:id="lblDataBackup" onMouseClicked="#onDataBackupClick">
                      <tooltip>
                         <Tooltip text="Data Backup" />

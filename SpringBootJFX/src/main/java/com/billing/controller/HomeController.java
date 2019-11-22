@@ -66,10 +66,7 @@ public class HomeController extends AppContext {
 	private final static String INVOICE_VIEW_FILE_NAME = "Invoice";
 
 	@FXML
-	private MenuItem measurementUnitsMenuItem;
-
-	@FXML
-	private MenuItem productCategoryMenuItem;
+	private MenuItem customersMenuItem;
 
 	@FXML
 	private MenuItem productsMenuItem;
@@ -236,8 +233,13 @@ public class HomeController extends AppContext {
 	}
 
 	@FXML
-	void onExpenseCommand(ActionEvent event) {
+	void onCreateExpenseCommand(ActionEvent event) {
 		addTab("Expense", "Expense");
+	}
+	
+	@FXML
+	void onSearchExpenseCommand(ActionEvent event) {
+		addTab("Expense", "Search Expense");
 	}
 
 	@FXML
@@ -257,9 +259,9 @@ public class HomeController extends AppContext {
 	}
 
 	@FXML
-	void onMeasuermentUnitsClick(MouseEvent event) {
+	void onCustomersClick(MouseEvent event) {
 		if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
-			measurementUnitsMenuItem.fire();
+			customersMenuItem.fire();
 		}
 	}
 
@@ -286,13 +288,6 @@ public class HomeController extends AppContext {
 	@FXML
 	void onPrintBarcodeCommand(ActionEvent event) {
 		addTab("PrintBarcode", "Print Barcode");
-	}
-
-	@FXML
-	void onProductCategoriesClick(MouseEvent event) {
-		if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
-			productCategoryMenuItem.fire();
-		}
 	}
 
 	@FXML
@@ -423,6 +418,11 @@ public class HomeController extends AppContext {
 	@FXML
 	void onTaxesCommand(ActionEvent event) {
 		addTab("Taxes", "Taxes");
+	}
+	
+	@FXML
+	void onInvoiceTemplatesCommand(ActionEvent event) {
+		//addTab("", "Invoice Templates");
 	}
 
 	@FXML

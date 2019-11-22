@@ -96,9 +96,6 @@
 			</center>
 			<top>
 				<VBox BorderPane.alignment="CENTER">
-					<children>
-						<Label styleClass="note" text="Please double click on record to see full Expense details" />
-					</children>
 					<padding>
 						<Insets bottom="10.0" />
 					</padding>
