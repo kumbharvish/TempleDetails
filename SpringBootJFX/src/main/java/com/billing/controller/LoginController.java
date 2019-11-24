@@ -67,7 +67,7 @@ public class LoginController extends AppContext {
 	@Autowired
 	AlertHelper alertHelper;
 
-	MyStoreDetails mystore;
+	MyStoreDetails storeDetails;
 
 	public Stage currentStage = null;
 
@@ -111,7 +111,8 @@ public class LoginController extends AppContext {
 			if (userDetails != null) {
 				if ("ADMIN".equals(userDetails.getUserType())) {
 					currentStage.close();
-					alertHelper.showWarningAlert(currentStage, "User Setup", "Add User", AppConstants.ADD_USER_MSG);
+					alertHelper.showInstructionsAlert(currentStage, "MyStore Setup", "Welcome,",
+							AppConstants.INSTR_MYSTORE_USER_SETUP, 500, 150);
 					getAddNewUserPopUp();
 				} else {
 					currentStage.close();
@@ -131,6 +132,7 @@ public class LoginController extends AppContext {
 					HomeController homeController = fxmlLoader.getController();
 					homeController.currentStage = stage;
 					homeController.userDetails = userDetails;
+					homeController.storeDetails = storeDetails;
 					stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop32X32.png")));
 					stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop48X48.png")));
 					stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop64X64.png")));
@@ -141,13 +143,15 @@ public class LoginController extends AppContext {
 					stage.setWidth(s.getWidth());
 					stage.setHeight(s.getHeight());
 
-					if (mystore != null) {
-						stage.setTitle("My Store - " + mystore.getStoreName());
+					if (storeDetails != null) {
+						stage.setTitle("My Store - " + storeDetails.getStoreName());
 					} else {
 						stage.setTitle("My Store");
 					}
 					stage.setMaximized(true);
 					stage.show();
+					// Call Load Data for Home
+					homeController.loadData();
 					stage.setOnCloseRequest((WindowEvent event2) -> {
 						if (!homeController.closeAllTabs()) {
 							event2.consume();
@@ -184,9 +188,9 @@ public class LoginController extends AppContext {
 		stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop48X48.png")));
 		stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop64X64.png")));
 		currentStage = stage;
-		mystore = myStoreService.getMyStoreDetails();
-		if (mystore != null) {
-			lblShopName.setText(mystore.getStoreName());
+		storeDetails = myStoreService.getMyStoreDetails();
+		if (storeDetails != null) {
+			lblShopName.setText(storeDetails.getStoreName());
 		} else {
 			lblShopName.setText("My Store");
 		}

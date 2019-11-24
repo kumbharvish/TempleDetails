@@ -28,6 +28,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.scene.control.ComboBox;
 
 @SuppressWarnings("restriction")
 @Controller
@@ -61,11 +62,8 @@ public class UserPreferencesController implements TabContent {
 	private RadioButton rbSearchName;
 
 	@FXML
-	private TextField txtDBDumpInterval;
-
-	@FXML
-	private Label lblDBDumpErrMsg;
-
+    private ComboBox<String> cbDBBackupInterval;
+	
 	@FXML
 	private CheckBox cbPrintOnSave;
 
@@ -119,7 +117,11 @@ public class UserPreferencesController implements TabContent {
 
 	@Override
 	public boolean loadData() {
-
+		cbDBBackupInterval.getItems().add("1 Hour");
+		cbDBBackupInterval.getItems().add("2 Hour");
+		cbDBBackupInterval.getItems().add("3 Hour");
+		cbDBBackupInterval.getItems().add("4 Hour");
+		
 		HashMap<String, String> userPref = appUtils.getAppData();
 		if ("Y".equals(userPref.get(AppConstants.GST_INCLUSIVE))) {
 			rbGSTInclusive.setSelected(true);
@@ -136,7 +138,7 @@ public class UserPreferencesController implements TabContent {
 		cbPrintOnSave.setSelected(appUtils.isTrue(userPref.get(AppConstants.INVOICE_PRINT_ON_SAVE)));
 		cbShowPrintPreview.setSelected(appUtils.isTrue(userPref.get(AppConstants.SHOW_PRINT_PREVIEW)));
 		cbOpenDocAfterSave.setSelected(appUtils.isTrue(userPref.get(AppConstants.OPEN_REPORT_DOC_ON_SAVE)));
-		txtDBDumpInterval.setText(userPref.get(AppConstants.DB_DUMP_INTERVAL));
+		cbDBBackupInterval.getSelectionModel().select(userPref.get(AppConstants.DB_DUMP_INTERVAL));
 		txtSalesReturnDays.setText(userPref.get(AppConstants.SALES_RETURN_ALLOWED_DAYS));
 		txtLowStockQtyLimit.setText(userPref.get(AppConstants.LOW_STOCK_QUANTITY_LIMIT));
 		isDirty.set(false);
@@ -163,9 +165,6 @@ public class UserPreferencesController implements TabContent {
 		rbSearchBarcode.setToggleGroup(radioButtonGroupSearch);
 		rbSearchName.setToggleGroup(radioButtonGroupSearch);
 
-		lblDBDumpErrMsg.managedProperty().bind(lblDBDumpErrMsg.visibleProperty());
-		lblDBDumpErrMsg.visibleProperty().bind(lblDBDumpErrMsg.textProperty().length().greaterThanOrEqualTo(1));
-
 		lblSalesReturnDaysErrMsg.managedProperty().bind(lblSalesReturnDaysErrMsg.visibleProperty());
 		lblSalesReturnDaysErrMsg.visibleProperty()
 				.bind(lblSalesReturnDaysErrMsg.textProperty().length().greaterThanOrEqualTo(1));
@@ -174,7 +173,6 @@ public class UserPreferencesController implements TabContent {
 		lblLowStockQtyLimitErrMsg.visibleProperty()
 				.bind(lblLowStockQtyLimitErrMsg.textProperty().length().greaterThanOrEqualTo(1));
 
-		txtDBDumpInterval.textProperty().addListener(appUtils.getForceNumberListner());
 		txtSalesReturnDays.textProperty().addListener(appUtils.getForceNumberListner());
 		txtLowStockQtyLimit.textProperty().addListener(appUtils.getForceNumberListner());
 
@@ -185,7 +183,7 @@ public class UserPreferencesController implements TabContent {
 		cbOpenDocAfterSave.selectedProperty().addListener(this::invalidated);
 		rbSearchBarcode.selectedProperty().addListener(this::invalidated);
 		rbSearchName.selectedProperty().addListener(this::invalidated);
-		txtDBDumpInterval.textProperty().addListener(this::invalidated);
+		cbDBBackupInterval.getSelectionModel().selectedItemProperty().addListener(this::invalidated);
 		txtSalesReturnDays.textProperty().addListener(this::invalidated);
 		txtLowStockQtyLimit.textProperty().addListener(this::invalidated);
 
@@ -227,7 +225,7 @@ public class UserPreferencesController implements TabContent {
 		} else {
 			saveMap.put(AppConstants.INVOICE_PRODUCT_SEARCH_BY, AppConstants.PRODUCT_NAME);
 		}
-		saveMap.put(AppConstants.DB_DUMP_INTERVAL, txtDBDumpInterval.getText());
+		saveMap.put(AppConstants.DB_DUMP_INTERVAL, cbDBBackupInterval.getSelectionModel().getSelectedItem());
 		saveMap.put(AppConstants.SALES_RETURN_ALLOWED_DAYS, txtSalesReturnDays.getText());
 		saveMap.put(AppConstants.LOW_STOCK_QUANTITY_LIMIT, txtLowStockQtyLimit.getText());
 
@@ -254,28 +252,6 @@ public class UserPreferencesController implements TabContent {
 	@Override
 	public boolean validateInput() {
 		boolean valid = true;
-
-		// Data Backup Interval
-		int dbBackupInterval = txtDBDumpInterval.getText().trim().length();
-		if (dbBackupInterval == 0) {
-			alertHelper.beep();
-			lblDBDumpErrMsg.setText("Please enter data backup interval");
-			txtDBDumpInterval.requestFocus();
-			valid = false;
-			return valid;
-		} else {
-			lblDBDumpErrMsg.setText("");
-		}
-		int dbBackupIntervalValue = Integer.valueOf(txtDBDumpInterval.getText());
-		if (dbBackupIntervalValue < 30) {
-			alertHelper.beep();
-			lblDBDumpErrMsg.setText("Minimum allowed data backup interval is 30 Mins");
-			txtDBDumpInterval.requestFocus();
-			valid = false;
-			return valid;
-		} else {
-			lblDBDumpErrMsg.setText("");
-		}
 
 		// Sales Return allowed days
 		int days = txtSalesReturnDays.getText().trim().length();

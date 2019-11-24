@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.billing.constants.AppConstants;
+import com.billing.dto.MyStoreDetails;
 import com.billing.dto.UserDetails;
 import com.billing.main.AppContext;
 import com.billing.main.Global;
@@ -50,6 +52,8 @@ public class HomeController extends AppContext {
 
 	@Autowired
 	AlertHelper alertHelper;
+
+	MyStoreDetails storeDetails;
 
 	@Autowired
 	DBBackupService dbBackupService;
@@ -120,7 +124,7 @@ public class HomeController extends AppContext {
 				});
 
 		toolBar.managedProperty().bind(toolBar.visibleProperty());
-		appUtils.licenseExpiryAlert();
+
 		try {
 			lblLicenseValidUpto
 					.setText("License Valid Upto : " + appUtils.dec(appUtils.getAppDataValues("APP_SECURE_KEY")));
@@ -132,11 +136,19 @@ public class HomeController extends AppContext {
 		startScheduledDBDumpTask();
 	}
 
+	public void loadData() {
+		appUtils.licenseExpiryAlert();
+		if (null == storeDetails) {
+			alertHelper.showInstructionsAlert(currentStage, "Store Setup", "Instructions",
+					AppConstants.INSTR_MYSTORE_SETUP, 600, 140);
+		}
+	}
+
 	private void startScheduledDBDumpTask() {
 		Timer time = new Timer();
-		Integer dbDumpInterval = Integer.parseInt(appUtils.getAppDataValues("DB_DUMP_INTERVAL"));
-		logger.info("---- DB Dump Scheduled with Interval of :: " + dbDumpInterval + " Mins ---");
-		dbDumpInterval = dbDumpInterval * 60 * 1000; // Convert Minutes to Milliseconds
+		Integer dbDumpInterval = Integer.parseInt(appUtils.getAppDataValues("DB_DUMP_INTERVAL").split("")[0]);
+		logger.info("---- DB Dump Scheduled with Interval of :: " + dbDumpInterval + " Hour ---");
+		dbDumpInterval = dbDumpInterval * 60 * 60 * 1000; // Convert Hours to Milliseconds
 		time.schedule(dbScheduledDumpTask, 0, dbDumpInterval);
 	}
 
@@ -197,7 +209,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onCustomerReportCommand(ActionEvent event) {
-		addTab("CustomersReport","Customers Report");
+		addTab("CustomersReport", "Customers Report");
 	}
 
 	@FXML
@@ -228,6 +240,11 @@ public class HomeController extends AppContext {
 	}
 
 	@FXML
+	void onRestoreDatabaseCommand(ActionEvent event) {
+		dbBackupService.restoreDatabase(currentStage);
+	}
+
+	@FXML
 	private void onExitCommand(ActionEvent event) {
 		currentStage.fireEvent(new WindowEvent(currentStage, WindowEvent.WINDOW_CLOSE_REQUEST));
 	}
@@ -236,7 +253,7 @@ public class HomeController extends AppContext {
 	void onCreateExpenseCommand(ActionEvent event) {
 		addTab("Expense", "Expense");
 	}
-	
+
 	@FXML
 	void onSearchExpenseCommand(ActionEvent event) {
 		addTab("Expense", "Search Expense");
@@ -353,7 +370,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onSalesReturnReportCommand(ActionEvent event) {
-		addTab("SalesReturnReport","Sales Return Report");
+		addTab("SalesReturnReport", "Sales Return Report");
 	}
 
 	@FXML
@@ -419,10 +436,10 @@ public class HomeController extends AppContext {
 	void onTaxesCommand(ActionEvent event) {
 		addTab("Taxes", "Taxes");
 	}
-	
+
 	@FXML
 	void onInvoiceTemplatesCommand(ActionEvent event) {
-		//addTab("", "Invoice Templates");
+		// addTab("", "Invoice Templates");
 	}
 
 	@FXML

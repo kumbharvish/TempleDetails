@@ -66,8 +66,6 @@ public class AppConstants {
 
 	public static final String COMP_DATE = "Computer Date";
 
-	public static final String ADD_USER_MSG = "Please add new user to use this software";
-
 	public static final String LICENSE_EXPIRED = "License Expired";
 
 	public static final String LICENSE_ERROR_1 = "Kindly Purchase Product Key to use this Software !";
@@ -118,9 +116,8 @@ public class AppConstants {
 	public static final String LOW_STOCK_SUMMARY_REPORT_NAME = "Low_Stock_Summary_Report";
 
 	public static final String SALES_RETURN_REPORT_NAME = "Sales_Return_Report";
-	
-	public static final String EXPENSE_REPORT_NAME = "Expense_Report";
 
+	public static final String EXPENSE_REPORT_NAME = "Expense_Report";
 
 	// Jasper File Names
 	public static final String PRODUCT_PROFIT_REPORT_JASPER = "Product_Profit_Report.jasper";
@@ -136,7 +133,7 @@ public class AppConstants {
 	public static final String SALES_REPORT_JASPER = "Sales_Report.jasper";
 
 	public static final String SALES_RETURN_REPORT_JASPER = "Sales_Return_Report.jasper";
-	
+
 	public static final String EXPENSE_REPORT_JASPER = "Expense_Report.jasper";
 
 	public static final String BILL_PRINT_JASPER = "Bill_Print.jasper";
@@ -146,5 +143,21 @@ public class AppConstants {
 	public static final String BARCODE_40_JASPER = "Barcode_40.jasper";
 
 	public static final String BARCODE_24_JASPER = "Barcode_24.jasper";
+
+	// Instructions
+
+	public static final String INSTR_MYSTORE_USER_SETUP = "<h5>Please follow below instructions,<h5/><h5><ul style='line-height:1.6;'><li>Please setup a New User to use MyStore Billing. </li>"
+			+ "<li> After successful new user creation admin user will be blocked.</li>"
+			+ "<li>Please use newly created user for login.</li></ul></h5>";
+
+	public static final String INSTR_MYSTORE_SETUP = "<h5><ul style='line-height:1.6;'><li>Please add Store Details in (Settings-> Store Details)</li>"
+			+ "<li>Please configure your preferences in (Settings-> User Preferences)</li>"
+			+ "<li>Please configure your default Invoice Print template in (Settings-> Invoice Templates)</li>"
+			+ "<li>Start adding your products.</li></ul></h5>";
+
+	public static final String INSTR_RESTORE_BACKUP = "<h5><ul style='line-height:1.6;'><li>Please make sure you choose valid backup file.</li>"
+			+ "<li>Backup file should be of taken from MyStore only.</li>"
+			+ "<li>Invaild backup file restore might cause issues.</li>"
+			+ "<li>Please restart the MyStore application after successful restore.</li></ul></h5>";
 
 }

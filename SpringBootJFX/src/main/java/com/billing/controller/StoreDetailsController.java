@@ -200,11 +200,11 @@ public class StoreDetailsController implements TabContent {
 		StatusDTO statusUpdate = myStoreService.update(myStoreDetails);
 		StatusDTO statusAdd = null;
 		if (statusUpdate.getStatusCode()==0) {
-			alertHelper.showSuccessNotification("Details updated successfully");
+			alertHelper.showSuccessNotification("Store details updated successfully");
 		} else if(statusUpdate.getStatusCode()==1){
 			statusAdd = myStoreService.add(myStoreDetails);
 			if(statusAdd.getStatusCode()==0){
-				alertHelper.showSuccessNotification("Details saved successfully");
+				alertHelper.showSuccessNotification("Store details saved successfully");
 			}else {
 				alertHelper.showDataSaveErrAlert(currentStage);
 				return false;

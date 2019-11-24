@@ -106,7 +106,7 @@ public class PrinterService {
 		boolean isSuccess = false;
 		ReportMetadata reportMetadata = getReportMetadataForPDF(reportData);
 		// Show save file dialog
-		File file = appUtils.ChooseFile(currentStage, "Save PDF", reportMetadata.getReportName(), "PDF File", "*.pdf");
+		File file = appUtils.saveFileDialog(currentStage, "Save PDF", reportMetadata.getReportName(), "PDF File", "*.pdf");
 		if (null != file) {
 			reportMetadata.setFilePath(file.getAbsolutePath());
 			isSuccess = pdfReportService.exportPDF(reportMetadata);
@@ -124,7 +124,7 @@ public class PrinterService {
 
 		ReportMetadata reportMetadata = getReportMetadataForExcel(reportData);
 		// Show save file dialog
-		File file = appUtils.ChooseFile(currentStage, "Save Excel Sheet", reportMetadata.getReportName(), "Excel File",
+		File file = appUtils.saveFileDialog(currentStage, "Save Excel Sheet", reportMetadata.getReportName(), "Excel File",
 				"*.xls");
 
 		if (null != file) {

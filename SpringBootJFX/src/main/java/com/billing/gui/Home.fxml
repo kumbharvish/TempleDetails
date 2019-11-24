@@ -71,9 +71,18 @@
                 </Menu>
                   <Menu fx:id="purchaseMenu" text="_Purchase">
                     <items>
-                        <MenuItem fx:id="suppliersMenuItem" onAction="#onSuppliersCommand" text="_Suppliers" />
-                      <MenuItem fx:id="stockEntryMenuItem" onAction="#onStockEntryCommand" text="Stock Purchase _Entry" />
-                        <MenuItem fx:id="stockHistoryMenuItem" onAction="#onStockHistoryCommand" text="Stock Purchase _History" />
+                        <MenuItem fx:id="suppliersMenuItem" onAction="#onSuppliersCommand" text="_Suppliers">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="S" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+                           </accelerator></MenuItem>
+                      <MenuItem fx:id="stockEntryMenuItem" onAction="#onStockEntryCommand" text="Add Purchas_e">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="E" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+                           </accelerator></MenuItem>
+                        <MenuItem fx:id="stockHistoryMenuItem" onAction="#onStockHistoryCommand" text="Purchase _History">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="H" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+                           </accelerator></MenuItem>
                     </items>
                   </Menu>
                   <Menu fx:id="expenseMenu" text="_Expense">
@@ -143,6 +152,7 @@
                         <MenuItem fx:id="storeDetailsMenuItem" onAction="#onStoreDetailsCommand" text="_Store Details" />
                       <MenuItem fx:id="userPreferencesMenuItem" onAction="#onUserPreferencesCommand" text="User Preferences" />
                         <MenuItem fx:id="dataBackupMenuItem" onAction="#onDataBackupCommand" text="Da_ta Backup" />
+                        <MenuItem fx:id="restoreDatabaseMenuItem" onAction="#onRestoreDatabaseCommand" text="Restore Backup" />
                         <MenuItem fx:id="taxesMenuItem" onAction="#onTaxesCommand" text="_Taxes" />
                         <MenuItem fx:id="invoiceTemplatesMenuItem" onAction="#onInvoiceTemplatesCommand" text="Invoice Templates" />
                         <CheckMenuItem fx:id="hideToolbarMenuItem" onAction="#onHideToolbarCommand" text="Hide _Toolbar" />

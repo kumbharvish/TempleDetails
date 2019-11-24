@@ -68,7 +68,7 @@ public class DBBackupService {
 	public void saveDBDumpToChoosenLocation(Stage currentStage) {
 		String fileName = "MyStore_" + appUtils.getFormattedDate(new Date()) + "_" + System.currentTimeMillis()
 				+ ".mbf.db";
-		File file = appUtils.ChooseFile(currentStage, "Save Database", fileName, "DB File", "*.db");
+		File file = appUtils.saveFileDialog(currentStage, "Save Database", fileName, "DB File", "*.db");
 		if (file != null) {
 			boolean flag = createDBDump(file.getAbsolutePath());
 			if (flag) {
@@ -76,4 +76,33 @@ public class DBBackupService {
 			}
 		}
 	}
+
+	// Restore Database
+	public void restoreDatabase(Stage currentStage) {
+		alertHelper.showInstructionsAlert(currentStage, "Restore Backup", "Instructions",
+				AppConstants.INSTR_RESTORE_BACKUP, 500, 120);
+		File file = appUtils.openFileDialog(currentStage, "Choose DB File", "DB File", "*.db");
+		if (file != null) {
+			boolean flag = restoreDB(file.getAbsolutePath());
+			if (flag) {
+				alertHelper.showSuccessNotification("Database restored successfully");
+			}
+		}
+	}
+
+	private boolean restoreDB(String dbFilePath) {
+		try {
+			System.out.println("Restore DB File Location : " + dbFilePath);
+			Connection conn = dbUtils.getConnection();
+			conn.createStatement().executeUpdate("restore from " + dbFilePath);
+			DBUtils.closeConnection(null, conn);
+			return true;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			logger.error("Restore Database Exception :", ex);
+			alertHelper.showWarningAlert(null, "Restore Database", null, "Restore Database Failed !");
+			return false;
+		}
+	}
+
 }

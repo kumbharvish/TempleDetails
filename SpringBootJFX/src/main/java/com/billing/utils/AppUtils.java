@@ -663,7 +663,8 @@ public class AppUtils {
 		return gstAmt;
 	}
 
-	public File ChooseFile(Stage currentStage, String title, String initialFileName, String fileType,
+	// Save File Dialog
+	public File saveFileDialog(Stage currentStage, String title, String initialFileName, String fileType,
 			String exclusionFilter) {
 		FileChooser fileChooser = new FileChooser();
 		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(fileType, exclusionFilter);
@@ -671,6 +672,16 @@ public class AppUtils {
 		fileChooser.setInitialFileName(initialFileName);
 		fileChooser.setTitle(title);
 		File file = fileChooser.showSaveDialog(currentStage);
+		return file;
+	}
+
+	// Open File Dialog
+	public File openFileDialog(Stage currentStage, String title, String fileType, String exclusionFilter) {
+		FileChooser fileChooser = new FileChooser();
+		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(fileType, exclusionFilter);
+		fileChooser.getExtensionFilters().add(extFilter);
+		fileChooser.setTitle(title);
+		File file = fileChooser.showOpenDialog(currentStage);
 		return file;
 	}
 
