@@ -1,6 +1,7 @@
 package com.billing.controller;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,7 @@ import com.billing.service.ExpensesService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
+import com.billing.utils.Task;
 
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
@@ -19,20 +21,22 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 @SuppressWarnings("restriction")
 @Controller
-public class ExpenseController implements TabContent {
+public class EditExpenseController implements TabContent {
 
 	@Autowired
 	ExpensesService expensesService;
@@ -46,6 +50,10 @@ public class ExpenseController implements TabContent {
 	public Stage currentStage = null;
 
 	private TabPane tabPane = null;
+
+	Expense expense = null;
+
+	Task task;
 
 	@FXML
 	private ComboBox<String> cbCategory;
@@ -134,7 +142,11 @@ public class ExpenseController implements TabContent {
 	@Override
 	public boolean loadData() {
 		expensesService.fillExpenseTypes(cbCategory);
-		dateExpense.setValue(LocalDate.now());
+		cbCategory.getSelectionModel().select(expense.getCategory());
+		txtDescription.setText(expense.getDescription());
+		txtAmount.setText(String.valueOf(expense.getAmount()));
+		Date invoiceDate = appUtils.getDateFromDBTimestamp(expense.getDate());
+		dateExpense.setValue(appUtils.convertToLocalDateViaInstant(invoiceDate));
 		isDirty.set(false);
 		return true;
 	}
@@ -151,15 +163,18 @@ public class ExpenseController implements TabContent {
 
 	@Override
 	public boolean saveData() {
-		Expense expense = new Expense();
-		expense.setCategory(cbCategory.getSelectionModel().getSelectedItem());
-		expense.setDate(dateExpense.getValue().toString());
-		expense.setAmount(Double.parseDouble(txtAmount.getText()));
-		expense.setDescription(txtDescription.getText());
+		Expense ex = new Expense();
+		ex.setCategory(cbCategory.getSelectionModel().getSelectedItem());
+		ex.setDate(dateExpense.getValue().toString());
+		ex.setAmount(Double.parseDouble(txtAmount.getText()));
+		ex.setDescription(txtDescription.getText());
+		ex.setId(expense.getId());
 
-		StatusDTO status = expensesService.add(expense);
+		StatusDTO status = expensesService.update(ex);
 		if (status.getStatusCode() == 0) {
-			alertHelper.showSuccessNotification("Expense saved successfully");
+			alertHelper.showInfoAlert(currentStage, "Edit Expense", "Expense Updated", "Expense updated successfully");
+
+			task.doTask();
 		} else {
 			alertHelper.showDataSaveErrAlert(currentStage);
 			return false;
@@ -174,9 +189,7 @@ public class ExpenseController implements TabContent {
 
 	@Override
 	public void closeTab() {
-		Tab tab = tabPane.selectionModelProperty().get().selectedItemProperty().get();
-		tabPane.getTabs().remove(tab); // close the current tab
-
+		currentStage.close();
 	}
 
 	@Override
@@ -200,6 +213,15 @@ public class ExpenseController implements TabContent {
 			txtAmount.requestFocus();
 			valid = false;
 		} else {
+			try {
+				Double.valueOf(txtAmount.getText());
+			}catch(Exception e) {
+				alertHelper.beep();
+				txtAmount.requestFocus();
+				txtAmountErrorMsg.setText("Please enter valid amount");
+				valid = false;
+				return valid;
+			}
 			txtAmountErrorMsg.setText("");
 		}
 		LocalDate startDate = dateExpense.getValue();
@@ -225,14 +247,12 @@ public class ExpenseController implements TabContent {
 		cbCategory.selectionModelProperty().addListener(this::invalidated);
 		txtAmount.textProperty().addListener(this::invalidated);
 		dateExpense.valueProperty().addListener(this::invalidated);
-		txtAmount.textProperty().addListener(appUtils.getForceNumberListner());
 		btnSave.disableProperty().bind(isDirty.not());
 		cbCategory.focusedProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue) {
 				cbCategory.show();
 			}
 		});
-		txtAmount.textProperty().addListener(this::invalidated);
 		txtDescription.textProperty().addListener(this::invalidated);
 		cbCategory.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			@Override
@@ -243,12 +263,17 @@ public class ExpenseController implements TabContent {
 		dateExpense.valueProperty().addListener((observable, oldDate, newDate) -> {
 			isDirty.set(true);
 		});
+
 	}
 
 	@Override
 	public void setUserDetails(UserDetails user) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public void setTask(Task t) {
+		this.task = t;
 	}
 
 }

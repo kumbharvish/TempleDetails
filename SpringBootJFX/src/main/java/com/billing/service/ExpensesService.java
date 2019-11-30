@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.billing.constants.AppConstants;
 import com.billing.dto.Expense;
+import com.billing.dto.ExpenseSearchCriteria;
 import com.billing.dto.ExpenseType;
 import com.billing.dto.StatusDTO;
 import com.billing.repository.ExpensesRepository;
@@ -24,6 +25,7 @@ public class ExpensesService implements AppService<Expense> {
 		for (ExpenseType s : getExpenseTypes()) {
 			combobox.getItems().add(s.getName());
 		}
+		combobox.getSelectionModel().select(0);
 	}
 
 	@Override
@@ -55,6 +57,10 @@ public class ExpensesService implements AppService<Expense> {
 
 	public List<ExpenseType> getExpenseTypes() {
 		return expensesRepository.getExpenseTypes();
+	}
+	
+	public List<Expense> getSearchedExpenses(ExpenseSearchCriteria criteria) {
+		return expensesRepository.getSearchedExpenses(criteria);
 	}
 
 }

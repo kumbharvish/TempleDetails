@@ -3,24 +3,24 @@ package com.billing.repository;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.swing.JComboBox;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.billing.dto.BillDetails;
 import com.billing.dto.Expense;
+import com.billing.dto.ExpenseSearchCriteria;
 import com.billing.dto.ExpenseType;
+import com.billing.dto.InvoiceSearchCriteria;
 import com.billing.dto.StatusDTO;
 import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
-
-import javafx.scene.control.ComboBox;
 
 @Repository
 public class ExpensesRepository {
@@ -101,7 +101,7 @@ public class ExpensesRepository {
 				stmt.setString(1, expense.getCategory());
 				stmt.setString(2, expense.getDescription());
 				stmt.setDouble(3, expense.getAmount());
-				stmt.setString(4, expense.getDate());
+				stmt.setString(4, expense.getDate()+" "+appUtils.getCurrentTime());
 
 				int i = stmt.executeUpdate();
 				if (i > 0) {
@@ -154,7 +154,7 @@ public class ExpensesRepository {
 				stmt.setString(1, expense.getCategory());
 				stmt.setString(2, expense.getDescription());
 				stmt.setDouble(3, expense.getAmount());
-				stmt.setString(4, expense.getDate());
+				stmt.setString(4, expense.getDate()+" "+appUtils.getCurrentTime());
 				stmt.setInt(5, expense.getId());
 
 				int i = stmt.executeUpdate();
@@ -230,4 +230,74 @@ public class ExpensesRepository {
 		return dataList;
 
 	}
+
+	// Search Expense
+	public List<Expense> getSearchedExpenses(ExpenseSearchCriteria criteria) {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		Expense expense = null;
+		List<Expense> billDetailsList = new ArrayList<Expense>();
+
+		String sqlQuery = getQuery(criteria);
+		try {
+			conn = dbUtils.getConnection();
+			stmt = conn.prepareStatement(sqlQuery);
+			ResultSet rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				expense = new Expense();
+				expense.setId(rs.getInt("ID"));
+				expense.setCategory(rs.getString("CATEGORY"));
+				expense.setAmount(Double.parseDouble(rs.getString("AMOUNT")));
+				expense.setDescription(rs.getString("DESCRIPTION"));
+				expense.setDate(rs.getString("DATE"));
+
+				billDetailsList.add(expense);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception : ", e);
+		} finally {
+			DBUtils.closeConnection(stmt, conn);
+		}
+		return billDetailsList;
+	}
+
+	private static String getQuery(ExpenseSearchCriteria criteria) {
+
+		StringBuilder selectQuery = new StringBuilder("SELECT * FROM EXPENSE_DETAILS WHERE ");
+		// Expense category
+		if (criteria.getExpenseCategory() != null) {
+			selectQuery.append(" CATEGORY = '").append(criteria.getExpenseCategory()).append("'");
+		} else {
+			boolean conditionApplied = false;
+
+			// date
+			if (criteria.getStartDate() != null) {
+				conditionApplied = true;
+				DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd");
+				String startDateString = criteria.getStartDate().format(dateFormatter);
+				String endDateString = criteria.getEndDate().format(dateFormatter);
+
+				selectQuery.append(" DATE(DATE) BETWEEN '").append(startDateString).append("' AND '")
+						.append(endDateString).append("' ");
+			}
+
+			// amount
+			String amount = criteria.getStartAmount();
+			if (amount != null) {
+				if (conditionApplied) {
+					selectQuery.append(" AND ");
+				}
+				conditionApplied = true;
+				selectQuery.append(" AMOUNT BETWEEN ").append(amount).append(" AND ").append(criteria.getEndAmount());
+
+			}
+
+		}
+		selectQuery.append(" ORDER BY DATE DESC");
+		System.out.println(selectQuery);
+		return selectQuery.toString();
+	}
+
 }

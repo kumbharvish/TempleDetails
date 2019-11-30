@@ -256,7 +256,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onSearchExpenseCommand(ActionEvent event) {
-		addTab("Expense", "Search Expense");
+		addTab("SearchExpense", "Search Expense");
 	}
 
 	@FXML

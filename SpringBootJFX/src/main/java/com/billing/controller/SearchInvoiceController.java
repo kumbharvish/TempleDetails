@@ -54,6 +54,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -64,6 +65,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 @Controller
 public class SearchInvoiceController extends AppContext implements TabContent {
@@ -170,7 +172,7 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 	private TableColumn<BillDetails, String> tcCustomer;
 
 	@FXML
-	private TableColumn<BillDetails, String> tcAmount;
+	private TableColumn<BillDetails, Double> tcAmount;
 
 	@FXML
 	private Label lblTotalOfInvoices;
@@ -623,18 +625,38 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 	}
 
 	private void setTableCellFactories() {
+		
+		final Callback<TableColumn<BillDetails, Double>, TableCell<BillDetails, Double>> callback = new Callback<TableColumn<BillDetails, Double>, TableCell<BillDetails, Double>>() {
+
+			@Override
+			public TableCell<BillDetails, Double> call(TableColumn<BillDetails, Double> param) {
+				TableCell<BillDetails, Double> tableCell = new TableCell<BillDetails, Double>() {
+
+					@Override
+					protected void updateItem(Double item, boolean empty) {
+						super.updateItem(item, empty);
+						if (empty) {
+							super.setText(null);
+						} else {
+							super.setText(IndianCurrencyFormatting.applyFormatting(item));
+						}
+					}
+
+				};
+				tableCell.getStyleClass().add("numeric-cell");
+				return tableCell;
+			}
+		};
 		tcInvoiceNo.setCellValueFactory(
 				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getBillNumber())));
 		tcDate.setCellValueFactory(cellData -> new SimpleStringProperty(
 				appUtils.getFormattedDateWithTime(cellData.getValue().getTimestamp())));
 		tcCustomer.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustomerName()));
-		tcAmount.setCellValueFactory(
-				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getNetSalesAmt())));
+		tcAmount.setCellFactory(callback);
 
 		tcInvoiceNo.getStyleClass().add("character-cell");
 		tcDate.getStyleClass().add("character-cell");
 		tcCustomer.getStyleClass().add("character-cell");
-		tcAmount.getStyleClass().add("numeric-cell");
 	}
 
 	@Override
