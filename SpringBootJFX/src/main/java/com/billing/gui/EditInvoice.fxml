@@ -302,8 +302,8 @@
 										</HBox>
 										<ButtonBar>
 											<buttons>
-												<Button fx:id="btnSave" mnemonicParsing="false" onAction="#onUpdateCommand" text="Update" />
-												<Button fx:id="btnClose" mnemonicParsing="false" onAction="#onCloseAction" text="Close" />
+												<Button fx:id="btnSave" defaultButton="true" mnemonicParsing="false" onAction="#onUpdateCommand" text="Update" />
+												<Button fx:id="btnClose" cancelButton="true" mnemonicParsing="false" onAction="#onCloseAction" text="Close" />
 											</buttons>
 										</ButtonBar>
 									</children>

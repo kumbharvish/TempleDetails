@@ -29,17 +29,17 @@
 									</accelerator>
 								</MenuItem>
 								<SeparatorMenuItem mnemonicParsing="false" />
-								<MenuItem fx:id="measurementUnitsMenuItem" onAction="#onMeasurementUnitsCommand" text="Measurement _Units">
+								<MenuItem fx:id="measurementUnitsMenuItem" onAction="#onMeasurementUnitsCommand" text="_Measurement Units">
 									<accelerator>
 										<KeyCodeCombination alt="UP" code="U" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
 									</accelerator>
 								</MenuItem>
-								<MenuItem fx:id="productCategoryMenuItem" onAction="#onProductCategoriesCommand" text="Product Ca_tegories">
+								<MenuItem fx:id="productCategoryMenuItem" onAction="#onProductCategoriesCommand" text="Product Cate_gories">
 									<accelerator>
 										<KeyCodeCombination alt="UP" code="T" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
 									</accelerator>
 								</MenuItem>
-								<MenuItem fx:id="productsMenuItem" onAction="#onProductsCommand" text="_Products">
+								<MenuItem fx:id="productsMenuItem" onAction="#onProductsCommand" text="Pr_oducts">
 									<accelerator>
 										<KeyCodeCombination alt="UP" code="P" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
 									</accelerator>
@@ -59,12 +59,12 @@
 						</Menu>
 						<Menu fx:id="invoiceMenu" text="_Sale">
 							<items>
-								<MenuItem fx:id="createInvoiceMenuItem" onAction="#onCreateInvoiceCommand" text="_Create Invoice">
+								<MenuItem fx:id="createInvoiceMenuItem" onAction="#onCreateInvoiceCommand" text="Create _Invoice">
 									<accelerator>
 										<KeyCodeCombination alt="UP" code="I" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
 									</accelerator>
 								</MenuItem>
-								<MenuItem fx:id="searchInvoiceMenuItem" onAction="#onSearchInvoiceCommand" text="_Search Invoice">
+								<MenuItem fx:id="searchInvoiceMenuItem" onAction="#onSearchInvoiceCommand" text="Search I_nvoice">
 									<accelerator>
 										<KeyCodeCombination alt="UP" code="F" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
 									</accelerator>
@@ -73,17 +73,17 @@
 						</Menu>
 						<Menu fx:id="purchaseMenu" text="_Purchase">
 							<items>
-								<MenuItem fx:id="suppliersMenuItem" onAction="#onSuppliersCommand" text="_Suppliers">
+								<MenuItem fx:id="suppliersMenuItem" onAction="#onSuppliersCommand" text="Suppl_iers">
 									<accelerator>
 										<KeyCodeCombination alt="UP" code="S" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
 									</accelerator>
 								</MenuItem>
-								<MenuItem fx:id="stockEntryMenuItem" onAction="#onStockEntryCommand" text="Add Purchas_e">
+								<MenuItem fx:id="stockEntryMenuItem" onAction="#onStockEntryCommand" text="Purchase E_ntry">
 									<accelerator>
 										<KeyCodeCombination alt="UP" code="E" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
 									</accelerator>
 								</MenuItem>
-								<MenuItem fx:id="stockHistoryMenuItem" onAction="#onStockHistoryCommand" text="Purchase _History">
+								<MenuItem fx:id="stockHistoryMenuItem" onAction="#onStockHistoryCommand" text="Search P_urchase Entry">
 									<accelerator>
 										<KeyCodeCombination alt="UP" code="H" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
 									</accelerator>
@@ -92,19 +92,19 @@
 						</Menu>
 						<Menu fx:id="expenseMenu" text="_Expense">
 							<items>
-								<MenuItem fx:id="createExpenseMenuItem" onAction="#onCreateExpenseCommand" text="_Create Expense">
+								<MenuItem fx:id="createExpenseMenuItem" onAction="#onCreateExpenseCommand" text="Create Expe_nse">
 									<accelerator>
 										<KeyCodeCombination alt="UP" code="N" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
 									</accelerator>
 								</MenuItem>
-								<MenuItem fx:id="searchExpenseMenuItem" onAction="#onSearchExpenseCommand" text="Se_arch Expense" >
+								<MenuItem fx:id="searchExpenseMenuItem" onAction="#onSearchExpenseCommand" text="Search E_xpense">
 									<accelerator>
 										<KeyCodeCombination alt="UP" code="V" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
 									</accelerator>
 								</MenuItem>
 							</items>
 						</Menu>
-						<Menu fx:id="customersMenu" text="C_ustomers">
+						<Menu fx:id="customersMenu" text="_Customers">
 							<items>
 								<MenuItem fx:id="customersMenuItem" onAction="#onCustomerCommand" text="C_ustomers">
 									<accelerator>
@@ -112,18 +112,18 @@
 									</accelerator>
 								</MenuItem>
 								<MenuItem fx:id="customerPaymentHistoryMenuItem" onAction="#onCustomerPaymentHistoryCommand" text="Pa_yment History" />
-								<MenuItem fx:id="customerPurchaseHistoryMenuItem" onAction="#onCustomerPurchaseHistoryCommand" text="Purchase _History" />
+								<MenuItem fx:id="customerPurchaseHistoryMenuItem" onAction="#onCustomerPurchaseHistoryCommand" text="Purchase H_istory" />
 							</items>
 						</Menu>
 						<Menu fx:id="barcodeMenu" text="_Barcode">
 							<items>
-								<MenuItem fx:id="generateBarcodeMenuItem" onAction="#onGenerateBarcodeCommand" text="_Generate Barcode" />
+								<MenuItem fx:id="generateBarcodeMenuItem" onAction="#onGenerateBarcodeCommand" text="Ge_nerate Barcode" />
 								<MenuItem fx:id="printBarcodeMenuItem" onAction="#onPrintBarcodeCommand" text="Print Barc_ode" />
 							</items>
 						</Menu>
 						<Menu fx:id="reportsHomeMenu" text="_Reports">
 							<items>
-								<Menu fx:id="reportsMenu" text="R_eports">
+								<Menu fx:id="reportsMenu" text="Rep_orts">
 									<items>
 										<MenuItem fx:id="salesReportMenuItem" onAction="#onSalesReportCommand" text="_Sales Report" />
 										<MenuItem fx:id="salesReturnReportMenuItem" onAction="#onSalesReturnReportCommand" text="Sales _Return Report" />
@@ -138,7 +138,7 @@
 										<MenuItem fx:id="expenseReportMenuItem" onAction="#onExpenseReportCommand" text="_Expense Report" />
 									</items>
 								</Menu>
-								<Menu fx:id="graphicalReportsMenu" text="_Graphical Reports">
+								<Menu fx:id="graphicalReportsMenu" text="Graph_ical Reports">
 									<items>
 										<MenuItem fx:id="paymentModeWiseSalesMenuItem" onAction="#onPaymentModeWiseSalesCommand" text="Pa_yment Mode Wise Sales Report" />
 										<MenuItem fx:id="dailySalesMenuItem" onAction="#onDailySalesReportCommand" text="_Daily Sales Report" />
@@ -158,13 +158,13 @@
 						</Menu>
 						<Menu fx:id="settingsMenu" mnemonicParsing="false" text="Se_ttings">
 							<items>
-								<MenuItem fx:id="storeDetailsMenuItem" onAction="#onStoreDetailsCommand" text="_Store Details" />
+								<MenuItem fx:id="storeDetailsMenuItem" onAction="#onStoreDetailsCommand" text="Store Det_ails" />
 								<MenuItem fx:id="userPreferencesMenuItem" onAction="#onUserPreferencesCommand" text="User Pre_ferences" />
 								<MenuItem fx:id="dataBackupMenuItem" onAction="#onDataBackupCommand" text="_Data Backup" />
 								<MenuItem fx:id="restoreDatabaseMenuItem" onAction="#onRestoreDatabaseCommand" text="Rest_ore Backup" />
 								<MenuItem fx:id="taxesMenuItem" onAction="#onTaxesCommand" text="Ta_xes" />
 								<MenuItem fx:id="invoiceTemplatesMenuItem" onAction="#onInvoiceTemplatesCommand" text="Invoice Te_mplates" />
-								<CheckMenuItem fx:id="hideToolbarMenuItem" onAction="#onHideToolbarCommand" text="Hide _Toolbar" />
+								<CheckMenuItem fx:id="hideToolbarMenuItem" onAction="#onHideToolbarCommand" text="H_ide Toolbar" />
 							</items>
 						</Menu>
 						<Menu fx:id="helpMenu" text="He_lp">

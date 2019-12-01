@@ -67,27 +67,27 @@
 								<Label styleClass="requiredInput" text="Low Stock Quantity Limit :" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
 								<Label fx:id="lblGSTCalculationType" GridPane.columnIndex="2">
 									<tooltip>
-										<Tooltip prefWidth="400.0" wrapText="true" text="Inclusive GST means that GST is included in the price of the product. Exclusive GST means GST is separately charged above the price of the product." />
+										<Tooltip prefWidth="400.0" text="Inclusive GST means that GST is included in the price of the product. Exclusive GST means GST is separately charged above the price of the product." wrapText="true" />
 									</tooltip>
 								</Label>
 								<Label fx:id="lblInvoiceProductSearch" GridPane.columnIndex="2" GridPane.rowIndex="1">
 									<tooltip>
-										<Tooltip prefWidth="400.0" wrapText="true" text="While creating invoices you can set default selection for 'Product Search by' option." />
+										<Tooltip prefWidth="400.0" text="While creating invoices you can set default selection for 'Product Search by' option." wrapText="true" />
 									</tooltip>
 								</Label>
 								<Label fx:id="lblPrintOnSave" GridPane.columnIndex="2" GridPane.rowIndex="2">
 									<tooltip>
-										<Tooltip prefWidth="400.0" wrapText="true" text="If selected, On invoice save invoice will be printed. Same selection will be used in Create Invoice screen." />
+										<Tooltip prefWidth="400.0" text="If selected, On invoice save invoice will be printed. Same selection will be used in Create Invoice screen." wrapText="true" />
 									</tooltip>
 								</Label>
 								<Label fx:id="lblShowPrintPreview" GridPane.columnIndex="2" GridPane.rowIndex="3">
 									<tooltip>
-										<Tooltip prefWidth="400.0" wrapText="true" text="If selected, print preview screen will be shown before printing the invoice." />
+										<Tooltip prefWidth="400.0" text="If selected, print preview screen will be shown before printing the invoice." wrapText="true" />
 									</tooltip>
 								</Label>
 								<Label fx:id="lblOpenDocOnSave" GridPane.columnIndex="2" GridPane.rowIndex="4">
 									<tooltip>
-										<Tooltip prefWidth="400.0" wrapText="true" text="If selected, Once any type report is downloaded application will automatically open newly downloaded report." />
+										<Tooltip prefWidth="400.0" text="If selected, Once any type report is downloaded application will automatically open newly downloaded report." wrapText="true" />
 									</tooltip>
 								</Label>
 								<Label fx:id="lblDBBackupInterval" GridPane.columnIndex="2" GridPane.rowIndex="5">
@@ -108,8 +108,8 @@
 								<Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="8" />
 								<ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="9">
 									<buttons>
-										<Button fx:id="btnUpdate" cancelButton="true" disable="true" mnemonicParsing="true" onAction="#onUpdateCommand" text="Update" />
-										<Button mnemonicParsing="false" onAction="#onCloseCommand" text="Close" />
+										<Button fx:id="btnUpdate" defaultButton="true" disable="true" mnemonicParsing="true" onAction="#onUpdateCommand" text="Update" />
+										<Button cancelButton="true" mnemonicParsing="false" onAction="#onCloseCommand" text="Close" />
 									</buttons>
 								</ButtonBar>
 							</children>

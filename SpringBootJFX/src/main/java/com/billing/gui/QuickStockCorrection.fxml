@@ -101,8 +101,8 @@
 		<bottom>
             <ButtonBar BorderPane.alignment="TOP_CENTER">
                <buttons>
-                  <Button fx:id="btnUpdate" mnemonicParsing="false" onAction="#onUpdateCommand" text="Update" />
-                  <Button fx:id="btnClose" mnemonicParsing="false" onAction="#onCloseCommand" text="Close" />
+                  <Button fx:id="btnUpdate" defaultButton="true" mnemonicParsing="false" onAction="#onUpdateCommand" text="Update" />
+                  <Button fx:id="btnClose" cancelButton="true" mnemonicParsing="false" onAction="#onCloseCommand" text="Close" />
                </buttons>
                <BorderPane.margin>
                   <Insets />

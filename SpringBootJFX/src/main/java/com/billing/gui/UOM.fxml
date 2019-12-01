@@ -84,7 +84,7 @@
 						<Separator/>
 						<ButtonBar BorderPane.alignment="CENTER">
 							<buttons>
-								<Button fx:id="btnClose" mnemonicParsing="false" text="Close" onAction="#onCloseCommand"/>
+								<Button fx:id="btnClose" cancelButton="true" mnemonicParsing="false" text="Close" onAction="#onCloseCommand"/>
 							</buttons>
 							<padding>
 								<Insets top="10.0" />

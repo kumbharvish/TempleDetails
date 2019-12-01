@@ -187,7 +187,7 @@
 	<bottom>
 		<ButtonBar BorderPane.alignment="CENTER">
 			<buttons>
-				<Button mnemonicParsing="false" onAction="#onCloseAction" text="Close" />
+				<Button mnemonicParsing="false" cancelButton="true" onAction="#onCloseAction" text="Close" />
 			</buttons>
 			<padding>
 				<Insets top="20.0" />
