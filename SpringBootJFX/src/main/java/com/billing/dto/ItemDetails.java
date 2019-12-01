@@ -29,6 +29,10 @@ public class ItemDetails {
 	private String stockInOutFlag;
 	
 	private String hsn;
+	
+	//Fields for Purchase Entry
+	
+	private int purchaseEntryNo;
 
 	public int getItemNo() {
 		return itemNo;
@@ -144,6 +148,14 @@ public class ItemDetails {
 
 	public void setHsn(String hsn) {
 		this.hsn = hsn;
+	}
+
+	public int getPurchaseEntryNo() {
+		return purchaseEntryNo;
+	}
+
+	public void setPurchaseEntryNo(int purchaseEntryNo) {
+		this.purchaseEntryNo = purchaseEntryNo;
 	}
 
 }

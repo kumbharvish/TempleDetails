@@ -391,8 +391,8 @@ public class HomeController extends AppContext {
 	}
 
 	@FXML
-	void onStockEntryCommand(ActionEvent event) {
-
+	void onPurchaseEntryCommand(ActionEvent event) {
+		addTab("PurchaseEntry", "Purchase Entry");
 	}
 
 	@FXML
@@ -401,7 +401,7 @@ public class HomeController extends AppContext {
 	}
 
 	@FXML
-	void onStockHistoryCommand(ActionEvent event) {
+	void onSearchPurchaseEntryCommand(ActionEvent event) {
 
 	}
 

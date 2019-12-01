@@ -78,12 +78,12 @@
 										<KeyCodeCombination alt="UP" code="S" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
 									</accelerator>
 								</MenuItem>
-								<MenuItem fx:id="stockEntryMenuItem" onAction="#onStockEntryCommand" text="Purchase E_ntry">
+								<MenuItem fx:id="stockEntryMenuItem" onAction="#onPurchaseEntryCommand" text="Purchase E_ntry">
 									<accelerator>
 										<KeyCodeCombination alt="UP" code="E" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
 									</accelerator>
 								</MenuItem>
-								<MenuItem fx:id="stockHistoryMenuItem" onAction="#onStockHistoryCommand" text="Search P_urchase Entry">
+								<MenuItem fx:id="stockHistoryMenuItem" onAction="#onSearchPurchaseEntryCommand" text="Search P_urchase Entry">
 									<accelerator>
 										<KeyCodeCombination alt="UP" code="H" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
 									</accelerator>
