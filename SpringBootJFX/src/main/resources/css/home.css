@@ -120,19 +120,15 @@
 }
 
 #exitMenuItem>.label {
-	-fx-graphic: url("/images/exit.png");
+	-fx-graphic: url("/images/Exit_24.png");
 }
 
 #createInvoiceMenuItem>.label {
-	-fx-graphic: url("/images/invoice_24.png");
+	-fx-graphic: url("/images/Create_Invoice_24.png");
 }
 
 #searchInvoiceMenuItem>.label {
 	-fx-graphic: url("/images/search_invoice_24.png");
-}
-
-#returnInvoiceMenuItem>.label {
-	-fx-graphic: url("/images/Return_Invoice_24.png");
 }
 
 #customersMenuItem>.label {
@@ -172,7 +168,7 @@
 }
 
 #stockHistoryMenuItem>.label {
-	-fx-graphic: url("/images/StockPurchaseHistory_24.png");
+	-fx-graphic: url("/images/SearchPurchaseEntry_24.png");
 }
 
 #reportsMenu>.label {
@@ -212,7 +208,7 @@
 }
 
 #lblCreateInvoice {
-	-fx-graphic: url("/images/invoice_24.png");
+	-fx-graphic: url("/images/Create_Invoice_24.png");
 }
 
 #lblSearchInvoice {
@@ -228,7 +224,7 @@
 }
 
 #lblSaleReport {
-	-fx-graphic: url("/images/SaleReport_24.png");
+	-fx-graphic: url("/images/SalesReport_24.png");
 }
 
 #lblCashReport {

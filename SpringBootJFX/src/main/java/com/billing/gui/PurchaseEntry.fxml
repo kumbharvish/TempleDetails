@@ -287,7 +287,7 @@
 									<children>
 										<ButtonBar>
 											<buttons>
-												<Button fx:id="btnSave" defaultButton="true" mnemonicParsing="false" onAction="#onSaveCommand" text="Save" />
+												<Button fx:id="btnSave"  mnemonicParsing="false" onAction="#onSaveCommand" text="Save" />
 												<Button fx:id="btnClose" cancelButton="true" mnemonicParsing="false" onAction="#onCloseAction" text="Close" />
 											</buttons>
 										</ButtonBar>
