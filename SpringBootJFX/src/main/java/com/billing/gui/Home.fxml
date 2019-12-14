@@ -72,12 +72,7 @@
 							</items>
 						</Menu>
 						<Menu fx:id="purchaseMenu" text="_Purchase">
-							<items>
-								<MenuItem fx:id="suppliersMenuItem" onAction="#onSuppliersCommand" text="Suppl_iers">
-									<accelerator>
-										<KeyCodeCombination alt="UP" code="S" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
-									</accelerator>
-								</MenuItem>
+							<items>								
 								<MenuItem fx:id="stockEntryMenuItem" onAction="#onPurchaseEntryCommand" text="Purchase E_ntry">
 									<accelerator>
 										<KeyCodeCombination alt="UP" code="E" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
@@ -86,6 +81,11 @@
 								<MenuItem fx:id="stockHistoryMenuItem" onAction="#onSearchPurchaseEntryCommand" text="Search P_urchase Entry">
 									<accelerator>
 										<KeyCodeCombination alt="UP" code="H" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+									</accelerator>
+								</MenuItem>
+								<MenuItem fx:id="suppliersMenuItem" onAction="#onSuppliersCommand" text="Suppl_iers">
+									<accelerator>
+										<KeyCodeCombination alt="UP" code="S" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
 									</accelerator>
 								</MenuItem>
 							</items>

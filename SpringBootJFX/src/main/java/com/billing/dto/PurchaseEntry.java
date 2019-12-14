@@ -35,6 +35,8 @@ public class PurchaseEntry {
 	private double totalAmount;
 	
 	private String createdBy;
+	
+	private double discountAmount;
 
 	public int getPurchaseEntryNo() {
 		return purchaseEntryNo;
@@ -162,6 +164,14 @@ public class PurchaseEntry {
 
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
+	}
+
+	public double getDiscountAmount() {
+		return discountAmount;
+	}
+
+	public void setDiscountAmount(double discountAmount) {
+		this.discountAmount = discountAmount;
 	}
 
 }

@@ -66,14 +66,7 @@
 														<RowConstraints />
 													</rowConstraints>
 													<children>														
-														<Label styleClass="nodeLabel" text="Bill No. :" GridPane.halignment="RIGHT" />														
-														<Label styleClass="nodeLabel" text="Suppliers :" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
-														<VBox GridPane.columnIndex="1" GridPane.rowIndex="3">
-															<children>
-																<AutoCompleteTextField fx:id="txtSuppliers" />
-																<Label fx:id="lblSuppliersErrMsg" styleClass="errorLabel" wrapText="true" />
-															</children>
-														</VBox>
+														<Label styleClass="requiredInput" text="Bill No. :" GridPane.halignment="RIGHT" />														
 														<VBox GridPane.columnIndex="1">
 															<children>
 																<TextField fx:id="txtBillNo" />
@@ -81,10 +74,12 @@
 															</children>
 														</VBox>
 														<Label text="Bill Date :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" styleClass="nodeLabel" />
-														<VBox GridPane.columnIndex="1" GridPane.rowIndex="1">
+														<DatePicker fx:id="dpBillDate" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+														<Label styleClass="requiredInput" text="Supplier :" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+														<VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
 															<children>
-																<DatePicker fx:id="dpBillDate" />
-																<Label fx:id="lblBillDateErrMsg" styleClass="errorLabel" wrapText="true"/>
+																<AutoCompleteTextField fx:id="txtSupplier" />
+																<Label fx:id="lblSupplierErrMsg" styleClass="errorLabel" wrapText="true" />
 															</children>
 														</VBox>
 													</children>
@@ -140,7 +135,7 @@
 												<VBox GridPane.columnIndex="4" GridPane.rowIndex="1" GridPane.valignment="TOP">
 													<children>
 														<TextField fx:id="txtQuantity" />
-														<Label fx:id="lblQuantityErrMsg" />
+														<Label fx:id="lblQuantityErrMsg" styleClass="errorLabel" />
 													</children>
 												</VBox>
 											</children>
@@ -243,10 +238,12 @@
 												<TextField fx:id="txtTotalBefTax" alignment="CENTER_RIGHT" editable="false" styleClass="totalFields" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 												<Label styleClass="nodeLabel" text="Total GST Amount :" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
 												<TextField fx:id="txtTotalGSTAmt" alignment="CENTER_RIGHT" editable="false" styleClass="totalFields" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-												<Label styleClass="nodeLabel" text="Extra Charges :" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+												<Label styleClass="nodeLabel" text="Extra Charges (+) :" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
 												<TextField fx:id="txtExtraCharges" alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-												<Label styleClass="nodeLabel" text="Payment Mode :" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
-												<ComboBox fx:id="cbPaymentModes" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+												<Label styleClass="nodeLabel" text="Discount Amount (-) :" GridPane.rowIndex="5" />
+												<TextField fx:id="txtDiscountAmount" alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+												<Label styleClass="nodeLabel" text="Payment Mode :" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
+												<ComboBox fx:id="cbPaymentModes" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
 											</children>
 											<padding>
 												<Insets left="10.0" />

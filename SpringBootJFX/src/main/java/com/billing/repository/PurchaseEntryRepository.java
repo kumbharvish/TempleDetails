@@ -46,7 +46,7 @@ public class PurchaseEntryRepository {
 			+ "ITEM_QTY,ITEM_AMOUNT,GST_RATE,GST_NAME,CGST,SGST,GST_AMOUNT,GST_TAXABLE_AMT,UNIT,HSN) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static final String ADD_PURCHASE_ENTRY = "INSERT INTO PURCHASE_ENTRY_DETAILS (PURCHASE_ENTRY_NO,SUPPLIER,BILL_NO,PURCHASE_ENTRY_DATE,COMMENTS,NO_OF_ITEMS,TOTAL_QTY,"
-			+ "TOTAL_AMT_BEFORE_TAX,TOTAL_TAX,EXTRA_CHARGES,PAYMENT_MODE,TOTAL_AMOUNT,SUPPLIER_ID,BILL_DATE) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			+ "TOTAL_AMT_BEFORE_TAX,TOTAL_TAX,EXTRA_CHARGES,PAYMENT_MODE,TOTAL_AMOUNT,SUPPLIER_ID,BILL_DATE,DISCOUNT_AMOUNT) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static final String GET_PURCHASE_ENTRY_ITEM_DETAILS = "SELECT * FROM PURCHASE_ENTRY_ITEM_DETAILS WHERE PURCHASE_ENTRY_NO=?";
 	
@@ -64,6 +64,7 @@ public class PurchaseEntryRepository {
 		try {
 			if (bill != null) {
 				conn = dbUtils.getConnection();
+				conn.setAutoCommit(false);
 				stmt = conn.prepareStatement(ADD_PURCHASE_ENTRY);
 				stmt.setInt(1, bill.getPurchaseEntryNo());
 				stmt.setString(2, bill.getSupplierName());
@@ -79,6 +80,7 @@ public class PurchaseEntryRepository {
 				stmt.setDouble(12, bill.getTotalAmount());
 				stmt.setInt(13, bill.getSupplierId());
 				stmt.setString(14, bill.getBillDate());
+				stmt.setDouble(15, bill.getDiscountAmount());
 
 				int i = stmt.executeUpdate();
 				if (i > 0) {

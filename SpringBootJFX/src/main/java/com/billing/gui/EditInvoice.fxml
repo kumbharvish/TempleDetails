@@ -76,7 +76,7 @@
 																<RadioButton fx:id="rbItemName" mnemonicParsing="false" text="Product Name" />
 															</children>
 														</HBox>														
-														<Label styleClass="nodeLabel" text="Customer :" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+														<Label styleClass="requiredInput" text="Customer :" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
 														<VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
 															<children>
 																<AutoCompleteTextField fx:id="txtCustomer" />

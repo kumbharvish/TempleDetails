@@ -75,6 +75,8 @@ public class Product {
 	private double orignalDiscount;
 	
 	private String hsn;
+	
+	private double tableDispTax;
 
 	public int getProductCode() {
 		return productCode;
@@ -305,6 +307,11 @@ public class Product {
 		//Amount - Discount
 		return tableDispAmount-getDiscountAmount();
 	}
+	
+	public double getTableDispAmountForPurEntry() {
+		//Amount
+		return tableDispAmount;
+	}
 
 	public void setTableDispAmount(double tableDispAmount) {
 		this.tableDispAmount = tableDispAmount;
@@ -375,6 +382,22 @@ public class Product {
 		this.hsn = hsn;
 	}
 
+	public double getTableDispTax() {
+		return tableDispTax;
+	}
+
+	public void setTableDispTax(double tableDispTax) {
+		this.tableDispTax = tableDispTax;
+	}
+
+	public double getPECgstPercent() {
+		return tableDispTax/2;
+	}
+
+	public double getPESgstPercent() {
+		return tableDispTax/2;
+	}
+	
 	public enum SortParameter {
 		CATEGORY_NAME_ASCENDING, PROFIT_ASCENDING, PRODUCT_NAME_ASCENDING, STOCK_VALUE_AMT_ASC, STOCK_QUANTITY_ASC
 	}

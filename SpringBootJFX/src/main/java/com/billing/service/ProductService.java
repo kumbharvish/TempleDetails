@@ -151,6 +151,8 @@ public class ProductService implements AppService<Product> {
 				product.setDescription("Delete Invoice based on Invoice No.: " + p.getBillNumber());
 			} else if (AppConstants.SALES_RETURN.equals(transactionType)) {
 				product.setDescription("Sales Return based on Return No.: " + p.getBillNumber());
+			}else if (AppConstants.PURCHASE.equals(transactionType)) {
+				product.setDescription("Purchase Based on P.E. No.: " + p.getPurchaseEntryNo());
 			}
 			productList.add(product);
 		}

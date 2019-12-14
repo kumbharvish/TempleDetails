@@ -118,10 +118,10 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 	private TextField txtComments;
 
 	@FXML
-	private AutoCompleteTextField txtSuppliers;
+	private AutoCompleteTextField txtSupplier;
 
 	@FXML
-	private Label lblSuppliersErrMsg;
+	private Label lblSupplierErrMsg;
 
 	@FXML
 	private TextField txtBillNo;
@@ -152,9 +152,6 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 
 	@FXML
 	private Label lblRateErrMsg;
-
-	@FXML
-	private Label lblBillDateErrMsg;
 
 	@FXML
 	private Label lblNoItemError;
@@ -217,6 +214,9 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 	private TextField txtTotalGSTAmt;
 
 	@FXML
+	private TextField txtDiscountAmount;
+
+	@FXML
 	private Button btnSave;
 
 	@Override
@@ -239,12 +239,10 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 		lblItemNameErrMsg.visibleProperty().bind(lblItemNameErrMsg.textProperty().length().greaterThanOrEqualTo(1));
 		lblQuantityErrMsg.managedProperty().bind(lblQuantityErrMsg.visibleProperty());
 		lblQuantityErrMsg.visibleProperty().bind(lblQuantityErrMsg.textProperty().length().greaterThanOrEqualTo(1));
-		lblSuppliersErrMsg.managedProperty().bind(lblSuppliersErrMsg.visibleProperty());
-		lblSuppliersErrMsg.visibleProperty().bind(lblSuppliersErrMsg.textProperty().length().greaterThanOrEqualTo(1));
+		lblSupplierErrMsg.managedProperty().bind(lblSupplierErrMsg.visibleProperty());
+		lblSupplierErrMsg.visibleProperty().bind(lblSupplierErrMsg.textProperty().length().greaterThanOrEqualTo(1));
 		lblRateErrMsg.managedProperty().bind(lblRateErrMsg.visibleProperty());
 		lblRateErrMsg.visibleProperty().bind(lblRateErrMsg.textProperty().length().greaterThanOrEqualTo(1));
-		lblBillDateErrMsg.managedProperty().bind(lblBillDateErrMsg.visibleProperty());
-		lblBillDateErrMsg.visibleProperty().bind(lblBillDateErrMsg.textProperty().length().greaterThanOrEqualTo(1));
 		lblBillNoErrMsg.managedProperty().bind(lblBillNoErrMsg.visibleProperty());
 		lblBillNoErrMsg.visibleProperty().bind(lblBillNoErrMsg.textProperty().length().greaterThanOrEqualTo(1));
 		lblNoItemError.managedProperty().bind(lblNoItemError.visibleProperty());
@@ -256,7 +254,7 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 		setTableCellFactories();
 		getSupplierNameList();
 		getProductNameList();
-		txtSuppliers.createTextField(supplierEntries, () -> {
+		txtSupplier.createTextField(supplierEntries, () -> {
 			supplierTxtFieldTask();
 		});
 		txtItemName.createTextField(productEntries, () -> setProductDetails());
@@ -264,6 +262,9 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 		// Force Number Listner
 		txtQuantity.textProperty().addListener(appUtils.getForceDecimalNumberListner());
 		txtRate.textProperty().addListener(appUtils.getForceDecimalNumberListner());
+		txtDiscountAmount.textProperty().addListener(appUtils.getForceDecimalNumberListner());
+		txtExtraCharges.textProperty().addListener(appUtils.getForceDecimalNumberListner());
+
 		tableView.setItems(productTableData);
 		btnSave.disableProperty().bind(isDirty.not());
 		// Register textfield listners
@@ -295,6 +296,28 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 			}
 		});
 
+		txtProductTax.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (ke.getCode().equals(KeyCode.ENTER)) {
+					if (!txtItemName.getText().equals("")) {
+						txtRate.requestFocus();
+					}
+				}
+			}
+		});
+
+		txtRate.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (ke.getCode().equals(KeyCode.ENTER)) {
+					if (!txtItemName.getText().equals("")) {
+						txtQuantity.requestFocus();
+					}
+				}
+			}
+		});
+
 		productTableData.addListener(new ListChangeListener<Product>() {
 
 			@Override
@@ -315,20 +338,60 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 			}
 		});
 
+		txtDiscountAmount.setOnKeyReleased(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (!txtDiscountAmount.getText().equals("") && !ke.getCode().equals(KeyCode.PERIOD)
+						&& !ke.getCode().equals(KeyCode.DECIMAL)) {
+					updateTotalAmount();
+					isDirty.set(true);
+				}
+			}
+		});
+
+		txtDiscountAmount.textProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue == null || newValue.equals("")) {
+				txtDiscountAmount.setText("0.0");
+				isDirty.set(true);
+			}
+		});
+
+		txtExtraCharges.setOnKeyReleased(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (!txtExtraCharges.getText().equals("") && !ke.getCode().equals(KeyCode.PERIOD)
+						&& !ke.getCode().equals(KeyCode.DECIMAL)) {
+					updateTotalAmount();
+					isDirty.set(true);
+				}
+			}
+		});
+
+		txtExtraCharges.textProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue == null || newValue.equals("")) {
+				txtExtraCharges.setText("0.0");
+				isDirty.set(true);
+			}
+		});
+
 	}
 
 	private void supplierTxtFieldTask() {
-		lblSuppliersErrMsg.setText("");
+		lblSupplierErrMsg.setText("");
 		isDirty.set(true);
 		txtItemName.requestFocus();
 	}
 
 	protected void addRecordToTable(Product product) {
 		if (validatePurchaseEntryItem(product)) {
-			// product.setTableDispAmount(Double.valueOf(txtAmount.getText()));
+			Double pRate = Double.parseDouble(txtRate.getText());
+			Double pQty = Double.parseDouble(txtQuantity.getText());
+			Double pAmount = pQty * pRate;
+			product.setTableDispAmount(pAmount);
+			product.setTableDispTax(Double.valueOf(txtProductTax.getText()));
 			product.setTableDispRate(Double.valueOf(txtRate.getText()));
 			product.setTableDispQuantity(Double.valueOf(txtQuantity.getText()));
-			product.setGstDetails(appUtils.getGSTDetails(product));
+			product.setGstDetails(purchaseEntryService.getGSTDetails(product));
 			productTableData.add(product);
 			resetItemFields();
 			txtItemName.requestFocus();
@@ -347,15 +410,15 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 		tcRate.setCellValueFactory(cellData -> new SimpleStringProperty(
 				appUtils.getDecimalFormat(cellData.getValue().getTableDispRate())));
 		tcAmount.setCellValueFactory(cellData -> new SimpleStringProperty(
-				appUtils.getDecimalFormat(cellData.getValue().getTableAmountShowValue())));
+				appUtils.getDecimalFormat(cellData.getValue().getTableDispAmountForPurEntry())));
 		tcCGST.setCellValueFactory(
 				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getCgst())));
 		tcSGST.setCellValueFactory(
 				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getSgst())));
 		tcCGSTPercent.setCellValueFactory(
-				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getCgstPercent())));
+				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getPECgstPercent())));
 		tcSGSTPercent.setCellValueFactory(
-				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getSgstPercent())));
+				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getPESgstPercent())));
 
 		tcItemName.getStyleClass().add("character-cell");
 		tcQuantity.getStyleClass().add("numeric-cell");
@@ -400,8 +463,9 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 			txtQuantity.setText("");
 			if (product != null) {
 				txtUnit.setText(product.getMeasure());
-				txtRate.setText(appUtils.getDecimalFormat(product.getSellPrice()));
-				txtQuantity.requestFocus();
+				txtProductTax.setText(appUtils.getDecimalFormat(product.getProductTax()));
+				txtRate.setText(appUtils.getDecimalFormat(product.getPurcaseRate()));
+				txtProductTax.requestFocus();
 				clearItemErrorFields();
 			}
 		}
@@ -418,7 +482,7 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 	void onRefereshCommand(ActionEvent event) {
 		getProductNameList();
 		getSupplierNameList();
-		txtSuppliers.createTextField(supplierEntries, () -> supplierTxtFieldTask());
+		txtSupplier.createTextField(supplierEntries, () -> supplierTxtFieldTask());
 		txtItemName.createTextField(productEntries, () -> setProductDetails());
 	}
 
@@ -500,8 +564,9 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 	private PurchaseEntry preparePurchaseEntryDetails() {
 		PurchaseEntry pe = new PurchaseEntry();
 		pe.setPurchaseEntryNo(Integer.valueOf(txtPurchaseEntryNo.getText()));
-		pe.setSupplierId(suppliersIdMap.get(txtSuppliers.getText()));
-		pe.setSupplierName(txtSuppliers.getText());
+		pe.setSupplierId(suppliersIdMap.get(txtSupplier.getText()));
+		pe.setBillNumber(Integer.valueOf(txtBillNo.getText()));
+		pe.setSupplierName(txtSupplier.getText());
 		pe.setComments(txtComments.getText());
 		// Prepare Item List
 		pe.setItemDetails(prepareItemList());
@@ -509,6 +574,10 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 		pe.setNoOfItems(Integer.valueOf(txtNoOfItems.getText()));
 		pe.setTotalQuantity(Double.valueOf(txtTotalQty.getText()));
 		pe.setPaymentMode(cbPaymentModes.getSelectionModel().getSelectedItem());
+		pe.setDiscountAmount(
+				Double.valueOf(txtDiscountAmount.getText().equals("") ? "0.0" : txtDiscountAmount.getText()));
+		pe.setExtraCharges(
+				Double.valueOf(txtExtraCharges.getText().equals("") ? "0.0" : txtExtraCharges.getText()));
 		pe.setTotalAmount(
 				Double.valueOf(IndianCurrencyFormatting.removeFormattingWithCurrency(txtTotalAmount.getText())));
 
@@ -557,16 +626,6 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 		boolean valid = true;
 		clearPurchaseEntryErrorFields();
 
-		final LocalDate date = dpBillDate.getValue();
-		if (date == null) {
-			lblBillDateErrMsg.setText("Bill Date not specified!");
-			valid = false;
-			return valid;
-		} else if (date.isAfter(LocalDate.now())) {
-			lblBillDateErrMsg.setText("Bill Date can't be later than todays date :" + appUtils.getTodaysDate());
-			valid = false;
-			return valid;
-		}
 		int billNo = txtBillNo.getText().trim().length();
 		if (billNo == 0) {
 			lblBillNoErrMsg.setText("Please enter bill no");
@@ -577,19 +636,19 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 			lblBillNoErrMsg.setText("");
 		}
 
-		int supplier = txtSuppliers.getText().trim().length();
+		int supplier = txtSupplier.getText().trim().length();
 		if (supplier == 0) {
-			lblSuppliersErrMsg.setText("Please select supplier");
-			txtSuppliers.requestFocus();
+			lblSupplierErrMsg.setText("Please select supplier");
+			txtSupplier.requestFocus();
 			valid = false;
 			return valid;
-		} else if (null == suppliersIdMap.get(txtSuppliers.getText())) {
-			lblSuppliersErrMsg.setText("No supplier matches this name");
-			txtSuppliers.requestFocus();
+		} else if (null == suppliersIdMap.get(txtSupplier.getText())) {
+			lblSupplierErrMsg.setText("No supplier matches this name");
+			txtSupplier.requestFocus();
 			valid = false;
 			return valid;
 		} else {
-			lblSuppliersErrMsg.setText("");
+			lblSupplierErrMsg.setText("");
 		}
 
 		if (productTableData.size() == 0) {
@@ -612,8 +671,8 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 		txtComments.clear();
 		txtBillNo.clear();
 		txtPurchaseEntryNo.setText(String.valueOf(purchaseEntryService.getNewPurchaseEntryNumber()));
-		txtSuppliers.clear();
-		txtSuppliers.requestFocus();
+		txtSupplier.clear();
+		txtSupplier.requestFocus();
 		txtNoOfItems.clear();
 		txtTotalQty.clear();
 		txtTotalBefTax.clear();
@@ -641,8 +700,7 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 	}
 
 	private void clearPurchaseEntryErrorFields() {
-		lblBillDateErrMsg.setText("");
-		lblSuppliersErrMsg.setText("");
+		lblSupplierErrMsg.setText("");
 		lblNoItemError.setText("");
 		lblBillNoErrMsg.setText("");
 	}
@@ -656,6 +714,12 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 		}
 		if (null == product && !txtItemName.getText().equals("")) {
 			lblItemNameErrMsg.setText("Invalid product name");
+			valid = false;
+		}
+		String tax = txtProductTax.getText().trim();
+		if (tax.isEmpty()) {
+			lblProductTaxErrMsg.setText("Tax not specified");
+			alertHelper.beep();
 			valid = false;
 		}
 		String rate = txtRate.getText().trim();
@@ -673,10 +737,6 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 			lblQuantityErrMsg.setText("Invalid Quantity");
 			alertHelper.beep();
 			valid = false;
-		} else if (null != product && (product.getQuantity() < Double.valueOf(quantity))) {
-			valid = false;
-			lblQuantityErrMsg.setText("Available stock is : " + appUtils.getDecimalFormat(product.getQuantity()));
-			alertHelper.beep();
 		}
 		boolean isMatch = productTableData.stream().anyMatch(i -> i.getProductName().equals(product.getProductName()));
 		if (isMatch) {
@@ -691,6 +751,7 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 		lblItemNameErrMsg.setText("");
 		lblQuantityErrMsg.setText("");
 		lblRateErrMsg.setText("");
+		lblProductTaxErrMsg.setText("");
 	}
 
 	private void getTableRowEditDeletePopup() {
@@ -742,6 +803,21 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 		int noOfItems = 0;
 		double gstAmount = 0.0;
 		double totalAmount = 0.0;
+		double extraCharges = 0.0;
+		double discountAmount = 0.0;
+
+		if (txtExtraCharges.getText().equals("")) {
+			extraCharges = 0.0;
+		} else {
+			extraCharges = Double.valueOf(txtExtraCharges.getText());
+		}
+
+		if (txtDiscountAmount.getText().equals("")) {
+			discountAmount = 0.0;
+		} else {
+			discountAmount = Double.valueOf(txtDiscountAmount.getText());
+		}
+
 		noOfItems = productTableData.size();
 		for (Product product : productTableData) {
 			GSTDetails gst = product.getGstDetails();
@@ -749,10 +825,8 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 			quantity = quantity + product.getTableDispQuantity();
 			gstAmount = gstAmount + gst.getGstAmount();
 		}
-		/*
-		 * if (isGSTInclusive) { subTotal = subTotal - gstAmount; }
-		 */
-		totalAmount = totalAmtBeforeTax + gstAmount;
+		totalAmount = totalAmtBeforeTax + gstAmount + extraCharges;
+		totalAmount = totalAmount - discountAmount;
 		txtNoOfItems.setText(String.valueOf(noOfItems));
 		txtTotalQty.setText(appUtils.getDecimalFormat(quantity));
 		txtTotalBefTax.setText(IndianCurrencyFormatting.applyFormatting(totalAmtBeforeTax));
