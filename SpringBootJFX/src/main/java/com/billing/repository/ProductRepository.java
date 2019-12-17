@@ -19,6 +19,7 @@ import com.billing.dto.Product;
 import com.billing.dto.StatusDTO;
 import com.billing.service.MeasurementUnitsService;
 import com.billing.service.ProductCategoryService;
+import com.billing.service.ProductHistoryService;
 import com.billing.service.TaxesService;
 import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
@@ -42,6 +43,9 @@ public class ProductRepository {
 
 	@Autowired
 	TaxesService taxesService;
+
+	@Autowired
+	ProductHistoryService productHistoryService;
 
 	private static final String GET_ALL_PRODUCTS = "SELECT  PD.*,PCD.CATEGORY_NAME "
 			+ "FROM PRODUCT_DETAILS PD,PRODUCT_CATEGORY_DETAILS PCD WHERE PD.CATEGORY_ID = PCD.CATEGORY_ID;";
@@ -203,6 +207,12 @@ public class ProductRepository {
 					product.setDescription("Add Product Opening Stock");
 					list.add(product);
 					addProductStockLedger(list, AppConstants.STOCK_IN, AppConstants.ADD_PRODUCT, conn);
+					// Add Product Purchase price history
+					List<Product> list2 = new ArrayList<Product>();
+					product.setDescription(AppConstants.ADD_PRODUCT);
+					product.setSupplierId(1);
+					list2.add(product);
+					productHistoryService.addProductPurchasePriceHistory(list2, conn);
 				}
 			}
 		} catch (Exception e) {
@@ -430,14 +440,11 @@ public class ProductRepository {
 	}
 
 	// Update Purchase Price,Tax & Rate
-	public StatusDTO updateProductPurchasePrice(List<Product> productList) {
-		Connection conn = null;
+	public StatusDTO updateProductPurchasePrice(List<Product> productList, Connection conn) {
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();
 		try {
-			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(UPDATE_PRODUCT_PURCHASE_HISTORY);
-			conn.setAutoCommit(false);
 			for (Product product : productList) {
 				stmt.setDouble(1, product.getPurcasePrice());
 				stmt.setString(2, appUtils.getCurrentTimestamp());
@@ -447,7 +454,6 @@ public class ProductRepository {
 				stmt.addBatch();
 			}
 			int batch[] = stmt.executeBatch();
-			conn.commit();
 			if (batch.length == productList.size()) {
 				status.setStatusCode(0);
 				System.out.println("Product Purchase Price  updated");
@@ -457,8 +463,6 @@ public class ProductRepository {
 			logger.error("Exception : ", e);
 			status.setStatusCode(-1);
 			status.setException(e.getMessage());
-		} finally {
-			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}

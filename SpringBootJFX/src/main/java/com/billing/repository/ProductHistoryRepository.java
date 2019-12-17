@@ -43,15 +43,11 @@ public class ProductHistoryRepository {
 	private static final String PRODUCT_WISE_SALES = "SELECT BID.ITEM_NUMBER , PD.PRODUCT_NAME,BID.ITEM_MRP,SUM(BID.ITEM_QTY) AS TOTAL_QTY FROM BILL_ITEM_DETAILS BID,PRODUCT_DETAILS PD WHERE BID.BILL_NUMBER IN (SELECT BILL_NUMBER FROM CUSTOMER_BILL_DETAILS WHERE DATE(BILL_DATE_TIME) BETWEEN ? AND ?) AND BID.ITEM_NUMBER = PD.PRODUCT_ID GROUP BY BID.ITEM_NUMBER ORDER BY SUM(BID.ITEM_QTY) DESC";
 
 	// Add Product Purchase Price History
-	public StatusDTO addProductPurchasePriceHistory(List<Product> productList) {
-		Connection conn = null;
+	public StatusDTO addProductPurchasePriceHistory(List<Product> productList, Connection conn) {
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();
 		try {
-			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(INS_PRODUCT_PURCHASE_PRICE);
-			conn.setAutoCommit(false);
-
 			for (Product product : productList) {
 				stmt.setInt(1, product.getProductCode());
 				stmt.setDouble(2, product.getPurcasePrice());
@@ -64,7 +60,6 @@ public class ProductHistoryRepository {
 			}
 
 			int batch[] = stmt.executeBatch();
-			conn.commit();
 			if (batch.length == productList.size()) {
 				status.setStatusCode(0);
 				System.out.println("Product Purchase Price  History Added");
@@ -75,8 +70,6 @@ public class ProductHistoryRepository {
 			status.setException(e.getMessage());
 			e.printStackTrace();
 			logger.info("Exception : ", e);
-		} finally {
-			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
 	}

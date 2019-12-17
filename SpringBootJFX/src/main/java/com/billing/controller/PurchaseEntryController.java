@@ -576,8 +576,7 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 		pe.setPaymentMode(cbPaymentModes.getSelectionModel().getSelectedItem());
 		pe.setDiscountAmount(
 				Double.valueOf(txtDiscountAmount.getText().equals("") ? "0.0" : txtDiscountAmount.getText()));
-		pe.setExtraCharges(
-				Double.valueOf(txtExtraCharges.getText().equals("") ? "0.0" : txtExtraCharges.getText()));
+		pe.setExtraCharges(Double.valueOf(txtExtraCharges.getText().equals("") ? "0.0" : txtExtraCharges.getText()));
 		pe.setTotalAmount(
 				Double.valueOf(IndianCurrencyFormatting.removeFormattingWithCurrency(txtTotalAmount.getText())));
 
@@ -602,7 +601,9 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 			item.setRate(p.getTableDispRate());
 			item.setQuantity(p.getTableDispQuantity());
 			item.setMRP(p.getSellPrice());
-			item.setPurchasePrice(p.getPurcasePrice());
+			// Calculate new purchase price
+			double newPurchasePrice = p.getTableDispRate() + (p.getTableDispRate() / 100) * p.getGstDetails().getRate();
+			item.setPurchasePrice(newPurchasePrice);
 			item.setUnit(p.getMeasure());
 			item.setHsn(p.getHsn());
 			itemList.add(item);

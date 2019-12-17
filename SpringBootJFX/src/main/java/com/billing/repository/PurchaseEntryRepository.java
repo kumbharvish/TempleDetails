@@ -13,13 +13,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.billing.dto.Product;
-import com.billing.dto.StatusDTO;
 import com.billing.constants.AppConstants;
 import com.billing.dto.GSTDetails;
 import com.billing.dto.ItemDetails;
-import com.billing.dto.Supplier;
+import com.billing.dto.Product;
 import com.billing.dto.PurchaseEntry;
+import com.billing.dto.StatusDTO;
 import com.billing.service.ProductHistoryService;
 import com.billing.service.ProductService;
 import com.billing.utils.AppUtils;
@@ -49,9 +48,8 @@ public class PurchaseEntryRepository {
 			+ "TOTAL_AMT_BEFORE_TAX,TOTAL_TAX,EXTRA_CHARGES,PAYMENT_MODE,TOTAL_AMOUNT,SUPPLIER_ID,BILL_DATE,DISCOUNT_AMOUNT) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static final String GET_PURCHASE_ENTRY_ITEM_DETAILS = "SELECT * FROM PURCHASE_ENTRY_ITEM_DETAILS WHERE PURCHASE_ENTRY_NO=?";
-	
-	private static final String NEW_PURCHASE_ENTRY_NUMBER = "SELECT (MAX(PURCHASE_ENTRY_NO)+1) AS ENTRY_NO FROM PURCHASE_ENTRY_DETAILS ";
 
+	private static final String NEW_PURCHASE_ENTRY_NUMBER = "SELECT (MAX(PURCHASE_ENTRY_NO)+1) AS ENTRY_NO FROM PURCHASE_ENTRY_DETAILS ";
 
 	// Add Purchase Entry
 	public StatusDTO addPurchaseEntry(PurchaseEntry bill) {
@@ -60,6 +58,7 @@ public class PurchaseEntryRepository {
 		StatusDTO status = new StatusDTO();
 		boolean isItemsSaved = false;
 		boolean isStockUpdated = false;
+		boolean isPurchasePriceUpdated = false;
 
 		try {
 			if (bill != null) {
@@ -89,8 +88,10 @@ public class PurchaseEntryRepository {
 					isItemsSaved = savePurchaseEntryItemDetails(bill.getItemDetails(), conn);
 					isStockUpdated = productService.updateStockAndLedger(bill.getItemDetails(), AppConstants.STOCK_IN,
 							AppConstants.PURCHASE, conn);
+					isPurchasePriceUpdated = updateStockInformation(bill.getItemDetails(), bill.getPurchaseEntryNo(),
+							bill.getSupplierId(), conn);
 				}
-				if (!isStockUpdated || !isItemsSaved) {
+				if (!isStockUpdated || !isItemsSaved || !isPurchasePriceUpdated) {
 					status.setStatusCode(-1);
 					// If any step fails rollback Transaction
 					System.out.println("Save Purchase Entry Transaction Rollbacked !");
@@ -152,59 +153,59 @@ public class PurchaseEntryRepository {
 	}
 
 	// Get Item Details for Bill Number
-		public List<ItemDetails> getItemDetails(int purchaseEntryNo) {
-			List<ItemDetails> itemDetailsList = new ArrayList<ItemDetails>();
-			Connection conn = null;
-			PreparedStatement stmt = null;
-			ItemDetails itemDetails = null;
+	public List<ItemDetails> getItemDetails(int purchaseEntryNo) {
+		List<ItemDetails> itemDetailsList = new ArrayList<ItemDetails>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ItemDetails itemDetails = null;
 
-			conn = dbUtils.getConnection();
-			try {
-				stmt = conn.prepareStatement(GET_PURCHASE_ENTRY_ITEM_DETAILS);
+		conn = dbUtils.getConnection();
+		try {
+			stmt = conn.prepareStatement(GET_PURCHASE_ENTRY_ITEM_DETAILS);
 
-				stmt.setInt(1, purchaseEntryNo);
-				ResultSet rs = stmt.executeQuery();
+			stmt.setInt(1, purchaseEntryNo);
+			ResultSet rs = stmt.executeQuery();
 
-				while (rs.next()) {
-					itemDetails = new ItemDetails();
-					itemDetails.setItemNo(rs.getInt("ITEM_NUMBER"));
-					itemDetails.setItemName(rs.getString("PRODUCT_NAME"));
-					itemDetails.setMRP(rs.getDouble("ITEM_MRP"));
-					itemDetails.setRate(rs.getDouble("ITEM_RATE"));
-					itemDetails.setQuantity(rs.getDouble("ITEM_QTY"));
-					itemDetails.setUnit(rs.getString("UNIT"));
-					itemDetails.setHsn(rs.getString("HSN"));
-					itemDetails.setPurchaseEntryNo(rs.getInt("PURCHASE_ENTRY_NO"));
+			while (rs.next()) {
+				itemDetails = new ItemDetails();
+				itemDetails.setItemNo(rs.getInt("ITEM_NUMBER"));
+				itemDetails.setItemName(rs.getString("PRODUCT_NAME"));
+				itemDetails.setMRP(rs.getDouble("ITEM_MRP"));
+				itemDetails.setRate(rs.getDouble("ITEM_RATE"));
+				itemDetails.setQuantity(rs.getDouble("ITEM_QTY"));
+				itemDetails.setUnit(rs.getString("UNIT"));
+				itemDetails.setHsn(rs.getString("HSN"));
+				itemDetails.setPurchaseEntryNo(rs.getInt("PURCHASE_ENTRY_NO"));
 
-					GSTDetails gstDetails = new GSTDetails();
+				GSTDetails gstDetails = new GSTDetails();
 
-					gstDetails.setRate(rs.getDouble("GST_RATE"));
-					gstDetails.setName(rs.getString("GST_NAME"));
-					gstDetails.setCgst(rs.getDouble("CGST"));
-					gstDetails.setSgst(rs.getDouble("SGST"));
-					gstDetails.setGstAmount(rs.getDouble("GST_AMOUNT"));
-					gstDetails.setTaxableAmount(rs.getDouble("GST_TAXABLE_AMT"));
-					//gstDetails.setInclusiveFlag(rs.getString("GST_INCLUSIVE_FLAG"));
-					itemDetails.setGstDetails(gstDetails);
+				gstDetails.setRate(rs.getDouble("GST_RATE"));
+				gstDetails.setName(rs.getString("GST_NAME"));
+				gstDetails.setCgst(rs.getDouble("CGST"));
+				gstDetails.setSgst(rs.getDouble("SGST"));
+				gstDetails.setGstAmount(rs.getDouble("GST_AMOUNT"));
+				gstDetails.setTaxableAmount(rs.getDouble("GST_TAXABLE_AMT"));
+				// gstDetails.setInclusiveFlag(rs.getString("GST_INCLUSIVE_FLAG"));
+				itemDetails.setGstDetails(gstDetails);
 
-					itemDetailsList.add(itemDetails);
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				logger.error("Exception : ", e);
-			} finally {
-				DBUtils.closeConnection(stmt, conn);
+				itemDetailsList.add(itemDetails);
 			}
-
-			return itemDetailsList;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			logger.error("Exception : ", e);
+		} finally {
+			DBUtils.closeConnection(stmt, conn);
 		}
 
+		return itemDetailsList;
+	}
 
 	// Update purchase price and purchase history
-	public StatusDTO updateStockInformation(List<ItemDetails> newStockList, int purchaseEntryNo, int supplier) {
+	public boolean updateStockInformation(List<ItemDetails> newStockList, int purchaseEntryNo, int supplier,
+			Connection conn) {
 		HashMap<Integer, Product> productMap = productService.getProductMap();
 		List<Product> productList = new ArrayList<Product>();
-		StatusDTO status = new StatusDTO(-1);
+		boolean status = false;
 		logger.error("newStockList : " + newStockList);
 		System.out.println("newStockList : " + newStockList);
 		for (ItemDetails st : newStockList) {
@@ -214,7 +215,7 @@ public class PurchaseEntryRepository {
 					p.setProductTax(st.getGstDetails().getRate());
 					p.setPurcaseRate(st.getRate());
 					p.setPurcasePrice(st.getPurchasePrice());
-					p.setDescription("Stock Purchase Invoice No.: " + purchaseEntryNo);
+					p.setDescription("Based on Purchase Entry No.: " + purchaseEntryNo);
 					p.setSupplierId(supplier);
 					productList.add(p);
 				}
@@ -222,16 +223,16 @@ public class PurchaseEntryRepository {
 		}
 		System.out.println("productList : " + productList);
 		// Update Purchase price for Product
-		StatusDTO statusUpdatePurPrice = productService.updateProductPurchasePrice(productList);
+		StatusDTO statusUpdatePurPrice = productService.updateProductPurchasePrice(productList, conn);
 		// Update Product Purchase Price History
-		StatusDTO statusAddPurPriceHist = productHistoryService.addProductPurchasePriceHistory(productList);
+		StatusDTO statusAddPurPriceHist = productHistoryService.addProductPurchasePriceHistory(productList, conn);
 
 		if (statusUpdatePurPrice.getStatusCode() == 0 && statusAddPurPriceHist.getStatusCode() == 0) {
-			status.setStatusCode(0);
+			status = true;
 		}
 		return status;
 	}
-	
+
 	public Integer getNewPurchaseEntryNumber() {
 		Connection conn = null;
 		PreparedStatement stmt = null;

@@ -42,7 +42,7 @@ public class ProductService implements AppService<Product> {
 
 	@Autowired
 	TaxesService taxesService;
-	
+
 	@Override
 	public List<Product> getAll() {
 		return productRepository.getAllProducts();
@@ -60,8 +60,8 @@ public class ProductService implements AppService<Product> {
 		return productRepository.getZeroStockProducts(lowStockQtyLimit);
 	}
 
-	public StatusDTO updateProductPurchasePrice(List<Product> productList) {
-		return productRepository.updateProductPurchasePrice(productList);
+	public StatusDTO updateProductPurchasePrice(List<Product> productList, Connection conn) {
+		return productRepository.updateProductPurchasePrice(productList, conn);
 	}
 
 	public Product getProduct(int productCode) {
@@ -73,20 +73,7 @@ public class ProductService implements AppService<Product> {
 	}
 
 	public StatusDTO add(Product product) {
-		StatusDTO status = productRepository.addProduct(product);
-		if (status.getStatusCode() == 0) {
-			// Add Product Purchase price history
-			List<Product> list = new ArrayList<Product>();
-			product.setDescription(AppConstants.ADD_PRODUCT);
-			product.setSupplierId(001);
-			list.add(product);
-			StatusDTO statusHistory = productHistoryService.addProductPurchasePriceHistory(list);
-			if (statusHistory.getStatusCode() != 0) {
-				status.setStatusCode(-1);
-			}
-		}
-		return status;
-
+		return productRepository.addProduct(product);
 	}
 
 	public StatusDTO update(Product product) {
@@ -151,7 +138,7 @@ public class ProductService implements AppService<Product> {
 				product.setDescription("Delete Invoice based on Invoice No.: " + p.getBillNumber());
 			} else if (AppConstants.SALES_RETURN.equals(transactionType)) {
 				product.setDescription("Sales Return based on Return No.: " + p.getBillNumber());
-			}else if (AppConstants.PURCHASE.equals(transactionType)) {
+			} else if (AppConstants.PURCHASE.equals(transactionType)) {
 				product.setDescription("Purchase Based on P.E. No.: " + p.getPurchaseEntryNo());
 			}
 			productList.add(product);

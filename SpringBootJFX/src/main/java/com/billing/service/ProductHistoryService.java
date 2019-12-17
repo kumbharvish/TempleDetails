@@ -1,5 +1,6 @@
 package com.billing.service;
 
+import java.sql.Connection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -22,8 +23,8 @@ public class ProductHistoryService {
 	@Autowired
 	ProductService productService;
 
-	public StatusDTO addProductPurchasePriceHistory(List<Product> productList) {
-		return productHistoryRepository.addProductPurchasePriceHistory(productList);
+	public StatusDTO addProductPurchasePriceHistory(List<Product> productList, Connection conn) {
+		return productHistoryRepository.addProductPurchasePriceHistory(productList, conn);
 	}
 
 	public List<Product> getProductPurchasePriceHist(int productCode) {
