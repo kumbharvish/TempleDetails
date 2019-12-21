@@ -163,6 +163,10 @@
 	-fx-graphic: url("/images/Suppliers_24.png");
 }
 
+#supplierPayHistoryMenuItem>.label {
+	-fx-graphic: url("/images/Supplier_Payment_History_24.png");
+}
+
 #stockEntryMenuItem>.label {
 	-fx-graphic: url("/images/StockPurchaseEntry_24.png");
 }

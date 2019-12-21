@@ -56,6 +56,20 @@
 	-fx-background-color: antiquewhite;
 }
 
+.toReceiveAmount{
+	-fx-background-color: #83f79a;
+	-fx-font-weight: bold;
+	-fx-wrap-text: true;
+	-fx-font-size: 15px;
+}
+
+.toPayAmount{
+	-fx-background-color: #ff7878;
+	-fx-font-weight: bold;
+	-fx-wrap-text: true;
+	-fx-font-size: 15px;
+}
+
 .tooltip {
 	-fx-background-color: yellow;
 	-fx-text-fill: black;

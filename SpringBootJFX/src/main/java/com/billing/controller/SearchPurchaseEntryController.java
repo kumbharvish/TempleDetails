@@ -3,31 +3,28 @@ package com.billing.controller;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.billing.constants.AppConstants;
-import com.billing.dto.BillDetails;
-import com.billing.dto.Customer;
-import com.billing.dto.InvoiceSearchCriteria;
 import com.billing.dto.ItemDetails;
-import com.billing.dto.ReturnDetails;
+import com.billing.dto.PurchaseEntry;
+import com.billing.dto.PurchaseEntrySearchCriteria;
 import com.billing.dto.StatusDTO;
+import com.billing.dto.Supplier;
 import com.billing.dto.UserDetails;
 import com.billing.main.AppContext;
-import com.billing.service.CustomerService;
-import com.billing.service.InvoiceService;
-import com.billing.service.PrinterService;
-import com.billing.service.ProductHistoryService;
-import com.billing.service.SalesReturnService;
+import com.billing.service.PurchaseEntryService;
+import com.billing.service.SupplierService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
+import com.billing.utils.AutoCompleteTextField;
 import com.billing.utils.IndianCurrencyFormatting;
 import com.billing.utils.TabContent;
 
@@ -68,34 +65,25 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 @Controller
-public class SearchInvoiceController extends AppContext implements TabContent {
+public class SearchPurchaseEntryController extends AppContext implements TabContent {
 
-	private static final Logger logger = LoggerFactory.getLogger(SearchInvoiceController.class);
+	private static final Logger logger = LoggerFactory.getLogger(SearchPurchaseEntryController.class);
 
 	private BooleanProperty isDirty = new SimpleBooleanProperty(false);
 
-	private IntegerProperty matchingInvoicesCount = new SimpleIntegerProperty(0);
+	private IntegerProperty matchingPurEntryCount = new SimpleIntegerProperty(0);
 
 	@Autowired
 	AlertHelper alertHelper;
 
 	@Autowired
+	PurchaseEntryService purchaseEntryService;
+
+	@Autowired
+	SupplierService supplierService;
+
+	@Autowired
 	AppUtils appUtils;
-
-	@Autowired
-	InvoiceService invoiceService;
-
-	@Autowired
-	SalesReturnService salesReturnService;
-
-	@Autowired
-	CustomerService customerService;
-
-	@Autowired
-	ProductHistoryService productHistoryService;
-
-	@Autowired
-	PrinterService printerService;
 
 	private UserDetails userDetails;
 
@@ -103,13 +91,13 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 
 	private TabPane tabPane = null;
 
-	private ObservableList<BillDetails> tableDataList;
+	private ObservableList<PurchaseEntry> tableDataList;
 
 	@FXML
 	private RadioButton rbSearchByInvoiceNo;
 
 	@FXML
-	private TextField txtInvoiceNo;
+	private TextField txtPENo;
 
 	@FXML
 	private RadioButton rbSearchByOtherCriteria;
@@ -124,13 +112,25 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 	private HBox panelAmount;
 
 	@FXML
+	private HBox panelSupplier;
+
+	@FXML
+	private CheckBox cbSupplier;
+
+	@FXML
 	private VBox panelPayMode;
 
 	@FXML
 	private HBox panelDate;
 
 	@FXML
-	private CheckBox cbInvoiceDate;
+	private CheckBox cbPEDate;
+
+	@FXML
+	private AutoCompleteTextField txtSuppliers;
+
+	@FXML
+	private Label lblErrSupplier;
 
 	@FXML
 	private DatePicker dpStartDate;
@@ -151,7 +151,7 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 	private RadioButton rbPendingInvoice;
 
 	@FXML
-	private CheckBox cbInvoiceAmount;
+	private CheckBox cbPEAmount;
 
 	@FXML
 	private TextField txtStartAmount;
@@ -160,25 +160,25 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 	private TextField txtEndAmount;
 
 	@FXML
-	private TableView<BillDetails> tableView;
+	private TableView<PurchaseEntry> tableView;
 
 	@FXML
-	private TableColumn<BillDetails, String> tcInvoiceNo;
+	private TableColumn<PurchaseEntry, String> tcInvoiceNo;
 
 	@FXML
-	private TableColumn<BillDetails, String> tcDate;
+	private TableColumn<PurchaseEntry, String> tcDate;
 
 	@FXML
-	private TableColumn<BillDetails, String> tcCustomer;
+	private TableColumn<PurchaseEntry, String> tcSupplier;
 
 	@FXML
-	private TableColumn<BillDetails, Double> tcAmount;
+	private TableColumn<PurchaseEntry, Double> tcAmount;
 
 	@FXML
-	private Label lblTotalOfInvoices;
+	private Label lblTotalOfPurEntires;
 
 	@FXML
-	private Label lblErrInvoiceNo;
+	private Label lblErrPENo;
 
 	@FXML
 	private Label lblErrStartDate;
@@ -206,6 +206,10 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 
 	private Label[] errorLabels = null;
 
+	private SortedSet<String> entries;
+
+	private HashMap<String, Supplier> supplierMap;
+
 	@FXML
 	void onCloseAction(ActionEvent event) {
 		closeTab();
@@ -213,39 +217,37 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 
 	@FXML
 	void onDelete(ActionEvent event) {
-		BillDetails bill = tableView.getSelectionModel().getSelectedItem();
-		if (!validateInputDelete(bill)) {
+		PurchaseEntry purchaseEntry = tableView.getSelectionModel().getSelectedItem();
+		if (!validateInputDelete(purchaseEntry)) {
 			alertHelper.beep();
 			return;
 		}
-		Alert alert = alertHelper.showConfirmAlertWithYesNo(currentStage, null, "Are you sure to delete invoice ?");
+		Alert alert = alertHelper.showConfirmAlertWithYesNo(currentStage, null,
+				"Are you sure to delete purchase entry ?");
 		if (alert.getResult() == ButtonType.YES) {
-			List<ItemDetails> itemList = invoiceService.getItemList(bill);
-			bill.setItemDetails(itemList);
-			StatusDTO status = invoiceService.delete(bill);
+			List<ItemDetails> itemList = purchaseEntryService.getItemList(purchaseEntry);
+			purchaseEntry.setItemDetails(itemList);
+			StatusDTO status = purchaseEntryService.delete(purchaseEntry);
 			if (status.getStatusCode() == 0) {
-				alertHelper.showSuccessNotification("Invoice No. " + bill.getBillNumber() + " deleted successfully");
-				removeDeletedRecord(bill);
+				alertHelper.showSuccessNotification(
+						"Purchase Entry No. " + purchaseEntry.getPurchaseEntryNo() + " deleted successfully");
+				removeDeletedRecord(purchaseEntry);
 			} else {
-				alertHelper.showErrorNotification("Error occured while deleting inovice");
+				alertHelper.showErrorNotification("Error occured while deleting purchase entry");
 			}
 		}
 	}
 
-	private boolean validateInputDelete(BillDetails bill) {
-		if (bill == null) {
+	private boolean validateInputDelete(PurchaseEntry pe) {
+		if (pe == null) {
 			return false;
 		}
-		StatusDTO isSalesReturned = salesReturnService.isSalesReturned(bill.getBillNumber());
-		if (isSalesReturned.getStatusCode() == 0) {
-			alertHelper.showErrorNotification("Sales Return available for this invoice. Delete action not allowed");
-			return false;
-		}
-		if ("PENDING".equals(bill.getPaymentMode())) {
-			Customer customer = customerService.getCustomer(bill.getCustomerMobileNo());
-			if (customer.getBalanceAmt() < bill.getNetSalesAmt()) {
+
+		if ("PENDING".equals(pe.getPaymentMode())) {
+			Supplier supplier = supplierService.getSupplier(pe.getSupplierId());
+			if (supplier.getBalanceAmount() < pe.getTotalAmount()) {
 				alertHelper.showErrorNotification(
-						"Customer's balance is less than invoice amount. Please check customer payment history");
+						"Supplier's balance is less than purchase entry amount. Please check supplier payment history");
 				return false;
 			}
 		}
@@ -253,61 +255,13 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 		return true;
 	}
 
-	private boolean validateInputEditInvoice(BillDetails bill) {
-		if (bill == null) {
-			return false;
-		}
-		StatusDTO isSalesReturned = salesReturnService.isSalesReturned(bill.getBillNumber());
-		if (isSalesReturned.getStatusCode() == 0) {
-			alertHelper.showErrorNotification("Sales Return available for this invoice. Edit action not allowed");
-			return false;
-		}
-		if ("PENDING".equals(bill.getPaymentMode())) {
-			Customer customer = customerService.getCustomer(bill.getCustomerMobileNo());
-			if (customer.getBalanceAmt() < bill.getNetSalesAmt()) {
-				alertHelper.showErrorNotification(
-						"Customer balance is less than invoice amount. Please check customer payment history");
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	private boolean validateInputSalesRetun(BillDetails bill) {
-		if (bill == null) {
-			return false;
-		}
-
-		String allowedDays = appUtils.getAppDataValues(AppConstants.SALES_RETURN_ALLOWED_DAYS);
-		DateTime dateTime = new DateTime();
-		Date backDate = dateTime.minusDays(Integer.valueOf(allowedDays)).toDate();
-		Date invoiceDate = appUtils.getDateFromDBTimestamp(bill.getTimestamp());
-		System.out.println("backDate : "+backDate);
-		System.out.println("invoiceDate : "+invoiceDate);
-
-		if (backDate.after(invoiceDate)) {
-			alertHelper.showErrorNotification("Return allowed days limit is expired for Invoice No. : "+bill.getBillNumber());
-			return false;
-		}
-
-		ReturnDetails rd = salesReturnService.getReturnDetails(Integer.valueOf(bill.getBillNumber()));
-		if (rd != null) {
-			alertHelper.showErrorNotification(
-					"Return No. : " + rd.getReturnNumber() + " already exists for Invoice No. : " + rd.getInvoiceNumber());
-			return false;
-		}
-
-		return true;
-	}
-
-	private void removeDeletedRecord(BillDetails bill) {
-		if (tableDataList.contains(bill)) {
-			tableDataList.remove(bill);
+	private void removeDeletedRecord(PurchaseEntry purchaseEntry) {
+		if (tableDataList.contains(purchaseEntry)) {
+			tableDataList.remove(purchaseEntry);
 		}
 		int count = tableDataList.size();
 		if (count == 0) {
-			matchingInvoicesCount.set(count);
+			matchingPurEntryCount.set(count);
 			panelSearchCriteria.setExpanded(true);
 		} else {
 			tableView.getSelectionModel().selectFirst();
@@ -319,154 +273,47 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 	}
 
 	@FXML
-	void onEditAction(ActionEvent event) {
-		BillDetails bill = tableView.getSelectionModel().getSelectedItem();
-		if (!validateInputEditInvoice(bill)) {
-			alertHelper.beep();
-			return;
-		}
-
-		FXMLLoader fxmlLoader = new FXMLLoader();
-		fxmlLoader.setControllerFactory(springContext::getBean);
-		fxmlLoader.setLocation(this.getClass().getResource("/com/billing/gui/EditInvoice.fxml"));
-
-		Parent rootPane = null;
-		try {
-			rootPane = fxmlLoader.load();
-		} catch (IOException e) {
-			e.printStackTrace();
-			logger.error("getEditInvoicePopup Error in loading the view file :", e);
-			alertHelper.beep();
-
-			alertHelper.showErrorAlert(currentStage, "Error Occurred", "Error in creating user interface",
-					"An error occurred in creating user interface " + "for the selected command");
-
-			return;
-		}
-
-		final Scene scene = new Scene(rootPane);
-		final EditInvoiceController controller = (EditInvoiceController) fxmlLoader.getController();
-		controller.bill = bill;
-		controller.setTask(() -> {
-			afterSuccessTask();
-		});
-		final Stage stage = new Stage();
-		stage.initModality(Modality.APPLICATION_MODAL);
-		stage.initOwner(currentStage);
-		stage.setUserData(controller);
-		stage.getIcons().add(new Image("/images/shop32X32.png"));
-		stage.setScene(scene);
-		stage.setTitle("Edit Invoice");
-		controller.setMainWindow(stage);
-		controller.setUserDetails(userDetails);
-		controller.loadData();
-		stage.showAndWait();
-	}
-
-	public void afterSuccessTask() {
-		panelSearchCriteria.setExpanded(true);
-		panelSearchResult.setExpanded(false);
-	}
-
-	@FXML
-	void onPrintAction(ActionEvent event) {
-		BillDetails bill = tableView.getSelectionModel().getSelectedItem();
-		List<ItemDetails> itemList = invoiceService.getItemList(bill);
-		bill.setItemDetails(itemList);
-		printerService.printInvoice(bill);
-
-	}
-
-	@FXML
-	void onAddReturnAction(ActionEvent event) {
-		BillDetails bill = tableView.getSelectionModel().getSelectedItem();
-		if (!validateInputSalesRetun(bill)) {
-			alertHelper.beep();
-			return;
-		}
-		getSalesReturnPopup(bill);
-	}
-
-	private void getSalesReturnPopup(BillDetails bill) {
-		FXMLLoader fxmlLoader = new FXMLLoader();
-		fxmlLoader.setControllerFactory(springContext::getBean);
-		fxmlLoader.setLocation(this.getClass().getResource("/com/billing/gui/SalesReturn.fxml"));
-
-		Parent rootPane = null;
-		try {
-			rootPane = fxmlLoader.load();
-		} catch (IOException e) {
-			e.printStackTrace();
-			logger.error("Sales Return popup Error in loading the view file :", e);
-			alertHelper.beep();
-
-			alertHelper.showErrorAlert(currentStage, "Error Occurred", "Error in creating user interface",
-					"An error occurred in creating user interface " + "for the selected command");
-
-			return;
-		}
-
-		final Scene scene = new Scene(rootPane);
-		final SalesReturnController controller = (SalesReturnController) fxmlLoader.getController();
-		controller.bill = bill;
-		controller.setTask(() -> {
-			afterSuccessTask();
-		});
-		final Stage stage = new Stage();
-		stage.initModality(Modality.APPLICATION_MODAL);
-		stage.initOwner(currentStage);
-		stage.setUserData(controller);
-		stage.getIcons().add(new Image("/images/shop32X32.png"));
-		stage.setScene(scene);
-		stage.setTitle("Sales Return");
-		controller.setMainWindow(stage);
-		controller.setUserDetails(userDetails);
-		controller.loadData();
-		stage.showAndWait();
-	}
-
-	@FXML
 	void onViewAction(ActionEvent event) {
-		getViewInvoicePopup(tableView.getSelectionModel().getSelectedItem());
+		getViewPurEntryPopup(tableView.getSelectionModel().getSelectedItem());
 	}
 
 	@FXML
-	void onSearchInvoiceAction(ActionEvent event) {
+	void onSearchPurchaseEntryAction(ActionEvent event) {
 		if (!validateInput()) {
 			return;
 		}
 		tableDataList.clear();
-		matchingInvoicesCount.set(0);
-		InvoiceSearchCriteria criteria = getCriteria();
-		List<BillDetails> invoiceResults = invoiceService.getSearchedInvoices(criteria);
+		matchingPurEntryCount.set(0);
+		PurchaseEntrySearchCriteria criteria = getCriteria();
+		List<PurchaseEntry> invoiceResults = purchaseEntryService.getSearchedInvoices(criteria);
 		tableDataList.addAll(invoiceResults);
 		int matchCount = invoiceResults.size();
 
 		if (matchCount > 0) {
 			panelSearchCriteria.setExpanded(false);
-			matchingInvoicesCount.set(matchCount);
+			matchingPurEntryCount.set(matchCount);
 			panelSearchResult.setExpanded(true);
 			tableView.getSelectionModel().selectFirst();
 			tableView.scrollTo(0);
 			tableView.requestFocus();
 		} else {
 			alertHelper.beep();
-			alertHelper.showErrorAlert(currentStage, "No Match Found", "No matching invoice found",
-					"No invoice matched your search criteria");
+			alertHelper.showErrorAlert(currentStage, "No Match Found", "No matching purchase entry found",
+					"No purchase entry matched your search criteria");
 		}
 	}
 
-	private void getViewInvoicePopup(BillDetails bill) {
+	private void getViewPurEntryPopup(PurchaseEntry purchaseEntry) {
 		FXMLLoader fxmlLoader = new FXMLLoader();
 		fxmlLoader.setControllerFactory(springContext::getBean);
-		fxmlLoader.setLocation(this.getClass().getResource("/com/billing/gui/ViewInvoice.fxml"));
+		fxmlLoader.setLocation(this.getClass().getResource("/com/billing/gui/ViewPurchaseEntry.fxml"));
 
 		Parent rootPane = null;
 		try {
 			rootPane = fxmlLoader.load();
 		} catch (IOException e) {
 			e.printStackTrace();
-			logger.error("getViewInvoicePopup Error in loading the view file :", e);
+			logger.error("getViewPurEntryPopup Error in loading the view file :", e);
 			alertHelper.beep();
 
 			alertHelper.showErrorAlert(currentStage, "Error Occurred", "Error in creating user interface",
@@ -476,41 +323,45 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 		}
 
 		final Scene scene = new Scene(rootPane);
-		final ViewInvoiceController controller = (ViewInvoiceController) fxmlLoader.getController();
-		controller.bill = bill;
+		final ViewPurchaseEntryController controller = (ViewPurchaseEntryController) fxmlLoader.getController();
+		controller.purchaseEntry = purchaseEntry;
 		final Stage stage = new Stage();
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.initOwner(currentStage);
 		stage.setUserData(controller);
 		stage.getIcons().add(new Image("/images/shop32X32.png"));
 		stage.setScene(scene);
-		stage.setTitle("View Invoice");
+		stage.setTitle("View Purchase Entry");
 		controller.loadData();
 		stage.showAndWait();
 	}
 
-	private InvoiceSearchCriteria getCriteria() {
-		InvoiceSearchCriteria criteria = new InvoiceSearchCriteria();
+	private PurchaseEntrySearchCriteria getCriteria() {
+		PurchaseEntrySearchCriteria criteria = new PurchaseEntrySearchCriteria();
 
 		if (rbSearchByInvoiceNo.isSelected()) {
-			criteria.setInvoiceNumber(txtInvoiceNo.getText().trim());
+			criteria.setPurchaseEntryNo(txtPENo.getText().trim());
 		} else {
-			if (cbInvoiceDate.isSelected()) {
+			if (cbPEDate.isSelected()) {
 				criteria.setStartDate(dpStartDate.getValue());
 				criteria.setEndDate(dpEndDate.getValue());
 			}
 
 			if (cbCreditPendingInvoice.isSelected()) {
 				if (rbPendingInvoice.isSelected()) {
-					criteria.setPendingInvoice("Y");
+					criteria.setPendingPurchaseEntry("Y");
 				} else {
-					criteria.setPendingInvoice("N");
+					criteria.setPendingPurchaseEntry("N");
 				}
 			}
 
-			if (cbInvoiceAmount.isSelected()) {
+			if (cbPEAmount.isSelected()) {
 				criteria.setStartAmount(txtStartAmount.getText().trim());
 				criteria.setEndAmount(txtEndAmount.getText().trim());
+			}
+
+			if (cbSupplier.isSelected()) {
+				criteria.setSupplierId(supplierMap.get(txtSuppliers.getText()).getSupplierID());
 			}
 		}
 
@@ -552,12 +403,16 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 		ToggleGroup searchCriteriaGroup = new ToggleGroup();
 		rbSearchByInvoiceNo.setToggleGroup(searchCriteriaGroup);
 		rbSearchByOtherCriteria.setToggleGroup(searchCriteriaGroup);
-		matchingInvoicesCount.set(0);
+		matchingPurEntryCount.set(0);
 		ToggleGroup radioPaymode = new ToggleGroup();
 		rbCashInvoice.setToggleGroup(radioPaymode);
 		rbPendingInvoice.setToggleGroup(radioPaymode);
 		tableDataList = FXCollections.observableArrayList();
 		tableView.setItems(tableDataList);
+		getSuppliersName();
+		txtSuppliers.createTextField(entries, () -> {
+		});
+
 		panelInvoiceNo.managedProperty().bind(panelInvoiceNo.visibleProperty());
 		panelInvoiceNo.visibleProperty().bind(rbSearchByInvoiceNo.selectedProperty());
 
@@ -565,17 +420,20 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 		panelOtherCriteria.visibleProperty().bind(rbSearchByOtherCriteria.selectedProperty());
 
 		panelDate.managedProperty().bind(panelDate.visibleProperty());
-		panelDate.visibleProperty().bind(cbInvoiceDate.selectedProperty());
+		panelDate.visibleProperty().bind(cbPEDate.selectedProperty());
+
+		panelSupplier.managedProperty().bind(panelSupplier.visibleProperty());
+		panelSupplier.visibleProperty().bind(cbSupplier.selectedProperty());
 
 		panelPayMode.managedProperty().bind(panelPayMode.visibleProperty());
 		panelPayMode.visibleProperty().bind(cbCreditPendingInvoice.selectedProperty());
 
 		panelAmount.managedProperty().bind(panelAmount.visibleProperty());
-		panelAmount.visibleProperty().bind(cbInvoiceAmount.selectedProperty());
+		panelAmount.visibleProperty().bind(cbPEAmount.selectedProperty());
 
 		dpStartDate.setValue(LocalDate.now());
 		dpEndDate.setValue(LocalDate.now());
-		txtInvoiceNo.textProperty().addListener(appUtils.getForceNumberListner());
+		txtPENo.textProperty().addListener(appUtils.getForceNumberListner());
 		dpStartDate.valueProperty().addListener((observable, oldDate, newDate) -> {
 			LocalDate today = LocalDate.now();
 			if (newDate == null) {
@@ -593,10 +451,10 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 		btnSearchInvoice.disableProperty().bind(searchCriteriaGroup.selectedToggleProperty().isNull());
 
 		panelSearchResult.managedProperty().bind(panelSearchResult.visibleProperty());
-		panelSearchResult.visibleProperty().bind(matchingInvoicesCount.greaterThan(0));
+		panelSearchResult.visibleProperty().bind(matchingPurEntryCount.greaterThan(0));
 
-		errorLabels = new Label[] { lblErrCreditPending, lblErrEndAmt, lblErrEndDate, lblErrInvoiceNo, lblErrNoCriteria,
-				lblErrStartAmt, lblErrStartDate };
+		errorLabels = new Label[] { lblErrCreditPending, lblErrEndAmt, lblErrEndDate, lblErrPENo, lblErrNoCriteria,
+				lblErrStartAmt, lblErrStartDate, lblErrSupplier };
 		for (Label label : errorLabels) {
 			label.managedProperty().bind(label.visibleProperty());
 			label.visibleProperty().bind(label.textProperty().length().greaterThan(0));
@@ -604,33 +462,42 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 
 		setTableCellFactories();
 
-		tableDataList.addListener(new ListChangeListener<BillDetails>() {
+		tableDataList.addListener(new ListChangeListener<PurchaseEntry>() {
 
 			@Override
-			public void onChanged(ListChangeListener.Change<? extends BillDetails> c) {
+			public void onChanged(ListChangeListener.Change<? extends PurchaseEntry> c) {
 				updateTotalAmount();
 			}
 		});
 	}
 
+	public void getSuppliersName() {
+		entries = new TreeSet<String>();
+		supplierMap = new HashMap<String, Supplier>();
+		for (Supplier supplier : supplierService.getAll()) {
+			entries.add(supplier.getSupplierName());
+			supplierMap.put(supplier.getSupplierName(), supplier);
+		}
+	}
+
 	protected void updateTotalAmount() {
 		Double result = 0.0;
-		int invoiceCount = tableDataList.size();
-		for (BillDetails b : tableDataList) {
-			result = result + b.getNetSalesAmt();
+		int purchaseEntryCount = tableDataList.size();
+		for (PurchaseEntry b : tableDataList) {
+			result = result + b.getTotalAmount();
 		}
 
-		lblTotalOfInvoices.setText(String.format("Total of %d invoice(s) is \u20b9 %s", invoiceCount,
+		lblTotalOfPurEntires.setText(String.format("Total of %d Purchase Entry(s) is \u20b9 %s", purchaseEntryCount,
 				IndianCurrencyFormatting.applyFormatting(result)));
 	}
 
 	private void setTableCellFactories() {
-		
-		final Callback<TableColumn<BillDetails, Double>, TableCell<BillDetails, Double>> callback = new Callback<TableColumn<BillDetails, Double>, TableCell<BillDetails, Double>>() {
+
+		final Callback<TableColumn<PurchaseEntry, Double>, TableCell<PurchaseEntry, Double>> callback = new Callback<TableColumn<PurchaseEntry, Double>, TableCell<PurchaseEntry, Double>>() {
 
 			@Override
-			public TableCell<BillDetails, Double> call(TableColumn<BillDetails, Double> param) {
-				TableCell<BillDetails, Double> tableCell = new TableCell<BillDetails, Double>() {
+			public TableCell<PurchaseEntry, Double> call(TableColumn<PurchaseEntry, Double> param) {
+				TableCell<PurchaseEntry, Double> tableCell = new TableCell<PurchaseEntry, Double>() {
 
 					@Override
 					protected void updateItem(Double item, boolean empty) {
@@ -648,15 +515,15 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 			}
 		};
 		tcInvoiceNo.setCellValueFactory(
-				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getBillNumber())));
+				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getPurchaseEntryNo())));
 		tcDate.setCellValueFactory(cellData -> new SimpleStringProperty(
-				appUtils.getFormattedDateWithTime(cellData.getValue().getTimestamp())));
-		tcCustomer.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustomerName()));
+				appUtils.getFormattedDateWithTime(cellData.getValue().getPurchaseEntryDate())));
+		tcSupplier.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSupplierName()));
 		tcAmount.setCellFactory(callback);
 
 		tcInvoiceNo.getStyleClass().add("character-cell");
 		tcDate.getStyleClass().add("character-cell");
-		tcCustomer.getStyleClass().add("character-cell");
+		tcSupplier.getStyleClass().add("character-cell");
 	}
 
 	@Override
@@ -686,37 +553,52 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 		boolean valid = true;
 		clearErrorLabels();
 		if (rbSearchByInvoiceNo.isSelected()) {
-			String numberString = txtInvoiceNo.getText().trim();
+			String numberString = txtPENo.getText().trim();
 			if (numberString.isEmpty()) {
-				lblErrInvoiceNo.setText("Invoice number not specified");
+				lblErrPENo.setText("P.E. number not specified");
 				valid = false;
 				return valid;
 			}
 
 			int no = Integer.valueOf(numberString);
 			if (no == 0) {
-				lblErrInvoiceNo.setText("Invoice number can't be zero");
+				lblErrPENo.setText("P.E. number can't be zero");
 				valid = false;
 				return valid;
 			}
 		} else {
-			if (!(cbInvoiceAmount.isSelected() || cbCreditPendingInvoice.isSelected() || cbInvoiceDate.isSelected())) {
+			if (!(cbSupplier.isSelected() || cbPEAmount.isSelected() || cbCreditPendingInvoice.isSelected()
+					|| cbPEDate.isSelected())) {
 				lblErrNoCriteria.setText("No criteria selected");
 				return false;
 			}
 
+			if (cbSupplier.isSelected()) {
+				String numberString = txtSuppliers.getText().trim();
+				if (numberString.isEmpty()) {
+					lblErrSupplier.setText("Please select supplier");
+					valid = false;
+					return valid;
+				} else if (null == supplierMap.get(txtSuppliers.getText())) {
+					lblErrSupplier.setText("No supplier matches this name");
+					txtSuppliers.requestFocus();
+					valid = false;
+					return valid;
+				}
+			}
+
 			if (cbCreditPendingInvoice.isSelected()) {
 				if (!(rbCashInvoice.isSelected() || rbPendingInvoice.isSelected())) {
-					lblErrCreditPending.setText("Invoice payment mode not selected");
+					lblErrCreditPending.setText("Purchase Entry payment mode not selected");
 					valid = false;
 				}
 			}
 
-			if (cbInvoiceDate.isSelected() && !validateInvoiceDate()) {
+			if (cbPEDate.isSelected() && !validateInvoiceDate()) {
 				valid = false;
 			}
 
-			if (cbInvoiceAmount.isSelected() && !validateInvoiceAmount()) {
+			if (cbPEAmount.isSelected() && !validateInvoiceAmount()) {
 				valid = false;
 			}
 		}

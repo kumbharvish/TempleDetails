@@ -19,3 +19,16 @@
 	-fx-background-position: 97%, 4;
 	-fx-padding: 3px 27px 3px 7px;
 }
+
+.pendingAmount {
+	-fx-font-weight: bold;
+	-fx-wrap-text: true;
+	-fx-font-size: 15px;
+}
+
+.pendingAmountHistory {
+	-fx-background-color: antiquewhite;
+	-fx-font-weight: bold;
+	-fx-wrap-text: true;
+	-fx-font-size: 15px;
+}

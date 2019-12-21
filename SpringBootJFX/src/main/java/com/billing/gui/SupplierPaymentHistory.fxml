@@ -18,11 +18,11 @@
 <?import com.billing.utils.AutoCompleteTextField?>
 
 
-<BorderPane styleClass="rootNode" stylesheets="@../../../css/customers.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.CustomerPaymentController">
+<BorderPane styleClass="rootNode" stylesheets="@../../../css/suppliers.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.SupplierPaymentController">
 	<top>
 		<VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
 			<children>
-				<Label fx:id="heading" alignment="TOP_CENTER" contentDisplay="CENTER" text="Customer Payment History" />
+				<Label fx:id="heading" alignment="TOP_CENTER" contentDisplay="CENTER" text="Supplier Payment History" />
 			</children>
 			<BorderPane.margin>
 				<Insets bottom="10.0" />
@@ -38,21 +38,18 @@
 							<content>
 								<GridPane fx:id="gridPane" alignment="TOP_CENTER" hgap="20.0" vgap="15.0">
 									<children>
+										<Label styleClass="nodeLabel" text="Select Supplier :" GridPane.halignment="RIGHT" />
+										<AutoCompleteTextField fx:id="txtSupplier" GridPane.columnIndex="1" />
 										<Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="nodeLabel" text="Mobile Number :" textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
-										<Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="nodeLabel" text="Name :" textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />							  		
+										<TextField fx:id="txtMobileNo" editable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+										<Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="nodeLabel" text="Name :" textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+										<TextField fx:id="txtSupplierName" editable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 										<Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="nodeLabel" text="City :" textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
 										<TextField fx:id="txtCity" editable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="3" />							  
 										<Label alignment="TOP_RIGHT" styleClass="nodeLabel" text="Email :" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
 										<TextField fx:id="txtEmail" editable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-										<TextField fx:id="txtCustName" editable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-										<TextField fx:id="txtMobileNo" editable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-										<TextField fx:id="txtEntryDate" editable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-										<TextField fx:id="txtPendingAmt" editable="false" styleClass="pendingAmountHistory" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-										<Label styleClass="nodeLabel" text="Entry Date :" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
-										<Label styleClass="nodeLabel" text="Pending Amount :" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
-										<Label styleClass="nodeLabel" text="Select Customer :" GridPane.halignment="RIGHT" />
-										<AutoCompleteTextField fx:id="txtCustomer" GridPane.columnIndex="1" />
-
+										<Label styleClass="nodeLabel" text="Balance Amount :" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
+										<TextField fx:id="txtBalanceAmount" editable="false" styleClass="pendingAmountHistory" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 									</children>
 									<columnConstraints>
 										<ColumnConstraints hgrow="NEVER" />

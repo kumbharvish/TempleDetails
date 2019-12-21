@@ -666,7 +666,6 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 
 	private void resetFields() {
 		resetItemFields();
-		resetOrignalProductDiscount();
 		productTableData.clear();
 		dpBillDate.setValue(LocalDate.now());
 		txtComments.clear();
@@ -680,16 +679,12 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 		cbPaymentModes.getSelectionModel().select(0);
 		txtTotalGSTAmt.clear();
 		txtTotalAmount.clear();
+		txtDiscountAmount.clear();
+		txtExtraCharges.clear();
 		isDirty.set(false);
 		getProductNameList();
 		txtItemName.createTextField(productEntries, () -> setProductDetails());
 
-	}
-
-	private void resetOrignalProductDiscount() {
-		for (Product p : productTableData) {
-			p.setDiscount(p.getOrignalDiscount());
-		}
 	}
 
 	private void resetItemFields() {

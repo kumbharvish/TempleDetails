@@ -88,6 +88,11 @@
 										<KeyCodeCombination alt="UP" code="S" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
 									</accelerator>
 								</MenuItem>
+								<MenuItem fx:id="supplierPayHistoryMenuItem" onAction="#onSuppliersPayHistoryCommand" text="Supplier Payment Hist_ory">
+									<accelerator>
+										<KeyCodeCombination alt="UP" code="O" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+									</accelerator>
+								</MenuItem>
 							</items>
 						</Menu>
 						<Menu fx:id="expenseMenu" text="_Expense">

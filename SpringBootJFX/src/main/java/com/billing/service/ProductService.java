@@ -139,7 +139,9 @@ public class ProductService implements AppService<Product> {
 			} else if (AppConstants.SALES_RETURN.equals(transactionType)) {
 				product.setDescription("Sales Return based on Return No.: " + p.getBillNumber());
 			} else if (AppConstants.PURCHASE.equals(transactionType)) {
-				product.setDescription("Purchase Based on P.E. No.: " + p.getPurchaseEntryNo());
+				product.setDescription("Purchase based on P.E. No.: " + p.getPurchaseEntryNo());
+			}else if (AppConstants.DELETE_PURCHASE_ENTRY.equals(transactionType)) {
+				product.setDescription("Delete purchase entry based on P.E. No.: " + p.getPurchaseEntryNo());
 			}
 			productList.add(product);
 		}

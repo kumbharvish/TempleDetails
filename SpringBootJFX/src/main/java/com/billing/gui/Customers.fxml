@@ -103,12 +103,13 @@
 										<RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 									</rowConstraints>
 									<children>
-										<Label styleClass="nodeLabel" text="Pending Amount in (₹):" GridPane.halignment="RIGHT">
+										<Label styleClass="nodeLabel" text="Pending Amount (To Receive) :" GridPane.halignment="RIGHT">
 											<padding>
 												<Insets right="10.0" />
 											</padding>
-										</Label>
-										<Label fx:id="lblPendingAmount" styleClass="pendingAmount" GridPane.columnIndex="1" />
+										</Label>						
+										<TextField fx:id="txtBalanceAmount" alignment="CENTER_RIGHT" editable="false" styleClass="toReceiveAmount" GridPane.columnIndex="1"/>	
+
 									</children>
 								</GridPane>
 								<ButtonBar>

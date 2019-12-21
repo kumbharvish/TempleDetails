@@ -1,10 +1,12 @@
 package com.billing.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.billing.constants.AppConstants;
 import com.billing.dto.StatusDTO;
 import com.billing.dto.Supplier;
 import com.billing.dto.UserDetails;
@@ -12,8 +14,10 @@ import com.billing.main.AppContext;
 import com.billing.service.SupplierService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
+import com.billing.utils.IndianCurrencyFormatting;
 import com.billing.utils.TabContent;
 
+import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -24,16 +28,25 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 @Controller
 public class SuppliersController extends AppContext implements TabContent {
@@ -70,6 +83,9 @@ public class SuppliersController extends AppContext implements TabContent {
 
 	@FXML
 	private Label lblMobileNoErrMsg;
+
+	@FXML
+	private TextField txtBalanceAmount;
 
 	@FXML
 	private TextField txtGSTNo;
@@ -111,6 +127,9 @@ public class SuppliersController extends AppContext implements TabContent {
 	private TableColumn<Supplier, String> tcName;
 
 	@FXML
+	private TableColumn<Supplier, Double> tcBalanceAmount;
+
+	@FXML
 	private TableColumn<Supplier, String> tcCity;
 
 	@FXML
@@ -130,6 +149,10 @@ public class SuppliersController extends AppContext implements TabContent {
 
 	@FXML
 	private TextField txtSearchSupplier;
+
+	private final String ADD = "ADD";
+
+	private final String SETTLEUP = "SETTLEUP";
 
 	@Override
 	public void initialize() {
@@ -164,6 +187,27 @@ public class SuppliersController extends AppContext implements TabContent {
 	}
 
 	private void setTableCellFactories() {
+
+		final Callback<TableColumn<Supplier, Double>, TableCell<Supplier, Double>> callback = new Callback<TableColumn<Supplier, Double>, TableCell<Supplier, Double>>() {
+			@Override
+			public TableCell<Supplier, Double> call(TableColumn<Supplier, Double> param) {
+				TableCell<Supplier, Double> tableCell = new TableCell<Supplier, Double>() {
+
+					@Override
+					protected void updateItem(Double item, boolean empty) {
+						super.updateItem(item, empty);
+						if (empty) {
+							super.setText(null);
+						} else {
+							super.setText(IndianCurrencyFormatting.applyFormatting(item));
+						}
+					}
+				};
+				tableCell.getStyleClass().add("numeric-cell");
+				return tableCell;
+			}
+		};
+
 		// Table Column Mapping
 		tcMobileNo.setCellValueFactory(
 				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getSupplierMobile())));
@@ -174,6 +218,7 @@ public class SuppliersController extends AppContext implements TabContent {
 		tcComments.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getComments()));
 		tcAddress.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSupplierAddress()));
 		tcCity.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCity()));
+		tcBalanceAmount.setCellFactory(callback);
 		// Set CSS
 		tcMobileNo.getStyleClass().add("numeric-cell");
 		tcName.getStyleClass().add("character-cell");
@@ -189,16 +234,21 @@ public class SuppliersController extends AppContext implements TabContent {
 			Supplier newValue) {
 		resetFields();
 		if (newValue != null) {
-			txtMobileNo.setText(String.valueOf(newValue.getSupplierMobile()));
-			txtName.setText(newValue.getSupplierName());
-			txtCity.setText(newValue.getCity());
-			txtEmail.setText(newValue.getEmailId());
-			txtAddress.setText(newValue.getSupplierAddress());
-			txtGSTNo.setText(newValue.getGstNo());
-			txtPAN.setText(newValue.getPanNo());
-			txtComments.setText(newValue.getComments());
-			supplierId = newValue.getSupplierID();
+			setSupplierDetails(newValue);
 		}
+	}
+
+	private void setSupplierDetails(Supplier newValue) {
+		txtMobileNo.setText(String.valueOf(newValue.getSupplierMobile()));
+		txtName.setText(newValue.getSupplierName());
+		txtCity.setText(newValue.getCity());
+		txtEmail.setText(newValue.getEmailId());
+		txtAddress.setText(newValue.getSupplierAddress());
+		txtGSTNo.setText(newValue.getGstNo());
+		txtPAN.setText(newValue.getPanNo());
+		txtComments.setText(newValue.getComments());
+		supplierId = newValue.getSupplierID();
+		txtBalanceAmount.setText(IndianCurrencyFormatting.applyFormatting(newValue.getBalanceAmount()));
 	}
 
 	@FXML
@@ -403,4 +453,152 @@ public class SuppliersController extends AppContext implements TabContent {
 		supplierId = 0;
 	}
 
+	@FXML
+	void onASettleUpCommand(ActionEvent event) {
+		Supplier supplier = tableView.getSelectionModel().getSelectedItem();
+		if (txtMobileNo.getText().equals("")) {
+			alertHelper.showErrorNotification("Please select customer");
+		} else {
+			getPopup(supplier, SETTLEUP);
+		}
+	}
+
+	@FXML
+	void onAddAmountCommand(ActionEvent event) {
+		Supplier supplier = tableView.getSelectionModel().getSelectedItem();
+		if (txtMobileNo.getText().equals("")) {
+			alertHelper.showErrorNotification("Please select customer");
+		} else {
+			getPopup(supplier, ADD);
+		}
+	}
+
+	private void getPopup(Supplier supplier, String type) {
+
+		Dialog<String> dialog = new Dialog<>();
+		if (ADD.equals(type)) {
+			dialog.setTitle("Add Pending Amount");
+		} else {
+			dialog.setTitle("Settle Up");
+		}
+
+		final String styleSheetPath = "/css/alertDialog.css";
+		final DialogPane dialogPane = dialog.getDialogPane();
+		dialogPane.getStylesheets().add(AlertHelper.class.getResource(styleSheetPath).toExternalForm());
+
+		Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+		stage.getIcons().add(new Image(this.getClass().getResource("/images/shop32X32.png").toString()));
+
+		// Set the button types.
+		ButtonType updateButtonType = new ButtonType("Update", ButtonData.OK_DONE);
+		dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
+
+		GridPane grid = new GridPane();
+		grid.setHgap(10);
+		grid.setVgap(10);
+		grid.setPadding(new Insets(20, 100, 10, 10));
+		TextField txtAmount = new TextField();
+		txtAmount.setPrefColumnCount(10);
+		txtAmount.textProperty().addListener(appUtils.getForceDecimalNumberListner());
+
+		Label lbl = new Label("Amount :");
+		lbl.getStyleClass().add("nodeLabel");
+
+		grid.add(lbl, 0, 0);
+		grid.add(txtAmount, 1, 0);
+
+		Node validateButton = dialog.getDialogPane().lookupButton(updateButtonType);
+		validateButton.setDisable(true);
+
+		txtAmount.textProperty().addListener((observable, oldValue, newValue) -> {
+			validateButton.setDisable(newValue.trim().isEmpty());
+		});
+
+		dialog.getDialogPane().setContent(grid);
+
+		Platform.runLater(() -> txtAmount.requestFocus());
+
+		dialog.setResultConverter(dialogButton -> {
+			if (dialogButton == updateButtonType) {
+				return txtAmount.getText();
+			}
+			return null;
+		});
+
+		Optional<String> result = dialog.showAndWait();
+		result.ifPresent(amount -> {
+			try {
+				if (amount != null && amount != "") {
+					if (ADD.equals(type)) {
+						// Add
+						if (Double.valueOf(amount) > 0) {
+							Supplier sup = new Supplier();
+							sup.setSupplierID(supplierId);
+							sup.setSupplierName(txtName.getText());
+							sup.setBalanceAmount(Double.valueOf(amount));
+
+							String narration = "Added by : " + userDetails.getFirstName() + " "
+									+ userDetails.getLastName();
+
+							StatusDTO statusAddAmt = supplierService.addSupplierPaymentHistory(supplierId,
+									Double.valueOf(txtAmount.getText()), 0, AppConstants.CREDIT, narration);
+
+							if (statusAddAmt.getStatusCode() == 0) {
+								alertHelper.showSuccessNotification("Balance amount updated successfully");
+								Supplier sup1 = tableView.getSelectionModel().getSelectedItem();
+								loadData();
+								// customer is not selected in table
+								if (sup1 == null) {
+									sup1 = sup;
+								}
+								setUpdatedSupplierBalance(sup1.getSupplierID());
+							} else {
+								alertHelper.showErrorNotification("Error occured while adding amount");
+							}
+						} else {
+							alertHelper.showErrorNotification("Amount should be greater than Zero (0)");
+						}
+
+					} else {
+						// Settle up
+						if (Double.valueOf(amount) > 0 && Double.valueOf(amount) <= supplier.getBalanceAmount()) {
+							Supplier sup = new Supplier();
+							sup.setSupplierID(supplierId);
+							sup.setSupplierName(txtName.getText());
+							sup.setBalanceAmount(Double.valueOf(amount));
+							String narration = "Settled up by : " + userDetails.getFirstName() + " "
+									+ userDetails.getLastName();
+							StatusDTO statusAddAmt = supplierService.addSupplierPaymentHistory(supplierId, 0,
+									Double.valueOf(txtAmount.getText()), AppConstants.DEBIT, narration);
+
+							if (statusAddAmt.getStatusCode() == 0) {
+								alertHelper.showSuccessNotification("Balance amount updated succesfully");
+								Supplier sup1 = tableView.getSelectionModel().getSelectedItem();
+								loadData();
+								// customer is not selected in table
+								if (sup1 == null) {
+									sup1 = sup;
+								}
+								setUpdatedSupplierBalance(sup1.getSupplierID());
+							} else {
+								alertHelper.showErrorNotification("Error occured while settling up");
+							}
+						} else {
+							alertHelper.showErrorNotification("Amount should be less than current balance");
+						}
+					}
+
+				} else {
+					alertHelper.showErrorNotification("Please enter amount");
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+	}
+
+	protected void setUpdatedSupplierBalance(int suppplierId) {
+		Supplier supplier = supplierService.getSupplier(suppplierId);
+		setSupplierDetails(supplier);
+	}
 }

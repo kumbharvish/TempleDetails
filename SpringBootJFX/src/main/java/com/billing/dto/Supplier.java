@@ -13,6 +13,7 @@ public class Supplier {
 	private String gstNo;
 	private String compnyName;
 	private String comments;
+	private double balanceAmount;
 
 	public String getEmailId() {
 		return emailId;
@@ -100,5 +101,13 @@ public class Supplier {
 
 	public String getSupplierName() {
 		return supplierName;
+	}
+
+	public double getBalanceAmount() {
+		return balanceAmount;
+	}
+
+	public void setBalanceAmount(double balanceAmount) {
+		this.balanceAmount = balanceAmount;
 	}
 }

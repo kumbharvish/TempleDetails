@@ -98,7 +98,7 @@ public class CustomersController extends AppContext implements TabContent {
 	private TextField txtEmail;
 
 	@FXML
-	private Label lblPendingAmount;
+	private TextField txtBalanceAmount;
 
 	@FXML
 	private Button btnAdd;
@@ -239,7 +239,7 @@ public class CustomersController extends AppContext implements TabContent {
 		txtCustName.setText(customer.getCustName());
 		txtCity.setText(customer.getCustCity());
 		txtEmail.setText(customer.getCustEmail());
-		lblPendingAmount.setText(IndianCurrencyFormatting.applyFormatting(customer.getBalanceAmt()));
+		txtBalanceAmount.setText(IndianCurrencyFormatting.applyFormatting(customer.getBalanceAmt()));
 	}
 
 	@FXML
@@ -423,7 +423,7 @@ public class CustomersController extends AppContext implements TabContent {
 		// Reset Error msg
 		lblCustNameErrMsg.setText("");
 		lblMobileNoErrMsg.setText("");
-		lblPendingAmount.setText("");
+		txtBalanceAmount.setText("");
 	}
 
 	private void getPopup(Customer customer, String type) {

@@ -402,7 +402,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onSearchPurchaseEntryCommand(ActionEvent event) {
-
+		addTab("SearchPurchaseEntry", "Search Purchase Entry");
 	}
 
 	@FXML
@@ -414,7 +414,12 @@ public class HomeController extends AppContext {
 	void onSuppliersCommand(ActionEvent event) {
 		addTab("Suppliers", "Suppliers");
 	}
-
+	
+	@FXML
+	void onSuppliersPayHistoryCommand(ActionEvent event) {
+		addTab("SupplierPaymentHistory", "Supplier Payment History");
+	}
+	
 	@FXML
 	void onUserPreferencesCommand(ActionEvent event) {
 		addTab("UserPreferences", "User Preferences");
