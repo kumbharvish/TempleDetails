@@ -23,6 +23,8 @@ import com.billing.dto.ReturnDetails;
 import com.billing.dto.SalesReport;
 import com.billing.dto.SalesReturnReport;
 import com.billing.dto.StockSummaryReport;
+import com.billing.dto.Supplier;
+import com.billing.dto.SuppliersReport;
 import com.billing.utils.ExcelReportMapping;
 
 @Service
@@ -175,6 +177,25 @@ public class ExcelReportService {
 				excelReportMapping.addExpenseReportRow(ex, row);
 			}
 			excelReportMapping.addTotalExpenseReportRow(sheet, ++rowCount);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception:", e);
+		}
+		return workbook;
+	}
+
+	// Suppliers Report
+	public Workbook getSuppliersReportWorkBook(SuppliersReport report, Workbook workbook) {
+		Sheet sheet = workbook.createSheet("Suppliers Report");
+		try {
+			excelReportMapping.setHeaderRowForSuppliers(sheet);
+			int rowCount = 0;
+
+			for (Supplier supplier : report.getSuppliersList()) {
+				Row row = sheet.createRow(++rowCount);
+				excelReportMapping.addSuppliersRow(supplier, row);
+			}
+			excelReportMapping.addTotalSuppliersRow(sheet, ++rowCount);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("Exception:", e);

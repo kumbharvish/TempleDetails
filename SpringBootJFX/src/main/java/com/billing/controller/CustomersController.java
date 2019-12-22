@@ -239,7 +239,7 @@ public class CustomersController extends AppContext implements TabContent {
 		txtCustName.setText(customer.getCustName());
 		txtCity.setText(customer.getCustCity());
 		txtEmail.setText(customer.getCustEmail());
-		txtBalanceAmount.setText(IndianCurrencyFormatting.applyFormatting(customer.getBalanceAmt()));
+		txtBalanceAmount.setText(IndianCurrencyFormatting.applyFormattingWithCurrency(customer.getBalanceAmt()));
 	}
 
 	@FXML

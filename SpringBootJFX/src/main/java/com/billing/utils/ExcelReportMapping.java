@@ -15,6 +15,7 @@ import com.billing.dto.Expense;
 import com.billing.dto.Product;
 import com.billing.dto.ProductCategory;
 import com.billing.dto.ReturnDetails;
+import com.billing.dto.Supplier;
 
 @Component
 public class ExcelReportMapping {
@@ -35,6 +36,8 @@ public class ExcelReportMapping {
 			"Stock Value" };
 
 	private String[] customersReportHeaders = { "Mobile Number", "Name", "City", "Entry Date", "Pending Amount" };
+
+	private String[] suppliersReportHeaders = { "Mobile Number", "Name", "City", "Email Id", "Balance Amount" };
 
 	private String[] lowStockSummaryReportHeaders = { "Product Name", "Category Name", "Stock Quantity",
 			"Stock Value" };
@@ -286,6 +289,54 @@ public class ExcelReportMapping {
 		cell = row.createCell(2);
 		cell.setCellFormula("SUM(C2:C" + rowNumber + ")");
 		cell.setCellStyle(cellStyleTotal);
+		cell = row.createCell(5);
+		cell.setCellFormula("SUM(F2:F" + rowNumber + ")");
+		cell.setCellStyle(cellStyleTotal);
+	}
+
+	// Suppliers Report
+	public void setHeaderRowForSuppliers(Sheet sheet) {
+
+		CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+		setHeaderFont(sheet, cellStyle);
+		setColumnWidth(sheet, suppliersReportHeaders.length);
+
+		Row row = sheet.createRow(0);
+		int columnCount = 0;
+		for (String headerName : suppliersReportHeaders) {
+			Cell cell1 = row.createCell(++columnCount);
+			cell1.setCellStyle(cellStyle);
+			cell1.setCellValue(headerName);
+		}
+
+	}
+
+	public void addSuppliersRow(Supplier supplier, Row row) {
+		Cell cell = row.createCell(1);
+		cell.setCellValue(supplier.getSupplierMobile());
+		cell = row.createCell(2);
+		cell.setCellValue(supplier.getSupplierName());
+
+		cell = row.createCell(3);
+		cell.setCellValue(supplier.getCity());
+
+		cell = row.createCell(4);
+		cell.setCellValue(supplier.getEmailId());
+
+		cell = row.createCell(5);
+		cell.setCellValue(supplier.getBalanceAmount());
+
+	}
+
+	public void addTotalSuppliersRow(Sheet sheet, int rowNumber) {
+		CellStyle cellStyleHeader = sheet.getWorkbook().createCellStyle();
+		CellStyle cellStyleTotal = sheet.getWorkbook().createCellStyle();
+		setHeaderFont(sheet, cellStyleHeader);
+		setTotalFont(sheet, cellStyleTotal);
+		Row row = sheet.createRow(rowNumber + 1);
+		Cell cell = row.createCell(4);
+		cell.setCellValue("Total");
+		cell.setCellStyle(cellStyleHeader);
 		cell = row.createCell(5);
 		cell.setCellFormula("SUM(F2:F" + rowNumber + ")");
 		cell.setCellStyle(cellStyleTotal);

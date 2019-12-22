@@ -23,6 +23,8 @@ import com.billing.dto.ReturnDetails;
 import com.billing.dto.SalesReport;
 import com.billing.dto.SalesReturnReport;
 import com.billing.dto.StockSummaryReport;
+import com.billing.dto.Supplier;
+import com.billing.dto.SuppliersReport;
 
 @Component
 public class PDFReportMapping {
@@ -180,6 +182,21 @@ public class PDFReportMapping {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("FromDate", report.getFromDate());
 			map.put("ToDate", report.getToDate());
+			dataSourceMaps.add(map);
+		}
+		return dataSourceMaps;
+	}
+
+	// Suppliers Report
+	public List<Map<String, ?>> getDatasourceForSuppliersReport(SuppliersReport report) {
+		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
+		for (Supplier supplier : report.getSuppliersList()) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("MobileNo", String.valueOf(supplier.getSupplierMobile()));
+			map.put("Name", supplier.getSupplierName());
+			map.put("City", supplier.getCity());
+			map.put("Email", supplier.getEmailId());
+			map.put("BalanceAmount", IndianCurrencyFormatting.applyFormatting(supplier.getBalanceAmount()));
 			dataSourceMaps.add(map);
 		}
 		return dataSourceMaps;

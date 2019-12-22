@@ -248,7 +248,7 @@ public class SuppliersController extends AppContext implements TabContent {
 		txtPAN.setText(newValue.getPanNo());
 		txtComments.setText(newValue.getComments());
 		supplierId = newValue.getSupplierID();
-		txtBalanceAmount.setText(IndianCurrencyFormatting.applyFormatting(newValue.getBalanceAmount()));
+		txtBalanceAmount.setText(IndianCurrencyFormatting.applyFormattingWithCurrency(newValue.getBalanceAmount()));
 	}
 
 	@FXML

@@ -25,6 +25,7 @@ import com.billing.dto.ReportMetadata;
 import com.billing.dto.SalesReport;
 import com.billing.dto.SalesReturnReport;
 import com.billing.dto.StockSummaryReport;
+import com.billing.dto.SuppliersReport;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 import com.billing.utils.DBUtils;
@@ -106,7 +107,8 @@ public class PrinterService {
 		boolean isSuccess = false;
 		ReportMetadata reportMetadata = getReportMetadataForPDF(reportData);
 		// Show save file dialog
-		File file = appUtils.saveFileDialog(currentStage, "Save PDF", reportMetadata.getReportName(), "PDF File", "*.pdf");
+		File file = appUtils.saveFileDialog(currentStage, "Save PDF", reportMetadata.getReportName(), "PDF File",
+				"*.pdf");
 		if (null != file) {
 			reportMetadata.setFilePath(file.getAbsolutePath());
 			isSuccess = pdfReportService.exportPDF(reportMetadata);
@@ -124,8 +126,8 @@ public class PrinterService {
 
 		ReportMetadata reportMetadata = getReportMetadataForExcel(reportData);
 		// Show save file dialog
-		File file = appUtils.saveFileDialog(currentStage, "Save Excel Sheet", reportMetadata.getReportName(), "Excel File",
-				"*.xls");
+		File file = appUtils.saveFileDialog(currentStage, "Save Excel Sheet", reportMetadata.getReportName(),
+				"Excel File", "*.xls");
 
 		if (null != file) {
 			FileOutputStream outputStream;
@@ -200,6 +202,14 @@ public class PrinterService {
 			reportMetadata.setReportName(AppConstants.EXPENSE_REPORT_NAME + todaysDate + ".pdf");
 			reportMetadata.setDataSourceMap(pdfReportMapping.getDatasourceForExpenseReport(report));
 		}
+
+		// Expense Return Report
+		if (reportData instanceof SuppliersReport) {
+			SuppliersReport report = (SuppliersReport) reportData;
+			reportMetadata.setJasperName(AppConstants.SUPPLIERS_REPORT_JASPER);
+			reportMetadata.setReportName(AppConstants.SUPPLIERS_REPORT_NAME + todaysDate + ".pdf");
+			reportMetadata.setDataSourceMap(pdfReportMapping.getDatasourceForSuppliersReport(report));
+		}
 		return reportMetadata;
 	}
 
@@ -249,6 +259,12 @@ public class PrinterService {
 			ExpenseReport report = (ExpenseReport) reportData;
 			reportMetadata.setReportName(AppConstants.EXPENSE_REPORT_NAME + todaysDate + ".xls");
 			reportMetadata.setWorkbook(excelReportService.getExpenseReportWorkBook(report, workbook));
+		}
+		// Expense Report
+		if (reportData instanceof SuppliersReport) {
+			SuppliersReport report = (SuppliersReport) reportData;
+			reportMetadata.setReportName(AppConstants.SUPPLIERS_REPORT_NAME + todaysDate + ".xls");
+			reportMetadata.setWorkbook(excelReportService.getSuppliersReportWorkBook(report, workbook));
 		}
 		return reportMetadata;
 	}

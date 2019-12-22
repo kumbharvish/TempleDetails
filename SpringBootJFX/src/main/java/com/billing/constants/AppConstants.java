@@ -121,6 +121,8 @@ public class AppConstants {
 
 	public static final String EXPENSE_REPORT_NAME = "Expense_Report";
 
+	public static final String SUPPLIERS_REPORT_NAME = "Suppliers_Report";
+
 	// Jasper File Names
 	public static final String PRODUCT_PROFIT_REPORT_JASPER = "Product_Profit_Report.jasper";
 
@@ -137,6 +139,8 @@ public class AppConstants {
 	public static final String SALES_RETURN_REPORT_JASPER = "Sales_Return_Report.jasper";
 
 	public static final String EXPENSE_REPORT_JASPER = "Expense_Report.jasper";
+
+	public static final String SUPPLIERS_REPORT_JASPER = "Suppliers_Report.jasper";
 
 	public static final String BILL_PRINT_JASPER = "Bill_Print.jasper";
 

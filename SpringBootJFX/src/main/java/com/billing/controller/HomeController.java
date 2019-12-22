@@ -213,13 +213,18 @@ public class HomeController extends AppContext {
 	}
 
 	@FXML
+	void onSuppliersReportCommand(ActionEvent event) {
+		addTab("SuppliersReport", "Suppliers Report");
+	}
+
+	@FXML
 	void onCustomerWiseProfitCommand(ActionEvent event) {
 
 	}
 
 	@FXML
 	void onDailySalesReportCommand(ActionEvent event) {
-
+		addTab("GraphicalDailySalesReport", "Daily Sales Report");
 	}
 
 	@FXML
@@ -294,12 +299,12 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onMonthlySalesReportCommand(ActionEvent event) {
-
+		addTab("GraphicalMonthlySalesReport", "Monthly Sales Report");
 	}
 
 	@FXML
 	void onPaymentModeWiseSalesCommand(ActionEvent event) {
-
+		addTab("GraphicalPaymentModeWiseReport", "Payment Mode Wise Sales Report");
 	}
 
 	@FXML
@@ -396,7 +401,7 @@ public class HomeController extends AppContext {
 	}
 
 	@FXML
-	void onStockEntryWiseProfitCommand(ActionEvent event) {
+	void onPurchaseEntryWiseProfitCommand(ActionEvent event) {
 
 	}
 
@@ -414,12 +419,12 @@ public class HomeController extends AppContext {
 	void onSuppliersCommand(ActionEvent event) {
 		addTab("Suppliers", "Suppliers");
 	}
-	
+
 	@FXML
 	void onSuppliersPayHistoryCommand(ActionEvent event) {
 		addTab("SupplierPaymentHistory", "Supplier Payment History");
 	}
-	
+
 	@FXML
 	void onUserPreferencesCommand(ActionEvent event) {
 		addTab("UserPreferences", "User Preferences");

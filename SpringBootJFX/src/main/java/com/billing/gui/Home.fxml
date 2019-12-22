@@ -134,6 +134,7 @@
 										<MenuItem fx:id="salesReturnReportMenuItem" onAction="#onSalesReturnReportCommand" text="Sales _Return Report" />
 										<MenuItem fx:id="cashReportMenuItem" onAction="#onCashReportCommand" text="Cash Report" />
 										<MenuItem fx:id="customersReportMenuItem" onAction="#onCustomerReportCommand" text="_Customers Report" />
+										<MenuItem fx:id="suppliersReportMenuItem" onAction="#onSuppliersReportCommand" text="_Suppliers Report" />
 										<MenuItem fx:id="stockSummaryReportMenuItem" onAction="#onStockSummaryReportCommand" text="Stock _Summary Report" />
 										<MenuItem fx:id="productProfitReportMenuItem" onAction="#onProductProfitReportCommand" text="Product Pro_fit Report" />
 										<MenuItem fx:id="lowStockSummaryReportMenuItem" onAction="#onLowStockSummaryCommand" text="_Low Stock Summary Report" />
@@ -154,7 +155,7 @@
 									<items>
 										<MenuItem fx:id="productWiseProfitMenuItem" onAction="#onProductWiseProfitCommand" text="Product Wise Profit Report" />
 										<MenuItem fx:id="billWiseProfitMenuItem" mnemonicParsing="false" onAction="#onBillWiseProfitCommand" text="Bill Wise Profit Report" />
-										<MenuItem fx:id="stockEntryWiseProfitReportMenuItem" mnemonicParsing="false" onAction="#onStockEntryWiseProfitCommand" text="Stock Entry Wise Profit Report" />
+										<MenuItem fx:id="stockEntryWiseProfitReportMenuItem" mnemonicParsing="false" onAction="#onPurchaseEntryWiseProfitCommand" text="Purchase Entry Wise Profit Report" />
 										<MenuItem fx:id="customerWiseProfitReportMenuItem" mnemonicParsing="false" onAction="#onCustomerWiseProfitCommand" text="Customer Wise Profit Report" />
 										<MenuItem fx:id="productWiseSalesReportMenuItem" mnemonicParsing="false" onAction="#onProductWiseSalesCommand" text="Product Wise Sales Report" />
 									</items>

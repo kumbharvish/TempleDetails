@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+
+<BorderPane styleClass="rootNode" stylesheets="@../../../css/reports.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.GraphicalPaymentModeWiseReportController">
+	<top>
+		<VBox alignment="TOP_CENTER" spacing="20.0" BorderPane.alignment="CENTER">
+			<children>
+				<Label fx:id="heading" alignment="TOP_CENTER" contentDisplay="CENTER" text="Payment Mode Wise Sales Report" />
+				<AnchorPane>
+					<children>
+						<GridPane hgap="10.0" vgap="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+							<columnConstraints>
+								<ColumnConstraints fillWidth="false" hgrow="NEVER" minWidth="50.0" />
+								<ColumnConstraints fillWidth="false" hgrow="NEVER" minWidth="10.0" />
+								<ColumnConstraints fillWidth="false" hgrow="NEVER" minWidth="50.0" />
+								<ColumnConstraints fillWidth="false" hgrow="NEVER" minWidth="10.0" />
+							</columnConstraints>
+							<rowConstraints>
+								<RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+							</rowConstraints>
+							<children>
+								<Label styleClass="nodeLabel" text="From :" GridPane.halignment="RIGHT" />
+								<DatePicker fx:id="dpFromDate" GridPane.columnIndex="1" />
+								<DatePicker fx:id="dpToDate" GridPane.columnIndex="3" />
+								<Label styleClass="nodeLabel" text="To :" GridPane.columnIndex="2" GridPane.halignment="RIGHT" />
+							</children>
+						</GridPane>						
+					</children>
+				</AnchorPane>
+			</children>
+			<BorderPane.margin>
+				<Insets bottom="10.0" />
+			</BorderPane.margin>
+		</VBox>
+	</top>
+   <center>
+      <PieChart fx:id="pieChart" BorderPane.alignment="CENTER" />
+   </center>
+   <bottom>
+		<ButtonBar BorderPane.alignment="CENTER">
+			<buttons>
+				<Button fx:id="btnClose" cancelButton="true" mnemonicParsing="false" onAction="#onCloseAction" text="Close" />
+			</buttons>
+			<padding>
+				<Insets top="10.0" />
+			</padding>
+		</ButtonBar>
+	</bottom>
+</BorderPane>
