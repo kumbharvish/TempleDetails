@@ -18,6 +18,7 @@ import com.billing.dto.ExpenseReport;
 import com.billing.dto.LowStockSummaryReport;
 import com.billing.dto.Product;
 import com.billing.dto.ProductCategory;
+import com.billing.dto.ProductCategoryWiseStockReport;
 import com.billing.dto.ProductProfitReport;
 import com.billing.dto.ReturnDetails;
 import com.billing.dto.SalesReport;
@@ -128,14 +129,14 @@ public class ExcelReportService {
 		return workbook;
 	}
 
-	// Category Wise Stock Report
-	public Workbook getCategoryWiseStockReportWorkBook(List<ProductCategory> productCategoryList, Workbook workbook) {
-		Sheet sheet = workbook.createSheet("Category Wise Stock Report");
+	// Product Category Wise Stock Report
+	public Workbook getCategoryWiseStockReportWorkBook(ProductCategoryWiseStockReport report, Workbook workbook) {
+		Sheet sheet = workbook.createSheet("Product Category Wise Stock Report");
 		try {
 			excelReportMapping.setHeaderRowForCategoryWiseStock(sheet);
 			int rowCount = 0;
 
-			for (ProductCategory productCategory : productCategoryList) {
+			for (ProductCategory productCategory : report.getProductCategoryList()) {
 				Row row = sheet.createRow(++rowCount);
 				excelReportMapping.addCategoryWiseStockRow(productCategory, row);
 			}

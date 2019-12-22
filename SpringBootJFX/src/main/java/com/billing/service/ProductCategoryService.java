@@ -41,9 +41,12 @@ public class ProductCategoryService implements AppService<ProductCategory> {
 		return productCategoryRepository.getAllCategories(conn);
 	}
 
-	public List<Product> getProductsUnterCategory(ProductCategory productCategory) {
-		return productCategoryRepository.getProductsUnterCategory(productCategory.getCategoryCode());
+	public List<Product> getProductsUnderCategory(ProductCategory productCategory) {
+		return productCategoryRepository.getProductsUnderCategory(productCategory.getCategoryCode());
+	}
 
+	public List<ProductCategory> getCategoryWiseStockReprot() {
+		return productCategoryRepository.getCategoryWiseStockReprot();
 	}
 
 }

@@ -18,6 +18,7 @@ import com.billing.dto.ItemDetails;
 import com.billing.dto.LowStockSummaryReport;
 import com.billing.dto.Product;
 import com.billing.dto.ProductCategory;
+import com.billing.dto.ProductCategoryWiseStockReport;
 import com.billing.dto.ProductProfitReport;
 import com.billing.dto.ReturnDetails;
 import com.billing.dto.SalesReport;
@@ -112,9 +113,9 @@ public class PDFReportMapping {
 	}
 
 	// Category Wise Stock Report
-	public List<Map<String, ?>> getDatasourceForCategoryWiseStockReport(List<ProductCategory> productCategoryList) {
+	public List<Map<String, ?>> getDatasourceForCategoryWiseStockReport(ProductCategoryWiseStockReport report) {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
-		for (ProductCategory pc : productCategoryList) {
+		for (ProductCategory pc : report.getProductCategoryList()) {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("CategoryName", pc.getCategoryName());
 			map.put("CategoryCode", String.valueOf(pc.getCategoryCode()));

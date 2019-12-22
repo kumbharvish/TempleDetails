@@ -231,7 +231,7 @@ public class ProductCategoryController implements TabContent {
 			if (alert.getResult() == ButtonType.YES) {
 				ProductCategory productCategory = new ProductCategory();
 				productCategory.setCategoryCode(categoryCode);
-				List<Product> productList = productCategoryService.getProductsUnterCategory(productCategory);
+				List<Product> productList = productCategoryService.getProductsUnderCategory(productCategory);
 				if (productList.size() > 0) {
 					alertHelper.showErrorAlert(currentStage, "Error", null, "Total " + productList.size()
 							+ " Products under this category. Please delete the products first in order to delete the category.");

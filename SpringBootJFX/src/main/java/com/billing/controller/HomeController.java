@@ -326,7 +326,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onProductCategoryWiseStockCommand(ActionEvent event) {
-
+		addTab("ProductCategoryWiseStockReport", "Product Cateogry Wise Stock Report");
 	}
 
 	@FXML

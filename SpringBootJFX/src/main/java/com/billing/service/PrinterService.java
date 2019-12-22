@@ -20,6 +20,7 @@ import com.billing.dto.CustomersReport;
 import com.billing.dto.ExpenseReport;
 import com.billing.dto.LowStockSummaryReport;
 import com.billing.dto.PrintTemplate;
+import com.billing.dto.ProductCategoryWiseStockReport;
 import com.billing.dto.ProductProfitReport;
 import com.billing.dto.ReportMetadata;
 import com.billing.dto.SalesReport;
@@ -203,12 +204,20 @@ public class PrinterService {
 			reportMetadata.setDataSourceMap(pdfReportMapping.getDatasourceForExpenseReport(report));
 		}
 
-		// Expense Return Report
+		// Suppliers Report
 		if (reportData instanceof SuppliersReport) {
 			SuppliersReport report = (SuppliersReport) reportData;
 			reportMetadata.setJasperName(AppConstants.SUPPLIERS_REPORT_JASPER);
 			reportMetadata.setReportName(AppConstants.SUPPLIERS_REPORT_NAME + todaysDate + ".pdf");
 			reportMetadata.setDataSourceMap(pdfReportMapping.getDatasourceForSuppliersReport(report));
+		}
+
+		// Product Category Wise Stock Report
+		if (reportData instanceof ProductCategoryWiseStockReport) {
+			ProductCategoryWiseStockReport report = (ProductCategoryWiseStockReport) reportData;
+			reportMetadata.setJasperName(AppConstants.PRODUCT_CATEGORY_WISE_STOCK_REPORT_JASPER);
+			reportMetadata.setReportName(AppConstants.PRODUCT_CATEOGRY_WISE_STOCK_REPORT_NAME + todaysDate + ".pdf");
+			reportMetadata.setDataSourceMap(pdfReportMapping.getDatasourceForCategoryWiseStockReport(report));
 		}
 		return reportMetadata;
 	}
@@ -260,11 +269,17 @@ public class PrinterService {
 			reportMetadata.setReportName(AppConstants.EXPENSE_REPORT_NAME + todaysDate + ".xls");
 			reportMetadata.setWorkbook(excelReportService.getExpenseReportWorkBook(report, workbook));
 		}
-		// Expense Report
+		// Suppliers Report
 		if (reportData instanceof SuppliersReport) {
 			SuppliersReport report = (SuppliersReport) reportData;
 			reportMetadata.setReportName(AppConstants.SUPPLIERS_REPORT_NAME + todaysDate + ".xls");
 			reportMetadata.setWorkbook(excelReportService.getSuppliersReportWorkBook(report, workbook));
+		}
+		// Product Category Wise Stock Report
+		if (reportData instanceof ProductCategoryWiseStockReport) {
+			ProductCategoryWiseStockReport report = (ProductCategoryWiseStockReport) reportData;
+			reportMetadata.setReportName(AppConstants.PRODUCT_CATEOGRY_WISE_STOCK_REPORT_NAME + todaysDate + ".xls");
+			reportMetadata.setWorkbook(excelReportService.getCategoryWiseStockReportWorkBook(report, workbook));
 		}
 		return reportMetadata;
 	}

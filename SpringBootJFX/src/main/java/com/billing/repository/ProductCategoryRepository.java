@@ -185,7 +185,7 @@ public class ProductCategoryRepository {
 		return status;
 	}
 
-	public List<Product> getProductsUnterCategory(int categoryId) {
+	public List<Product> getProductsUnderCategory(int categoryId) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		Product pc = null;
