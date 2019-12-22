@@ -85,6 +85,8 @@ public class ReportRepository {
 	private static final String INS_OPENING_CASH = "INSERT INTO CASH_COUNTER " + "(DATE,AMOUNT)" + " VALUES(?,?)";
 
 	private static final String UPDATE_OPENING_CASH = "UPDATE CASH_COUNTER SET AMOUNT=?" + " WHERE DATE=?";
+	
+	private static final String GET_PURCHASE_ENTRY_DISC_EXTRA_CHARGES_AMT = "SELECT  SUM(DISCOUNT_AMOUNT) AS DISCOUNT_AMOUNT , SUM(EXTRA_CHARGES) AS EXTRA_CHARGES FROM PURCHASE_ENTRY_DETAILS  WHERE DATE(PURCHASE_ENTRY_DATE) BETWEEN ? AND ? ";
 
 	// Graphic Report
 
@@ -504,7 +506,7 @@ public class ReportRepository {
 		return report;
 	}
 
-	public ProfitLossDetails getProfitLossReport(Date fromDate, Date toDate) {
+	public ProfitLossDetails getProfitLossReport(String fromDate, String toDate) {
 		// Debits
 		List<ProfitLossData> debit = new ArrayList<ProfitLossData>();
 		ProfitLossDetails report = new ProfitLossDetails();
@@ -515,8 +517,8 @@ public class ReportRepository {
 			conn = dbUtils.getConnection();
 			// Expense Types
 			PreparedStatement stmt = conn.prepareStatement(GET_TOTAL_EXP);
-			stmt.setDate(1, fromDate);
-			stmt.setDate(2, toDate);
+			stmt.setString(1, fromDate);
+			stmt.setString(2, toDate);
 			ResultSet rs3 = stmt.executeQuery();
 			while (rs3.next()) {
 				ProfitLossData expenses = new ProfitLossData();
@@ -526,24 +528,45 @@ public class ReportRepository {
 				debit.add(expenses);
 			}
 			stmt.close();
-			report.setDebit(debit);
 			// Minus Sales Return Profit amount
 			double salesReturnProfit = 0;
 			PreparedStatement stmt1 = conn.prepareStatement(GET_SALES_RETURN_PROFIT_AMT);
-			stmt1.setDate(1, fromDate);
-			stmt1.setDate(2, toDate);
+			stmt1.setString(1, fromDate);
+			stmt1.setString(2, toDate);
 			ResultSet rs5 = stmt1.executeQuery();
 			if (rs5.next()) {
 				salesReturnProfit = rs5.getDouble("NEGATIVE_PROFIT");
 			}
 			stmt1.close();
+			// Purchase Entry Extra Charges and Discount Amount
+			double extraCharges = 0;
+			double discountAmount = 0;
 
+			PreparedStatement stmt3 = conn.prepareStatement(GET_PURCHASE_ENTRY_DISC_EXTRA_CHARGES_AMT);
+			stmt3.setString(1, fromDate);
+			stmt3.setString(2, toDate);
+			ResultSet rs6 = stmt3.executeQuery();
+			if (rs6.next()) {
+				discountAmount = rs6.getDouble("DISCOUNT_AMOUNT");
+				extraCharges = rs6.getDouble("EXTRA_CHARGES");
+			}
+			stmt3.close();
+			ProfitLossData peExtraCharges = new ProfitLossData();
+			peExtraCharges.setDescription(AppConstants.PURCHASE_ENTRY_EXTRA_CHARGES);
+			peExtraCharges.setAmount(extraCharges);
+			
+			ProfitLossData peDiscAmount = new ProfitLossData();
+			peDiscAmount.setDescription("Purchase Entry Discount Amount");
+			peDiscAmount.setAmount(discountAmount);
+			
+			debit.add(peExtraCharges);
+			report.setDebit(debit);
 			// Profit
 			List<ProfitLossData> credit = new ArrayList<ProfitLossData>();
 			double profitAmt = 0;
 			PreparedStatement stmt2 = conn.prepareStatement(GET_PROFIT_AMT);
-			stmt2.setDate(1, fromDate);
-			stmt2.setDate(2, toDate);
+			stmt2.setString(1, fromDate);
+			stmt2.setString(2, toDate);
 			ResultSet rs = stmt2.executeQuery();
 			ProfitLossData profit = new ProfitLossData();
 			profit.setDescription(AppConstants.PROFIT);
@@ -552,8 +575,10 @@ public class ReportRepository {
 			}
 			stmt2.close();
 			profit.setAmount(profitAmt - salesReturnProfit);
-			totalCredit = profitAmt - salesReturnProfit;
+			totalCredit = profitAmt - salesReturnProfit + discountAmount;
+			totalDebit += extraCharges; 
 			credit.add(profit);
+			credit.add(peDiscAmount);
 			report.setCredit(credit);
 			// Totals
 			report.setTotalCredit(totalCredit);

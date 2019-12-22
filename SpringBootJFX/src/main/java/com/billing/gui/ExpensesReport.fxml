@@ -21,7 +21,7 @@
 
 <BorderPane styleClass="rootNode" stylesheets="@../../../css/reports.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.ExpensesReportController">
 	<top>
-		<VBox alignment="TOP_CENTER" prefWidth="1200.0" spacing="20.0" BorderPane.alignment="CENTER">
+		<VBox alignment="TOP_CENTER" spacing="20.0" BorderPane.alignment="CENTER">
 			<children>
 				<Label fx:id="heading" text="Expense Report" />
 				<AnchorPane>

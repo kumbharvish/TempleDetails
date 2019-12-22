@@ -140,7 +140,7 @@
 										<MenuItem fx:id="lowStockSummaryReportMenuItem" onAction="#onLowStockSummaryCommand" text="_Low Stock Summary Report" />
 										<MenuItem fx:id="productCategoryWiseStockReprotMenuItem" onAction="#onProductCategoryWiseStockCommand" text="Product Category _Wise Stock Report" />
 										<MenuItem fx:id="monthlyReportMenuItem" onAction="#onMonthlyReportCommand" text="_Monthly Report" />
-										<MenuItem fx:id="profitLossReportMenuItem" onAction="#onProfitLossCommand" text="Profit _Loss Report" />
+										<MenuItem fx:id="profitLossReportMenuItem" onAction="#onProfitLossReportCommand" text="Profit _Loss Report" />
 										<MenuItem fx:id="expenseReportMenuItem" onAction="#onExpenseReportCommand" text="_Expense Report" />
 									</items>
 								</Menu>

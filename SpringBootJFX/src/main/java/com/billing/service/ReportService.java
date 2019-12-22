@@ -66,4 +66,8 @@ public class ReportService {
 		return reportRepository.getPaymentModeAmounts(fromDate, toDate);
 	}
 
+	public ProfitLossDetails getProfitLossReport(String fromDate, String toDate) {
+		return reportRepository.getProfitLossReport(fromDate, toDate);
+	}
+
 }

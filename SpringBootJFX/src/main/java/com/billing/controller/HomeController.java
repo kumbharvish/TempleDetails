@@ -357,8 +357,8 @@ public class HomeController extends AppContext {
 	}
 
 	@FXML
-	void onProfitLossCommand(ActionEvent event) {
-
+	void onProfitLossReportCommand(ActionEvent event) {
+		addTab("ProfitLossReport", "Profit Loss Report");
 	}
 
 	@FXML

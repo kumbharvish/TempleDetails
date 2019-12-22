@@ -106,6 +106,8 @@ public class AppConstants {
 
 	public static final String OPEN_REPORT_DOC_ON_SAVE = "OPEN_REPORT_DOC_ON_SAVE";
 
+	public static final String PURCHASE_ENTRY_EXTRA_CHARGES = "Purchase Entry Extra Charges";
+
 	// Report Names
 	public static final String SALES_REPORT_NAME = "Sales_Report";
 
@@ -122,7 +124,7 @@ public class AppConstants {
 	public static final String EXPENSE_REPORT_NAME = "Expense_Report";
 
 	public static final String SUPPLIERS_REPORT_NAME = "Suppliers_Report";
-	
+
 	public static final String PRODUCT_CATEOGRY_WISE_STOCK_REPORT_NAME = "Product_Category_Wise_Stock_Report";
 
 	// Jasper File Names

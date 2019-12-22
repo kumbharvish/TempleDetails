@@ -13,6 +13,20 @@
 	-fx-font-size: 15px;
 }
 
+.profitAmount {
+	-fx-font-weight: bold;
+	-fx-wrap-text: true;
+	-fx-font-size: 15px;
+	-fx-text-fill: green;
+}
+
+.lossAmount {
+	-fx-font-weight: bold;
+	-fx-wrap-text: true;
+	-fx-font-size: 15px;
+	-fx-text-fill: red;
+}
+
 #lblExportAsPDF {
 	-fx-graphic: url("/images/PDF.png");
 }
