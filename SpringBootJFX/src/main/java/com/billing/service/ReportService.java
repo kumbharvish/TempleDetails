@@ -32,10 +32,6 @@ public class ReportService {
 		return reportRepository.getConsolidatedReport(fromDate, toDate);
 	}
 
-	public ProfitLossDetails getProfitLossStatment(String fromDate, String toDate) {
-		return reportRepository.getProfitLossStatment(fromDate, toDate);
-	}
-
 	public List<Customer> getSettledCustomerList(String date) {
 		return reportRepository.getSettledCustomerList(date);
 	}

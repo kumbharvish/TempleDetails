@@ -384,127 +384,73 @@ public class ReportRepository {
 
 	// Get Profit Loss Statement
 
-	public ProfitLossDetails getProfitLossStatment(String fromDate, String toDate) {
-
-		ProfitLossDetails report = new ProfitLossDetails();
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		conn = dbUtils.getConnection();
-		double openingStockAmt = 0.0;
-		double salesAmt = 0.0;
-		double closingStockAmt = 0.0;
-		double purchasesAmt = 0.0;
-		double expensesAmt = 0.0;
-		double totalDebit = 0.0;
-		double totalCredit = 0.0;
-
-		try {
-			System.out.println(fromDate + "  " + toDate);
-			// Debits
-			List<ProfitLossData> debit = new ArrayList<ProfitLossData>();
-			// Opening Stock Amount
-			ProfitLossData openingStockValue = new ProfitLossData();
-			openingStockValue.setDescription(AppConstants.OPENING_STOCK);
-			openingStockAmt = getOpeningStockValue(fromDate);
-			if (openingStockAmt == 0) {
-				return null;
-			}
-			openingStockValue.setAmount(openingStockAmt);
-			debit.add(openingStockValue);
-			// Expenses
-			ProfitLossData expenses = new ProfitLossData();
-			expenses.setDescription(AppConstants.EXPESES);
-			stmt = conn.prepareStatement(GET_TOTAL_EXPENSES_AMOUNT);
-			stmt.setString(1, fromDate);
-			stmt.setString(2, toDate);
-			ResultSet rs3 = stmt.executeQuery();
-			if (rs3.next()) {
-				expensesAmt = rs3.getDouble("TOTAL_EXPENSE_AMOUNT");
-				expenses.setAmount(expensesAmt);
-			}
-			debit.add(expenses);
-
-			// Purchases
-			ProfitLossData purchases = new ProfitLossData();
-			purchases.setDescription(AppConstants.PURCHASES);
-
-			stmt = conn.prepareStatement(GET_TOTAL_PURCHASE_AMOUNT);
-			stmt.setString(1, fromDate);
-			stmt.setString(2, toDate);
-			ResultSet rs5 = stmt.executeQuery();
-			if (rs5.next()) {
-				purchasesAmt = rs5.getDouble("TOTAL_PURCHASE_AMOUNT");
-				purchases.setAmount(purchasesAmt);
-			}
-			debit.add(purchases);
-			report.setDebit(debit);
-			// Credits
-			List<ProfitLossData> credit = new ArrayList<ProfitLossData>();
-			// Sales
-			ProfitLossData sales = new ProfitLossData();
-			double salesAmount = 0.0;
-			double salesReturnAmt = 0.0;
-			sales.setDescription(AppConstants.SALES_REPORT);
-			stmt = conn.prepareStatement(GET_TOTAL_SALES_AMOUNT);
-			stmt.setString(1, fromDate);
-			stmt.setString(2, toDate);
-			ResultSet rs = stmt.executeQuery();
-			if (rs.next()) {
-				salesAmount = rs.getDouble("TOTAL_SALES_AMOUNT");
-			}
-			stmt = conn.prepareStatement(GET_TOTAL_SALES_RETURN_AMOUNT_REPORT);
-			stmt.setString(1, fromDate);
-			stmt.setString(2, toDate);
-			ResultSet rs2 = stmt.executeQuery();
-			if (rs2.next()) {
-				salesReturnAmt = rs2.getDouble("TOTAL_SALES_RETURN_AMOUNT");
-			}
-			salesAmt = salesAmount - salesReturnAmt;
-			sales.setAmount(salesAmt);
-
-			// Closing Stock Value
-			ProfitLossData closingStock = new ProfitLossData();
-			closingStock.setDescription(AppConstants.CLOSING_STOCK);
-			double closingStockValue = 0.0;
-			if (toDate.toString().equals(appUtils.getCurrentTimestamp())) {
-				stmt = conn.prepareStatement(GET_CLOSING_STOCK_VALUE);
-				ResultSet rs7 = stmt.executeQuery();
-				if (rs7.next()) {
-					closingStockValue = appUtils.getDecimalRoundUp2Decimal(rs7.getDouble("CLOSING_STOCK_VALUE"));
-					closingStockAmt = closingStockValue;
-				}
-			} else {
-				// Add logic to get opening stock for todate+1 days opening stock value
-				DateTime dateTime = new DateTime(toDate);
-				java.util.Date onePlusDay = dateTime.plusDays(1).toDate();
-				System.out.println("One Plus To Date : " + onePlusDay);
-				closingStockValue = getOpeningStockValue(appUtils.getDBFormattedDate(new Date(onePlusDay.getTime())));
-				closingStockAmt = closingStockValue;
-			}
-			closingStock.setAmount(closingStockValue);
-			credit.add(closingStock);
-			credit.add(sales);
-			report.setCredit(credit);
-			// Totals
-			totalDebit = expensesAmt + openingStockAmt + purchasesAmt;
-			totalCredit = closingStockAmt + salesAmt;
-			report.setTotalCredit(totalCredit);
-			report.setTotalDebit(totalDebit);
-			if (totalDebit < totalCredit) {
-				report.setNetProfit(totalCredit - totalDebit);
-			}
-			if (totalCredit < totalDebit) {
-				report.setNetLoss(totalDebit - totalCredit);
-			}
-			System.out.println(report);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("Exception : ", e);
-		} finally {
-			DBUtils.closeConnection(stmt, conn);
-		}
-		return report;
-	}
+	/*
+	 * public ProfitLossDetails getProfitLossStatment(String fromDate, String
+	 * toDate) {
+	 * 
+	 * ProfitLossDetails report = new ProfitLossDetails(); Connection conn = null;
+	 * PreparedStatement stmt = null; conn = dbUtils.getConnection(); double
+	 * openingStockAmt = 0.0; double salesAmt = 0.0; double closingStockAmt = 0.0;
+	 * double purchasesAmt = 0.0; double expensesAmt = 0.0; double totalDebit = 0.0;
+	 * double totalCredit = 0.0;
+	 * 
+	 * try { System.out.println(fromDate + "  " + toDate); // Debits
+	 * List<ProfitLossData> debit = new ArrayList<ProfitLossData>(); // Opening
+	 * Stock Amount ProfitLossData openingStockValue = new ProfitLossData();
+	 * openingStockValue.setDescription(AppConstants.OPENING_STOCK); openingStockAmt
+	 * = getOpeningStockValue(fromDate); if (openingStockAmt == 0) { return null; }
+	 * openingStockValue.setAmount(openingStockAmt); debit.add(openingStockValue);
+	 * // Expenses ProfitLossData expenses = new ProfitLossData();
+	 * expenses.setDescription(AppConstants.EXPESES); stmt =
+	 * conn.prepareStatement(GET_TOTAL_EXPENSES_AMOUNT); stmt.setString(1,
+	 * fromDate); stmt.setString(2, toDate); ResultSet rs3 = stmt.executeQuery(); if
+	 * (rs3.next()) { expensesAmt = rs3.getDouble("TOTAL_EXPENSE_AMOUNT");
+	 * expenses.setAmount(expensesAmt); } debit.add(expenses);
+	 * 
+	 * // Purchases ProfitLossData purchases = new ProfitLossData();
+	 * purchases.setDescription(AppConstants.PURCHASES);
+	 * 
+	 * stmt = conn.prepareStatement(GET_TOTAL_PURCHASE_AMOUNT); stmt.setString(1,
+	 * fromDate); stmt.setString(2, toDate); ResultSet rs5 = stmt.executeQuery(); if
+	 * (rs5.next()) { purchasesAmt = rs5.getDouble("TOTAL_PURCHASE_AMOUNT");
+	 * purchases.setAmount(purchasesAmt); } debit.add(purchases);
+	 * report.setDebit(debit); // Credits List<ProfitLossData> credit = new
+	 * ArrayList<ProfitLossData>(); // Sales ProfitLossData sales = new
+	 * ProfitLossData(); double salesAmount = 0.0; double salesReturnAmt = 0.0;
+	 * sales.setDescription(AppConstants.SALES_REPORT); stmt =
+	 * conn.prepareStatement(GET_TOTAL_SALES_AMOUNT); stmt.setString(1, fromDate);
+	 * stmt.setString(2, toDate); ResultSet rs = stmt.executeQuery(); if (rs.next())
+	 * { salesAmount = rs.getDouble("TOTAL_SALES_AMOUNT"); } stmt =
+	 * conn.prepareStatement(GET_TOTAL_SALES_RETURN_AMOUNT_REPORT);
+	 * stmt.setString(1, fromDate); stmt.setString(2, toDate); ResultSet rs2 =
+	 * stmt.executeQuery(); if (rs2.next()) { salesReturnAmt =
+	 * rs2.getDouble("TOTAL_SALES_RETURN_AMOUNT"); } salesAmt = salesAmount -
+	 * salesReturnAmt; sales.setAmount(salesAmt);
+	 * 
+	 * // Closing Stock Value ProfitLossData closingStock = new ProfitLossData();
+	 * closingStock.setDescription(AppConstants.CLOSING_STOCK); double
+	 * closingStockValue = 0.0; if
+	 * (toDate.toString().equals(appUtils.getCurrentTimestamp())) { stmt =
+	 * conn.prepareStatement(GET_CLOSING_STOCK_VALUE); ResultSet rs7 =
+	 * stmt.executeQuery(); if (rs7.next()) { closingStockValue =
+	 * appUtils.getDecimalRoundUp2Decimal(rs7.getDouble("CLOSING_STOCK_VALUE"));
+	 * closingStockAmt = closingStockValue; } } else { // Add logic to get opening
+	 * stock for todate+1 days opening stock value DateTime dateTime = new
+	 * DateTime(toDate); java.util.Date onePlusDay = dateTime.plusDays(1).toDate();
+	 * System.out.println("One Plus To Date : " + onePlusDay); closingStockValue =
+	 * getOpeningStockValue(appUtils.getDBFormattedDate(new
+	 * Date(onePlusDay.getTime()))); closingStockAmt = closingStockValue; }
+	 * closingStock.setAmount(closingStockValue); credit.add(closingStock);
+	 * credit.add(sales); report.setCredit(credit); // Totals totalDebit =
+	 * expensesAmt + openingStockAmt + purchasesAmt; totalCredit = closingStockAmt +
+	 * salesAmt; report.setTotalCredit(totalCredit);
+	 * report.setTotalDebit(totalDebit); if (totalDebit < totalCredit) {
+	 * report.setNetProfit(totalCredit - totalDebit); } if (totalCredit <
+	 * totalDebit) { report.setNetLoss(totalDebit - totalCredit); }
+	 * System.out.println(report); } catch (Exception e) { e.printStackTrace();
+	 * logger.error("Exception : ", e); } finally { DBUtils.closeConnection(stmt,
+	 * conn); } return report; }
+	 */
 
 	public ProfitLossDetails getProfitLossReport(String fromDate, String toDate) {
 		// Debits
@@ -674,21 +620,19 @@ public class ReportRepository {
 	}
 
 	// Add Opening Stock Value recurrsive logic
-	private StatusDTO addOpeningStockAmount(String date, double amount) {
-		StatusDTO status = new StatusDTO(-1);
-		Double openingStock = getOpeningStockValue(date);
-		System.out.println("Day Opening Value :" + openingStock);
-		if (openingStock == 0.0) {
-			insertOpeningStockValue(date, amount);
-			DateTime dateTime = new DateTime(date);
-			java.util.Date oneMinusDay = dateTime.minusDays(1).toDate();
-			System.out.println("Checking for Previous Day :+" + oneMinusDay);
-			addOpeningStockAmount(appUtils.getDBFormattedDate(new Date(oneMinusDay.getTime())), amount);
-		}
-		return status;
-
-	}
-
+	/*
+	 * private StatusDTO addOpeningStockAmount(String date, double amount) {
+	 * StatusDTO status = new StatusDTO(-1); Double openingStock =
+	 * getOpeningStockValue(date); System.out.println("Day Opening Value :" +
+	 * openingStock); if (openingStock == 0.0) { insertOpeningStockValue(date,
+	 * amount); DateTime dateTime = new DateTime(date); java.util.Date oneMinusDay =
+	 * dateTime.minusDays(1).toDate();
+	 * System.out.println("Checking for Previous Day :+" + oneMinusDay);
+	 * addOpeningStockAmount(appUtils.getDBFormattedDate(new
+	 * Date(oneMinusDay.getTime())), amount); } return status;
+	 * 
+	 * }
+	 */
 	/*
 	 * private StatusDTO doRecurrsiveInsertOpeningAmount() { StatusDTO status = new
 	 * StatusDTO(-1); double stockValueAmount = getStockValueAmount();

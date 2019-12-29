@@ -93,6 +93,8 @@ public class AppUtils {
 
 	List<String> paymentModes = null;
 
+	SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+
 	public static int getRecordsCount(ResultSet resultset) throws SQLException {
 		if (resultset.last()) {
 			return resultset.getRow();
@@ -280,13 +282,7 @@ public class AppUtils {
 	}
 
 	public String getFormattedDate(Date dt) {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-		return sdf.format(dt);
-	}
-
-	public String getDBFormattedDate(Date dt) {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-		return sdf.format(dt);
+		return simpleDateFormat.format(dt);
 	}
 
 	public String getFormattedDateWithTime(Date dt) {
@@ -295,10 +291,9 @@ public class AppUtils {
 	}
 
 	public Date getFormattedDate(String dt) {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		Date date = null;
 		try {
-			date = sdf.parse(dt);
+			date = simpleDateFormat.parse(dt);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -700,5 +695,9 @@ public class AppUtils {
 		p.setTableDispAmount(item.getRate() * item.getQuantity());
 		p.setProductTax(item.getGstDetails().getRate());
 		return p;
+	}
+
+	public DateTimeFormatter getDateTimeFormatter() {
+		return DateTimeFormatter.ofPattern(DATE_FORMAT);
 	}
 }

@@ -306,7 +306,7 @@ public class PurchaseEntryRepository {
 		return purchaseEntryList;
 	}
 
-	private static String getQuery(PurchaseEntrySearchCriteria criteria) {
+	private String getQuery(PurchaseEntrySearchCriteria criteria) {
 
 		StringBuilder selectQuery = new StringBuilder(
 				"SELECT PED.*,SD.SUPPLIER_NAME FROM PURCHASE_ENTRY_DETAILS PED,SUPPLIER_DETAILS SD WHERE  PED.SUPPLIER_ID=SD.SUPPLIER_ID AND ");
@@ -319,9 +319,8 @@ public class PurchaseEntryRepository {
 			// date
 			if (criteria.getStartDate() != null) {
 				conditionApplied = true;
-				DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd");
-				String startDateString = criteria.getStartDate().format(dateFormatter);
-				String endDateString = criteria.getEndDate().format(dateFormatter);
+				String startDateString = criteria.getStartDate().format(appUtils.getDateTimeFormatter());
+				String endDateString = criteria.getEndDate().format(appUtils.getDateTimeFormatter());
 
 				selectQuery.append(" DATE(PED.PURCHASE_ENTRY_DATE) BETWEEN '").append(startDateString).append("' AND '")
 						.append(endDateString).append("' ");

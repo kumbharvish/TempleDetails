@@ -545,8 +545,7 @@ public class SalesReturnController extends AppContext implements TabContent {
 		double newInvoiceNetSalesAmt = bill.getNetSalesAmt() - returnDetails.getTotalReturnAmount();
 		returnDetails.setNewInvoiceNetSalesAmt(Double.valueOf(newInvoiceNetSalesAmt));
 
-		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd");
-		String returnDate = dpReturnDate.getValue().format(dateFormatter);
+		String returnDate = dpReturnDate.getValue().format(appUtils.getDateTimeFormatter());
 		String returnTime = appUtils.getCurrentTime();
 
 		returnDetails.setTimestamp(returnDate + " " + returnTime);

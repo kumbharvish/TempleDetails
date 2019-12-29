@@ -706,8 +706,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		bill.setNetSalesAmt(
 				Double.valueOf(IndianCurrencyFormatting.removeFormattingWithCurrency(txtNetSalesAmount.getText())));
 
-		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd");
-		String invoiceDate = dpInvoiceDate.getValue().format(dateFormatter);
+		String invoiceDate = dpInvoiceDate.getValue().format(appUtils.getDateTimeFormatter());
 		String invoiceTime = appUtils.getCurrentTime();
 
 		bill.setTimestamp(invoiceDate + " " + invoiceTime);

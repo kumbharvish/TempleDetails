@@ -580,8 +580,7 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 		pe.setTotalAmount(
 				Double.valueOf(IndianCurrencyFormatting.removeFormattingWithCurrency(txtTotalAmount.getText())));
 
-		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd");
-		String billDate = dpBillDate.getValue().format(dateFormatter);
+		String billDate = dpBillDate.getValue().format(appUtils.getDateTimeFormatter());
 		String billTime = appUtils.getCurrentTime();
 
 		pe.setBillDate(billDate + " " + billTime);

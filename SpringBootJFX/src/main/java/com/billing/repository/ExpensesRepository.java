@@ -263,7 +263,7 @@ public class ExpensesRepository {
 		return billDetailsList;
 	}
 
-	private static String getQuery(ExpenseSearchCriteria criteria) {
+	private String getQuery(ExpenseSearchCriteria criteria) {
 
 		StringBuilder selectQuery = new StringBuilder("SELECT * FROM EXPENSE_DETAILS WHERE ");
 		// Expense category
@@ -275,9 +275,8 @@ public class ExpensesRepository {
 			// date
 			if (criteria.getStartDate() != null) {
 				conditionApplied = true;
-				DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd");
-				String startDateString = criteria.getStartDate().format(dateFormatter);
-				String endDateString = criteria.getEndDate().format(dateFormatter);
+				String startDateString = criteria.getStartDate().format(appUtils.getDateTimeFormatter());
+				String endDateString = criteria.getEndDate().format(appUtils.getDateTimeFormatter());
 
 				selectQuery.append(" DATE(DATE) BETWEEN '").append(startDateString).append("' AND '")
 						.append(endDateString).append("' ");
