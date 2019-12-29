@@ -1,6 +1,6 @@
 package com.billing.dto;
 
-public class MonthlyReport {
+public class ConsolidatedReport {
 	
 	private double totalSalesPendingAmt;
 	

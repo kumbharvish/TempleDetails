@@ -34,3 +34,9 @@
 #lblExportAsExcel {
 	-fx-graphic: url("/images/Excel.png");
 }
+
+.totalAmountField {
+	-fx-font-weight: bold;
+	-fx-wrap-text: true;
+	-fx-font-size: 15px;
+}

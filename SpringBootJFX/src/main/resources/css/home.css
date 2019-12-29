@@ -183,6 +183,10 @@
 	-fx-graphic: url("/images/GraphicalReports_24.png");
 }
 
+#gstReportsMenu>.label{
+	-fx-graphic: url("/images/GstReports_24.png");
+}
+
 #analysisReportsMenu>.label {
 	-fx-graphic: url("/images/BusinessAnalysis_24.png");
 }

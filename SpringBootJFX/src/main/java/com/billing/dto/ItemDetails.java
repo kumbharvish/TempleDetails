@@ -77,7 +77,10 @@ public class ItemDetails {
 	public double getAmount() {
 		return getGstDetails().getTaxableAmount();
 	}
-
+	
+	public double getItemAmount() {
+		return rate*quantity;
+	}
 	public double getPurchasePrice() {
 		return purchasePrice;
 	}

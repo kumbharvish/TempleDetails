@@ -154,6 +154,19 @@ public class AppConstants {
 
 	public static final String BARCODE_24_JASPER = "Barcode_24.jasper";
 
+	// Invoice Template Names
+	public static final String THERMAL_CASH_INVOICE = "Thermal : Cash Invoice";
+	
+	public static final String THERMAL_TAX_INVOICE = "Thermal : Tax Invoice";
+	
+	public static final String A4_TAX_INVOICE_1 = "A4 : Tax Invoice 1";
+	
+	public static final String A4_TAX_INVOICE_2 = "A4 : Tax Invoice 2";
+	
+	public static final String A4_TAX_INVOICE_3 = "A4 : Tax Invoice 3";
+	
+	public static final String A4_TAX_INVOICE_4 = "A4 : Tax Invoice 4";
+
 	// Instructions
 
 	public static final String INSTR_MYSTORE_USER_SETUP = "<h5>Please follow below instructions,<h5/><h5><ul style='line-height:1.6;'><li>Please setup a New User to use MyStore Billing. </li>"

@@ -25,6 +25,7 @@ import com.billing.dto.ProductProfitReport;
 import com.billing.dto.ReportMetadata;
 import com.billing.dto.SalesReport;
 import com.billing.dto.SalesReturnReport;
+import com.billing.dto.StatusDTO;
 import com.billing.dto.StockSummaryReport;
 import com.billing.dto.SuppliersReport;
 import com.billing.utils.AlertHelper;
@@ -59,6 +60,10 @@ public class PrinterService {
 
 	private static final String SELECT_DEFAULT_INVOICE_PRINT_TEMPLATE = "SELECT * FROM INVOICE_PRINT_CONFIGURATION WHERE IS_DEFAULT='Y'";
 
+	private static final String UPDATE_DEFAULT_INVOICE_PRINT_TEMPLATE_1 = "UPDATE INVOICE_PRINT_CONFIGURATION SET IS_DEFAULT='N' ";
+
+	private static final String UPDATE_DEFAULT_INVOICE_PRINT_TEMPLATE_2 = "UPDATE INVOICE_PRINT_CONFIGURATION SET IS_DEFAULT='Y'  WHERE NAME = ?";
+
 	public PrintTemplate getDefaultPrintTemplate() {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -81,6 +86,38 @@ public class PrinterService {
 			DBUtils.closeConnection(stmt, conn);
 		}
 		return template;
+	}
+
+	public StatusDTO updateDefaultInvoiceTemplate(String templateName) {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		PreparedStatement stmt1 = null;
+		StatusDTO status = new StatusDTO();
+		try {
+			conn = dbUtils.getConnection();
+			conn.setAutoCommit(false);
+			stmt1 = conn.prepareStatement(UPDATE_DEFAULT_INVOICE_PRINT_TEMPLATE_1);
+			int i = stmt1.executeUpdate();
+			stmt1.close();
+			stmt = conn.prepareStatement(UPDATE_DEFAULT_INVOICE_PRINT_TEMPLATE_2);
+			stmt.setString(1, templateName);
+
+			int j = stmt.executeUpdate();
+			if (i > 0 && j > 0) {
+				status.setStatusCode(0);
+				conn.commit();
+			} else {
+				conn.rollback();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			status.setException(e.getMessage());
+			status.setStatusCode(-1);
+			logger.info("Exception : ", e);
+		} finally {
+			DBUtils.closeConnection(stmt, conn);
+		}
+		return status;
 	}
 
 	// Print Invoice

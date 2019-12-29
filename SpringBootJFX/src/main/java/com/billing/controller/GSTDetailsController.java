@@ -82,14 +82,14 @@ public class GSTDetailsController {
 			gridPaneAmounts.add(txt, 1, i);
 			Label lbl2 = getNewLabel(t.getName() + " (" + t.getValue() + "%) :");
 			TextField txt2 = getNewTextField();
-			txt2.setText(IndianCurrencyFormatting.applyFormatting(gstMapWithTax.get(taxName)));
+			txt2.setText(appUtils.getDecimalFormat(gstMapWithTax.get(taxName)));
 			gridPaneTax.add(lbl2, 0, i);
 			gridPaneTax.add(txt2, 1, i);
 			i++;
 		}
-		txtCGSTAmount.setText(IndianCurrencyFormatting.applyFormatting(gstTotalGSTAmount / 2));
-		txtSGSTAmount.setText(IndianCurrencyFormatting.applyFormatting(gstTotalGSTAmount / 2));
-		txtGSTTotalAmount.setText(IndianCurrencyFormatting.applyFormatting(gstTotalGSTAmount));
+		txtCGSTAmount.setText(appUtils.getDecimalFormat(gstTotalGSTAmount / 2));
+		txtSGSTAmount.setText(appUtils.getDecimalFormat(gstTotalGSTAmount / 2));
+		txtGSTTotalAmount.setText(appUtils.getDecimalFormat(gstTotalGSTAmount));
 	}
 
 	private TextField getNewTextField() {

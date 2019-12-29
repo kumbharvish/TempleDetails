@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.billing.dto.CashReport;
 import com.billing.dto.Customer;
 import com.billing.dto.GraphDTO;
-import com.billing.dto.MonthlyReport;
+import com.billing.dto.ConsolidatedReport;
 import com.billing.dto.ProfitLossDetails;
 import com.billing.dto.StatusDTO;
 import com.billing.repository.ReportRepository;
@@ -28,8 +28,8 @@ public class ReportService {
 		return reportRepository.getOpeningCash(date);
 	}
 
-	public MonthlyReport getMonthlyReport(Date fromDate, Date toDate) {
-		return reportRepository.getMonthlyReport(fromDate, toDate);
+	public ConsolidatedReport getConsolidatedReport(String fromDate, String toDate) {
+		return reportRepository.getConsolidatedReport(fromDate, toDate);
 	}
 
 	public ProfitLossDetails getProfitLossStatment(String fromDate, String toDate) {

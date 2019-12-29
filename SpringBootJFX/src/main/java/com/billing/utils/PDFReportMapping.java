@@ -36,12 +36,15 @@ public class PDFReportMapping {
 	// Invoice Data Source
 	public List<Map<String, ?>> getDatasourceForInvoice(BillDetails bill) {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
+		double totalAmtForCashInvice = 0;
 		for (ItemDetails item : bill.getItemDetails()) {
+			totalAmtForCashInvice += item.getItemAmount();
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("Name", item.getItemName());
 			map.put("Qty", appUtils.getDecimalFormat(item.getQuantity()));
 			map.put("Rate", appUtils.getDecimalFormat(item.getRate()));
 			map.put("Amount", appUtils.getDecimalFormat(item.getAmount()));
+			map.put("ItemAmt", appUtils.getDecimalFormat(item.getItemAmount()));
 			map.put("BillNo", String.valueOf(bill.getBillNumber()));
 			map.put("TotalQty", appUtils.getDecimalFormat(bill.getTotalQuantity()));
 			map.put("NoOfItems", String.valueOf(bill.getNoOfItems()));
@@ -49,6 +52,15 @@ public class PDFReportMapping {
 			map.put("NetSalesAmount", appUtils.getDecimalFormat(bill.getNetSalesAmt()));
 			map.put("DiscountPer", appUtils.getDecimalFormat(bill.getDiscount()));
 			map.put("DiscountAmount", appUtils.getDecimalFormat(bill.getDiscountAmt()));
+			map.put("InvoiceDateTime", appUtils.getFormattedDateWithTime(bill.getTimestamp()));
+			map.put("GSTAmount", appUtils.getDecimalFormat(bill.getGstAmount()));
+			map.put("CGSTAmount", appUtils.getDecimalFormat(bill.getGstAmount()/2));
+			map.put("SGSTAmount", appUtils.getDecimalFormat(bill.getGstAmount()/2));
+			map.put("GSTInclusiveFlag", bill.getGstType());
+			map.put("TotalAmountForCashInvoice", appUtils.getDecimalFormat(totalAmtForCashInvice));
+			map.put("CustomerName", bill.getCustomerName());
+			map.put("CustomerMobileNo", String.valueOf(bill.getCustomerMobileNo()));
+
 			dataSourceMaps.add(map);
 		}
 		return dataSourceMaps;

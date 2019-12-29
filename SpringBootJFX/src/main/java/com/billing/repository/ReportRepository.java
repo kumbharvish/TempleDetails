@@ -17,7 +17,7 @@ import com.billing.constants.AppConstants;
 import com.billing.dto.CashReport;
 import com.billing.dto.Customer;
 import com.billing.dto.GraphDTO;
-import com.billing.dto.MonthlyReport;
+import com.billing.dto.ConsolidatedReport;
 import com.billing.dto.ProfitLossData;
 import com.billing.dto.ProfitLossDetails;
 import com.billing.dto.StatusDTO;
@@ -55,8 +55,8 @@ public class ReportRepository {
 	private static final String GET_TOTAL_EXPENSES_AMOUNT = "SELECT SUM(AMOUNT) AS TOTAL_EXPENSE_AMOUNT FROM EXPENSE_DETAILS WHERE "
 			+ "DATE(DATE) BETWEEN ? AND ?";
 
-	private static final String GET_TOTAL_PURCHASE_AMOUNT = "SELECT SUM(SUPP_INVOICE_AMOUNT) AS TOTAL_PURCHASE_AMOUNT FROM STOCK_INVOICE_DETAILS WHERE "
-			+ "DATE(TIMESTAMP	) BETWEEN ? AND ? ";
+	private static final String GET_TOTAL_PURCHASE_AMOUNT = "SELECT SUM(TOTAL_AMOUNT) AS TOTAL_PURCHASE_AMOUNT FROM PURCHASE_ENTRY_DETAILS WHERE "
+			+ "DATE(PURCHASE_ENTRY_DATE) BETWEEN ? AND ? ";
 
 	private static final String GET_TOTAL_QTY_SOLD = "SELECT SUM(BILL_QUANTITY) AS TOTAL_QTY_SOLD FROM CUSTOMER_BILL_DETAILS WHERE "
 			+ "DATE(BILL_DATE_TIME) BETWEEN ? AND ? ";
@@ -283,17 +283,17 @@ public class ReportRepository {
 	}
 
 	// Get Monthly Report
-	public MonthlyReport getMonthlyReport(Date fromDate, Date toDate) {
+	public ConsolidatedReport getConsolidatedReport(String fromDate, String toDate) {
 
-		MonthlyReport report = new MonthlyReport();
+		ConsolidatedReport report = new ConsolidatedReport();
 		Connection conn = null;
 		int totalQtySold = 0;
 		conn = dbUtils.getConnection();
 		try {
 			// Total Sales Pending Amount
 			PreparedStatement stmt = conn.prepareStatement(GET_TOTAL_SALES_CASH_AMOUNT);
-			stmt.setDate(1, fromDate);
-			stmt.setDate(2, toDate);
+			stmt.setString(1, fromDate);
+			stmt.setString(2, toDate);
 			ResultSet rs0 = stmt.executeQuery();
 			if (rs0.next()) {
 				report.setTotalSalesCashAmt(rs0.getDouble("TOTAL_SALES_CASH_AMOUNT"));
@@ -301,8 +301,8 @@ public class ReportRepository {
 			stmt.close();
 			// Total Sales Cash Amount
 			PreparedStatement stmt2 = conn.prepareStatement(GET_TOTAL_SALES_PENDING_AMOUNT);
-			stmt2.setDate(1, fromDate);
-			stmt2.setDate(2, toDate);
+			stmt2.setString(1, fromDate);
+			stmt2.setString(2, toDate);
 			ResultSet rs = stmt2.executeQuery();
 			if (rs.next()) {
 				report.setTotalSalesPendingAmt(rs.getDouble("TOTAL_SALES_PENDING_AMOUNT"));
@@ -310,8 +310,8 @@ public class ReportRepository {
 			stmt2.close();
 			// Total Sales Return Amount
 			PreparedStatement stmt3 = conn.prepareStatement(GET_TOTAL_SALES_RETURN_AMOUNT_REPORT);
-			stmt3.setDate(1, fromDate);
-			stmt3.setDate(2, toDate);
+			stmt3.setString(1, fromDate);
+			stmt3.setString(2, toDate);
 			ResultSet rs2 = stmt3.executeQuery();
 			if (rs2.next()) {
 				report.setTotalSalesReturnAmt(rs2.getDouble("TOTAL_SALES_RETURN_AMOUNT"));
@@ -319,8 +319,8 @@ public class ReportRepository {
 			stmt3.close();
 			// Total Expenses Amount
 			PreparedStatement stmt4 = conn.prepareStatement(GET_TOTAL_EXPENSES_AMOUNT);
-			stmt4.setDate(1, fromDate);
-			stmt4.setDate(2, toDate);
+			stmt4.setString(1, fromDate);
+			stmt4.setString(2, toDate);
 			ResultSet rs3 = stmt4.executeQuery();
 			if (rs3.next()) {
 				report.setTotalExpensesAmt(rs3.getDouble("TOTAL_EXPENSE_AMOUNT"));
@@ -328,8 +328,8 @@ public class ReportRepository {
 			stmt4.close();
 			// Total Customer Settlement Amount
 			PreparedStatement stmt5 = conn.prepareStatement(GET_TOTAL_CUST_SETTLEMENT_AMOUNT);
-			stmt5.setDate(1, fromDate);
-			stmt5.setDate(2, toDate);
+			stmt5.setString(1, fromDate);
+			stmt5.setString(2, toDate);
 			ResultSet rs4 = stmt5.executeQuery();
 			if (rs4.next()) {
 				report.setTotalCustSettlementAmt(rs4.getDouble("TOTAL_CUST_SETTLEMENT_AMOUNT"));
@@ -337,8 +337,8 @@ public class ReportRepository {
 			stmt5.close();
 			// Total Purchase Amount
 			PreparedStatement stmt6 = conn.prepareStatement(GET_TOTAL_PURCHASE_AMOUNT);
-			stmt6.setDate(1, fromDate);
-			stmt6.setDate(2, toDate);
+			stmt6.setString(1, fromDate);
+			stmt6.setString(2, toDate);
 			ResultSet rs5 = stmt6.executeQuery();
 			if (rs5.next()) {
 				report.setTotalPurchaseAmt(rs5.getDouble("TOTAL_PURCHASE_AMOUNT"));
@@ -346,8 +346,8 @@ public class ReportRepository {
 			stmt6.close();
 			// Total Purchase Amount
 			PreparedStatement stmt7 = conn.prepareStatement(GET_TOTAL_PURCHASE_AMOUNT);
-			stmt7.setDate(1, fromDate);
-			stmt7.setDate(2, toDate);
+			stmt7.setString(1, fromDate);
+			stmt7.setString(2, toDate);
 			ResultSet rs6 = stmt7.executeQuery();
 			if (rs6.next()) {
 				report.setTotalPurchaseAmt(rs6.getDouble("TOTAL_PURCHASE_AMOUNT"));
@@ -355,8 +355,8 @@ public class ReportRepository {
 			stmt7.close();
 			// Total Quantity sold
 			PreparedStatement stmt8 = conn.prepareStatement(GET_TOTAL_QTY_SOLD);
-			stmt8.setDate(1, fromDate);
-			stmt8.setDate(2, toDate);
+			stmt8.setString(1, fromDate);
+			stmt8.setString(2, toDate);
 			ResultSet rs7 = stmt8.executeQuery();
 			if (rs7.next()) {
 				totalQtySold = rs7.getInt("TOTAL_QTY_SOLD");
@@ -364,8 +364,8 @@ public class ReportRepository {
 			stmt8.close();
 			// Total Quantity returned
 			PreparedStatement stmt9 = conn.prepareStatement(GET_TOTAL_QTY_RETURNED);
-			stmt9.setDate(1, fromDate);
-			stmt9.setDate(2, toDate);
+			stmt9.setString(1, fromDate);
+			stmt9.setString(2, toDate);
 			ResultSet rs8 = stmt9.executeQuery();
 			if (rs8.next()) {
 				report.setTotalQtySold(totalQtySold - rs8.getInt("TOTAL_QTY_RETURNED"));

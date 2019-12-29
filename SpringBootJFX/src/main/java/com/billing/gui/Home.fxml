@@ -139,7 +139,7 @@
 										<MenuItem fx:id="productProfitReportMenuItem" onAction="#onProductProfitReportCommand" text="Product Pro_fit Report" />
 										<MenuItem fx:id="lowStockSummaryReportMenuItem" onAction="#onLowStockSummaryCommand" text="_Low Stock Summary Report" />
 										<MenuItem fx:id="productCategoryWiseStockReprotMenuItem" onAction="#onProductCategoryWiseStockCommand" text="Product Category _Wise Stock Report" />
-										<MenuItem fx:id="monthlyReportMenuItem" onAction="#onMonthlyReportCommand" text="_Monthly Report" />
+										<MenuItem fx:id="monthlyReportMenuItem" onAction="#onConsolidatedReportCommand" text="Cons_olidated Report" />
 										<MenuItem fx:id="profitLossReportMenuItem" onAction="#onProfitLossReportCommand" text="Profit _Loss Report" />
 										<MenuItem fx:id="expenseReportMenuItem" onAction="#onExpenseReportCommand" text="_Expense Report" />
 									</items>
@@ -158,6 +158,11 @@
 										<MenuItem fx:id="stockEntryWiseProfitReportMenuItem" mnemonicParsing="false" onAction="#onPurchaseEntryWiseProfitCommand" text="Purchase Entry Wise Profit Report" />
 										<MenuItem fx:id="customerWiseProfitReportMenuItem" mnemonicParsing="false" onAction="#onCustomerWiseProfitCommand" text="Customer Wise Profit Report" />
 										<MenuItem fx:id="productWiseSalesReportMenuItem" mnemonicParsing="false" onAction="#onProductWiseSalesCommand" text="Product Wise Sales Report" />
+									</items>
+								</Menu>
+								<Menu fx:id="gstReportsMenu" text="GS_T Reports">
+									<items>
+										<MenuItem fx:id="gstR1ReportMenuItem" onAction="#onGSTR1ReportCommand" text="GSTR-1 Report" />
 									</items>
 								</Menu>
 							</items>

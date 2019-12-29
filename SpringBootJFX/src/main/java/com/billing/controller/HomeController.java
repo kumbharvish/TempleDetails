@@ -293,8 +293,8 @@ public class HomeController extends AppContext {
 	}
 
 	@FXML
-	void onMonthlyReportCommand(ActionEvent event) {
-
+	void onConsolidatedReportCommand(ActionEvent event) {
+		addTab("ConsolidatedReport", "Consolidated Report");
 	}
 
 	@FXML
@@ -307,6 +307,12 @@ public class HomeController extends AppContext {
 		addTab("GraphicalPaymentModeWiseReport", "Payment Mode Wise Sales Report");
 	}
 
+	@FXML
+	void onGSTR1ReportCommand(ActionEvent event) {
+		//addTab("GraphicalPaymentModeWiseReport", "Payment Mode Wise Sales Report");
+	}
+
+	
 	@FXML
 	void onPrintBarcodeCommand(ActionEvent event) {
 		addTab("PrintBarcode", "Print Barcode");
@@ -449,7 +455,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onInvoiceTemplatesCommand(ActionEvent event) {
-		// addTab("", "Invoice Templates");
+		addTab("InvoiceTemplates", "Invoice Templates");
 	}
 
 	@FXML
