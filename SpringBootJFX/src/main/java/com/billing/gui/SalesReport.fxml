@@ -99,7 +99,7 @@
 						</TableColumn>
 					</columns>
 					<placeholder>
-						<Label fx:id="placeholderText" text="&lt; No Invoices found &gt;" />
+						<Label fx:id="placeholderText" text="&lt; No invoices found &gt;" />
 					</placeholder>
 					<columnResizePolicy>
 						<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

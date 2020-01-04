@@ -75,7 +75,7 @@
 						<Insets bottom="20.0" top="20.0" />
 					</BorderPane.margin>
 					<placeholder>
-						<Label fx:id="placeholderText" text="&lt; No Categories Found &gt;" />
+						<Label fx:id="placeholderText" text="&lt; No categories found &gt;" />
 					</placeholder>
 				</TableView>
 			</center>

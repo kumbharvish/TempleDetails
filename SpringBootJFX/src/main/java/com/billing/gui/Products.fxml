@@ -213,7 +213,7 @@
 								<Insets bottom="10.0" right="5.0" />
 							</BorderPane.margin>
 							<placeholder>
-								<Label fx:id="placeholderText" text="&lt; No Products Found &gt;" />
+								<Label fx:id="placeholderText" text="&lt; No products found &gt;" />
 							</placeholder>
 						</TableView>
 					</center></BorderPane>
