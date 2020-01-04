@@ -36,7 +36,7 @@ import win.zqxu.jrviewer.JRViewerFX;
 
 @Service
 public class PDFReportService {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(PDFReportService.class);
 
 	@Autowired
@@ -48,6 +48,9 @@ public class PDFReportService {
 	@Autowired
 	PDFReportMapping pdfReportMapping;
 
+	@Autowired
+	AlertHelper alertHelper;
+
 	public void printInvoice(BillDetails bill, String jasperName) {
 		try {
 			// load report
@@ -56,14 +59,19 @@ public class PDFReportService {
 			FileInputStream fis = new FileInputStream(jasperLocation);
 			BufferedInputStream bufferedInputStream = new BufferedInputStream(fis);
 			JasperReport jasperReport = (JasperReport) JRLoader.loadObject(bufferedInputStream);
-			
-			//Get Data Source
+
+			// Get Data Source
 			List<Map<String, ?>> dataSourceMap = pdfReportMapping.getDatasourceForInvoice(bill);
 
 			JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource(dataSourceMap);
 
 			// Add Report Headers
 			HashMap<String, Object> headerParamsMap = getPDFReportHeadersMap();
+
+			if (headerParamsMap == null) {
+				alertHelper.showErrorNotification("Please add store details");
+				return;
+			}
 
 			// compile report
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, headerParamsMap, dataSource);
@@ -96,6 +104,10 @@ public class PDFReportService {
 
 			// Add Report Headers
 			HashMap<String, Object> headerParamsMap = getPDFReportHeadersMap();
+			if (headerParamsMap == null) {
+				alertHelper.showErrorNotification("Please add store details");
+				return false;
+			}
 			// compile report
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, headerParamsMap, dataSource);
 
@@ -123,7 +135,7 @@ public class PDFReportService {
 			BufferedInputStream bufferedInputStream = new BufferedInputStream(fis);
 			JasperReport jasperReport = (JasperReport) JRLoader.loadObject(bufferedInputStream);
 
-			//Get Data Source
+			// Get Data Source
 			List<Map<String, ?>> dataSourceMap = pdfReportMapping.getDatasourceForBarcode(barcode, noOfLabels,
 					startPosition);
 
@@ -131,6 +143,11 @@ public class PDFReportService {
 
 			// Add Report Headers
 			HashMap<String, Object> headerParamsMap = getPDFReportHeadersMap();
+
+			if (headerParamsMap == null) {
+				alertHelper.showErrorNotification("Please add store details");
+				return true;
+			}
 			// compile report
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, headerParamsMap, dataSource);
 			// Show Print Preview
@@ -160,12 +177,17 @@ public class PDFReportService {
 	private HashMap<String, Object> getPDFReportHeadersMap() {
 		HashMap<String, Object> headerParamsMap = new HashMap<String, Object>();
 		MyStoreDetails details = myStoreService.getMyStoreDetails();
-		headerParamsMap.put("StoreName", details.getStoreName());
-		headerParamsMap.put("Address", details.getAddress());
-		headerParamsMap.put("Address2",
-				details.getAddress2() + "," + details.getCity() + ",Dist." + details.getDistrict());
-		headerParamsMap.put("MobileNumber",String.valueOf(details.getMobileNo()));
-		headerParamsMap.put("State", details.getState());
+		if (details == null) {
+			return null;
+		} else {
+			headerParamsMap.put("StoreName", details.getStoreName());
+			headerParamsMap.put("Address", details.getAddress());
+			headerParamsMap.put("Address2",
+					details.getAddress2() + "," + details.getCity() + ",Dist." + details.getDistrict());
+			headerParamsMap.put("MobileNumber", String.valueOf(details.getMobileNo()));
+			headerParamsMap.put("State", details.getState());
+		}
+
 		return headerParamsMap;
 	}
 

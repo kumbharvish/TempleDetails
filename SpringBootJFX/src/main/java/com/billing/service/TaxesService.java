@@ -1,6 +1,7 @@
 package com.billing.service;
 
 import java.sql.Connection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -59,7 +60,9 @@ public class TaxesService implements AppService<Tax> {
 	}
 
 	public List<Tax> getAll(Connection con) {
-		return taxesRepository.getAllTax(con);
+		List<Tax> taxList = taxesRepository.getAllTax(con);
+		Collections.sort(taxList, Tax.getComparator(Tax.SortParameter.TAX_VALUE));
+		return taxList;
 	}
 
 }
