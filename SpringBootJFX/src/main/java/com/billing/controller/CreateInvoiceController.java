@@ -502,6 +502,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 				product.setGstDetails(appUtils.getGSTDetails(product));
 				tableView.refresh();
 				isUpdated = true;
+				updateInvoiceAmount();
 			}
 		}
 		return isUpdated;
