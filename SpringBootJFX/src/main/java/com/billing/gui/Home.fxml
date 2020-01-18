@@ -176,6 +176,7 @@
 								<MenuItem fx:id="taxesMenuItem" onAction="#onTaxesCommand" text="Ta_xes" />
 								<MenuItem fx:id="invoiceTemplatesMenuItem" onAction="#onInvoiceTemplatesCommand" text="Invoice Te_mplates" />
 								<CheckMenuItem fx:id="hideToolbarMenuItem" onAction="#onHideToolbarCommand" text="H_ide Toolbar" />
+                        <MenuItem fx:id="deleteDataMenuItem" onAction="#onDeleteDataCommand" text="Delete Data" />
 							</items>
 						</Menu>
 						<Menu fx:id="helpMenu" text="He_lp">

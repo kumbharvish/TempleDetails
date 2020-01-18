@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox alignment="TOP_CENTER" fillHeight="false" styleClass="rootNode" stylesheets="@../../../css/deleteData.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.DeleteDataController">
+   <children>
+      <VBox fx:id="border" alignment="TOP_CENTER" spacing="20.0">
+         <children>
+            <Label fx:id="heading" alignment="TOP_CENTER" text="Delete Data" />
+            <HBox spacing="100.0">
+               <children>
+                  <HBox spacing="10.0">
+                     <children>
+                        <Label styleClass="nodeLabel" text="From :" />
+                        <VBox>
+                           <children>
+                              <DatePicker fx:id="dpFromDate" />
+                              <Label fx:id="lblErrMsgFormDate" styleClass="errorLabel" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox layoutX="10.0" layoutY="10.0" spacing="10.0">
+                     <children>
+                        <Label styleClass="nodeLabel" text="To :" />
+                        <VBox>
+                           <children>
+                              <DatePicker fx:id="dpToDate" />
+                              <Label fx:id="lblErrMsgToDate" styleClass="errorLabel" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
+            <VBox spacing="10.0">
+               <children>
+                  <Label styleClass="instructionsHeadingLabel" text="Instructions :" />
+                  <Label styleClass="instructionsLabel" text="1) Please make sure you take data backup before deleting data" />
+                  <Label styleClass="instructionsLabel" text="2) This operation will delete only transactional data" />
+                  <Label layoutX="10.0" layoutY="64.0" styleClass="instructionsLabel" text="3) It will NOT delete Products, Customers, Suppliers data" />
+                  <Label layoutX="10.0" layoutY="91.0" styleClass="instructionsLabel" text="4) It will delete below data for choosen duration only" />
+                  <Label layoutX="10.0" layoutY="118.0" styleClass="instructionsLabel" text="&gt; Invoices">
+                     <padding>
+                        <Insets left="15.0" />
+                     </padding>
+                  </Label>
+                  <Label layoutX="10.0" layoutY="145.0" styleClass="instructionsLabel" text="&gt; Purchase Entries">
+                     <padding>
+                        <Insets left="15.0" />
+                     </padding>
+                  </Label>
+                  <Label layoutX="10.0" layoutY="172.0" styleClass="instructionsLabel" text="&gt; Product Purchase &amp; Stock ledger history">
+                     <padding>
+                        <Insets left="15.0" />
+                     </padding>
+                  </Label>
+                  <Label layoutX="10.0" layoutY="199.0" styleClass="instructionsLabel" text="&gt; Customers History (Payment/Purchase)">
+                     <padding>
+                        <Insets left="15.0" />
+                     </padding>
+                  </Label>
+                  <Label layoutX="10.0" layoutY="226.0" styleClass="instructionsLabel" text="&gt; Suppliers History">
+                     <padding>
+                        <Insets left="15.0" />
+                     </padding>
+                  </Label>
+                  <Label layoutX="10.0" layoutY="253.0" styleClass="instructionsLabel" text="&gt; Expenses History">
+                     <padding>
+                        <Insets left="15.0" />
+                     </padding>
+                  </Label>
+                  <Label layoutX="10.0" layoutY="145.0" styleClass="instructionsLabel" text="&gt; Sales Returns">
+                     <padding>
+                        <Insets left="15.0" />
+                     </padding>
+                  </Label>
+               </children>
+            </VBox>
+            <ButtonBar>
+              <buttons>
+                <Button fx:id="btnDelete" mnemonicParsing="false" onAction="#onDeleteAction" text="Delete" />
+                  <Button fx:id="btnClose" cancelButton="true" mnemonicParsing="false" onAction="#onCloseAction" text="Close" />
+              </buttons>
+            </ButtonBar>
+         </children>
+      </VBox>
+   </children>
+</HBox>

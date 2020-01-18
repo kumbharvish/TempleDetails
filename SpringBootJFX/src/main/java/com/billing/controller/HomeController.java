@@ -258,6 +258,11 @@ public class HomeController extends AppContext {
 	void onCreateExpenseCommand(ActionEvent event) {
 		addTab("Expense", "Expense");
 	}
+	
+	@FXML
+	void onDeleteDataCommand(ActionEvent event) {
+		addTab("DeleteData", "Delete Data");
+	}
 
 	@FXML
 	void onSearchExpenseCommand(ActionEvent event) {

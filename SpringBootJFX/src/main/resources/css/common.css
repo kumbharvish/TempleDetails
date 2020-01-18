@@ -46,6 +46,18 @@
 	-fx-text-wrap: true;
 }
 
+.instructionsHeadingLabel {
+	-fx-font-weight: bold;
+	-fx-font-size: 13px;
+	-fx-wrap-text: true;
+}
+
+.instructionsLabel {
+	-fx-font-weight: bold;
+	-fx-wrap-text: true;
+	-fx-font-size: 11px;
+}
+
 .nodeLabel {
 	-fx-text-fill: derive(brown, -10%);
 	-fx-font-weight: bold;

@@ -207,6 +207,10 @@
 	-fx-graphic: url("/images/Restore_Database_24.png");
 }
 
+#deleteDataMenuItem>.label {
+	-fx-graphic: url("/images/Delete_Data_24.png");
+}
+
 #hideToolbarMenuItem>.label {
 	-fx-graphic: url("/images/hide.png");
 }

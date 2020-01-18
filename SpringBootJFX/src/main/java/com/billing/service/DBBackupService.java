@@ -2,6 +2,7 @@ package com.billing.service;
 
 import java.io.File;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.Date;
 
 import org.slf4j.Logger;
@@ -103,6 +104,52 @@ public class DBBackupService {
 			alertHelper.showWarningAlert(null, "Restore Database", null, "Restore Database Failed !");
 			return false;
 		}
+	}
+
+	// Delete Data
+	public void deleteData(String fromDate, String toDate) {
+		String[] queryArray = {
+				"DELETE FROM BILL_ITEM_DETAILS WHERE BILL_NUMBER IN(SELECT BILL_NUMBER FROM CUSTOMER_BILL_DETAILS WHERE DATE(BILL_DATE_TIME) BETWEEN ? AND ?)",
+				"DELETE FROM CUSTOMER_BILL_DETAILS WHERE DATE(BILL_DATE_TIME) BETWEEN ? AND ?",
+				"DELETE FROM CASH_COUNTER WHERE DATE(DATE) BETWEEN ? AND ?",
+				"DELETE FROM CUSTOMER_PAYMENT_HISTORY WHERE DATE(TIMESTAMP) BETWEEN ? AND ?",
+				"DELETE FROM EXPENSE_DETAILS WHERE DATE(DATE) BETWEEN ? AND ?",
+				"DELETE FROM PRODUCT_PURCHASE_PRICE_HISTORY WHERE DATE(ENTRY_DATE) BETWEEN ? AND ?",
+				"DELETE FROM PRODUCT_STOCK_LEDGER WHERE DATE(TIMESTAMP) BETWEEN ? AND ?",
+				"DELETE FROM PURCHASE_ENTRY_ITEM_DETAILS WHERE PURCHASE_ENTRY_NO IN (SELECT PURCHASE_ENTRY_NO FROM PURCHASE_ENTRY_DETAILS WHERE DATE(PURCHASE_ENTRY_DATE) BETWEEN ? AND ?)",
+				"DELETE FROM PURCHASE_ENTRY_DETAILS WHERE DATE(PURCHASE_ENTRY_DATE) BETWEEN ? AND ?",
+				"DELETE FROM SALES_RETURN_ITEMS_DETAILS WHERE RETURN_NUMBER IN (SELECT RETURN_NUMBER FROM SALES_RETURN_DETAILS WHERE DATE(RETURN_DATE) BETWEEN ? AND ?)",
+				"DELETE FROM SALES_RETURN_DETAILS WHERE DATE(RETURN_DATE) BETWEEN ? AND ?",
+				"DELETE FROM SUPPLIER_PAYMENT_HISTORY WHERE DATE(TIMESTAMP) BETWEEN ? AND ?" };
+
+		int noOfRecordsDeleted = 0;
+		Connection conn = null;
+		PreparedStatement stmt = null;
+
+		try {
+			conn = dbUtils.getConnection();
+			conn.setAutoCommit(false);
+			for (String query : queryArray) {
+				stmt = conn.prepareStatement(query);
+				stmt.setString(1, fromDate);
+				stmt.setString(2, toDate);
+				int i = stmt.executeUpdate();
+				System.out.println(i + ":: " + query);
+				noOfRecordsDeleted += i;
+				stmt.close();
+			}
+			System.out.println("No of Records Deleted : " + noOfRecordsDeleted);
+			conn.commit();
+			alertHelper.showInfoAlert(null, "Delete Data", "Success",
+					noOfRecordsDeleted + " : Records deleted successfully");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception : ", e);
+			alertHelper.showWarningAlert(null, "Delete Data", "Failed", "Error occured while deleting data !");
+		} finally {
+			DBUtils.closeConnection(stmt, conn);
+		}
+
 	}
 
 }
