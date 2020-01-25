@@ -231,6 +231,8 @@ public class StockSummaryReportController implements TabContent {
 		}
 		StockSummaryReport report = new StockSummaryReport();
 		report.setProductList(productList);
+		report.setTotalStockQty(txtTotalStockQuantity.getText());
+		report.setTotalStockValue(txtTotalStockValueAmt.getText());
 		pinterService.exportPDF(report, currentStage);
 
 	}

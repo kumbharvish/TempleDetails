@@ -105,7 +105,7 @@ public class LoginController extends AppContext {
 		String user = txtUserName.getText();
 		String pwd = txtPassword.getText();
 		if ("".equals(user) || "".equals(pwd)) {
-			errorMessage.setText("Please Enter UserName / Password !");
+			errorMessage.setText("Please enter Username / Password !");
 		} else {
 			UserDetails userDetails = userService.validateUser(user, pwd);
 			if (userDetails != null) {

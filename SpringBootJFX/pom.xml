@@ -171,6 +171,12 @@
 			<artifactId>jrviewer-fx</artifactId>
 			<version>0.1.1</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports-fonts -->
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports-fonts</artifactId>
+			<version>6.11.0</version>
+		</dependency>
 
 	</dependencies>
 

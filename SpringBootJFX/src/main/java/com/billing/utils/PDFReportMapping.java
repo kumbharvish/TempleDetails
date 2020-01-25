@@ -54,8 +54,8 @@ public class PDFReportMapping {
 			map.put("DiscountAmount", appUtils.getDecimalFormat(bill.getDiscountAmt()));
 			map.put("InvoiceDateTime", appUtils.getFormattedDateWithTime(bill.getTimestamp()));
 			map.put("GSTAmount", appUtils.getDecimalFormat(bill.getGstAmount()));
-			map.put("CGSTAmount", appUtils.getDecimalFormat(bill.getGstAmount()/2));
-			map.put("SGSTAmount", appUtils.getDecimalFormat(bill.getGstAmount()/2));
+			map.put("CGSTAmount", appUtils.getDecimalFormat(bill.getGstAmount() / 2));
+			map.put("SGSTAmount", appUtils.getDecimalFormat(bill.getGstAmount() / 2));
 			map.put("GSTInclusiveFlag", bill.getGstType());
 			map.put("TotalAmountForCashInvoice", appUtils.getDecimalFormat(totalAmtForCashInvice));
 			map.put("CustomerName", bill.getCustomerName());
@@ -82,13 +82,16 @@ public class PDFReportMapping {
 	// Stock Summary Report
 	public List<Map<String, ?>> getDatasourceForStockSummaryReport(StockSummaryReport report) {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
-		for (Product item : report.getProductList()) {
+		for (Product product : report.getProductList()) {
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("ProductName", item.getProductName());
-			map.put("ProductCode", String.valueOf(item.getProductCode()));
-			map.put("Qty", appUtils.getDecimalFormat(item.getQuantity()));
-			map.put("ProductMRP", IndianCurrencyFormatting.applyFormatting(item.getProductMRP()));
-			map.put("StockValueAmount", IndianCurrencyFormatting.applyFormatting(item.getStockValueAmount()));
+			map.put("ProductName", product.getProductName());
+			map.put("PurchasePrice", appUtils.getDecimalFormat(product.getPurcasePrice()));
+			map.put("Qty", appUtils.getDecimalFormat(product.getQuantity()));
+			map.put("SalePrice", IndianCurrencyFormatting.applyFormatting(product.getProductMRP()));
+			map.put("StockValue", IndianCurrencyFormatting.applyFormatting(product.getStockValueAmount()));
+			map.put("TotalStockValue", report.getTotalStockValue());
+			map.put("TotalQty", report.getTotalStockQty());
+			map.put("Date", appUtils.getTodaysDateForUser());
 			dataSourceMaps.add(map);
 		}
 		return dataSourceMaps;
@@ -103,8 +106,8 @@ public class PDFReportMapping {
 			map.put("Name", cust.getCustName());
 			map.put("City", cust.getCustCity());
 			map.put("Email", cust.getCustEmail());
-			map.put("BalanceAmt", IndianCurrencyFormatting.applyFormatting(cust.getBalanceAmt()));
-			map.put("EntryDate", appUtils.getFormattedDateWithTime(cust.getEntryDate()));
+			map.put("PendingAmount", IndianCurrencyFormatting.applyFormatting(cust.getBalanceAmt()));
+			map.put("TotalPendingAmount", report.getTotalPendingAmount());
 			dataSourceMaps.add(map);
 		}
 		return dataSourceMaps;
@@ -143,21 +146,15 @@ public class PDFReportMapping {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
 		for (BillDetails bill : salesReport.getBillList()) {
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("FromDate", salesReport.getFromDate());
-			map.put("ToDate", salesReport.getToDate());
-			map.put("BillNo", String.valueOf(bill.getBillNumber()));
-			map.put("CustMobile", String.valueOf(bill.getCustomerMobileNo()));
-			map.put("CustName", bill.getCustomerName());
+			map.put("DateRange", "From  " + appUtils.getFormattedDateForDatePicker(salesReport.getFromDate()) + "  To  "
+					+ appUtils.getFormattedDateForDatePicker(salesReport.getToDate()));
+			map.put("InvoiceNo", String.valueOf(bill.getBillNumber()));
+			map.put("CustomerName", bill.getCustomerName());
 			map.put("Qty", appUtils.getDecimalFormat(bill.getTotalQuantity()));
-			map.put("NoOfItems", bill.getNoOfItems());
-			map.put("NetSalesAmt", appUtils.getDecimalFormat(bill.getNetSalesAmt()));
-			map.put("PaymentMode", bill.getPaymentMode());
-			map.put("BillDate", appUtils.getFormattedDateWithTime(bill.getTimestamp()));
-			map.put("TotalPendingAmt", IndianCurrencyFormatting.applyFormatting(salesReport.getTotalPendingAmt()));
-			map.put("TotalCashAmt", IndianCurrencyFormatting.applyFormatting(salesReport.getTotalCashAmt()));
-			map.put("TotalAmount", IndianCurrencyFormatting.applyFormatting(salesReport.getTotalAmt()));
-			map.put("TotalQty", IndianCurrencyFormatting.applyFormatting(salesReport.getTotalQty()));
-			map.put("TotalNoOfItems", String.valueOf(salesReport.getTotalNoOfItems()));
+			map.put("GstAmount", IndianCurrencyFormatting.applyFormatting(bill.getGstAmount()));
+			map.put("InvoiceAmount", IndianCurrencyFormatting.applyFormatting(bill.getNetSalesAmt()));
+			map.put("InvoiceDate", appUtils.getFormattedDateForReport(bill.getTimestamp()));
+			map.put("TotalSaleAmount", IndianCurrencyFormatting.applyFormattingWithCurrency(salesReport.getTotalAmt()));
 			dataSourceMaps.add(map);
 		}
 		return dataSourceMaps;
@@ -168,21 +165,16 @@ public class PDFReportMapping {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
 		for (ReturnDetails bill : report.getReturnList()) {
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("FromDate", report.getFromDate());
-			map.put("ToDate", report.getToDate());
+			map.put("DateRange", "From  " + appUtils.getFormattedDateForDatePicker(report.getFromDate()) + "  To  "
+					+ appUtils.getFormattedDateForDatePicker(report.getToDate()));
 			map.put("ReturnNo", String.valueOf(bill.getReturnNumber()));
-			map.put("CustMobile", String.valueOf(bill.getCustomerMobileNo()));
-			map.put("CustName", bill.getCustomerName());
+			map.put("InvoiceNo", String.valueOf(bill.getInvoiceNumber()));
+			map.put("CustomerName", bill.getCustomerName());
 			map.put("Qty", appUtils.getDecimalFormat(bill.getTotalQuantity()));
-			map.put("NoOfItems", bill.getNoOfItems());
-			map.put("ReturnTotalAmoount", appUtils.getDecimalFormat(bill.getTotalReturnAmount()));
-			map.put("PaymentMode", bill.getPaymentMode());
-			map.put("ReturnDate", appUtils.getFormattedDate(bill.getTimestamp()));
-			map.put("TotalPendingAmt", appUtils.getDecimalFormat(0.0));
-			map.put("TotalCashAmt", appUtils.getDecimalFormat(0.0));
-			map.put("TotalAmount", appUtils.getDecimalFormat(report.getTotalReturnAmount()));
-			map.put("TotalQty", appUtils.getDecimalFormat(0.0));
-			map.put("TotalNoOfItems", String.valueOf(0.0));
+			map.put("ReturnAmount", IndianCurrencyFormatting.applyFormatting(bill.getTotalReturnAmount()));
+			map.put("ReturnDate", appUtils.getFormattedDateForReport(bill.getTimestamp()));
+			map.put("TotalSaleReturnAmount",
+					IndianCurrencyFormatting.applyFormattingWithCurrency(report.getTotalReturnAmount()));
 			dataSourceMaps.add(map);
 		}
 		return dataSourceMaps;
@@ -210,6 +202,7 @@ public class PDFReportMapping {
 			map.put("City", supplier.getCity());
 			map.put("Email", supplier.getEmailId());
 			map.put("BalanceAmount", IndianCurrencyFormatting.applyFormatting(supplier.getBalanceAmount()));
+			map.put("TotalBalanceAmount", report.getTotalBalanceAmount());
 			dataSourceMaps.add(map);
 		}
 		return dataSourceMaps;

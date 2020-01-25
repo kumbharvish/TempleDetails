@@ -75,10 +75,10 @@ public class SuppliersReportController implements TabContent {
 	private TableColumn<Supplier, Double> tcBalanceAmount;
 
 	@FXML
-	private TextField txtTotalCustomerCount;
+	private TextField txtTotalSupplierCount;
 
 	@FXML
-	private TextField txtTotalPendingAmount;
+	private TextField txtTotalBalanceAmount;
 
 	@Override
 	public boolean shouldClose() {
@@ -141,8 +141,8 @@ public class SuppliersReportController implements TabContent {
 		for (Supplier supplier : suppliersList) {
 			totalPendingAmount = totalPendingAmount + supplier.getBalanceAmount();
 		}
-		txtTotalCustomerCount.setText(String.valueOf(suppliersList.size()));
-		txtTotalPendingAmount.setText(IndianCurrencyFormatting.applyFormattingWithCurrency(totalPendingAmount));
+		txtTotalSupplierCount.setText(String.valueOf(suppliersList.size()));
+		txtTotalBalanceAmount.setText(IndianCurrencyFormatting.applyFormattingWithCurrency(totalPendingAmount));
 	}
 
 	@Override
@@ -196,6 +196,7 @@ public class SuppliersReportController implements TabContent {
 		}
 		SuppliersReport report = new SuppliersReport();
 		report.setSuppliersList(suppliersList);
+		report.setTotalBalanceAmount(txtTotalBalanceAmount.getText());
 		pinterService.exportPDF(report, currentStage);
 
 	}

@@ -285,6 +285,30 @@ public class AppUtils {
 		return simpleDateFormat.format(dt);
 	}
 
+	// Convert yyyy-MM-dd HH:mm:ss To dd-MM-yyyy
+	public String getFormattedDateForReport(String dt) {
+
+		Date date = null;
+		try {
+			date = new SimpleDateFormat(TIMESTAMP_FORMAT).parse(dt);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return simpleDateFormat.format(date);
+	}
+
+	// Convert yyyy-MM-dd To dd-MM-yyyy
+	public String getFormattedDateForDatePicker(String dt) {
+
+		Date date = null;
+		try {
+			date = new SimpleDateFormat(DATE_FORMAT).parse(dt);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return simpleDateFormat.format(date);
+	}
+
 	public String getFormattedDateWithTime(Date dt) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
 		return sdf.format(dt);
@@ -428,6 +452,11 @@ public class AppUtils {
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		return sdf.format(timestamp);
+	}
+
+	public String getTodaysDateForUser() {
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		return simpleDateFormat.format(timestamp);
 	}
 
 	public String getCurrentWorkingDir() {

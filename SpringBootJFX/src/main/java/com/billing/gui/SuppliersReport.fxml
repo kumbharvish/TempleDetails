@@ -58,7 +58,7 @@
 						<TableColumn fx:id="tcSupplierMobileNo" minWidth="130.0" prefWidth="130.0" text="Mobile Number" />
 						<TableColumn fx:id="tcSupplierName" minWidth="180.0" prefWidth="180.0" text="Name"/>
 						<TableColumn fx:id="tcCity" minWidth="100.0" prefWidth="150.0" text="City"/>
-						<TableColumn fx:id="tcEmail" minWidth="100.0" prefWidth="190.0" text="Email Id" />
+						<TableColumn fx:id="tcEmail" minWidth="100.0" prefWidth="190.0" text="Email" />
 						<TableColumn fx:id="tcBalanceAmount" minWidth="100.0" prefWidth="100.0" text="Balance Amount">
 							<cellValueFactory>
 								<PropertyValueFactory property="balanceAmount" />
@@ -98,12 +98,12 @@
       					</rowConstraints>
       					<children>
       						<Label styleClass="nodeLabel" text="Total Supplier(s) :" GridPane.halignment="RIGHT" />
-      						<TextField fx:id="txtTotalCustomerCount" alignment="CENTER_RIGHT" editable="false" styleClass="readOnlyField,summation" GridPane.columnIndex="1">
+      						<TextField fx:id="txtTotalSupplierCount" alignment="CENTER_RIGHT" editable="false" styleClass="readOnlyField,summation" GridPane.columnIndex="1">
                            <GridPane.margin>
                               <Insets right="20.0" />
                            </GridPane.margin></TextField>
       						<Label styleClass="nodeLabel" text="Total Balance Amount ( To Pay ) :" GridPane.columnIndex="2" GridPane.halignment="RIGHT" />
-      						<TextField fx:id="txtTotalPendingAmount" alignment="CENTER_RIGHT" editable="false" GridPane.columnIndex="3">
+      						<TextField fx:id="txtTotalBalanceAmount" alignment="CENTER_RIGHT" editable="false" GridPane.columnIndex="3">
                            <styleClass>
                               <String fx:value="toPayAmount" />                             
                            </styleClass>

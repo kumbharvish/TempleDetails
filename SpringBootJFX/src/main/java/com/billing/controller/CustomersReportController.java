@@ -196,6 +196,7 @@ public class CustomersReportController implements TabContent {
 		}
 		CustomersReport report = new CustomersReport();
 		report.setCustomerList(customerList);
+		report.setTotalPendingAmount(txtTotalPendingAmount.getText());
 		pinterService.exportPDF(report, currentStage);
 
 	}
