@@ -11,6 +11,8 @@ public class ExpenseReport {
 	private String toDate;
 
 	private String category;
+	
+	private String totalExpenaseAmount;
 
 	public List<Expense> getExpenseList() {
 		return expenseList;
@@ -42,6 +44,14 @@ public class ExpenseReport {
 
 	public void setCategory(String category) {
 		this.category = category;
+	}
+
+	public String getTotalExpenaseAmount() {
+		return totalExpenaseAmount;
+	}
+
+	public void setTotalExpenaseAmount(String totalExpenaseAmount) {
+		this.totalExpenaseAmount = totalExpenaseAmount;
 	}
 
 }

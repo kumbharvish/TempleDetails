@@ -71,9 +71,10 @@ public class PDFReportMapping {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
 		for (Product product : report.getProductList()) {
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("ProductName", product.getProductName());
-			map.put("ProductCode", String.valueOf(product.getProductCode()));
-			map.put("ProductProfitAmt", appUtils.getDecimalFormat(product.getProfit()));
+			map.put("Name", product.getProductName());
+			map.put("Category", product.getProductCategory());
+			map.put("Qty", appUtils.getDecimalFormat(product.getQuantity()));
+			map.put("ProfitAmount", IndianCurrencyFormatting.applyFormatting(product.getProfit()));
 			dataSourceMaps.add(map);
 		}
 		return dataSourceMaps;
@@ -119,9 +120,9 @@ public class PDFReportMapping {
 		for (Product item : lowStockSummaryReport.getProductList()) {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("ProductName", item.getProductName());
-			map.put("ProductCode", String.valueOf(item.getProductCode()));
-			map.put("Quantity", appUtils.getDecimalFormat(item.getQuantity()));
-			map.put("CategoryName", item.getProductCategory());
+			map.put("StockValue", IndianCurrencyFormatting.applyFormatting(item.getStockValueAmount()));
+			map.put("Qty", appUtils.getDecimalFormat(item.getQuantity()));
+			map.put("Category", item.getProductCategory());
 			dataSourceMaps.add(map);
 		}
 		return dataSourceMaps;
@@ -132,10 +133,9 @@ public class PDFReportMapping {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
 		for (ProductCategory pc : report.getProductCategoryList()) {
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("CategoryName", pc.getCategoryName());
-			map.put("CategoryCode", String.valueOf(pc.getCategoryCode()));
-			map.put("Qty", String.valueOf(pc.getCategoryStockQty()));
-			map.put("StockValueAmount", appUtils.getDecimalFormat(pc.getCategoryStockAmount()));
+			map.put("Category", pc.getCategoryName());
+			map.put("Qty", appUtils.getDecimalFormat(pc.getCategoryStockQty()));
+			map.put("StockValue", IndianCurrencyFormatting.applyFormatting(pc.getCategoryStockAmount()));
 			dataSourceMaps.add(map);
 		}
 		return dataSourceMaps;
@@ -185,8 +185,13 @@ public class PDFReportMapping {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
 		for (Expense expense : report.getExpenseList()) {
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("FromDate", report.getFromDate());
-			map.put("ToDate", report.getToDate());
+			map.put("DateRange", "From  " + appUtils.getFormattedDateForDatePicker(report.getFromDate()) + "  To  "
+					+ appUtils.getFormattedDateForDatePicker(report.getToDate()));
+			map.put("ExpenseCategory", expense.getCategory());
+			map.put("Description", expense.getDescription());
+			map.put("Date", appUtils.getFormattedDateForReport(expense.getDate()));
+			map.put("TotalExpenseAmount", report.getTotalExpenaseAmount());
+			map.put("Amount", IndianCurrencyFormatting.applyFormatting(expense.getAmount()));
 			dataSourceMaps.add(map);
 		}
 		return dataSourceMaps;

@@ -246,6 +246,7 @@ public class ExpensesReportController implements TabContent {
 		expenseReport.setFromDate(dpFromDate.getValue().toString());
 		expenseReport.setToDate(dpToDate.getValue().toString());
 		expenseReport.setCategory(cbExpenseCategory.getSelectionModel().getSelectedItem());
+		expenseReport.setTotalExpenaseAmount(txtTotalExpeseAmount.getText());
 		return expenseReport;
 	}
 
