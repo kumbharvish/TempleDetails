@@ -146,8 +146,6 @@ public class AppConstants {
 
 	public static final String SUPPLIERS_REPORT_JASPER = "Suppliers_Report.jasper";
 
-	public static final String BILL_PRINT_JASPER = "Bill_Print.jasper";
-
 	public static final String BARCODE_65_JASPER = "Barcode_65.jasper";
 
 	public static final String BARCODE_40_JASPER = "Barcode_40.jasper";
