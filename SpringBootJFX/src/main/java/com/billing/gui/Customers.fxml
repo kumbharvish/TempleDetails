@@ -162,12 +162,12 @@
 								<TableColumn fx:id="tcMobileNo" minWidth="120.0" prefWidth="123.0" text="Mobile Number" />
 								<TableColumn fx:id="tcName" minWidth="120.0" prefWidth="187.0" text="Name" />
 								<TableColumn fx:id="tcCity" minWidth="60.0" prefWidth="116.0" text="City" />
-								<TableColumn fx:id="tcEmail" minWidth="60.0" prefWidth="174.0" text="Email" />
 								<TableColumn fx:id="tcPendingAmount" minWidth="51.0" prefWidth="145.0" text="Pending Amount">
 									<cellValueFactory>
 										<PropertyValueFactory property="balanceAmt" />
 									</cellValueFactory>
 								</TableColumn>
+								<TableColumn fx:id="tcEmail" minWidth="60.0" prefWidth="174.0" text="Email" />
 							</columns>
 							<BorderPane.margin>
 								<Insets bottom="10.0" right="5.0" />

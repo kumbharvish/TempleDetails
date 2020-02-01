@@ -202,9 +202,9 @@
 								<TableColumn fx:id="tcName" minWidth="120.0" prefWidth="170.0" text="Name" />
 								<TableColumn fx:id="tcQuantity" minWidth="60.0" prefWidth="90.0" text="Quantity" />
 								<TableColumn fx:id="tcMUnit" minWidth="60.0" prefWidth="90.0" text="UoM" />
+								<TableColumn fx:id="tcSellPrice" minWidth="70" prefWidth="100.0" text="Sell Price" />
 								<TableColumn fx:id="tcPurchaseRate" minWidth="70" prefWidth="100.0" text="Purchase Rate" />
 								<TableColumn fx:id="tcTax" minWidth="60.0" prefWidth="60.0" text="Tax (%)" />
-								<TableColumn fx:id="tcSellPrice" minWidth="70" prefWidth="100.0" text="Sell Price" />
 								<TableColumn fx:id="tcDiscount" minWidth="90" prefWidth="90" text="Discount(%)" />
 								<TableColumn fx:id="tcHSN" minWidth="70" prefWidth="120" text="HSN" />
 								<TableColumn fx:id="tcDescription" minWidth="70" prefWidth="120" text="Description" />
