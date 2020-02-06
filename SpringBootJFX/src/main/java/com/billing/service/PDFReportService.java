@@ -54,7 +54,7 @@ public class PDFReportService {
 	public void printInvoice(BillDetails bill, String jasperName) {
 		try {
 			// load report
-			String directoryPath = appUtils.createDirectory(AppConstants.JRXML);
+			String directoryPath = appUtils.createDirectory(AppConstants.JASPER);
 			String jasperLocation = directoryPath + jasperName;
 			FileInputStream fis = new FileInputStream(jasperLocation);
 			BufferedInputStream bufferedInputStream = new BufferedInputStream(fis);
@@ -93,7 +93,7 @@ public class PDFReportService {
 		boolean isSucess = true;
 		try {
 			// load report
-			String directoryPath = appUtils.createDirectory(AppConstants.JRXML);
+			String directoryPath = appUtils.createDirectory(AppConstants.JASPER);
 			String jasperLocation = directoryPath + reportMetadata.getJasperName();
 
 			FileInputStream fis = new FileInputStream(jasperLocation);
@@ -129,7 +129,7 @@ public class PDFReportService {
 		try {
 
 			// load report location
-			String directoryPath = appUtils.createDirectory(AppConstants.JRXML);
+			String directoryPath = appUtils.createDirectory(AppConstants.JASPER);
 			String jrxmlLocation = directoryPath + jasperName;
 			FileInputStream fis = new FileInputStream(jrxmlLocation);
 			BufferedInputStream bufferedInputStream = new BufferedInputStream(fis);

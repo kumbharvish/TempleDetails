@@ -4,7 +4,7 @@ public class AppConstants {
 
 	public static final String DATA_BACKUP_FOLDER = "Data_Backup";
 
-	public static final String JRXML = "Jrxml";
+	public static final String JASPER = "Jasper";
 
 	public static final String INVOICE_PRINT_LOCATION = "Invoice Prints";
 
