@@ -159,7 +159,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onBillWiseProfitCommand(ActionEvent event) {
-
+		addTab("InvoiceWiseProfitReport", "Invoice Wise Profit Report");
 	}
 
 	@FXML
@@ -347,7 +347,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onProductWiseProfitCommand(ActionEvent event) {
-
+		addTab("ProductWiseProfitReport", "Product Wise Profit Report");
 	}
 
 	@FXML

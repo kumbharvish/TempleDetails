@@ -47,6 +47,8 @@ public class BillDetails {
 	private String copyPaymode;
 	
 	private boolean isItemsEdited;
+	
+	private double profitAmount;
 
 	public int getBillNumber() {
 		return billNumber;
@@ -222,5 +224,13 @@ public class BillDetails {
 
 	public void setCopyPaymode(String copyPaymode) {
 		this.copyPaymode = copyPaymode;
+	}
+
+	public double getProfitAmount() {
+		return netSalesAmt-purchaseAmt;
+	}
+
+	public void setProfitAmount(double profitAmount) {
+		this.profitAmount = profitAmount;
 	}
 }

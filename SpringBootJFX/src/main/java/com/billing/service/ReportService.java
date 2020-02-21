@@ -1,15 +1,14 @@
 package com.billing.service;
 
-import java.sql.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.billing.dto.CashReport;
+import com.billing.dto.ConsolidatedReport;
 import com.billing.dto.Customer;
 import com.billing.dto.GraphDTO;
-import com.billing.dto.ConsolidatedReport;
 import com.billing.dto.ProfitLossDetails;
 import com.billing.dto.StatusDTO;
 import com.billing.repository.ReportRepository;

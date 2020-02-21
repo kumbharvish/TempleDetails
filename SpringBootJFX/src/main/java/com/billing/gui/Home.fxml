@@ -154,7 +154,7 @@
 								<Menu fx:id="analysisReportsMenu" text="Business _Analysis Reports">
 									<items>
 										<MenuItem fx:id="productWiseProfitMenuItem" onAction="#onProductWiseProfitCommand" text="Product Wise Profit Report" />
-										<MenuItem fx:id="billWiseProfitMenuItem" mnemonicParsing="false" onAction="#onBillWiseProfitCommand" text="Bill Wise Profit Report" />
+										<MenuItem fx:id="billWiseProfitMenuItem" mnemonicParsing="false" onAction="#onBillWiseProfitCommand" text="Invoice Wise Profit Report" />
 										<MenuItem fx:id="stockEntryWiseProfitReportMenuItem" mnemonicParsing="false" onAction="#onPurchaseEntryWiseProfitCommand" text="Purchase Entry Wise Profit Report" />
 										<MenuItem fx:id="customerWiseProfitReportMenuItem" mnemonicParsing="false" onAction="#onCustomerWiseProfitCommand" text="Customer Wise Profit Report" />
 										<MenuItem fx:id="productWiseSalesReportMenuItem" mnemonicParsing="false" onAction="#onProductWiseSalesCommand" text="Product Wise Sales Report" />
