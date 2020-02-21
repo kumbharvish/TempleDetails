@@ -23,17 +23,17 @@ public class CustomerHistoryRepository {
 
 	@Autowired
 	DBUtils dbUtils;
-	
+
 	@Autowired
 	AppUtils appUtils;
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(CustomerHistoryRepository.class);
 
 	private static final String GET_ALL_CUSTOMERS_HISTORY = "SELECT CPH.*,CD.CUST_NAME AS CUSTOMER_NAME FROM CUSTOMER_PAYMENT_HISTORY CPH,CUSTOMER_DETAILS CD WHERE CPH.CUST_MOB_NO=? AND CPH.CUST_MOB_NO=CD.CUST_MOB_NO ORDER BY TIMESTAMP DESC";
 
 	private static final String GET_ALL_CUST_BILLS = "SELECT CBD.*,CD.CUST_NAME AS CUSTOMER_NAME FROM CUSTOMER_BILL_DETAILS CBD,CUSTOMER_DETAILS CD WHERE CBD.CUST_MOB_NO=? AND CBD.CUST_MOB_NO=CD.CUST_MOB_NO ORDER BY BILL_DATE_TIME DESC";
 
-	private static final String CUSTOMER_WISE_PROFIT = "SELECT CUST_MOB_NO, SUM(NET_SALES_AMOUNT) AS SUM_BILL_AMT ,SUM(BILL_PURCHASE_AMT)AS SUM_BILL_PUR_AMT,SUM(NO_OF_ITEMS) AS TOTAL_NO_OF_ITEMS,SUM(BILL_QUANTITY)  AS TOTAL_QUANTITY FROM CUSTOMER_BILL_DETAILS WHERE DATE(BILL_DATE_TIME) BETWEEN ? AND ? GROUP BY CUST_MOB_NO";
+	private static final String CUSTOMER_WISE_PROFIT = "SELECT CUST_MOB_NO,CUST_NAME,SUM(NET_SALES_AMOUNT) AS SUM_BILL_AMT ,SUM(BILL_PURCHASE_AMT)AS SUM_BILL_PUR_AMT,SUM(NO_OF_ITEMS) AS TOTAL_NO_OF_ITEMS,SUM(BILL_QUANTITY)  AS TOTAL_QUANTITY FROM CUSTOMER_BILL_DETAILS WHERE DATE(BILL_DATE_TIME) BETWEEN ? AND ? GROUP BY CUST_MOB_NO";
 
 	// Get All Customers Payment History
 	public List<CustomerPaymentHistory> getAllCustomersPayHistory(Long customerMobile) {
@@ -99,7 +99,7 @@ public class CustomerHistoryRepository {
 					billDetails.setPurchaseAmt(rs.getDouble("BILL_PURCHASE_AMT"));
 					billDetails.setGstType(rs.getString("GST_TYPE"));
 					billDetails.setGstAmount(rs.getDouble("GST_AMOUNT"));
-					
+
 					billDetailsList.add(billDetails);
 				}
 			}
@@ -119,12 +119,6 @@ public class CustomerHistoryRepository {
 		CustomerProfit customer = null;
 		List<CustomerProfit> customerList = new ArrayList<CustomerProfit>();
 		try {
-			if (fromDate == null) {
-				fromDate = "1947-01-01";
-			}
-			if (toDate == null) {
-				toDate = appUtils.getCurrentTimestamp();
-			}
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(CUSTOMER_WISE_PROFIT);
 			stmt.setString(1, fromDate);
@@ -132,6 +126,7 @@ public class CustomerHistoryRepository {
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				customer = new CustomerProfit();
+				customer.setCustName(rs.getString("CUST_NAME"));
 				customer.setCustMobileNumber(rs.getLong("CUST_MOB_NO"));
 				customer.setSumOfBillAmt(rs.getDouble("SUM_BILL_AMT"));
 				customer.setSumOfBillPurAmt(rs.getDouble("SUM_BILL_PUR_AMT"));
