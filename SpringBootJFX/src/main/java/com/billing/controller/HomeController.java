@@ -352,7 +352,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onProductWiseSalesCommand(ActionEvent event) {
-
+		addTab("ProductWiseSalesReport", "Product Wise Sales Report");
 	}
 
 	@FXML

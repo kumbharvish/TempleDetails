@@ -34,9 +34,9 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 @Controller
-public class ProdcutWiseProfitReportController extends AppContext implements TabContent {
+public class ProdcutWiseSalesReportController extends AppContext implements TabContent {
 
-	private static final Logger logger = LoggerFactory.getLogger(ProdcutWiseProfitReportController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ProdcutWiseSalesReportController.class);
 
 	@Autowired
 	AlertHelper alertHelper;
@@ -53,7 +53,7 @@ public class ProdcutWiseProfitReportController extends AppContext implements Tab
 
 	private TabPane tabPane = null;
 
-	ObservableList<ProductAnalysis> productProfitList;
+	ObservableList<ProductAnalysis> productSalesList;
 
 	@FXML
 	private DatePicker dpFromDate;
@@ -71,13 +71,7 @@ public class ProdcutWiseProfitReportController extends AppContext implements Tab
 	private TableColumn<ProductAnalysis, Double> tcTotalQty;
 
 	@FXML
-	private TableColumn<ProductAnalysis, Double> tcSellPrice;
-
-	@FXML
 	private TableColumn<ProductAnalysis, Double> tcTotalAmount;
-
-	@FXML
-	private TableColumn<ProductAnalysis, Double> tcProfitAmount;
 
 	@Override
 	public boolean shouldClose() {
@@ -92,10 +86,10 @@ public class ProdcutWiseProfitReportController extends AppContext implements Tab
 
 	@Override
 	public boolean loadData() {
-		productProfitList.clear();
-		List<ProductAnalysis> produtList = productHistoryService.getProductWiseProfit(dpFromDate.getValue().toString(),
+		productSalesList.clear();
+		List<ProductAnalysis> productList = productHistoryService.getProductWiseSales(dpFromDate.getValue().toString(),
 				dpToDate.getValue().toString());
-		productProfitList.addAll(produtList);
+		productSalesList.addAll(productList);
 		return true;
 	}
 
@@ -125,9 +119,7 @@ public class ProdcutWiseProfitReportController extends AppContext implements Tab
 
 		tcProductName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProductName()));
 
-		tcSellPrice.setCellFactory(callback);
 		tcTotalQty.setCellFactory(callback);
-		tcProfitAmount.setCellFactory(callback);
 		tcTotalAmount.setCellFactory(callback);
 
 		tcProductName.getStyleClass().add("character-cell");
@@ -151,8 +143,8 @@ public class ProdcutWiseProfitReportController extends AppContext implements Tab
 	@Override
 	public void initialize() {
 		setTableCellFactories();
-		productProfitList = FXCollections.observableArrayList();
-		tableView.setItems(productProfitList);
+		productSalesList = FXCollections.observableArrayList();
+		tableView.setItems(productSalesList);
 		dpFromDate.setValue(LocalDate.now());
 		dpToDate.setValue(LocalDate.now());
 		dpFromDate.setDayCellFactory(this::getDateCell);
@@ -197,7 +189,7 @@ public class ProdcutWiseProfitReportController extends AppContext implements Tab
 
 	@Override
 	public boolean validateInput() {
-		if (productProfitList.size() == 0) {
+		if (productSalesList.size() == 0) {
 			alertHelper.showErrorNotification("No records to export");
 			return false;
 		}

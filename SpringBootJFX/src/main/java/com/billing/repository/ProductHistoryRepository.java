@@ -152,12 +152,6 @@ public class ProductHistoryRepository {
 		ProductAnalysis product = null;
 		List<ProductAnalysis> productAnalysisList = new ArrayList<ProductAnalysis>();
 		try {
-			if (fromDate == null) {
-				fromDate = "1947-01-01";
-			}
-			if (toDate == null) {
-				toDate = appUtils.getCurrentTimestamp();
-			}
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(PRODUCT_WISE_PROFIT);
 			stmt.setString(1, fromDate);
@@ -187,12 +181,6 @@ public class ProductHistoryRepository {
 		ProductAnalysis product = null;
 		List<ProductAnalysis> productAnalysisList = new ArrayList<ProductAnalysis>();
 		try {
-			if (fromDate == null) {
-				fromDate = "1947-01-01";
-			}
-			if (toDate == null) {
-				toDate = appUtils.getCurrentTimestamp();
-			}
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(PRODUCT_WISE_SALES);
 			stmt.setString(1, fromDate);
