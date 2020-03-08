@@ -37,6 +37,10 @@ public class PurchaseEntry {
 	private String createdBy;
 	
 	private double discountAmount;
+	
+	private double profitAmount;
+	
+	private double totalMrpAmount;
 
 	public int getPurchaseEntryNo() {
 		return purchaseEntryNo;
@@ -172,6 +176,22 @@ public class PurchaseEntry {
 
 	public void setDiscountAmount(double discountAmount) {
 		this.discountAmount = discountAmount;
+	}
+
+	public double getProfitAmount() {
+		return totalMrpAmount - totalAmount;
+	}
+
+	public void setProfitAmount(double profitAmount) {
+		this.profitAmount = profitAmount;
+	}
+
+	public double getTotalMrpAmount() {
+		return totalMrpAmount;
+	}
+
+	public void setTotalMrpAmount(double totalMrpAmount) {
+		this.totalMrpAmount = totalMrpAmount;
 	}
 
 }

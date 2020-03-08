@@ -285,7 +285,7 @@ public class SearchPurchaseEntryController extends AppContext implements TabCont
 		tableDataList.clear();
 		matchingPurEntryCount.set(0);
 		PurchaseEntrySearchCriteria criteria = getCriteria();
-		List<PurchaseEntry> invoiceResults = purchaseEntryService.getSearchedInvoices(criteria);
+		List<PurchaseEntry> invoiceResults = purchaseEntryService.getSearchedPurchaseEntry(criteria);
 		tableDataList.addAll(invoiceResults);
 		int matchCount = invoiceResults.size();
 

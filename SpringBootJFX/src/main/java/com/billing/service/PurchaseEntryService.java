@@ -129,8 +129,8 @@ public class PurchaseEntryService implements AppService<PurchaseEntry> {
 		return purchaseEntryRepository.getItemDetails(purchaseEntry.getPurchaseEntryNo());
 	}
 
-	public List<PurchaseEntry> getSearchedInvoices(PurchaseEntrySearchCriteria criteria) {
-		return purchaseEntryRepository.getSearchedInvoices(criteria);
+	public List<PurchaseEntry> getSearchedPurchaseEntry(PurchaseEntrySearchCriteria criteria) {
+		return purchaseEntryRepository.getSearchedPurchaseEntry(criteria);
 	}
 
 }

@@ -218,10 +218,12 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 
 	@FXML
 	private Button btnSave;
+	
+	private double totalMrpAmount=0.0;
 
 	@Override
 	public void initialize() {
-
+		totalMrpAmount=0.0;
 		productTableData = FXCollections.observableArrayList();
 		dpBillDate.setValue(LocalDate.now());
 		dpBillDate.setDayCellFactory(this::getDateCell);
@@ -586,6 +588,7 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 		pe.setBillDate(billDate + " " + billTime);
 		pe.setTotalGSTAmount(Double.valueOf(IndianCurrencyFormatting.removeFormatting(txtTotalGSTAmt.getText())));
 		pe.setCreatedBy(userDetails.getFirstName() + " " + userDetails.getLastName());
+		pe.setTotalMrpAmount(totalMrpAmount);
 		return pe;
 	}
 
@@ -800,7 +803,7 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 		double totalAmount = 0.0;
 		double extraCharges = 0.0;
 		double discountAmount = 0.0;
-
+		totalMrpAmount = 0.0;
 		if (txtExtraCharges.getText().equals("")) {
 			extraCharges = 0.0;
 		} else {
@@ -819,6 +822,7 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 			totalAmtBeforeTax = totalAmtBeforeTax + (product.getTableDispRate() * product.getTableDispQuantity());
 			quantity = quantity + product.getTableDispQuantity();
 			gstAmount = gstAmount + gst.getGstAmount();
+			totalMrpAmount = totalMrpAmount + (product.getSellPrice() * product.getTableDispQuantity());
 		}
 		totalAmount = totalAmtBeforeTax + gstAmount + extraCharges;
 		totalAmount = totalAmount - discountAmount;

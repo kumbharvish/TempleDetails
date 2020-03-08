@@ -413,7 +413,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onPurchaseEntryWiseProfitCommand(ActionEvent event) {
-
+		addTab("PurchaseEntryWiseProfitReport", "Purchase Entry Wise Profit Report");
 	}
 
 	@FXML
