@@ -1,5 +1,6 @@
 package com.billing.utils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,7 @@ import com.billing.dto.Customer;
 import com.billing.dto.CustomersReport;
 import com.billing.dto.Expense;
 import com.billing.dto.ExpenseReport;
+import com.billing.dto.GSTDetails;
 import com.billing.dto.ItemDetails;
 import com.billing.dto.LowStockSummaryReport;
 import com.billing.dto.Product;
@@ -36,6 +38,7 @@ public class PDFReportMapping {
 	// Invoice Data Source
 	public List<Map<String, ?>> getDatasourceForInvoice(BillDetails bill) {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
+
 		double totalAmtForCashInvice = 0;
 		for (ItemDetails item : bill.getItemDetails()) {
 			totalAmtForCashInvice += item.getItemAmount();
@@ -45,7 +48,9 @@ public class PDFReportMapping {
 			map.put("Rate", appUtils.getDecimalFormat(item.getRate()));
 			map.put("Amount", IndianCurrencyFormatting.applyFormatting(item.getAmount()));
 			map.put("ItemAmt", IndianCurrencyFormatting.applyFormatting(item.getItemAmount()));
-			map.put("HSN", item.getHsn());
+			map.put("HSN", item.getHsn() == null ? "" : item.getHsn());
+			map.put("ItemGSTAmt", IndianCurrencyFormatting.applyFormatting(item.getGstDetails().getGstAmount()));
+			map.put("ItemGSTPer", String.valueOf((int) item.getGstDetails().getRate()));
 			map.put("BillNo", String.valueOf(bill.getBillNumber()));
 			map.put("TotalQty", appUtils.getDecimalFormat(bill.getTotalQuantity()));
 			map.put("NoOfItems", String.valueOf(bill.getNoOfItems()));
@@ -64,7 +69,35 @@ public class PDFReportMapping {
 
 			dataSourceMaps.add(map);
 		}
+
 		return dataSourceMaps;
+	}
+
+	// Sub Report Mapping
+	public List<Map<String, ?>> getDataSourceForSubReports(BillDetails bill, HashMap<String, Object> headersMap) {
+		List<Map<String, ?>> dataSourceMapsSubReport = new ArrayList<Map<String, ?>>();
+		for (ItemDetails item : bill.getItemDetails()) {
+			GSTDetails gst = item.getGstDetails();
+			Map<String, Object> subreportMap = new HashMap<String, Object>();
+			subreportMap.put("gstRate", String.valueOf(gst.getRate()));
+			subreportMap.put("gstAmount", appUtils.getDecimalFormat(gst.getGstAmount()));
+			subreportMap.put("netSalesAmount", IndianCurrencyFormatting.applyFormatting(bill.getNetSalesAmt()));
+			subreportMap.put("subTotalAmount", IndianCurrencyFormatting.applyFormatting(bill.getTotalAmount()));
+			subreportMap.put("storeName", headersMap.get("StoreName"));
+			dataSourceMapsSubReport.add(subreportMap);
+
+		}
+		return dataSourceMapsSubReport;
+	}
+
+	// Sub Report Mapping
+	public List<Map<String, ?>> getDataSourceForSubReportTC(BillDetails bill, HashMap<String, Object> headersMap) {
+		List<Map<String, ?>> dataSourceMapsSubReport = new ArrayList<Map<String, ?>>();
+		Map<String, Object> subreportMap = new HashMap<String, Object>();
+		subreportMap.put("amountInWords", NumberToWords.convertNumberToWords(new BigDecimal(bill.getNetSalesAmt()),true,true));
+		subreportMap.put("termsCondition", "Thanks for doing business with us!");
+		dataSourceMapsSubReport.add(subreportMap);
+		return dataSourceMapsSubReport;
 	}
 
 	// Product Profit Report

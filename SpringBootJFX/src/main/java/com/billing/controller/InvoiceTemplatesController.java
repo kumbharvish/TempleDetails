@@ -114,18 +114,18 @@ public class InvoiceTemplatesController extends AppContext implements TabContent
 			imageName = "Invoice_Template_Thermal_GST.png";
 			templateName = AppConstants.THERMAL_TAX_INVOICE;
 		} else if (rbA4TaxInvoice4.isSelected()) {
-			imageName = "24_Labels.png";
+			imageName = "Invoice_Template_A4_Invoice_Tax_4.png";
 			templateName = AppConstants.A4_TAX_INVOICE_4;
 		} else if (rbA4TaxInvoice3.isSelected()) {
-			imageName = "24_Labels.png";
+			imageName = "Invoice_Template_A4_Invoice_Tax_3.png";
 			templateName = AppConstants.A4_TAX_INVOICE_3;
 
 		} else if (rbA4TaxInvoice2.isSelected()) {
-			imageName = "24_Labels.png";
+			imageName = "Invoice_Template_A4_Invoice_Tax_2.png";
 			templateName = AppConstants.A4_TAX_INVOICE_2;
 
 		} else if (rbA4TaxInvoice1.isSelected()) {
-			imageName = "24_Labels.png";
+			imageName = "Invoice_Template_A4_Invoice_Tax_1.png";
 			templateName = AppConstants.A4_TAX_INVOICE_1;
 
 		}

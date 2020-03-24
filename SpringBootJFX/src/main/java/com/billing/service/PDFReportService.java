@@ -72,7 +72,11 @@ public class PDFReportService {
 				alertHelper.showErrorNotification("Please add store details");
 				return;
 			}
-
+			List<Map<String, ?>> dataSourceMapsSubReport = pdfReportMapping.getDataSourceForSubReports(bill,headerParamsMap);
+			List<Map<String, ?>> dataSourceMapsSubReportTc = pdfReportMapping.getDataSourceForSubReportTC(bill,headerParamsMap);
+			headerParamsMap.put("SUBREPORT_DIR", directoryPath);
+			headerParamsMap.put("SUBREPORT_DATA", dataSourceMapsSubReport);
+			headerParamsMap.put("SUBREPORT_TC_DATA", dataSourceMapsSubReportTc);
 			// compile report
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, headerParamsMap, dataSource);
 

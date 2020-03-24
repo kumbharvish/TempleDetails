@@ -8,10 +8,6 @@ package com.billing.utils;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-/**
- *
- * @author Dinesh
- */
 public abstract class NumberToWords {
 
         private static String numberToWords(int number) {
