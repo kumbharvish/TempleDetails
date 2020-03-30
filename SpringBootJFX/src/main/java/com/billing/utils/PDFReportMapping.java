@@ -3,12 +3,15 @@ package com.billing.utils;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.billing.constants.AppConstants;
 import com.billing.dto.Barcode;
 import com.billing.dto.BillDetails;
 import com.billing.dto.Customer;
@@ -66,7 +69,7 @@ public class PDFReportMapping {
 			map.put("TotalAmountForCashInvoice", IndianCurrencyFormatting.applyFormatting(totalAmtForCashInvice));
 			map.put("CustomerName", bill.getCustomerName());
 			map.put("CustomerMobileNo", String.valueOf(bill.getCustomerMobileNo()));
-
+			map.put("termsCondition", appUtils.getAppDataValues(AppConstants.TERMS_AND_CONDITION_FOR_INVOICE));
 			dataSourceMaps.add(map);
 		}
 
@@ -76,16 +79,35 @@ public class PDFReportMapping {
 	// Sub Report Mapping
 	public List<Map<String, ?>> getDataSourceForSubReports(BillDetails bill, HashMap<String, Object> headersMap) {
 		List<Map<String, ?>> dataSourceMapsSubReport = new ArrayList<Map<String, ?>>();
+		HashMap<String, Double> dataMap = new LinkedHashMap<>();
 		for (ItemDetails item : bill.getItemDetails()) {
 			GSTDetails gst = item.getGstDetails();
+			String keySgst = "SGST@" + gst.getSgstPercent() + "%";
+			String keyCgst = "CGST@" + gst.getCgstPercent() + "%";
+			// SGST
+			if (dataMap.containsKey(keySgst)) {
+				Double amount = dataMap.get(keySgst);
+				dataMap.put(keySgst, gst.getSgst() + amount);
+			} else {
+				dataMap.put(keySgst, gst.getSgst());
+			}
+			// CGST
+			if (dataMap.containsKey(keyCgst)) {
+				Double amount = dataMap.get(keyCgst);
+				dataMap.put(keyCgst, gst.getCgst() + amount);
+			} else {
+				dataMap.put(keyCgst, gst.getCgst());
+			}
+		}
+
+		for (String rate : dataMap.keySet()) {
 			Map<String, Object> subreportMap = new HashMap<String, Object>();
-			subreportMap.put("gstRate", String.valueOf(gst.getRate()));
-			subreportMap.put("gstAmount", appUtils.getDecimalFormat(gst.getGstAmount()));
+			subreportMap.put("gstRate", rate);
+			subreportMap.put("gstAmount", appUtils.getDecimalFormat(dataMap.get(rate)));
 			subreportMap.put("netSalesAmount", IndianCurrencyFormatting.applyFormatting(bill.getNetSalesAmt()));
 			subreportMap.put("subTotalAmount", IndianCurrencyFormatting.applyFormatting(bill.getTotalAmount()));
 			subreportMap.put("storeName", headersMap.get("StoreName"));
 			dataSourceMapsSubReport.add(subreportMap);
-
 		}
 		return dataSourceMapsSubReport;
 	}
@@ -94,8 +116,9 @@ public class PDFReportMapping {
 	public List<Map<String, ?>> getDataSourceForSubReportTC(BillDetails bill, HashMap<String, Object> headersMap) {
 		List<Map<String, ?>> dataSourceMapsSubReport = new ArrayList<Map<String, ?>>();
 		Map<String, Object> subreportMap = new HashMap<String, Object>();
-		subreportMap.put("amountInWords", NumberToWords.convertNumberToWords(new BigDecimal(bill.getNetSalesAmt()),true,true));
-		subreportMap.put("termsCondition", "Thanks for doing business with us!");
+		subreportMap.put("amountInWords",
+				NumberToWords.convertNumberToWords(new BigDecimal(bill.getNetSalesAmt()), true, true));
+		subreportMap.put("termsCondition", appUtils.getAppDataValues(AppConstants.TERMS_AND_CONDITION_FOR_INVOICE));
 		dataSourceMapsSubReport.add(subreportMap);
 		return dataSourceMapsSubReport;
 	}

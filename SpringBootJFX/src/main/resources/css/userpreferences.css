@@ -41,3 +41,7 @@
 #lblShowPrintPreview {
 	-fx-graphic: url("/images/QuestionMark_16.png");
 }
+
+#lblTermsAndCondition {
+	-fx-graphic: url("/images/QuestionMark_16.png");
+}

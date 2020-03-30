@@ -58,13 +58,20 @@
 										<Label fx:id="lblSalesReturnDaysErrMsg" styleClass="errorLabel" wrapText="true" />
 									</children>
 								</VBox>
+								<Label styleClass="requiredInput" text="Low Stock Quantity Limit :" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
 								<VBox GridPane.columnIndex="1" GridPane.rowIndex="7">
 									<children>
 										<TextField fx:id="txtLowStockQtyLimit" />
 										<Label fx:id="lblLowStockQtyLimitErrMsg" styleClass="errorLabel" wrapText="true" />
 									</children>
+								</VBox>								
+								<Label layoutX="59.0" layoutY="284.0" styleClass="requiredInput" text="Terms &amp; Condition / Note for Invoice :" GridPane.halignment="RIGHT" GridPane.rowIndex="8" />
+								<VBox layoutX="233.0" layoutY="271.0" GridPane.columnIndex="1" GridPane.rowIndex="8">
+									<children>
+										<TextField fx:id="txtTermsAndCondition" />
+										<Label fx:id="lblTermsAndConditionErrMsg" styleClass="errorLabel" wrapText="true" />
+									</children>
 								</VBox>
-								<Label styleClass="requiredInput" text="Low Stock Quantity Limit :" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
 								<Label fx:id="lblGSTCalculationType" GridPane.columnIndex="2">
 									<tooltip>
 										<Tooltip prefWidth="400.0" text="Inclusive GST means that GST is included in the price of the product. Exclusive GST means GST is separately charged above the price of the product." wrapText="true" />
@@ -105,8 +112,13 @@
 										<Tooltip prefWidth="400.0" text="You can set threshould quantity value for Low Stock Summary Report." wrapText="true" />
 									</tooltip>
 								</Label>
-								<Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="8" />
-								<ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="9">
+								<Label fx:id="lblTermsAndCondition" GridPane.columnIndex="2" GridPane.rowIndex="8">
+									<tooltip>
+										<Tooltip prefWidth="400.0" text="You can set Terms and Condition / Any Note which will be shown in invoice." wrapText="true" />
+									</tooltip>
+								</Label>
+								<Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="9" />
+								<ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="10">
 									<buttons>
 										<Button fx:id="btnUpdate" defaultButton="true" disable="true" mnemonicParsing="true" onAction="#onUpdateCommand" text="Update" />
 										<Button cancelButton="true" mnemonicParsing="false" onAction="#onCloseCommand" text="Close" />
@@ -132,6 +144,7 @@
 								<RowConstraints minHeight="10.0" />
 								<RowConstraints minHeight="10.0" />
 								<RowConstraints minHeight="10.0" />
+								<RowConstraints minHeight="10.0" prefHeight="30.0" />
 								<RowConstraints minHeight="10.0" prefHeight="30.0" />
 								<RowConstraints />
 								<RowConstraints />

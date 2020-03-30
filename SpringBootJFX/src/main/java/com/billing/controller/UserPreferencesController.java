@@ -62,8 +62,8 @@ public class UserPreferencesController implements TabContent {
 	private RadioButton rbSearchName;
 
 	@FXML
-    private ComboBox<String> cbDBBackupInterval;
-	
+	private ComboBox<String> cbDBBackupInterval;
+
 	@FXML
 	private CheckBox cbPrintOnSave;
 
@@ -81,6 +81,12 @@ public class UserPreferencesController implements TabContent {
 
 	@FXML
 	private Label lblLowStockQtyLimitErrMsg;
+
+	@FXML
+	private TextField txtTermsAndCondition;
+
+	@FXML
+	private Label lblTermsAndConditionErrMsg;
 
 	@FXML
 	private Button btnUpdate;
@@ -121,7 +127,7 @@ public class UserPreferencesController implements TabContent {
 		cbDBBackupInterval.getItems().add("2 Hour");
 		cbDBBackupInterval.getItems().add("3 Hour");
 		cbDBBackupInterval.getItems().add("4 Hour");
-		
+
 		HashMap<String, String> userPref = appUtils.getAppData();
 		if ("Y".equals(userPref.get(AppConstants.GST_INCLUSIVE))) {
 			rbGSTInclusive.setSelected(true);
@@ -141,6 +147,7 @@ public class UserPreferencesController implements TabContent {
 		cbDBBackupInterval.getSelectionModel().select(userPref.get(AppConstants.DB_DUMP_INTERVAL));
 		txtSalesReturnDays.setText(userPref.get(AppConstants.SALES_RETURN_ALLOWED_DAYS));
 		txtLowStockQtyLimit.setText(userPref.get(AppConstants.LOW_STOCK_QUANTITY_LIMIT));
+		txtTermsAndCondition.setText(userPref.get(AppConstants.TERMS_AND_CONDITION_FOR_INVOICE));
 		isDirty.set(false);
 		return true;
 	}
@@ -173,6 +180,10 @@ public class UserPreferencesController implements TabContent {
 		lblLowStockQtyLimitErrMsg.visibleProperty()
 				.bind(lblLowStockQtyLimitErrMsg.textProperty().length().greaterThanOrEqualTo(1));
 
+		lblTermsAndConditionErrMsg.managedProperty().bind(lblTermsAndConditionErrMsg.visibleProperty());
+		lblTermsAndConditionErrMsg.visibleProperty()
+				.bind(lblTermsAndConditionErrMsg.textProperty().length().greaterThanOrEqualTo(1));
+
 		txtSalesReturnDays.textProperty().addListener(appUtils.getForceNumberListner());
 		txtLowStockQtyLimit.textProperty().addListener(appUtils.getForceNumberListner());
 
@@ -186,6 +197,7 @@ public class UserPreferencesController implements TabContent {
 		cbDBBackupInterval.getSelectionModel().selectedItemProperty().addListener(this::invalidated);
 		txtSalesReturnDays.textProperty().addListener(this::invalidated);
 		txtLowStockQtyLimit.textProperty().addListener(this::invalidated);
+		txtTermsAndCondition.textProperty().addListener(this::invalidated);
 
 		btnUpdate.disableProperty().bind(isDirty.not());
 
@@ -228,6 +240,7 @@ public class UserPreferencesController implements TabContent {
 		saveMap.put(AppConstants.DB_DUMP_INTERVAL, cbDBBackupInterval.getSelectionModel().getSelectedItem());
 		saveMap.put(AppConstants.SALES_RETURN_ALLOWED_DAYS, txtSalesReturnDays.getText());
 		saveMap.put(AppConstants.LOW_STOCK_QUANTITY_LIMIT, txtLowStockQtyLimit.getText());
+		saveMap.put(AppConstants.TERMS_AND_CONDITION_FOR_INVOICE, txtTermsAndCondition.getText());
 
 		StatusDTO status = appUtils.updateUserPreferences(saveMap);
 
@@ -275,6 +288,18 @@ public class UserPreferencesController implements TabContent {
 			return valid;
 		} else {
 			lblLowStockQtyLimitErrMsg.setText("");
+		}
+
+		// Terms and Condition
+		int termsCondition = txtTermsAndCondition.getText().trim().length();
+		if (termsCondition == 0) {
+			alertHelper.beep();
+			lblTermsAndConditionErrMsg.setText("Please enter Terms & Condtion / Note");
+			txtTermsAndCondition.requestFocus();
+			valid = false;
+			return valid;
+		} else {
+			lblTermsAndConditionErrMsg.setText("");
 		}
 		return valid;
 	}
