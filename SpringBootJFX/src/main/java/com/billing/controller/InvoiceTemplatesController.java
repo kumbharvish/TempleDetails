@@ -108,10 +108,10 @@ public class InvoiceTemplatesController extends AppContext implements TabContent
 	private void populateImageView() {
 		String imageName = "65_Labels.png";
 		if (rbThermalCashInvoice.isSelected()) {
-			imageName = "Invoice_Template_Thermal.png";
+			imageName = "Invoice_Template_Thermal_Cash.png";
 			templateName = AppConstants.THERMAL_CASH_INVOICE;
 		} else if (rbThermalTaxInvoice.isSelected()) {
-			imageName = "Invoice_Template_Thermal_GST.png";
+			imageName = "Invoice_Template_Thermal_Tax.png";
 			templateName = AppConstants.THERMAL_TAX_INVOICE;
 		} else if (rbA4TaxInvoice4.isSelected()) {
 			imageName = "Invoice_Template_A4_Invoice_Tax_4.png";

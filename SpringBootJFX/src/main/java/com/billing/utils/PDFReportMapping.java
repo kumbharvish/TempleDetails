@@ -54,12 +54,15 @@ public class PDFReportMapping {
 			map.put("HSN", item.getHsn() == null ? "" : item.getHsn());
 			map.put("ItemGSTAmt", IndianCurrencyFormatting.applyFormatting(item.getGstDetails().getGstAmount()));
 			map.put("ItemGSTPer", String.valueOf((int) item.getGstDetails().getRate()));
+			map.put("ItemDiscAmt", IndianCurrencyFormatting.applyFormatting(item.getDiscountAmount()));
+			map.put("ItemDiscPer", appUtils.getPercentValueForReport(item.getDiscountPercent()));
+			
 			map.put("BillNo", String.valueOf(bill.getBillNumber()));
 			map.put("TotalQty", appUtils.getDecimalFormat(bill.getTotalQuantity()));
 			map.put("NoOfItems", String.valueOf(bill.getNoOfItems()));
 			map.put("TotalAmount", IndianCurrencyFormatting.applyFormatting(bill.getTotalAmount()));
 			map.put("NetSalesAmount", IndianCurrencyFormatting.applyFormatting(bill.getNetSalesAmt()));
-			map.put("DiscountPer", appUtils.getDecimalFormat(bill.getDiscount()));
+			map.put("DiscountPer", appUtils.getPercentValueForReport(bill.getDiscount()));
 			map.put("DiscountAmount", IndianCurrencyFormatting.applyFormatting(bill.getDiscountAmt()));
 			map.put("InvoiceDateTime", appUtils.getFormattedDateWithTime(bill.getTimestamp()));
 			map.put("GSTAmount", IndianCurrencyFormatting.applyFormatting(bill.getGstAmount()));
@@ -107,6 +110,8 @@ public class PDFReportMapping {
 			subreportMap.put("netSalesAmount", IndianCurrencyFormatting.applyFormatting(bill.getNetSalesAmt()));
 			subreportMap.put("subTotalAmount", IndianCurrencyFormatting.applyFormatting(bill.getTotalAmount()));
 			subreportMap.put("storeName", headersMap.get("StoreName"));
+			subreportMap.put("discountAmount", IndianCurrencyFormatting.applyFormatting(bill.getDiscountAmt()));
+			subreportMap.put("discountPer", appUtils.getPercentValueForReport(bill.getDiscount()));
 			dataSourceMapsSubReport.add(subreportMap);
 		}
 		return dataSourceMapsSubReport;

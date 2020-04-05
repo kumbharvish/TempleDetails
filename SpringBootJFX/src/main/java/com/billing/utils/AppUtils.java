@@ -729,4 +729,16 @@ public class AppUtils {
 	public DateTimeFormatter getDateTimeFormatter() {
 		return DateTimeFormatter.ofPattern(DATE_FORMAT);
 	}
+
+	public String getPercentValueForReport(Double value) {
+		String doubleAsString = String.valueOf(value);
+		int indexOfDecimal = doubleAsString.indexOf(".");
+		String decimalPartValue = doubleAsString.substring(indexOfDecimal);
+		String intPart = doubleAsString.substring(0, indexOfDecimal);
+
+		if (decimalPartValue.equalsIgnoreCase(".0") || decimalPartValue.equalsIgnoreCase(".00")) {
+			return intPart;
+		} else
+			return doubleAsString;
+	}
 }
