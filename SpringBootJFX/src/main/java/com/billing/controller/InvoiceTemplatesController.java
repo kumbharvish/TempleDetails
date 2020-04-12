@@ -90,7 +90,7 @@ public class InvoiceTemplatesController extends AppContext implements TabContent
 		// populateImageView
 		rbA4TaxInvoice1.setOnAction(e -> populateImageView());
 		rbA4TaxInvoice2.setOnAction(e -> populateImageView());
-		rbA4TaxInvoice2.setOnAction(e -> populateImageView());
+		rbA4TaxInvoice3.setOnAction(e -> populateImageView());
 		rbA4TaxInvoice4.setOnAction(e -> populateImageView());
 		rbThermalTaxInvoice.setOnAction(e -> populateImageView());
 		rbThermalCashInvoice.setOnAction(e -> populateImageView());

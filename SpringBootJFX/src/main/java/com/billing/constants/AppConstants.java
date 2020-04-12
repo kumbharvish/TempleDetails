@@ -153,6 +153,10 @@ public class AppConstants {
 	public static final String BARCODE_40_JASPER = "Barcode_40.jasper";
 
 	public static final String BARCODE_24_JASPER = "Barcode_24.jasper";
+	
+	public static final String IT_A4_TAX_3 = "IT_A4_Tax_3.jasper"; 
+	
+	public static final String IT_A4_TAX_4 = "IT_A4_Tax_4.jasper"; 
 
 	// Invoice Template Names
 	public static final String THERMAL_CASH_INVOICE = "Thermal : Cash Invoice";
