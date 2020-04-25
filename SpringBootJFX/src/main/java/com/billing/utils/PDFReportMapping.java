@@ -142,7 +142,7 @@ public class PDFReportMapping {
 		List<Map<String, ?>> dataSourceMapsSubReport = new ArrayList<Map<String, ?>>();
 		HashMap<String, GSTDetails> dataMap = new LinkedHashMap<>();
 
-		if (AppConstants.IT_A4_TAX_3.equalsIgnoreCase(jasperName)) {
+		if (AppConstants.IT_A4_TAX_3.equalsIgnoreCase(jasperName) || AppConstants.IT_A4_TAX_4.equalsIgnoreCase(jasperName)) {
 			for (ItemDetails item : bill.getItemDetails()) {
 				GSTDetails gstSGST = new GSTDetails();
 				GSTDetails gstCGST = new GSTDetails();
