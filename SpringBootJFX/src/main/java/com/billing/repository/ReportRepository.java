@@ -1,23 +1,22 @@
 package com.billing.repository;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.billing.constants.AppConstants;
+import com.billing.dto.BillDetails;
 import com.billing.dto.CashReport;
+import com.billing.dto.ConsolidatedReport;
 import com.billing.dto.Customer;
 import com.billing.dto.GraphDTO;
-import com.billing.dto.ConsolidatedReport;
 import com.billing.dto.ProfitLossData;
 import com.billing.dto.ProfitLossDetails;
 import com.billing.dto.StatusDTO;
@@ -85,7 +84,7 @@ public class ReportRepository {
 	private static final String INS_OPENING_CASH = "INSERT INTO CASH_COUNTER " + "(DATE,AMOUNT)" + " VALUES(?,?)";
 
 	private static final String UPDATE_OPENING_CASH = "UPDATE CASH_COUNTER SET AMOUNT=?" + " WHERE DATE=?";
-	
+
 	private static final String GET_PURCHASE_ENTRY_DISC_EXTRA_CHARGES_AMT = "SELECT  SUM(DISCOUNT_AMOUNT) AS DISCOUNT_AMOUNT , SUM(EXTRA_CHARGES) AS EXTRA_CHARGES FROM PURCHASE_ENTRY_DETAILS  WHERE DATE(PURCHASE_ENTRY_DATE) BETWEEN ? AND ? ";
 
 	// Graphic Report
@@ -500,11 +499,11 @@ public class ReportRepository {
 			ProfitLossData peExtraCharges = new ProfitLossData();
 			peExtraCharges.setDescription(AppConstants.PURCHASE_ENTRY_EXTRA_CHARGES);
 			peExtraCharges.setAmount(extraCharges);
-			
+
 			ProfitLossData peDiscAmount = new ProfitLossData();
 			peDiscAmount.setDescription("Purchase Entry Discount Amount");
 			peDiscAmount.setAmount(discountAmount);
-			
+
 			debit.add(peExtraCharges);
 			report.setDebit(debit);
 			// Profit
@@ -522,7 +521,7 @@ public class ReportRepository {
 			stmt2.close();
 			profit.setAmount(profitAmt - salesReturnProfit);
 			totalCredit = profitAmt - salesReturnProfit + discountAmount;
-			totalDebit += extraCharges; 
+			totalDebit += extraCharges;
 			credit.add(profit);
 			credit.add(peDiscAmount);
 			report.setCredit(credit);
@@ -640,7 +639,7 @@ public class ReportRepository {
 	 * addOpeningStockAmount(appUtils.getCurrentTimestamp(),
 	 * appUtils.getDecimalRoundUp2Decimal(stockValueAmount)); return status; }
 	 */
-	
+
 	// Get Stock Value Amount
 	public List<Customer> getSettledCustomerList(String date) {
 		List<Customer> customerList = new ArrayList<Customer>();
@@ -670,7 +669,7 @@ public class ReportRepository {
 		return customerList;
 	}
 
-	//Graphic Reports
+	// Graphic Reports
 	// Get Payment mode wise collection
 	public List<GraphDTO> getPaymentModeAmounts(String fromDate, String toDate) {
 		List<GraphDTO> list = new ArrayList<GraphDTO>();
@@ -755,4 +754,5 @@ public class ReportRepository {
 		}
 		return list;
 	}
+
 }

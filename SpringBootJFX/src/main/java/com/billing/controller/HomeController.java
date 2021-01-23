@@ -314,7 +314,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onGSTR1ReportCommand(ActionEvent event) {
-		//addTab("GraphicalPaymentModeWiseReport", "Payment Mode Wise Sales Report");
+		addTab("GSTR1Report", "GSTR1 Report");
 	}
 
 	
