@@ -9,11 +9,13 @@ import org.springframework.stereotype.Controller;
 
 import com.billing.dto.GSTR1Data;
 import com.billing.dto.GSTR1Report;
+import com.billing.dto.MyStoreDetails;
 import com.billing.dto.UserDetails;
 import com.billing.main.AppContext;
 import com.billing.service.InvoiceService;
 import com.billing.service.PrinterService;
 import com.billing.service.ReportService;
+import com.billing.service.StoreDetailsService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 import com.billing.utils.IndianCurrencyFormatting;
@@ -55,6 +57,9 @@ public class GSTR1ReportController extends AppContext implements TabContent {
 
 	@Autowired
 	PrinterService pinterService;
+
+	@Autowired
+	StoreDetailsService myStoreService;
 
 	private UserDetails userDetails;
 
@@ -196,7 +201,7 @@ public class GSTR1ReportController extends AppContext implements TabContent {
 				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getReturnNo())));
 		tcInvoiceDate.setCellValueFactory(cellData -> new SimpleStringProperty(
 				appUtils.getFormattedDateWithTime(cellData.getValue().getInvoiceDate())));
-		
+
 		tcValue.setCellFactory(callback);
 		tcInvoiceValue.setCellFactory(callback);
 		tcCgst.setCellFactory(callback);
@@ -208,7 +213,6 @@ public class GSTR1ReportController extends AppContext implements TabContent {
 		tcTaxableValueR.setCellFactory(callback);
 		tcTaxableValue.setCellFactory(callback);
 
-		
 		tcDate.getStyleClass().add("character-cell");
 		tcReturnDate.getStyleClass().add("character-cell");
 		tcInvoiceDate.getStyleClass().add("character-cell");
@@ -284,14 +288,16 @@ public class GSTR1ReportController extends AppContext implements TabContent {
 		if (!validateInput()) {
 			return;
 		}
-		// SalesReport salesReport = getSalesReport();
-		// pinterService.exportPDF(salesReport, currentStage);
+		GSTR1Report gstrReport = getGstrReport();
+		pinterService.exportPDF(gstrReport, currentStage);
 
 	}
 
-	private GSTR1Report getSalesReport() {
+	private GSTR1Report getGstrReport() {
 		gstr1Report.setFromDate(dpFromDate.getValue().toString());
 		gstr1Report.setToDate(dpToDate.getValue().toString());
+		MyStoreDetails details = myStoreService.getMyStoreDetails();
+		gstr1Report.setLeagleName(details.getStoreName());
 		return gstr1Report;
 	}
 
@@ -300,8 +306,8 @@ public class GSTR1ReportController extends AppContext implements TabContent {
 		if (!validateInput()) {
 			return;
 		}
-		// SalesReport salesReport = getSalesReport();
-		// pinterService.exportExcel(salesReport, currentStage);
+		GSTR1Report gstrReport = getGstrReport();
+		pinterService.exportExcel(gstrReport, currentStage);
 	}
 
 	@Override

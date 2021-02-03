@@ -11,6 +11,8 @@ public class GSTR1Report {
 	private String fromDate;
 
 	private String toDate;
+	
+	private String leagleName;
 
 	public List<GSTR1Data> getInvoiceList() {
 		return invoiceList;
@@ -42,6 +44,14 @@ public class GSTR1Report {
 
 	public void setToDate(String toDate) {
 		this.toDate = toDate;
+	}
+
+	public String getLeagleName() {
+		return leagleName;
+	}
+
+	public void setLeagleName(String leagleName) {
+		this.leagleName = leagleName;
 	}
 
 }
