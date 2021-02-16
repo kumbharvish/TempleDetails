@@ -79,6 +79,8 @@ public class CustomersController extends AppContext implements TabContent {
 
 	FilteredList<Customer> filteredList;
 
+	private int custId;
+
 	@FXML
 	private TextField txtCustName;
 
@@ -182,6 +184,7 @@ public class CustomersController extends AppContext implements TabContent {
 		lblCustNameErrMsg.managedProperty().bind(lblCustNameErrMsg.visibleProperty());
 		lblCustNameErrMsg.visibleProperty().bind(lblCustNameErrMsg.textProperty().length().greaterThanOrEqualTo(1));
 		setTableCellFactories();
+		custId = 0;
 		// Force Number Listner
 		txtMobileNo.textProperty().addListener(appUtils.getForceNumberListner());
 		// Table row selection
@@ -258,8 +261,8 @@ public class CustomersController extends AppContext implements TabContent {
 	}
 
 	private void setCustomerDetails(Customer customer) {
+		custId = customer.getCustId();
 		txtMobileNo.setText(String.valueOf(customer.getCustMobileNumber()));
-		txtMobileNo.setDisable(true);
 		txtCustName.setText(customer.getCustName());
 		txtCity.setText(customer.getCustCity());
 		txtEmail.setText(customer.getCustEmail());
@@ -271,18 +274,22 @@ public class CustomersController extends AppContext implements TabContent {
 
 	@FXML
 	void onAddCommand(ActionEvent event) {
-		if (!validateInput()) {
-			return;
+		if (custId != 0) {
+			alertHelper.showErrorNotification("Please reset fields");
+		} else {
+			if (!validateInput()) {
+				return;
+			}
+			saveData();
 		}
-		saveData();
 	}
 
 	@FXML
 	void onDeleteCommand(ActionEvent event) {
-		if (txtMobileNo.getText().equals("")) {
+		if (custId == 0) {
 			alertHelper.showErrorNotification("Please select customer");
 		} else {
-			List<BillDetails> billList = customerHistoryService.getBillDetails(Long.parseLong(txtMobileNo.getText()));
+			List<BillDetails> billList = customerHistoryService.getBillDetails(custId);
 			if (billList.size() > 0) {
 				alertHelper.showErrorAlert(currentStage, "Error", null,
 						"The selected customer can not be deleted,since there is other data related to this customer in system");
@@ -290,7 +297,7 @@ public class CustomersController extends AppContext implements TabContent {
 				Alert alert = alertHelper.showConfirmAlertWithYesNo(currentStage, null, "Are you sure?");
 				if (alert.getResult() == ButtonType.YES) {
 					Customer customer = new Customer();
-					customer.setCustMobileNumber(Long.parseLong(txtMobileNo.getText()));
+					customer.setCustId(custId);
 					customerService.delete(customer);
 					alertHelper.showSuccessNotification("Customer deleted successfully");
 					resetFields();
@@ -316,7 +323,7 @@ public class CustomersController extends AppContext implements TabContent {
 
 	@FXML
 	void onUpdateCommand(ActionEvent event) {
-		if (txtMobileNo.getText().equals("")) {
+		if (custId == 0) {
 			alertHelper.showErrorNotification("Please select customer");
 		} else {
 			if (!validateInput()) {
@@ -365,6 +372,7 @@ public class CustomersController extends AppContext implements TabContent {
 	@Override
 	public boolean saveData() {
 		Customer customer = getCustomerDetails();
+		customer.setCustId(customerService.getCustId());
 		StatusDTO status = customerService.add(customer);
 		if (status.getStatusCode() == 0) {
 			alertHelper.showSuccessNotification("Customer added successfully");
@@ -390,6 +398,7 @@ public class CustomersController extends AppContext implements TabContent {
 		customer.setState(txtState.getText());
 		customer.setAddress(txtAddress.getText());
 		customer.setGstin(txtGstin.getText());
+		customer.setCustId(custId);
 		return customer;
 	}
 
@@ -401,7 +410,12 @@ public class CustomersController extends AppContext implements TabContent {
 			resetFields();
 			loadData();
 		} else {
-			alertHelper.showErrorNotification("Customer mobile does not exists : " + txtMobileNo.getText());
+			if (status.getStatusCode() == -1 && status.getException().contains("UNIQUE")) {
+				alertHelper
+						.showErrorNotification("Customer already exists for mobile number : " + txtMobileNo.getText());
+			} else {
+				alertHelper.showDataSaveErrAlert(currentStage);
+			}
 		}
 	}
 
@@ -445,8 +459,8 @@ public class CustomersController extends AppContext implements TabContent {
 	}
 
 	private void resetFields() {
+		custId = 0;
 		txtMobileNo.setText("");
-		txtMobileNo.setDisable(false);
 		txtCustName.setText("");
 		txtCity.setText("");
 		txtEmail.setText("");
@@ -519,6 +533,7 @@ public class CustomersController extends AppContext implements TabContent {
 						// Add
 						if (Double.valueOf(amount) > 0) {
 							Customer cust = new Customer();
+							cust.setCustId(custId);
 							cust.setCustMobileNumber(Long.valueOf(txtMobileNo.getText()));
 							cust.setCustName(txtCustName.getText());
 							cust.setAmount(Double.valueOf(amount));
@@ -526,9 +541,8 @@ public class CustomersController extends AppContext implements TabContent {
 							String narration = "Added by : " + userDetails.getFirstName() + " "
 									+ userDetails.getLastName();
 
-							StatusDTO statusAddAmt = customerService.addCustomerPaymentHistory(
-									Long.valueOf(txtMobileNo.getText()), Double.valueOf(txtAmount.getText()), 0,
-									AppConstants.CREDIT, narration);
+							StatusDTO statusAddAmt = customerService.addCustomerPaymentHistory(custId,
+									Double.valueOf(txtAmount.getText()), 0, AppConstants.CREDIT, narration);
 
 							if (statusAddAmt.getStatusCode() == 0) {
 								alertHelper.showSuccessNotification("Pending amount updated successfully");
@@ -538,7 +552,7 @@ public class CustomersController extends AppContext implements TabContent {
 								if (cust1 == null) {
 									cust1 = cust;
 								}
-								setUpdatedCustBalance(cust1.getCustMobileNumber());
+								setUpdatedCustBalance(cust1.getCustId());
 							} else {
 								alertHelper.showErrorNotification("Error occured while adding amount");
 							}
@@ -550,14 +564,14 @@ public class CustomersController extends AppContext implements TabContent {
 						// Settle up
 						if (Double.valueOf(amount) > 0 && Double.valueOf(amount) <= customer.getBalanceAmt()) {
 							Customer customerSt = new Customer();
+							customerSt.setCustId(custId);
 							customerSt.setCustMobileNumber(Long.valueOf(txtMobileNo.getText()));
 							customerSt.setCustName(txtCustName.getText());
 							customerSt.setAmount(Double.valueOf(txtAmount.getText()));
 							String narration = "Settled up by : " + userDetails.getFirstName() + " "
 									+ userDetails.getLastName();
-							StatusDTO statusAddAmt = customerService.addCustomerPaymentHistory(
-									Long.valueOf(txtMobileNo.getText()), 0, Double.valueOf(txtAmount.getText()),
-									AppConstants.DEBIT, narration);
+							StatusDTO statusAddAmt = customerService.addCustomerPaymentHistory(custId, 0,
+									Double.valueOf(txtAmount.getText()), AppConstants.DEBIT, narration);
 
 							if (statusAddAmt.getStatusCode() == 0) {
 								alertHelper.showSuccessNotification("Pending amount updated succesfully");
@@ -567,7 +581,7 @@ public class CustomersController extends AppContext implements TabContent {
 								if (cust == null) {
 									cust = customerSt;
 								}
-								setUpdatedCustBalance(cust.getCustMobileNumber());
+								setUpdatedCustBalance(cust.getCustId());
 							} else {
 								alertHelper.showErrorNotification("Error occured while settling up");
 							}
@@ -585,8 +599,8 @@ public class CustomersController extends AppContext implements TabContent {
 		});
 	}
 
-	protected void setUpdatedCustBalance(Long custMobileNumber) {
-		Customer customer = customerService.getCustomer(custMobileNumber);
+	protected void setUpdatedCustBalance(int custId) {
+		Customer customer = customerService.getCustomer(custId);
 		setCustomerDetails(customer);
 	}
 

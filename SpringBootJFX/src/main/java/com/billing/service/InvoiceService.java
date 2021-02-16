@@ -34,7 +34,7 @@ public class InvoiceService implements AppService<BillDetails> {
 			StatusDTO statusAddPendingAmt = new StatusDTO(-1);
 			if (status.getStatusCode() == 0) {
 				String narration = "Invoice Amount based on No : " + bill.getBillNumber();
-				statusAddPendingAmt = customerService.addCustomerPaymentHistory(bill.getCustomerMobileNo(),
+				statusAddPendingAmt = customerService.addCustomerPaymentHistory(bill.getCustomerId(),
 						bill.getNetSalesAmt(), 0, AppConstants.CREDIT, narration);
 			}
 			if (status.getStatusCode() != 0 || statusAddPendingAmt.getStatusCode() != 0) {
@@ -62,25 +62,25 @@ public class InvoiceService implements AppService<BillDetails> {
 		if (status.getStatusCode() == 0) {
 			// Customer payment history
 			if (AppConstants.PENDING.equals(bill.getPaymentMode())) {
-				if (bill.getCopyCustMobile() == bill.getCustomerMobileNo()) {
+				if (bill.getCopyCustId() == bill.getCustomerId()) {
 					if (AppConstants.PENDING.equals(bill.getCopyPaymode())) {
 						double newNetSalesAmt = bill.getCopyNetSalesAmt() - bill.getNetSalesAmt();
 						if (newNetSalesAmt > 0) {
 
 							String narration = "Edit Invoice correction based on Invoice No : " + bill.getBillNumber();
 							statusCustBlanceUpdate = customerService.addCustomerPaymentHistory(
-									bill.getCustomerMobileNo(), 0, newNetSalesAmt, AppConstants.DEBIT, narration);
+									bill.getCustomerId(), 0, newNetSalesAmt, AppConstants.DEBIT, narration);
 						}
 						if (newNetSalesAmt < 0) {
 
 							String narration = "Edit Invoice correction based on Invoice No : " + bill.getBillNumber();
 							statusCustBlanceUpdate = customerService.addCustomerPaymentHistory(
-									bill.getCustomerMobileNo(), Math.abs(newNetSalesAmt), 0, AppConstants.CREDIT,
+									bill.getCustomerId(), Math.abs(newNetSalesAmt), 0, AppConstants.CREDIT,
 									narration);
 						}
 					} else {
 						String narration = "Edit Invoice correction based on Invoice No : " + bill.getBillNumber();
-						statusCustBlanceUpdate = customerService.addCustomerPaymentHistory(bill.getCustomerMobileNo(),
+						statusCustBlanceUpdate = customerService.addCustomerPaymentHistory(bill.getCustomerId(),
 								bill.getNetSalesAmt(), 0, AppConstants.CREDIT, narration);
 					}
 
@@ -90,27 +90,27 @@ public class InvoiceService implements AppService<BillDetails> {
 					if (AppConstants.PENDING.equals(bill.getCopyPaymode())) {
 
 						String narration = "Edit Invoice correction based on Invoice No : " + bill.getBillNumber();
-						statusCustBlanceUpdate = customerService.addCustomerPaymentHistory(bill.getCopyCustMobile(), 0,
+						statusCustBlanceUpdate = customerService.addCustomerPaymentHistory(bill.getCopyCustId(), 0,
 								bill.getCopyNetSalesAmt(), AppConstants.DEBIT, narration);
 
 						String narrationCredit = "Edit Invoice correction based on Invoice No : "
 								+ bill.getBillNumber();
-						statusCustBlanceUpdate = customerService.addCustomerPaymentHistory(bill.getCustomerMobileNo(),
+						statusCustBlanceUpdate = customerService.addCustomerPaymentHistory(bill.getCustomerId(),
 								bill.getNetSalesAmt(), 0, AppConstants.CREDIT, narrationCredit);
 
 					} else {
 						String narrationCredit = "Edit Invoice correction based on Invoice No : "
 								+ bill.getBillNumber();
-						statusCustBlanceUpdate = customerService.addCustomerPaymentHistory(bill.getCustomerMobileNo(),
+						statusCustBlanceUpdate = customerService.addCustomerPaymentHistory(bill.getCustomerId(),
 								bill.getNetSalesAmt(), 0, AppConstants.CREDIT, narrationCredit);
 					}
 				}
 			} else {
-				if (bill.getCopyCustMobile() == bill.getCustomerMobileNo()) {
+				if (bill.getCopyCustId() == bill.getCustomerId()) {
 					if (AppConstants.PENDING.equals(bill.getCopyPaymode())) {
 
 						String narration = "Edit Invoice correction based on Invoice No : " + bill.getBillNumber();
-						statusCustBlanceUpdate = customerService.addCustomerPaymentHistory(bill.getCopyCustMobile(), 0,
+						statusCustBlanceUpdate = customerService.addCustomerPaymentHistory(bill.getCopyCustId(), 0,
 								bill.getCopyNetSalesAmt(), AppConstants.DEBIT, narration);
 					} else {
 						statusEditInvoice.setStatusCode(0);
@@ -121,7 +121,7 @@ public class InvoiceService implements AppService<BillDetails> {
 					if (AppConstants.PENDING.equals(bill.getCopyPaymode())) {
 
 						String narration = "Edit Invoice correction based on Invoice No : " + bill.getBillNumber();
-						statusCustBlanceUpdate = customerService.addCustomerPaymentHistory(bill.getCopyCustMobile(), 0,
+						statusCustBlanceUpdate = customerService.addCustomerPaymentHistory(bill.getCopyCustId(), 0,
 								bill.getCopyNetSalesAmt(), AppConstants.DEBIT, narration);
 
 					} else {
@@ -151,7 +151,7 @@ public class InvoiceService implements AppService<BillDetails> {
 			statusDeleteBill = invoiceRepository.deleteInvoiceDetails(bill);
 			if (statusDeleteBill.getStatusCode() == 0) {
 				String narration = "Delete Invoice adjustment based on Invoice No : " + bill.getBillNumber();
-				statusCustBlanceUpdate = customerService.addCustomerPaymentHistory(bill.getCustomerMobileNo(), 0,
+				statusCustBlanceUpdate = customerService.addCustomerPaymentHistory(bill.getCustomerId(), 0,
 						bill.getNetSalesAmt(), AppConstants.DEBIT, narration);
 
 				if (statusCustBlanceUpdate.getStatusCode() != 0) {

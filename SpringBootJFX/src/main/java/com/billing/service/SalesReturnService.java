@@ -32,7 +32,7 @@ public class SalesReturnService implements AppService<ReturnDetails> {
 			StatusDTO statusAddPendingAmt = new StatusDTO(-1);
 			if (status.getStatusCode() == 0) {
 				String narration = "Sales Return Amount based on Return No : " + returnDetails.getReturnNumber();
-				statusAddPendingAmt = customerService.addCustomerPaymentHistory(returnDetails.getCustomerMobileNo(), 0,
+				statusAddPendingAmt = customerService.addCustomerPaymentHistory(returnDetails.getCustomerId(), 0,
 						returnDetails.getTotalReturnAmount(), AppConstants.DEBIT, narration);
 			}
 			if (status.getStatusCode() != 0 || statusAddPendingAmt.getStatusCode() != 0) {

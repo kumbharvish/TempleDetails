@@ -2,7 +2,6 @@ package com.billing.controller;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -697,6 +696,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		bill.setCustomerMobileNo(cust.getCustMobileNumber());
 		bill.setCustomerName(cust.getCustName());
 		bill.setCustomer(cust);
+		bill.setCustomerId(cust.getCustId());
 		// Prepare Item List
 		bill.setItemDetails(prepareItemList());
 		bill.setTotalAmount(Double.valueOf(IndianCurrencyFormatting.removeFormatting(txtSubTotal.getText())));

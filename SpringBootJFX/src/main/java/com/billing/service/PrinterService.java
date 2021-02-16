@@ -126,7 +126,7 @@ public class PrinterService {
 	// Print Invoice
 	public void printInvoice(BillDetails bill) {
 		if (bill.getCustomer() == null) {
-			bill.setCustomer(customerService.getCustomer(bill.getCustomerMobileNo()));
+			bill.setCustomer(customerService.getCustomer(bill.getCustomerId()));
 		}
 		PrintTemplate template = getDefaultPrintTemplate();
 

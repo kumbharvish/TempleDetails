@@ -28,7 +28,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
@@ -56,6 +55,8 @@ public class CustomerPaymentController extends AppContext implements TabContent 
 	private SortedSet<String> entries;
 
 	private HashMap<Long, Customer> customerMap;
+	
+	private int custId;
 
 	private UserDetails userDetails;
 
@@ -148,10 +149,8 @@ public class CustomerPaymentController extends AppContext implements TabContent 
 	@Override
 	public boolean loadData() {
 		if (!txtCustName.getText().equals("")) {
-			String custMobile = txtCustomer.getText().split(" : ")[0];
-			txtCustomer.setText("");
 			List<CustomerPaymentHistory> list = customerHistoryService
-					.getAllCustomersPayHistory(Long.valueOf(custMobile));
+					.getAllCustomersPayHistory(custId);
 			ObservableList<CustomerPaymentHistory> tableData = FXCollections.observableArrayList();
 			tableData.addAll(list);
 			tableView.setItems(tableData);
@@ -207,6 +206,7 @@ public class CustomerPaymentController extends AppContext implements TabContent 
 		}
 
 		if (cust != null) {
+			custId = cust.getCustId();
 			txtCustName.setText(cust.getCustName());
 			txtCity.setText(cust.getCustCity());
 			txtEmail.setText(cust.getCustEmail());

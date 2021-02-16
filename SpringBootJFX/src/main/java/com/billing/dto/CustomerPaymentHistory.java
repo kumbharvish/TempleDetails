@@ -19,6 +19,8 @@ public class CustomerPaymentHistory {
 	
 	private String entryDate;
 	
+	private int custId;
+	
 
 	public String getEntryDate() {
 		return entryDate;
@@ -82,6 +84,14 @@ public class CustomerPaymentHistory {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public int getCustId() {
+		return custId;
+	}
+
+	public void setCustId(int custId) {
+		this.custId = custId;
 	}
 	
 	

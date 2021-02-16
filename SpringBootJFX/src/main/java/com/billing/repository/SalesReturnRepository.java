@@ -36,16 +36,16 @@ public class SalesReturnRepository {
 	ProductService productService;
 
 	private static final String SAVE_RETURN_DETAILS = "INSERT INTO SALES_RETURN_DETAILS (RETURN_NUMBER,RETURN_DATE,COMMENTS,INVOICE_NUMBER,CUST_MOB_NO,INVOICE_DATE,"
-			+ "GST_TYPE,NO_OF_ITEMS,TOTAL_QTY,PAYMENT_MODE,RETURN_TOTAL_AMOUNT,INVOICE_NET_SALES_AMOUNT,NEW_INVOICE_NET_SALES_AMOUNT,GST_AMOUNT,DISCOUNT,DISCOUNT_AMOUNT,SUB_TOTAL,RETURN_PURCHASE_AMT,CREATED_BY)"
-			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			+ "GST_TYPE,NO_OF_ITEMS,TOTAL_QTY,PAYMENT_MODE,RETURN_TOTAL_AMOUNT,INVOICE_NET_SALES_AMOUNT,NEW_INVOICE_NET_SALES_AMOUNT,GST_AMOUNT,DISCOUNT,DISCOUNT_AMOUNT,SUB_TOTAL,RETURN_PURCHASE_AMT,CREATED_BY,CUST_ID)"
+			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static final String SAVE_RETURN_ITEM_DETAILS = "INSERT INTO SALES_RETURN_ITEMS_DETAILS (RETURN_NUMBER,ITEM_NO,ITEM_NAME,ITEM_MRP,ITEM_RATE,"
 			+ "ITEM_QTY,AMOUNT,PURCHASE_AMOUNT,GST_RATE,GST_NAME,CGST,SGST,GST_AMOUNT,GST_TAXABLE_AMT,GST_INCLUSIVE_FLAG,DISC_PERCENT,DISC_AMOUNT,UNIT,HSN) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-	private static final String GET_RETURN_DETAILS = "SELECT SRD.*,CD.CUST_NAME AS CUSTOMER_NAME FROM SALES_RETURN_DETAILS SRD,CUSTOMER_DETAILS CD WHERE  SRD.CUST_MOB_NO=CD.CUST_MOB_NO"
+	private static final String GET_RETURN_DETAILS = "SELECT SRD.*,CD.CUST_NAME AS CUSTOMER_NAME FROM SALES_RETURN_DETAILS SRD,CUSTOMER_DETAILS CD WHERE  SRD.CUST_ID=CD.CUST_ID"
 			+ " AND INVOICE_NUMBER=?";
 
-	private static final String GET_RETURN_DETAILS_FOR_RETURN_NUMBER = "SELECT SRD.*,CD.CUST_NAME AS CUSTOMER_NAME FROM SALES_RETURN_DETAILS SRD,CUSTOMER_DETAILS CD WHERE  SRD.CUST_MOB_NO=CD.CUST_MOB_NO"
+	private static final String GET_RETURN_DETAILS_FOR_RETURN_NUMBER = "SELECT SRD.*,CD.CUST_NAME AS CUSTOMER_NAME FROM SALES_RETURN_DETAILS SRD,CUSTOMER_DETAILS CD WHERE  SRD.CUST_ID=CD.CUST_ID"
 			+ " AND RETURN_NUMBER=?";
 
 	private static final String IS_SALES_RETURED = "SELECT RETURN_NUMBER FROM SALES_RETURN_DETAILS WHERE INVOICE_NUMBER=?";
@@ -54,7 +54,7 @@ public class SalesReturnRepository {
 
 	private static final String NEW_RETURN_NUMBER = "SELECT (MAX(RETURN_NUMBER)+1) AS RETURN_NUMBER FROM SALES_RETURN_DETAILS ";
 
-	private static final String GET_RETURN_DETAILS_WITHIN_DATE_RANGE = "SELECT SRD.*,CD.CUST_NAME AS CUSTOMER_NAME FROM SALES_RETURN_DETAILS SRD,CUSTOMER_DETAILS CD WHERE DATE(SRD.RETURN_DATE) BETWEEN ? AND ?  AND SRD.CUST_MOB_NO=CD.CUST_MOB_NO ORDER BY SRD.RETURN_DATE DESC";
+	private static final String GET_RETURN_DETAILS_WITHIN_DATE_RANGE = "SELECT SRD.*,CD.CUST_NAME AS CUSTOMER_NAME FROM SALES_RETURN_DETAILS SRD,CUSTOMER_DETAILS CD WHERE DATE(SRD.RETURN_DATE) BETWEEN ? AND ?  AND SRD.CUST_ID=CD.CUST_ID ORDER BY SRD.RETURN_DATE DESC";
 
 	public Integer getNewReturnNumber() {
 		Connection conn = null;
@@ -110,6 +110,7 @@ public class SalesReturnRepository {
 				stmt.setDouble(17, returnDetails.getSubTotal());
 				stmt.setDouble(18, returnDetails.getReturnPurchaseAmt());
 				stmt.setString(19, returnDetails.getCreatedBy());
+				stmt.setInt(20, returnDetails.getCustomerId());
 
 				int i = stmt.executeUpdate();
 				if (i > 0) {
@@ -218,6 +219,7 @@ public class SalesReturnRepository {
 				returnDetails.setGstType(rs.getString("GST_TYPE"));
 				returnDetails.setGstAmount(rs.getDouble("GST_AMOUNT"));
 				returnDetails.setCreatedBy(rs.getString("CREATED_BY"));
+				returnDetails.setCustomerId(rs.getInt("CUST_ID"));
 
 			}
 		} catch (Exception e) {
@@ -248,6 +250,7 @@ public class SalesReturnRepository {
 				returnDetails.setComments(rs.getString("COMMENTS"));
 				returnDetails.setTimestamp(rs.getString("RETURN_DATE"));
 				returnDetails.setCustomerMobileNo(rs.getLong("CUST_MOB_NO"));
+				returnDetails.setCustomerId(rs.getInt("CUST_ID"));
 				returnDetails.setCustomerName(rs.getString("CUSTOMER_NAME"));
 				returnDetails.setNoOfItems(rs.getInt("NO_OF_ITEMS"));
 				returnDetails.setTotalQuantity(rs.getDouble("TOTAL_QTY"));
@@ -382,6 +385,7 @@ public class SalesReturnRepository {
 				returnDetails.setGstType(rs.getString("GST_TYPE"));
 				returnDetails.setGstAmount(rs.getDouble("GST_AMOUNT"));
 				returnDetails.setCreatedBy(rs.getString("CREATED_BY"));
+				returnDetails.setCustomerId(rs.getInt("CUST_ID"));
 
 				returnDetailsList.add(returnDetails);
 			}

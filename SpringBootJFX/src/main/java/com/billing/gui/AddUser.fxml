@@ -61,10 +61,17 @@
                               <Label fx:id="lblPasswordErrorMsg" styleClass="errorLabel" />
                            </children>
                         </VBox>
-						 <Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="6" />
-                        <ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="7">
+                        <Label styleClass="requiredInput" text="Confirm Password :" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
+                        <VBox GridPane.columnIndex="1" GridPane.rowIndex="6">
+                           <children>
+                              <PasswordField fx:id="txtConfirmPassword" />
+                              <Label fx:id="lblConfirmPasswordErrorMsg" styleClass="errorLabel" wrapText="true" />
+                           </children>
+                        </VBox>
+						 <Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="7" />
+                        <ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="8">
                            <buttons>
-                              <Button fx:id="btnAddUser" mnemonicParsing="false" onAction="#onAddCommand" text="Add" />
+                              <Button fx:id="btnAddUser" defaultButton="true" mnemonicParsing="false" onAction="#onAddCommand" text="Add" />
                               <Button fx:id="btnClose" cancelButton="true" mnemonicParsing="true" onAction="#onCloseCommand" text="_Close" />
                            </buttons>
                         </ButtonBar>
@@ -77,6 +84,7 @@
                         <ColumnConstraints prefWidth="250.0" />
                      </columnConstraints>
                      <rowConstraints>
+                        <RowConstraints />
                         <RowConstraints />
                         <RowConstraints />
                         <RowConstraints />

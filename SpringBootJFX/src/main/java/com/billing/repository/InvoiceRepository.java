@@ -51,20 +51,20 @@ public class InvoiceRepository {
 
 	private static final String INS_BILL_DETAILS = "INSERT INTO CUSTOMER_BILL_DETAILS (BILL_NUMBER,BILL_DATE_TIME,CUST_MOB_NO,CUST_NAME,NO_OF_ITEMS,"
 			+ "BILL_QUANTITY,TOTAL_AMOUNT,PAYMENT_MODE,"
-			+ "BILL_DISCOUNT,BILL_DISC_AMOUNT,NET_SALES_AMOUNT,BILL_PURCHASE_AMT,GST_TYPE,GST_AMOUNT,CREATED_BY,LAST_UPDATED)"
-			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			+ "BILL_DISCOUNT,BILL_DISC_AMOUNT,NET_SALES_AMOUNT,BILL_PURCHASE_AMT,GST_TYPE,GST_AMOUNT,CREATED_BY,LAST_UPDATED,CUST_ID)"
+			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static final String UPDATE_BILL_DETAILS = "UPDATE CUSTOMER_BILL_DETAILS SET BILL_DATE_TIME=?,CUST_MOB_NO=?,CUST_NAME=?,NO_OF_ITEMS=?,BILL_QUANTITY=?,TOTAL_AMOUNT=?,PAYMENT_MODE=?,BILL_DISCOUNT=?,BILL_DISC_AMOUNT =?,"
-			+ "NET_SALES_AMOUNT=? ,BILL_PURCHASE_AMT=?,GST_TYPE=?,GST_AMOUNT=?,CREATED_BY=?,LAST_UPDATED=? WHERE BILL_NUMBER=?";
+			+ "NET_SALES_AMOUNT=? ,BILL_PURCHASE_AMT=?,GST_TYPE=?,GST_AMOUNT=?,CREATED_BY=?,LAST_UPDATED=?,CUST_ID=? WHERE BILL_NUMBER=?";
 
 	private static final String INS_BILL_ITEM_DETAILS = "INSERT INTO BILL_ITEM_DETAILS (BILL_NUMBER,ITEM_NUMBER,ITEM_NAME,ITEM_MRP,ITEM_RATE,"
 			+ "ITEM_QTY,ITEM_AMOUNT,ITEM_PURCHASE_AMT,GST_RATE,GST_NAME,CGST,SGST,GST_AMOUNT,GST_TAXABLE_AMT,GST_INCLUSIVE_FLAG,DISC_PERCENT,DISC_AMOUNT,UNIT,HSN) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static final String SELECT_BILL_WITH_BILLNO_AND_DATE = "SELECT CBD.*,CD.CUST_NAME AS CUSTOMER_NAME FROM CUSTOMER_BILL_DETAILS CBD,CUSTOMER_DETAILS CD WHERE CBD.BILL_NUMBER=? AND"
-			+ " CBD.CUST_MOB_NO=CD.CUST_MOB_NO AND DATE(BILL_DATE_TIME) BETWEEN ? AND ?";
+			+ " CBD.CUST_ID=CD.CUST_ID AND DATE(BILL_DATE_TIME) BETWEEN ? AND ?";
 
 	private static final String SELECT_BILL_WITH_BILLNO = "SELECT CBD.*,CD.CUST_NAME AS CUSTOMER_NAME FROM CUSTOMER_BILL_DETAILS CBD,CUSTOMER_DETAILS CD WHERE CBD.BILL_NUMBER=? AND"
-			+ " CBD.CUST_MOB_NO=CD.CUST_MOB_NO";
+			+ " CBD.CUST_ID=CD.CUST_ID";
 
 	private static final String SELECT_ITEM_DETAILS = "SELECT BID.*,PD.PRODUCT_NAME FROM BILL_ITEM_DETAILS BID,PRODUCT_DETAILS PD WHERE BILL_NUMBER=? AND BID.ITEM_NUMBER=PD.PRODUCT_ID";
 
@@ -74,7 +74,7 @@ public class InvoiceRepository {
 
 	private static final String DELETE_BILL_ITEM_DETAILS = "DELETE FROM BILL_ITEM_DETAILS WHERE BILL_NUMBER=?";
 
-	private static final String GET_BILL_DETAILS_WITHIN_DATE_RANGE = "SELECT CBD.*,CD.CUST_NAME AS CUSTOMER_NAME FROM CUSTOMER_BILL_DETAILS CBD,CUSTOMER_DETAILS CD WHERE DATE(CBD.BILL_DATE_TIME) BETWEEN ? AND ?  AND CBD.CUST_MOB_NO=CD.CUST_MOB_NO ORDER BY CBD.BILL_DATE_TIME DESC";
+	private static final String GET_BILL_DETAILS_WITHIN_DATE_RANGE = "SELECT CBD.*,CD.CUST_NAME AS CUSTOMER_NAME FROM CUSTOMER_BILL_DETAILS CBD,CUSTOMER_DETAILS CD WHERE DATE(CBD.BILL_DATE_TIME) BETWEEN ? AND ?  AND CBD.CUST_ID=CD.CUST_ID ORDER BY CBD.BILL_DATE_TIME DESC";
 
 	// Save Invoice Details
 	public StatusDTO saveInvoiceDetails(BillDetails bill) {
@@ -104,6 +104,7 @@ public class InvoiceRepository {
 				stmt.setDouble(14, bill.getGstAmount());
 				stmt.setString(15, bill.getCreatedBy());
 				stmt.setString(16, appUtils.getCurrentTimestamp());
+				stmt.setInt(17, bill.getCustomerId());
 				int i = stmt.executeUpdate();
 				if (i > 0) {
 					status.setStatusCode(0);
@@ -213,6 +214,7 @@ public class InvoiceRepository {
 				billDetails.setGstAmount(rs.getDouble("GST_AMOUNT"));
 				billDetails.setCreatedBy(rs.getString("CREATED_BY"));
 				billDetails.setLastUpdated(rs.getString("LAST_UPDATED"));
+				billDetails.setCustomerId(rs.getInt("CUST_ID"));
 
 				billDetailsList.add(billDetails);
 			}
@@ -303,6 +305,7 @@ public class InvoiceRepository {
 				billDetails.setPurchaseAmt(rs.getDouble("BILL_PURCHASE_AMT"));
 				billDetails.setGstType(rs.getString("GST_TYPE"));
 				billDetails.setGstAmount(rs.getDouble("GST_AMOUNT"));
+				billDetails.setCustomerId(rs.getInt("CUST_ID"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -339,6 +342,7 @@ public class InvoiceRepository {
 				billDetails.setPurchaseAmt(rs.getDouble("BILL_PURCHASE_AMT"));
 				billDetails.setGstType(rs.getString("GST_TYPE"));
 				billDetails.setGstAmount(rs.getDouble("GST_AMOUNT"));
+				billDetails.setCustomerId(rs.getInt("CUST_ID"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -403,7 +407,8 @@ public class InvoiceRepository {
 				billDetails.setGstAmount(rs.getDouble("GST_AMOUNT"));
 				billDetails.setCreatedBy(rs.getString("CREATED_BY"));
 				billDetails.setLastUpdated(rs.getString("LAST_UPDATED"));
-
+				billDetails.setCustomerId(rs.getInt("CUST_ID"));
+				
 				billDetailsList.add(billDetails);
 			}
 		} catch (Exception e) {
@@ -418,7 +423,7 @@ public class InvoiceRepository {
 	private String getQuery(InvoiceSearchCriteria criteria) {
 
 		StringBuilder selectQuery = new StringBuilder(
-				"SELECT CBD.*,CD.CUST_NAME AS CUSTOMER_NAME FROM CUSTOMER_BILL_DETAILS CBD,CUSTOMER_DETAILS CD WHERE  CBD.CUST_MOB_NO=CD.CUST_MOB_NO AND ");
+				"SELECT CBD.*,CD.CUST_NAME AS CUSTOMER_NAME FROM CUSTOMER_BILL_DETAILS CBD,CUSTOMER_DETAILS CD WHERE  CBD.CUST_ID=CD.CUST_ID AND ");
 
 		if (criteria.getInvoiceNumber() != null) {
 			selectQuery.append(" CBD.BILL_NUMBER = ").append(criteria.getInvoiceNumber());
@@ -555,7 +560,8 @@ public class InvoiceRepository {
 				stmt.setDouble(13, bill.getGstAmount());
 				stmt.setString(14, bill.getCreatedBy());
 				stmt.setString(15, appUtils.getCurrentTimestamp());
-				stmt.setInt(16, bill.getBillNumber());
+				stmt.setInt(16,bill.getCustomerId());
+				stmt.setInt(17, bill.getBillNumber());
 				int i = stmt.executeUpdate();
 				if (i > 0) {
 					status.setStatusCode(0);

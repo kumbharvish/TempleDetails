@@ -31,7 +31,7 @@ public class CustomerRepository {
 
 	private static final Logger logger = LoggerFactory.getLogger(CustomerRepository.class);
 
-	private static final String VALIDATE_USER_SQL = "SELECT FIRST_NAME,LAST_NAME,USER_ID,USERNAME,USER_TYPE FROM "
+	private static final String VALIDATE_USER = "SELECT FIRST_NAME,LAST_NAME,USER_ID,USERNAME,USER_TYPE FROM "
 			+ "APP_USER_DETAILS WHERE USERNAME=? AND PASSWORD=?";
 
 	private static final String GET_USER_DEATILS = "SELECT FIRST_NAME,LAST_NAME,USER_ID,USERNAME,MOBILE_NO,EMAIL FROM "
@@ -43,27 +43,29 @@ public class CustomerRepository {
 
 	private static final String UPDATE_USER_DETAILS = "UPDATE APP_USER_DETAILS SET FIRST_NAME=?,LAST_NAME=?,EMAIL=?,MOBILE_NO=? WHERE USER_ID=?";
 
-	private static final String GET_CUSTOMER = "SELECT * FROM " + "CUSTOMER_DETAILS WHERE CUST_MOB_NO=?";
+	private static final String GET_CUSTOMER = "SELECT * FROM CUSTOMER_DETAILS WHERE CUST_ID=?";
 
 	private static final String SEARCH_CUSTOMER = "SELECT * FROM "
 			+ "CUSTOMER_DETAILS WHERE CONCAT(CUST_MOB_NO,CUST_NAME) LIKE ?";
 
 	private static final String GET_ALL_CUSTOMERS = "SELECT * FROM CUSTOMER_DETAILS";
 
-	private static final String INS_CUSTOMER = "INSERT INTO CUSTOMER_DETAILS (CUST_MOB_NO,CUST_NAME,CUST_EMAIL,CUST_CITY,ENTRY_DATE,LAST_UPDATE,GSTIN,ADDRESS,STATE) "
-			+ "VALUES(?,?,?,?,?,?,?,?,?)";
+	private static final String INS_CUSTOMER = "INSERT INTO CUSTOMER_DETAILS (CUST_ID,CUST_MOB_NO,CUST_NAME,CUST_EMAIL,CUST_CITY,ENTRY_DATE,LAST_UPDATE,GSTIN,ADDRESS,STATE) "
+			+ "VALUES(?,?,?,?,?,?,?,?,?,?)";
 
-	private static final String INS_CUSTOMER_PAY_HISTORY = "INSERT INTO CUSTOMER_PAYMENT_HISTORY (CUST_MOB_NO,TIMESTAMP,AMOUNT,STATUS,NARRATION,CREDIT,DEBIT) "
+	private static final String INS_CUSTOMER_PAY_HISTORY = "INSERT INTO CUSTOMER_PAYMENT_HISTORY (CUST_ID,TIMESTAMP,AMOUNT,STATUS,NARRATION,CREDIT,DEBIT) "
 			+ "VALUES(?,?,?,?,?,?,?)";
 
-	private static final String UPDATE_CUST_BALANCE = "UPDATE CUSTOMER_DETAILS SET BALANCE_AMOUNT=BALANCE_AMOUNT+? WHERE CUST_MOB_NO=? ";
+	private static final String UPDATE_CUST_BALANCE = "UPDATE CUSTOMER_DETAILS SET BALANCE_AMOUNT=BALANCE_AMOUNT+? WHERE CUST_ID=? ";
 
-	private static final String SETTLEUP_CUST_BALANCE = "UPDATE CUSTOMER_DETAILS SET BALANCE_AMOUNT=BALANCE_AMOUNT-? WHERE CUST_MOB_NO=? ";
+	private static final String SETTLEUP_CUST_BALANCE = "UPDATE CUSTOMER_DETAILS SET BALANCE_AMOUNT=BALANCE_AMOUNT-? WHERE CUST_ID=? ";
 
-	private static final String DELETE_CUSTOMER = "DELETE FROM  CUSTOMER_DETAILS WHERE CUST_MOB_NO=? ";
+	private static final String DELETE_CUSTOMER = "DELETE FROM  CUSTOMER_DETAILS WHERE CUST_ID=? ";
 
-	private static final String UPDATE_CUSTOMER = "UPDATE CUSTOMER_DETAILS SET CUST_NAME=?,CUST_EMAIL=?,CUST_CITY=?,LAST_UPDATE=?,GSTIN=?,ADDRESS=?,STATE=? WHERE "
-			+ "CUST_MOB_NO=?";
+	private static final String UPDATE_CUSTOMER = "UPDATE CUSTOMER_DETAILS SET CUST_MOB_NO=?,CUST_NAME=?,CUST_EMAIL=?,CUST_CITY=?,LAST_UPDATE=?,GSTIN=?,ADDRESS=?,STATE=? WHERE "
+			+ "CUST_ID=?";
+
+	private static final String NEW_CUST_ID = "SELECT (MAX(CUST_ID)+1) AS CUST_ID FROM CUSTOMER_DETAILS ";
 
 	public UserDetails validateUser(String userName, String password) {
 		Connection conn = null;
@@ -71,7 +73,7 @@ public class CustomerRepository {
 		UserDetails userDetails = null;
 		try {
 			conn = dbUtils.getConnection();
-			stmt = conn.prepareStatement(VALIDATE_USER_SQL);
+			stmt = conn.prepareStatement(VALIDATE_USER);
 			stmt.setString(1, userName);
 			stmt.setString(2, appUtils.enc(password));
 			ResultSet rs = stmt.executeQuery();
@@ -205,14 +207,14 @@ public class CustomerRepository {
 		return isDetailsUpdated;
 	}
 
-	public Customer getCustomerDetails(long custMobileNumber) {
+	public Customer getCustomerDetails(int custId) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		Customer customer = null;
 		try {
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(GET_CUSTOMER);
-			stmt.setLong(1, custMobileNumber);
+			stmt.setInt(1, custId);
 			ResultSet rs = stmt.executeQuery();
 
 			if (rs.next()) {
@@ -227,6 +229,7 @@ public class CustomerRepository {
 				customer.setGstin(rs.getString("GSTIN"));
 				customer.setAddress(rs.getString("ADDRESS"));
 				customer.setState(rs.getString("STATE"));
+				customer.setCustId(rs.getInt("CUST_ID"));
 			}
 			rs.close();
 		} catch (Exception e) {
@@ -245,15 +248,16 @@ public class CustomerRepository {
 		try {
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(INS_CUSTOMER);
-			stmt.setLong(1, customer.getCustMobileNumber());
-			stmt.setString(2, customer.getCustName());
-			stmt.setString(3, customer.getCustEmail());
-			stmt.setString(4, customer.getCustCity());
-			stmt.setString(5, appUtils.getCurrentTimestamp());
+			stmt.setInt(1, customer.getCustId());
+			stmt.setLong(2, customer.getCustMobileNumber());
+			stmt.setString(3, customer.getCustName());
+			stmt.setString(4, customer.getCustEmail());
+			stmt.setString(5, customer.getCustCity());
 			stmt.setString(6, appUtils.getCurrentTimestamp());
-			stmt.setString(7, customer.getGstin());
-			stmt.setString(8, customer.getAddress());
-			stmt.setString(9, customer.getState());
+			stmt.setString(7, appUtils.getCurrentTimestamp());
+			stmt.setString(8, customer.getGstin());
+			stmt.setString(9, customer.getAddress());
+			stmt.setString(10, customer.getState());
 
 			int records = stmt.executeUpdate();
 
@@ -272,13 +276,13 @@ public class CustomerRepository {
 	}
 
 	// Add amount to customer balance
-	private boolean addPendingPaymentToCustomer(Connection conn, long custMobileNo, double balance, String narration) {
+	private boolean addPendingPaymentToCustomer(Connection conn, int custId, double balance, String narration) {
 		PreparedStatement stmt = null;
 		boolean status = false;
 		try {
 			stmt = conn.prepareStatement(UPDATE_CUST_BALANCE);
 			stmt.setDouble(1, balance);
-			stmt.setLong(2, custMobileNo);
+			stmt.setLong(2, custId);
 
 			int records = stmt.executeUpdate();
 
@@ -294,13 +298,13 @@ public class CustomerRepository {
 	}
 
 	// Settle Up Customer Balance
-	public boolean settleUpCustomerBalance(Connection conn, long custMobileNo, double balance, String narration) {
+	public boolean settleUpCustomerBalance(Connection conn, int custId, double balance, String narration) {
 		PreparedStatement stmt = null;
 		boolean status = false;
 		try {
 			stmt = conn.prepareStatement(SETTLEUP_CUST_BALANCE);
 			stmt.setDouble(1, balance);
-			stmt.setLong(2, custMobileNo);
+			stmt.setLong(2, custId);
 
 			int records = stmt.executeUpdate();
 
@@ -316,14 +320,14 @@ public class CustomerRepository {
 	}
 
 	// Delete Customer
-	public StatusDTO deleteCustomer(long custMobileNo) {
+	public StatusDTO deleteCustomer(int custId) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		StatusDTO status = new StatusDTO();
 		try {
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(DELETE_CUSTOMER);
-			stmt.setLong(1, custMobileNo);
+			stmt.setInt(1, custId);
 
 			int records = stmt.executeUpdate();
 
@@ -350,14 +354,15 @@ public class CustomerRepository {
 		try {
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(UPDATE_CUSTOMER);
-			stmt.setString(1, customer.getCustName());
-			stmt.setString(2, customer.getCustEmail());
-			stmt.setString(3, customer.getCustCity());
-			stmt.setString(4, appUtils.getCurrentTimestamp());
-			stmt.setString(5, customer.getGstin());
-			stmt.setString(6, customer.getAddress());
-			stmt.setString(7, customer.getState());
-			stmt.setLong(8, customer.getCustMobileNumber());
+			stmt.setLong(1, customer.getCustMobileNumber());
+			stmt.setString(2, customer.getCustName());
+			stmt.setString(3, customer.getCustEmail());
+			stmt.setString(4, customer.getCustCity());
+			stmt.setString(5, appUtils.getCurrentTimestamp());
+			stmt.setString(6, customer.getGstin());
+			stmt.setString(7, customer.getAddress());
+			stmt.setString(8, customer.getState());
+			stmt.setInt(9, customer.getCustId());
 
 			int records = stmt.executeUpdate();
 
@@ -434,6 +439,7 @@ public class CustomerRepository {
 				customer.setGstin(rs.getString("GSTIN"));
 				customer.setAddress(rs.getString("ADDRESS"));
 				customer.setState(rs.getString("STATE"));
+				customer.setCustId(rs.getInt("CUST_ID"));
 
 				customerList.add(customer);
 				Comparator<Customer> cp = Customer.getComparator(Customer.SortParameter.CUST_BALANCE_DESCENDING);
@@ -449,18 +455,18 @@ public class CustomerRepository {
 		return customerList;
 	}
 
-	public StatusDTO addCustomerPaymentHistory(Long customerMobile, double creditAmount, double debitAmount,
+	public StatusDTO addCustomerPaymentHistory(int custId, double creditAmount, double debitAmount,
 			String flag, String narration) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		boolean balaceUpdated = false;
 		StatusDTO status = new StatusDTO(-1);
 		try {
-			Customer customer = getCustomerDetails(customerMobile);
+			Customer customer = getCustomerDetails(custId);
 			conn = dbUtils.getConnection();
 			conn.setAutoCommit(false);
 			stmt = conn.prepareStatement(INS_CUSTOMER_PAY_HISTORY);
-			stmt.setLong(1, customerMobile);
+			stmt.setInt(1, custId);
 			stmt.setString(2, appUtils.getCurrentTimestamp());
 			if (AppConstants.CREDIT.equals(flag)) {
 				stmt.setDouble(3, customer.getBalanceAmt() + creditAmount);
@@ -479,9 +485,9 @@ public class CustomerRepository {
 				status.setStatusCode(0);
 				System.out.println("Add customer payment history");
 				if ("CREDIT".equals(flag)) {
-					balaceUpdated = addPendingPaymentToCustomer(conn, customerMobile, creditAmount, narration);
+					balaceUpdated = addPendingPaymentToCustomer(conn, custId, creditAmount, narration);
 				} else {
-					balaceUpdated = settleUpCustomerBalance(conn, customerMobile, debitAmount, narration);
+					balaceUpdated = settleUpCustomerBalance(conn, custId, debitAmount, narration);
 				}
 			}
 			if (status.getStatusCode() == 0 && balaceUpdated) {
@@ -501,5 +507,28 @@ public class CustomerRepository {
 			DBUtils.closeConnection(stmt, conn);
 		}
 		return status;
+	}
+
+	public Integer getNewCustId() {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		Integer newBillNumber = 0;
+		try {
+			conn = dbUtils.getConnection();
+			stmt = conn.prepareStatement(NEW_CUST_ID);
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				newBillNumber = rs.getInt("CUST_ID");
+				if (newBillNumber == 0) {
+					newBillNumber = 1;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return -1;
+		} finally {
+			DBUtils.closeConnection(stmt, conn);
+		}
+		return newBillNumber;
 	}
 }

@@ -466,7 +466,7 @@ public class SalesReturnController extends AppContext implements TabContent {
 		bill.setItemDetails(itemList);
 		bill.setCopyItemDetails(itemList);
 		bill.setCopyNetSalesAmt(bill.getNetSalesAmt());
-		bill.setCopyCustMobile(bill.getCustomerMobileNo());
+		bill.setCopyCustId(bill.getCustomerId());
 		bill.setCopyPaymode(bill.getPaymentMode());
 		for (ItemDetails item : bill.getItemDetails()) {
 			itemQtyMap.put(item.getItemNo(), item.getQuantity());
@@ -620,7 +620,7 @@ public class SalesReturnController extends AppContext implements TabContent {
 		}
 
 		if ("PENDING".equals(bill.getPaymentMode())) {
-			Customer cust = customerService.getCustomer(bill.getCustomerMobileNo());
+			Customer cust = customerService.getCustomer(bill.getCustomerId());
 			double returnTotalAmt = Double
 					.valueOf(IndianCurrencyFormatting.removeFormattingWithCurrency(txtReturnTotalAmount.getText()));
 			if (cust.getBalanceAmt() < returnTotalAmt) {

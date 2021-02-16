@@ -13,6 +13,8 @@ public class ReturnDetails {
 	private int invoiceNumber;
 
 	private long customerMobileNo;
+	
+	private int customerId;
 
 	private String invoiceDate;
 
@@ -212,6 +214,14 @@ public class ReturnDetails {
 
 	public void setNewInvoiceNetSalesAmt(double newInvoiceNetSalesAmt) {
 		this.newInvoiceNetSalesAmt = newInvoiceNetSalesAmt;
+	}
+
+	public int getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(int customerId) {
+		this.customerId = customerId;
 	}
 
 }

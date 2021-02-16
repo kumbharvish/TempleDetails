@@ -29,14 +29,14 @@ public class CustomerHistoryRepository {
 
 	private static final Logger logger = LoggerFactory.getLogger(CustomerHistoryRepository.class);
 
-	private static final String GET_ALL_CUSTOMERS_HISTORY = "SELECT CPH.*,CD.CUST_NAME AS CUSTOMER_NAME FROM CUSTOMER_PAYMENT_HISTORY CPH,CUSTOMER_DETAILS CD WHERE CPH.CUST_MOB_NO=? AND CPH.CUST_MOB_NO=CD.CUST_MOB_NO ORDER BY TIMESTAMP DESC";
+	private static final String GET_ALL_CUSTOMERS_HISTORY = "SELECT CPH.*,CD.CUST_NAME AS CUSTOMER_NAME FROM CUSTOMER_PAYMENT_HISTORY CPH,CUSTOMER_DETAILS CD WHERE CPH.CUST_ID=? AND CPH.CUST_ID=CD.CUST_ID ORDER BY TIMESTAMP DESC";
 
-	private static final String GET_ALL_CUST_BILLS = "SELECT CBD.*,CD.CUST_NAME AS CUSTOMER_NAME FROM CUSTOMER_BILL_DETAILS CBD,CUSTOMER_DETAILS CD WHERE CBD.CUST_MOB_NO=? AND CBD.CUST_MOB_NO=CD.CUST_MOB_NO ORDER BY BILL_DATE_TIME DESC";
+	private static final String GET_ALL_CUST_BILLS = "SELECT CBD.*,CD.CUST_NAME AS CUSTOMER_NAME FROM CUSTOMER_BILL_DETAILS CBD,CUSTOMER_DETAILS CD WHERE CBD.CUST_ID=? AND CBD.CUST_ID=CD.CUST_ID ORDER BY BILL_DATE_TIME DESC";
 
-	private static final String CUSTOMER_WISE_PROFIT = "SELECT CUST_MOB_NO,CUST_NAME,SUM(NET_SALES_AMOUNT) AS SUM_BILL_AMT ,SUM(BILL_PURCHASE_AMT)AS SUM_BILL_PUR_AMT,SUM(NO_OF_ITEMS) AS TOTAL_NO_OF_ITEMS,SUM(BILL_QUANTITY)  AS TOTAL_QUANTITY FROM CUSTOMER_BILL_DETAILS WHERE DATE(BILL_DATE_TIME) BETWEEN ? AND ? GROUP BY CUST_MOB_NO";
+	private static final String CUSTOMER_WISE_PROFIT = "SELECT CUST_MOB_NO,CUST_NAME,SUM(NET_SALES_AMOUNT) AS SUM_BILL_AMT ,SUM(BILL_PURCHASE_AMT)AS SUM_BILL_PUR_AMT,SUM(NO_OF_ITEMS) AS TOTAL_NO_OF_ITEMS,SUM(BILL_QUANTITY)  AS TOTAL_QUANTITY FROM CUSTOMER_BILL_DETAILS WHERE DATE(BILL_DATE_TIME) BETWEEN ? AND ? GROUP BY CUST_ID";
 
 	// Get All Customers Payment History
-	public List<CustomerPaymentHistory> getAllCustomersPayHistory(Long customerMobile) {
+	public List<CustomerPaymentHistory> getAllCustomersPayHistory(int customerId) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		CustomerPaymentHistory customer = null;
@@ -44,7 +44,7 @@ public class CustomerHistoryRepository {
 		try {
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(GET_ALL_CUSTOMERS_HISTORY);
-			stmt.setLong(1, customerMobile);
+			stmt.setLong(1, customerId);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				customer = new CustomerPaymentHistory();
@@ -56,7 +56,8 @@ public class CustomerHistoryRepository {
 				customer.setNarration(rs.getString("NARRATION"));
 				customer.setCredit(rs.getDouble("CREDIT"));
 				customer.setDebit(rs.getDouble("DEBIT"));
-
+				customer.setCustId(rs.getInt("CUST_ID"));
+				
 				customerList.add(customer);
 			}
 			rs.close();
@@ -70,17 +71,17 @@ public class CustomerHistoryRepository {
 	}
 
 	// Get Bill Details
-	public List<BillDetails> getBillDetails(Long customerMobile) {
+	public List<BillDetails> getBillDetails(Integer customerId) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		BillDetails billDetails = null;
 		List<BillDetails> billDetailsList = new ArrayList<BillDetails>();
 		try {
-			if (customerMobile != null) {
+			if (customerId != null) {
 				conn = dbUtils.getConnection();
 				stmt = conn.prepareStatement(GET_ALL_CUST_BILLS);
 				System.out.println("GET_ALL_CUST_BILLS " + GET_ALL_CUST_BILLS);
-				stmt.setLong(1, customerMobile);
+				stmt.setLong(1, customerId);
 				ResultSet rs = stmt.executeQuery();
 
 				while (rs.next()) {
@@ -99,7 +100,8 @@ public class CustomerHistoryRepository {
 					billDetails.setPurchaseAmt(rs.getDouble("BILL_PURCHASE_AMT"));
 					billDetails.setGstType(rs.getString("GST_TYPE"));
 					billDetails.setGstAmount(rs.getDouble("GST_AMOUNT"));
-
+					billDetails.setCustomerId(rs.getInt("CUST_ID"));
+					
 					billDetailsList.add(billDetails);
 				}
 			}

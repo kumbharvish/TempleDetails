@@ -38,35 +38,34 @@
 							<content>
 								<GridPane fx:id="gridPane" alignment="TOP_CENTER" hgap="20.0" vgap="15.0">
 									<children>
-										<Label styleClass="note" text="Mobile number update not allowed" GridPane.columnIndex="1" />
-										<Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="requiredInput" text="Mobile Number :" textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
-										<VBox spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.vgrow="NEVER">
+										<Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="requiredInput" text="Mobile Number :" textAlignment="RIGHT" GridPane.halignment="RIGHT" />
+										<VBox spacing="3.0" GridPane.columnIndex="1" GridPane.vgrow="NEVER">
 											<children>
 												<TextField fx:id="txtMobileNo" />
 												<Label fx:id="lblMobileNoErrMsg" styleClass="errorLabel" visible="false" VBox.vgrow="NEVER" />
 											</children>
 										</VBox>
-										<Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="requiredInput" text="Name :" textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-										<VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
+										<Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="requiredInput" text="Name :" textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+										<VBox GridPane.columnIndex="1" GridPane.rowIndex="1">
 											<children>
 												<TextField fx:id="txtCustName" />
 												<Label fx:id="lblCustNameErrMsg" styleClass="errorLabel" />
 											</children>
 										</VBox>	
-										<Label styleClass="nodeLabel" text="Address :" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
-                            			  <TextField fx:id="txtAddress" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                            			  	<Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="nodeLabel" text="City :" textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
-										<TextField fx:id="txtCity" GridPane.columnIndex="1" GridPane.rowIndex="4" />	
-										<Label styleClass="nodeLabel" text="State :" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
-                              			<TextField fx:id="txtState" GridPane.columnIndex="1" GridPane.rowIndex="5" />						  		
-										<Label alignment="TOP_RIGHT" styleClass="nodeLabel" text="Email :" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
-										<TextField fx:id="txtEmail" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-										<Label styleClass="nodeLabel" text="GSTIN :" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
-                              			<TextField fx:id="txtGstin" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+										<Label styleClass="nodeLabel" text="Address :" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                            			  <TextField fx:id="txtAddress" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                            			  	<Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="nodeLabel" text="City :" textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+										<TextField fx:id="txtCity" GridPane.columnIndex="1" GridPane.rowIndex="3" />	
+										<Label styleClass="nodeLabel" text="State :" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+                              			<TextField fx:id="txtState" GridPane.columnIndex="1" GridPane.rowIndex="4" />						  		
+										<Label alignment="TOP_RIGHT" styleClass="nodeLabel" text="Email :" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
+										<TextField fx:id="txtEmail" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+										<Label styleClass="nodeLabel" text="GSTIN :" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
+                              			<TextField fx:id="txtGstin" GridPane.columnIndex="1" GridPane.rowIndex="6" />
 
-										<Separator GridPane.columnSpan="2" GridPane.rowIndex="8" />
+										<Separator GridPane.columnSpan="2" GridPane.rowIndex="7" />
 
-										<ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="9">
+										<ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="8">
 											<buttons>
 												<Button fx:id="btnAdd" defaultButton="true" mnemonicParsing="true" onAction="#onAddCommand" text="Add" />
 												<Button fx:id="btnUpdate" cancelButton="true" mnemonicParsing="true" onAction="#onUpdateCommand" text="Update" />
@@ -81,7 +80,6 @@
 										<ColumnConstraints hgrow="ALWAYS" />
 									</columnConstraints>
 									<rowConstraints>
-										<RowConstraints minHeight="10.0" />
 										<RowConstraints />
 										<RowConstraints />
                               <RowConstraints minHeight="10.0" />

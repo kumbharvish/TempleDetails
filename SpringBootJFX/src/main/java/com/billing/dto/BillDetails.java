@@ -10,6 +10,8 @@ public class BillDetails {
 	
 	private long customerMobileNo;
 	
+	private int customerId;
+	
 	private String customerName;
 	
 	private List<ItemDetails> itemDetails;
@@ -42,7 +44,7 @@ public class BillDetails {
 	
 	private double copyNetSalesAmt;
 	
-	private long copyCustMobile;
+	private int copyCustId;
 	
 	private String copyPaymode;
 	
@@ -212,14 +214,6 @@ public class BillDetails {
 		this.isItemsEdited = isItemsEdited;
 	}
 
-	public long getCopyCustMobile() {
-		return copyCustMobile;
-	}
-
-	public void setCopyCustMobile(long copyCustMobile) {
-		this.copyCustMobile = copyCustMobile;
-	}
-
 	public String getCopyPaymode() {
 		return copyPaymode;
 	}
@@ -242,5 +236,21 @@ public class BillDetails {
 
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
+	}
+
+	public int getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(int customerId) {
+		this.customerId = customerId;
+	}
+
+	public int getCopyCustId() {
+		return copyCustId;
+	}
+
+	public void setCopyCustId(int copyCustId) {
+		this.copyCustId = copyCustId;
 	}
 }

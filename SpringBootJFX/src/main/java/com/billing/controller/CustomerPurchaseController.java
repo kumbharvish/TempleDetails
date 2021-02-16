@@ -63,6 +63,8 @@ public class CustomerPurchaseController extends AppContext implements TabContent
 
 	@Autowired
 	AppUtils appUtils;
+	
+	private int custId;
 
 	private SortedSet<String> entries;
 
@@ -205,9 +207,8 @@ public class CustomerPurchaseController extends AppContext implements TabContent
 	@Override
 	public boolean loadData() {
 		if (!txtCustName.getText().equals("")) {
-			String custMobile = txtCustomer.getText().split(" : ")[0];
 			txtCustomer.setText("");
-			List<BillDetails> list = customerHistoryService.getBillDetails(Long.valueOf(custMobile));
+			List<BillDetails> list = customerHistoryService.getBillDetails(custId);
 			ObservableList<BillDetails> tableData = FXCollections.observableArrayList();
 			tableData.addAll(list);
 			tableView.setItems(tableData);
@@ -263,6 +264,7 @@ public class CustomerPurchaseController extends AppContext implements TabContent
 		}
 
 		if (cust != null) {
+			custId = cust.getCustId();
 			txtCustName.setText(cust.getCustName());
 			txtCity.setText(cust.getCustCity());
 			txtEmail.setText(cust.getCustEmail());

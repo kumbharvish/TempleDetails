@@ -27,7 +27,7 @@ public class CustomerService implements AppService<Customer> {
 
 	@Override
 	public StatusDTO delete(Customer customer) {
-		return customerRepository.deleteCustomer(customer.getCustMobileNumber());
+		return customerRepository.deleteCustomer(customer.getCustId());
 	}
 
 	@Override
@@ -35,12 +35,16 @@ public class CustomerService implements AppService<Customer> {
 		return customerRepository.getAllCustomers();
 	}
 
-	public StatusDTO addCustomerPaymentHistory(Long customerMobile, double creditAmount, double debitAmount,
+	public StatusDTO addCustomerPaymentHistory(int custId, double creditAmount, double debitAmount,
 			String flag, String narration) {
-		return customerRepository.addCustomerPaymentHistory(customerMobile, creditAmount, debitAmount, flag, narration);
+		return customerRepository.addCustomerPaymentHistory(custId, creditAmount, debitAmount, flag, narration);
 	}
 
-	public Customer getCustomer(long custMobileNumber) {
-		return customerRepository.getCustomerDetails(custMobileNumber);
+	public Customer getCustomer(int custId) {
+		return customerRepository.getCustomerDetails(custId);
+	}
+
+	public int getCustId() {
+		return customerRepository.getNewCustId();
 	}
 }

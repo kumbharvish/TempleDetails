@@ -657,7 +657,7 @@ public class EditInvoiceController extends AppContext implements TabContent {
 		bill.setItemDetails(itemList);
 		bill.setCopyItemDetails(itemList);
 		bill.setCopyNetSalesAmt(bill.getNetSalesAmt());
-		bill.setCopyCustMobile(bill.getCustomerMobileNo());
+		bill.setCopyCustId(bill.getCustomerId());
 		bill.setCopyPaymode(bill.getPaymentMode());
 		for (ItemDetails item : bill.getItemDetails()) {
 			Product p = appUtils.mapItemToProduct(item);
@@ -743,7 +743,7 @@ public class EditInvoiceController extends AppContext implements TabContent {
 		bill.setCopyItemDetails(this.bill.getCopyItemDetails());
 		bill.setCopyNetSalesAmt(this.bill.getCopyNetSalesAmt());
 		bill.setItemsEdited(this.bill.isItemsEdited());
-		bill.setCopyCustMobile(this.bill.getCopyCustMobile());
+		bill.setCopyCustId(this.bill.getCopyCustId());
 		bill.setCopyPaymode(this.bill.getCopyPaymode());
 		return bill;
 	}

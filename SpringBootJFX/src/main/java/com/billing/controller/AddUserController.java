@@ -17,7 +17,6 @@ import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import javafx.scene.control.PasswordField;
 
-
 @Controller
 public class AddUserController extends AppContext {
 
@@ -64,6 +63,12 @@ public class AddUserController extends AppContext {
 	@FXML
 	private Label lblPasswordErrorMsg;
 
+	@FXML
+	private PasswordField txtConfirmPassword;
+
+	@FXML
+	private Label lblConfirmPasswordErrorMsg;
+
 	public void loadData() {
 		currentStage = (Stage) lblPasswordErrorMsg.getScene().getWindow();
 		lblFirstNameErrorMsg.managedProperty().bind(lblFirstNameErrorMsg.visibleProperty());
@@ -76,6 +81,8 @@ public class AddUserController extends AppContext {
 		lblPasswordErrorMsg.visibleProperty().bind(lblPasswordErrorMsg.textProperty().length().greaterThanOrEqualTo(1));
 		lblUsernameErrorMsg.managedProperty().bind(lblUsernameErrorMsg.visibleProperty());
 		lblUsernameErrorMsg.visibleProperty().bind(lblUsernameErrorMsg.textProperty().length().greaterThanOrEqualTo(1));
+		lblConfirmPasswordErrorMsg.managedProperty().bind(lblConfirmPasswordErrorMsg.visibleProperty());
+		lblConfirmPasswordErrorMsg.visibleProperty().bind(lblConfirmPasswordErrorMsg.textProperty().length().greaterThanOrEqualTo(1));
 		txtMobile.textProperty().addListener(appUtils.getForceNumberListner());
 		txtFirstName.requestFocus();
 	}
@@ -119,6 +126,22 @@ public class AddUserController extends AppContext {
 		} else {
 			lblPasswordErrorMsg.setText("");
 		}
+		int confirmPassword = txtConfirmPassword.getText().trim().length();
+		if (confirmPassword == 0) {
+			alertHelper.beep();
+			lblConfirmPasswordErrorMsg.setText("Please enter confirm password");
+			txtConfirmPassword.requestFocus();
+			valid = false;
+		} else {
+			if (!txtConfirmPassword.getText().trim().equals(txtPassword.getText().trim())) {
+				alertHelper.beep();
+				lblConfirmPasswordErrorMsg.setText("Password and confirm password doesn't match");
+				txtConfirmPassword.requestFocus();
+				valid = false;
+			} else {
+				lblConfirmPasswordErrorMsg.setText("");
+			}
+		}
 		return valid;
 	}
 
@@ -154,7 +177,8 @@ public class AddUserController extends AppContext {
 		userDtls.setUserName(txtUsername.getText());
 		StatusDTO status = userService.add(userDtls);
 		if (status.getStatusCode() == 0) {
-			alertHelper.showInfoAlert(currentStage, "Add User", "Success", "User added successfully. Please login with new user");
+			alertHelper.showInfoAlert(currentStage, "Add User", "Success",
+					"User added successfully. Please login with new user");
 		} else {
 			if (status.getException().contains("UNIQUE")) {
 				alertHelper.beep();
@@ -165,7 +189,7 @@ public class AddUserController extends AppContext {
 				alertHelper.showDataSaveErrAlert(currentStage);
 				return false;
 			}
-			
+
 		}
 		return true;
 	}

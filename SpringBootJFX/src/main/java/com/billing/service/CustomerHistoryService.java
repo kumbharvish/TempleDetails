@@ -30,12 +30,12 @@ public class CustomerHistoryService {
 
 	}
 
-	public List<CustomerPaymentHistory> getAllCustomersPayHistory(Long customerMobile) {
-		return customerHistoryRepository.getAllCustomersPayHistory(customerMobile);
+	public List<CustomerPaymentHistory> getAllCustomersPayHistory(int customerId) {
+		return customerHistoryRepository.getAllCustomersPayHistory(customerId);
 	}
 
-	public List<BillDetails> getBillDetails(Long customerMobile) {
-		return customerHistoryRepository.getBillDetails(customerMobile);
+	public List<BillDetails> getBillDetails(int customerId) {
+		return customerHistoryRepository.getBillDetails(customerId);
 
 	}
 

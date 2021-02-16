@@ -4,6 +4,7 @@ import java.util.Comparator;
 
 public class Customer {
 
+	private int custId;
 	private long custMobileNumber;
 	private String custName;
 	private double balanceAmt;
@@ -124,6 +125,14 @@ public class Customer {
 
 	public void setNarration(String narration) {
 		this.narration = narration;
+	}
+
+	public int getCustId() {
+		return custId;
+	}
+
+	public void setCustId(int custId) {
+		this.custId = custId;
 	}
 
 	public enum SortParameter {

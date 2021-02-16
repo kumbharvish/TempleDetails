@@ -242,7 +242,7 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 			return false;
 		}
 		if ("PENDING".equals(bill.getPaymentMode())) {
-			Customer customer = customerService.getCustomer(bill.getCustomerMobileNo());
+			Customer customer = customerService.getCustomer(bill.getCustomerId());
 			if (customer.getBalanceAmt() < bill.getNetSalesAmt()) {
 				alertHelper.showErrorNotification(
 						"Customer's balance is less than invoice amount. Please check customer payment history");
@@ -263,7 +263,7 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 			return false;
 		}
 		if ("PENDING".equals(bill.getPaymentMode())) {
-			Customer customer = customerService.getCustomer(bill.getCustomerMobileNo());
+			Customer customer = customerService.getCustomer(bill.getCustomerId());
 			if (customer.getBalanceAmt() < bill.getNetSalesAmt()) {
 				alertHelper.showErrorNotification(
 						"Customer balance is less than invoice amount. Please check customer payment history");
