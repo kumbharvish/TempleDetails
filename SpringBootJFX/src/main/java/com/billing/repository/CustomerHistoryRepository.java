@@ -48,7 +48,6 @@ public class CustomerHistoryRepository {
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				customer = new CustomerPaymentHistory();
-				customer.setCustMobNo(rs.getLong("CUST_MOB_NO"));
 				customer.setCustName(rs.getString("CUSTOMER_NAME"));
 				customer.setClosingBlanace(rs.getDouble("AMOUNT"));
 				customer.setEntryDate(rs.getString("TIMESTAMP"));

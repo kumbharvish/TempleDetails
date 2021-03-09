@@ -721,6 +721,8 @@ public class EditInvoiceController extends AppContext implements TabContent {
 		Customer cust = customerMap.get(txtCustomer.getText());
 		bill.setCustomerMobileNo(cust.getCustMobileNumber());
 		bill.setCustomerName(cust.getCustName());
+		bill.setCustomerId(cust.getCustId());
+		bill.setCustomer(cust);
 		// Prepare Item List
 		bill.setItemDetails(prepareItemList());
 		bill.setTotalAmount(Double.valueOf(IndianCurrencyFormatting.removeFormatting(txtSubTotal.getText())));

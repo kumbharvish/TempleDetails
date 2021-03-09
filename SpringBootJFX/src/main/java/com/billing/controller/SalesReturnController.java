@@ -529,6 +529,7 @@ public class SalesReturnController extends AppContext implements TabContent {
 		returnDetails.setCustomerMobileNo(bill.getCustomerMobileNo());
 		returnDetails.setCustomerName(bill.getCustomerName());
 		returnDetails.setComments(txtComments.getText());
+		returnDetails.setCustomerId(bill.getCustomerId());
 		// Prepare Item List
 		returnDetails.setItemDetails(prepareItemList());
 		returnDetails.setTotalReturnAmount(
