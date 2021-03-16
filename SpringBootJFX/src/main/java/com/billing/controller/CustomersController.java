@@ -159,7 +159,7 @@ public class CustomersController extends AppContext implements TabContent {
 	@FXML
 	void onASettleUpCommand(ActionEvent event) {
 		Customer customer = tableView.getSelectionModel().getSelectedItem();
-		if (txtMobileNo.getText().equals("")) {
+		if (customer == null) {
 			alertHelper.showErrorNotification("Please select customer");
 		} else {
 			getPopup(customer, SETTLEUP);
@@ -169,7 +169,7 @@ public class CustomersController extends AppContext implements TabContent {
 	@FXML
 	void onAddAmountCommand(ActionEvent event) {
 		Customer customer = tableView.getSelectionModel().getSelectedItem();
-		if (txtMobileNo.getText().equals("")) {
+		if (customer == null) {
 			alertHelper.showErrorNotification("Please select customer");
 		} else {
 			getPopup(customer, ADD);
@@ -507,6 +507,15 @@ public class CustomersController extends AppContext implements TabContent {
 		grid.add(lbl, 0, 0);
 		grid.add(txtAmount, 1, 0);
 
+		TextField txtNarration = new TextField();
+		txtNarration.setPrefColumnCount(10);
+
+		Label lblNarration = new Label("Narration :");
+		lblNarration.getStyleClass().add("nodeLabel");
+
+		grid.add(lblNarration, 0, 1);
+		grid.add(txtNarration, 1, 1);
+
 		Node validateButton = dialog.getDialogPane().lookupButton(updateButtonType);
 		validateButton.setDisable(true);
 
@@ -520,15 +529,18 @@ public class CustomersController extends AppContext implements TabContent {
 
 		dialog.setResultConverter(dialogButton -> {
 			if (dialogButton == updateButtonType) {
-				return txtAmount.getText();
+				return txtAmount.getText() + ":@:" + txtNarration.getText();
 			}
 			return null;
 		});
 
 		Optional<String> result = dialog.showAndWait();
-		result.ifPresent(amount -> {
+		result.ifPresent(value -> {
 			try {
-				if (amount != null && amount != "") {
+				if (value != null && value != "") {
+					String[] values = value.split(":@:");
+					String amount = values[0];
+					String narrationValue = values.length == 2 ? values[1] : null;
 					if (ADD.equals(type)) {
 						// Add
 						if (Double.valueOf(amount) > 0) {
@@ -540,6 +552,10 @@ public class CustomersController extends AppContext implements TabContent {
 
 							String narration = "Added by : " + userDetails.getFirstName() + " "
 									+ userDetails.getLastName();
+
+							if (narrationValue != null && narrationValue != "") {
+								narration = narrationValue;
+							}
 
 							StatusDTO statusAddAmt = customerService.addCustomerPaymentHistory(custId,
 									Double.valueOf(txtAmount.getText()), 0, AppConstants.CREDIT, narration);
@@ -568,8 +584,13 @@ public class CustomersController extends AppContext implements TabContent {
 							customerSt.setCustMobileNumber(Long.valueOf(txtMobileNo.getText()));
 							customerSt.setCustName(txtCustName.getText());
 							customerSt.setAmount(Double.valueOf(txtAmount.getText()));
+
 							String narration = "Settled up by : " + userDetails.getFirstName() + " "
 									+ userDetails.getLastName();
+
+							if (narrationValue != null && narrationValue != "") {
+								narration = narrationValue;
+							}
 							StatusDTO statusAddAmt = customerService.addCustomerPaymentHistory(custId, 0,
 									Double.valueOf(txtAmount.getText()), AppConstants.DEBIT, narration);
 

@@ -456,8 +456,8 @@ public class SuppliersController extends AppContext implements TabContent {
 	@FXML
 	void onASettleUpCommand(ActionEvent event) {
 		Supplier supplier = tableView.getSelectionModel().getSelectedItem();
-		if (txtMobileNo.getText().equals("")) {
-			alertHelper.showErrorNotification("Please select customer");
+		if (supplier == null) {
+			alertHelper.showErrorNotification("Please select supplier");
 		} else {
 			getPopup(supplier, SETTLEUP);
 		}
@@ -466,8 +466,8 @@ public class SuppliersController extends AppContext implements TabContent {
 	@FXML
 	void onAddAmountCommand(ActionEvent event) {
 		Supplier supplier = tableView.getSelectionModel().getSelectedItem();
-		if (txtMobileNo.getText().equals("")) {
-			alertHelper.showErrorNotification("Please select customer");
+		if (supplier == null) {
+			alertHelper.showErrorNotification("Please select supplier");
 		} else {
 			getPopup(supplier, ADD);
 		}
@@ -506,6 +506,15 @@ public class SuppliersController extends AppContext implements TabContent {
 
 		grid.add(lbl, 0, 0);
 		grid.add(txtAmount, 1, 0);
+		
+		TextField txtNarration = new TextField();
+		txtNarration.setPrefColumnCount(10);
+
+		Label lblNarration = new Label("Narration :");
+		lblNarration.getStyleClass().add("nodeLabel");
+
+		grid.add(lblNarration, 0, 1);
+		grid.add(txtNarration, 1, 1);
 
 		Node validateButton = dialog.getDialogPane().lookupButton(updateButtonType);
 		validateButton.setDisable(true);
@@ -520,15 +529,18 @@ public class SuppliersController extends AppContext implements TabContent {
 
 		dialog.setResultConverter(dialogButton -> {
 			if (dialogButton == updateButtonType) {
-				return txtAmount.getText();
+				return txtAmount.getText() + ":@:" + txtNarration.getText();
 			}
 			return null;
 		});
 
 		Optional<String> result = dialog.showAndWait();
-		result.ifPresent(amount -> {
+		result.ifPresent(value -> {
 			try {
-				if (amount != null && amount != "") {
+				if (value != null && value != "") {
+					String[] values = value.split(":@:");
+					String amount = values[0];
+					String narrationValue = values.length == 2 ? values[1] : null;
 					if (ADD.equals(type)) {
 						// Add
 						if (Double.valueOf(amount) > 0) {
@@ -539,7 +551,10 @@ public class SuppliersController extends AppContext implements TabContent {
 
 							String narration = "Added by : " + userDetails.getFirstName() + " "
 									+ userDetails.getLastName();
-
+							
+							if (narrationValue != null && narrationValue != "") {
+								narration = narrationValue;
+							}
 							StatusDTO statusAddAmt = supplierService.addSupplierPaymentHistory(supplierId,
 									Double.valueOf(txtAmount.getText()), 0, AppConstants.CREDIT, narration);
 
@@ -568,6 +583,9 @@ public class SuppliersController extends AppContext implements TabContent {
 							sup.setBalanceAmount(Double.valueOf(amount));
 							String narration = "Settled up by : " + userDetails.getFirstName() + " "
 									+ userDetails.getLastName();
+							if (narrationValue != null && narrationValue != "") {
+								narration = narrationValue;
+							}
 							StatusDTO statusAddAmt = supplierService.addSupplierPaymentHistory(supplierId, 0,
 									Double.valueOf(txtAmount.getText()), AppConstants.DEBIT, narration);
 
