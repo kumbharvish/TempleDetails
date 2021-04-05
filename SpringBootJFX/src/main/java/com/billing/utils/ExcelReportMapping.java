@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import com.billing.dto.BillDetails;
 import com.billing.dto.Customer;
 import com.billing.dto.Expense;
+import com.billing.dto.GSTR1Data;
 import com.billing.dto.Product;
 import com.billing.dto.ProductCategory;
 import com.billing.dto.ReturnDetails;
@@ -45,6 +46,12 @@ public class ExcelReportMapping {
 	private String[] categoryWiseStockReportHeaders = { "Category Name", "Stock Quantity", "Stock Value" };
 
 	private String[] expenseReportHeaders = { "Expense Category", "Date", "Description", "Amount" };
+
+	private String[] gstr1SalesReportHeaders = { "Party Name", "Invoice No", "Invoice Date", "Value", "Rate",
+			"Taxable Value", "Central Tax Amount", "State / UT Tax Amount" };
+
+	private String[] gstr1SalesReturnReportHeaders = { "Party Name", "Return No", "Return Date", "Invoice No",
+			"Invoice Date", "Value", "Rate", "Taxable Value", "Central Tax Amount", "State / UT Tax Amount" };
 
 	private void setHeaderFont(Sheet sheet, CellStyle cellStyle) {
 		Font font = sheet.getWorkbook().createFont();
@@ -447,6 +454,129 @@ public class ExcelReportMapping {
 
 		cell = row.createCell(3);
 		cell.setCellValue(productCategory.getCategoryStockAmount());
+	}
+
+	// Sales - GSTR1 Report
+	public void setHeaderRowForGSTR1SalesReport(Sheet sheet) {
+		CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+		setHeaderFont(sheet, cellStyle);
+		setColumnWidth(sheet, gstr1SalesReportHeaders.length);
+
+		int columnCount = 0;
+		Row row = sheet.createRow(0);
+		for (String headerName : gstr1SalesReportHeaders) {
+			Cell cell1 = row.createCell(++columnCount);
+			cell1.setCellStyle(cellStyle);
+			cell1.setCellValue(headerName);
+		}
+	}
+	
+	public void addGstr1SalesReportRow(GSTR1Data rd , Row row) {
+		Cell cell = row.createCell(1);
+		cell.setCellValue(rd.getPartyName());
+		cell = row.createCell(2);
+		cell.setCellValue(rd.getInvoiceNo());
+		cell = row.createCell(3);
+		cell.setCellValue(appUtils.getFormattedDateWithTime(rd.getInvoiceDate()));
+		cell = row.createCell(4);
+		cell.setCellValue(appUtils.getDecimalRoundUp2Decimal(rd.getInvoiceTotalAmount()));
+		cell = row.createCell(5);
+		cell.setCellValue(rd.getGstRate());
+		cell = row.createCell(6);
+		cell.setCellValue(appUtils.getDecimalRoundUp2Decimal(rd.getTaxableValue()));
+		cell = row.createCell(7);
+		cell.setCellValue(appUtils.getDecimalRoundUp2Decimal(rd.getCgst()));
+		cell = row.createCell(8);
+		cell.setCellValue(appUtils.getDecimalRoundUp2Decimal(rd.getSgst()));
+	}
+	
+	public void addGstr1TotalSalesReportRow(Sheet sheet, int rowNumber) {
+		CellStyle cellStyleHeader = sheet.getWorkbook().createCellStyle();
+		CellStyle cellStyleTotal = sheet.getWorkbook().createCellStyle();
+		setHeaderFont(sheet, cellStyleHeader);
+		setTotalFont(sheet, cellStyleTotal);
+		Row row = sheet.createRow(rowNumber + 1);
+		Cell cell = row.createCell(4);
+		cell.setCellValue("Total");
+		cell.setCellStyle(cellStyleHeader);
+		cell = row.createCell(5);
+		cell.setCellFormula("SUM(F2:F" + rowNumber + ")");
+		cell.setCellStyle(cellStyleTotal);
+		cell = row.createCell(6);
+		cell.setCellFormula("SUM(G2:G" + rowNumber + ")");
+		cell.setCellStyle(cellStyleTotal);
+		cell = row.createCell(7);
+		cell.setCellFormula("SUM(H2:H" + rowNumber + ")");
+		cell.setCellStyle(cellStyleTotal);
+		cell = row.createCell(8);
+		cell.setCellFormula("SUM(I2:I" + rowNumber + ")");
+		cell.setCellStyle(cellStyleTotal);
+		cell = row.createCell(9);
+		cell.setCellFormula("SUM(J2:J" + rowNumber + ")");
+		cell.setCellStyle(cellStyleTotal);
+	}
+
+
+	// Sales Return - GSTR1 Report
+	public void setHeaderRowForGSTR1SalesRetrunReport(Sheet sheet) {
+		CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+		setHeaderFont(sheet, cellStyle);
+		setColumnWidth(sheet, gstr1SalesReturnReportHeaders.length);
+
+		int columnCount = 0;
+		Row row = sheet.createRow(0);
+		for (String headerName : gstr1SalesReturnReportHeaders) {
+			Cell cell1 = row.createCell(++columnCount);
+			cell1.setCellStyle(cellStyle);
+			cell1.setCellValue(headerName);
+		}
+	}
+	
+	public void addGstr1SalesReturnReportRow(BillDetails bill, Row row) {
+		Cell cell = row.createCell(1);
+		cell.setCellValue(bill.getBillNumber());
+		cell = row.createCell(2);
+		cell.setCellValue(appUtils.getFormattedDateWithTime(bill.getTimestamp()));
+		cell = row.createCell(3);
+		cell.setCellValue(bill.getPaymentMode());
+		cell = row.createCell(4);
+		cell.setCellValue(bill.getCustomerName());
+		cell = row.createCell(5);
+		cell.setCellValue(bill.getNoOfItems());
+		cell = row.createCell(6);
+		cell.setCellValue(bill.getTotalQuantity());
+		cell = row.createCell(7);
+		cell.setCellValue(bill.getDiscountAmt());
+		cell = row.createCell(8);
+		cell.setCellValue(bill.getGstAmount());
+		cell = row.createCell(9);
+		cell.setCellValue(bill.getNetSalesAmt());
+	}
+	
+	public void addGstr1TotalSalesReturnReportRow(Sheet sheet, int rowNumber) {
+		CellStyle cellStyleHeader = sheet.getWorkbook().createCellStyle();
+		CellStyle cellStyleTotal = sheet.getWorkbook().createCellStyle();
+		setHeaderFont(sheet, cellStyleHeader);
+		setTotalFont(sheet, cellStyleTotal);
+		Row row = sheet.createRow(rowNumber + 1);
+		Cell cell = row.createCell(4);
+		cell.setCellValue("Total");
+		cell.setCellStyle(cellStyleHeader);
+		cell = row.createCell(5);
+		cell.setCellFormula("SUM(F2:F" + rowNumber + ")");
+		cell.setCellStyle(cellStyleTotal);
+		cell = row.createCell(6);
+		cell.setCellFormula("SUM(G2:G" + rowNumber + ")");
+		cell.setCellStyle(cellStyleTotal);
+		cell = row.createCell(7);
+		cell.setCellFormula("SUM(H2:H" + rowNumber + ")");
+		cell.setCellStyle(cellStyleTotal);
+		cell = row.createCell(8);
+		cell.setCellFormula("SUM(I2:I" + rowNumber + ")");
+		cell.setCellStyle(cellStyleTotal);
+		cell = row.createCell(9);
+		cell.setCellFormula("SUM(J2:J" + rowNumber + ")");
+		cell.setCellStyle(cellStyleTotal);
 	}
 
 }

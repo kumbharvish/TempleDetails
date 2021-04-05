@@ -18,6 +18,7 @@ import com.billing.dto.Barcode;
 import com.billing.dto.BillDetails;
 import com.billing.dto.CustomersReport;
 import com.billing.dto.ExpenseReport;
+import com.billing.dto.GSTR1Report;
 import com.billing.dto.LowStockSummaryReport;
 import com.billing.dto.PrintTemplate;
 import com.billing.dto.ProductCategoryWiseStockReport;
@@ -323,6 +324,13 @@ public class PrinterService {
 			reportMetadata.setReportName(AppConstants.PRODUCT_CATEOGRY_WISE_STOCK_REPORT_NAME + todaysDate + ".xls");
 			reportMetadata.setWorkbook(excelReportService.getCategoryWiseStockReportWorkBook(report, workbook));
 		}
+		// GSTR1 Report
+		if (reportData instanceof GSTR1Report) {
+			GSTR1Report report = (GSTR1Report) reportData;
+			reportMetadata.setReportName(AppConstants.GSTR1_REPORT_NAME + todaysDate + ".xls");
+			reportMetadata.setWorkbook(excelReportService.getGstr1ReportWorkBook(report, workbook));
+		}
+
 		return reportMetadata;
 	}
 }

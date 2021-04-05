@@ -1,7 +1,5 @@
 package com.billing.service;
 
-import java.util.List;
-
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -15,6 +13,8 @@ import com.billing.dto.Customer;
 import com.billing.dto.CustomersReport;
 import com.billing.dto.Expense;
 import com.billing.dto.ExpenseReport;
+import com.billing.dto.GSTR1Data;
+import com.billing.dto.GSTR1Report;
 import com.billing.dto.LowStockSummaryReport;
 import com.billing.dto.Product;
 import com.billing.dto.ProductCategory;
@@ -200,6 +200,25 @@ public class ExcelReportService {
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("Exception:", e);
+		}
+		return workbook;
+	}
+
+	// GSTR1 Report
+	public Workbook getGstr1ReportWorkBook(GSTR1Report report, Workbook workbook) {
+		Sheet sheet = workbook.createSheet("Sales");
+		try {
+			excelReportMapping.setHeaderRowForGSTR1SalesReport(sheet);
+			int rowCount = 0;
+
+			for (GSTR1Data rd : report.getInvoiceList()) {
+				Row row = sheet.createRow(++rowCount);
+				excelReportMapping.addGstr1SalesReportRow(rd, row);
+			}
+			excelReportMapping.addGstr1TotalSalesReportRow(sheet, ++rowCount);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception:", e); 
 		}
 		return workbook;
 	}
