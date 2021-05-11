@@ -83,16 +83,17 @@
 										<KeyCodeCombination alt="UP" code="H" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
 									</accelerator>
 								</MenuItem>
+							</items>
+						</Menu>
+						<Menu fx:id="purchaseMenu" text="S_uppliers">
+							<items>								
 								<MenuItem fx:id="suppliersMenuItem" onAction="#onSuppliersCommand" text="Suppl_iers">
 									<accelerator>
 										<KeyCodeCombination alt="UP" code="S" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
 									</accelerator>
 								</MenuItem>
-								<MenuItem fx:id="supplierPayHistoryMenuItem" onAction="#onSuppliersPayHistoryCommand" text="Supplier Payment Hist_ory">
-									<accelerator>
-										<KeyCodeCombination alt="UP" code="O" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
-									</accelerator>
-								</MenuItem>
+								<MenuItem fx:id="supplierPayHistoryMenuItem" onAction="#onSuppliersPayHistoryCommand" text="Supplier Payment History"/>
+								<MenuItem fx:id="supplierPurchaseHistoryMenuItem" onAction="#onSuppliersPurchaseHistoryCommand" text="Supplier Purchase History"/>
 							</items>
 						</Menu>
 						<Menu fx:id="expenseMenu" text="_Expense">

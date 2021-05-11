@@ -435,6 +435,11 @@ public class HomeController extends AppContext {
 	void onSuppliersPayHistoryCommand(ActionEvent event) {
 		addTab("SupplierPaymentHistory", "Supplier Payment History");
 	}
+	
+	@FXML
+	void onSuppliersPurchaseHistoryCommand(ActionEvent event) {
+		addTab("SupplierPurchaseHistory", "Supplier Purchase History");
+	}
 
 	@FXML
 	void onUserPreferencesCommand(ActionEvent event) {
