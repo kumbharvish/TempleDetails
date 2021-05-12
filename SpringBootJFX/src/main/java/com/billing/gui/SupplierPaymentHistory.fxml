@@ -111,6 +111,9 @@
 							<placeholder>
 								<Label fx:id="placeholderText" text="&lt; No payment history found &gt;" />
 							</placeholder>
+							<columnResizePolicy>
+									<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+							</columnResizePolicy>
 						</TableView>
 					</center></BorderPane>
 			</items>
