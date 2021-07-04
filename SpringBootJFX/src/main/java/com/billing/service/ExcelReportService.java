@@ -206,16 +206,24 @@ public class ExcelReportService {
 
 	// GSTR1 Report
 	public Workbook getGstr1ReportWorkBook(GSTR1Report report, Workbook workbook) {
-		Sheet sheet = workbook.createSheet("Sales");
+		Sheet salesSheet = workbook.createSheet("Sales");
+		Sheet salesReturnSheet = workbook.createSheet("Sales Return");
 		try {
-			excelReportMapping.setHeaderRowForGSTR1SalesReport(sheet);
-			int rowCount = 0;
+			excelReportMapping.setHeaderRowForGSTR1SalesReport(salesSheet,report);
+			excelReportMapping.setHeaderRowForGSTR1SalesReturnReport(salesReturnSheet,report);
+			int rowCount = 8;
 
 			for (GSTR1Data rd : report.getInvoiceList()) {
-				Row row = sheet.createRow(++rowCount);
+				Row row = salesSheet.createRow(++rowCount);
 				excelReportMapping.addGstr1SalesReportRow(rd, row);
 			}
-			excelReportMapping.addGstr1TotalSalesReportRow(sheet, ++rowCount);
+			excelReportMapping.addGstr1TotalSalesReportRow(salesSheet, ++rowCount);
+			rowCount = 8;
+			for (GSTR1Data rd : report.getSaleReturnList()) {
+				Row row = salesReturnSheet.createRow(++rowCount);
+				excelReportMapping.addGstr1SalesReturnReportRow(rd, row);
+			}
+			excelReportMapping.addGstr1TotalSalesReturnReportRow(salesReturnSheet, ++rowCount);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("Exception:", e); 
@@ -224,3 +232,4 @@ public class ExcelReportService {
 	}
 
 }
+

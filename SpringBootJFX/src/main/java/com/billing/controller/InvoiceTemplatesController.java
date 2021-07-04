@@ -69,6 +69,9 @@ public class InvoiceTemplatesController extends AppContext implements TabContent
 
 	@FXML
 	private RadioButton rbA4TaxInvoice4;
+	
+	@FXML
+	private RadioButton rbA4TaxInvoice5;
 
 	@FXML
 	private Button btnSetAsDefault;
@@ -85,6 +88,7 @@ public class InvoiceTemplatesController extends AppContext implements TabContent
 		rbA4TaxInvoice2.setToggleGroup(radioButtonGroup);
 		rbA4TaxInvoice3.setToggleGroup(radioButtonGroup);
 		rbA4TaxInvoice4.setToggleGroup(radioButtonGroup);
+		rbA4TaxInvoice5.setToggleGroup(radioButtonGroup);
 		rbThermalTaxInvoice.setToggleGroup(radioButtonGroup);
 		rbThermalCashInvoice.setToggleGroup(radioButtonGroup);
 		// populateImageView
@@ -92,6 +96,7 @@ public class InvoiceTemplatesController extends AppContext implements TabContent
 		rbA4TaxInvoice2.setOnAction(e -> populateImageView());
 		rbA4TaxInvoice3.setOnAction(e -> populateImageView());
 		rbA4TaxInvoice4.setOnAction(e -> populateImageView());
+		rbA4TaxInvoice5.setOnAction(e -> populateImageView());
 		rbThermalTaxInvoice.setOnAction(e -> populateImageView());
 		rbThermalCashInvoice.setOnAction(e -> populateImageView());
 
@@ -99,6 +104,7 @@ public class InvoiceTemplatesController extends AppContext implements TabContent
 		rbA4TaxInvoice2.selectedProperty().addListener(this::invalidated);
 		rbA4TaxInvoice3.selectedProperty().addListener(this::invalidated);
 		rbA4TaxInvoice4.selectedProperty().addListener(this::invalidated);
+		rbA4TaxInvoice5.selectedProperty().addListener(this::invalidated);
 		rbThermalTaxInvoice.selectedProperty().addListener(this::invalidated);
 		rbThermalCashInvoice.selectedProperty().addListener(this::invalidated);
 
@@ -127,6 +133,10 @@ public class InvoiceTemplatesController extends AppContext implements TabContent
 		} else if (rbA4TaxInvoice1.isSelected()) {
 			imageName = "Invoice_Template_A4_Invoice_Tax_1.png";
 			templateName = AppConstants.A4_TAX_INVOICE_1;
+
+		}else if (rbA4TaxInvoice5.isSelected()) {
+			imageName = "Invoice_Template_A4_Invoice_Tax_5.png";
+			templateName = AppConstants.A4_TAX_INVOICE_5;
 
 		}
 
@@ -203,6 +213,9 @@ public class InvoiceTemplatesController extends AppContext implements TabContent
 				break;
 			case AppConstants.A4_TAX_INVOICE_4:
 				rbA4TaxInvoice4.setSelected(true);
+				break;
+			case AppConstants.A4_TAX_INVOICE_5:
+				rbA4TaxInvoice5.setSelected(true);
 				break;
 			default:
 				rbThermalCashInvoice.setSelected(true);

@@ -39,6 +39,7 @@
                               <RadioButton fx:id="rbA4TaxInvoice2" layoutX="40.0" layoutY="121.0" mnemonicParsing="false" styleClass="nodeLabel" text="A4 : Tax Invoice 2" />
                               <RadioButton fx:id="rbA4TaxInvoice3" layoutX="40.0" layoutY="148.0" mnemonicParsing="false" styleClass="nodeLabel" text="A4 : Tax Invoice 3" />
                               <RadioButton fx:id="rbA4TaxInvoice4" layoutX="40.0" layoutY="175.0" mnemonicParsing="false" styleClass="nodeLabel" text="A4 : Tax Invoice 4" />
+                              <RadioButton fx:id="rbA4TaxInvoice5" layoutX="40.0" layoutY="175.0" mnemonicParsing="false" styleClass="nodeLabel" text="A4 : Tax Invoice 5" />
                               <Separator layoutX="40.0" layoutY="40.0" />
                               <ButtonBar>
                                 <buttons>

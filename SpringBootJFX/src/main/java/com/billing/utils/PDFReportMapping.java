@@ -18,6 +18,7 @@ import com.billing.dto.CustomersReport;
 import com.billing.dto.Expense;
 import com.billing.dto.ExpenseReport;
 import com.billing.dto.GSTDetails;
+import com.billing.dto.GSTR1Report;
 import com.billing.dto.ItemDetails;
 import com.billing.dto.LowStockSummaryReport;
 import com.billing.dto.Product;
@@ -88,7 +89,7 @@ public class PDFReportMapping {
 		List<Map<String, ?>> dataSourceMapsSubReport = new ArrayList<Map<String, ?>>();
 		HashMap<String, Double> dataMap = new LinkedHashMap<>();
 
-		if (AppConstants.IT_A4_TAX_3.equalsIgnoreCase(jasperName)) {
+		if (AppConstants.IT_A4_TAX_3.equalsIgnoreCase(jasperName) || AppConstants.IT_A4_TAX_5.equalsIgnoreCase(jasperName)) {
 			Map<String, Object> subreportMap = new HashMap<String, Object>();
 			subreportMap.put("netSalesAmount", IndianCurrencyFormatting.applyFormatting(bill.getNetSalesAmt()));
 			subreportMap.put("subTotalAmount", IndianCurrencyFormatting.applyFormatting(bill.getTotalAmount()));
@@ -146,7 +147,8 @@ public class PDFReportMapping {
 		List<Map<String, ?>> dataSourceMapsSubReport = new ArrayList<Map<String, ?>>();
 		HashMap<String, GSTDetails> dataMap = new LinkedHashMap<>();
 
-		if (AppConstants.IT_A4_TAX_3.equalsIgnoreCase(jasperName) || AppConstants.IT_A4_TAX_4.equalsIgnoreCase(jasperName)) {
+		if (AppConstants.IT_A4_TAX_3.equalsIgnoreCase(jasperName)
+				|| AppConstants.IT_A4_TAX_4.equalsIgnoreCase(jasperName) || AppConstants.IT_A4_TAX_5.equalsIgnoreCase(jasperName)) {
 			for (ItemDetails item : bill.getItemDetails()) {
 				GSTDetails gstSGST = new GSTDetails();
 				GSTDetails gstCGST = new GSTDetails();
@@ -198,12 +200,11 @@ public class PDFReportMapping {
 						appUtils.getAppDataValues(AppConstants.TERMS_AND_CONDITION_FOR_INVOICE));
 				dataSourceMapsSubReport.add(subreportMap);
 			}
-		}else {
+		} else {
 			Map<String, Object> subreportMap = new HashMap<String, Object>();
 			subreportMap.put("amountInWords",
 					NumberToWords.convertNumberToWords(new BigDecimal(bill.getNetSalesAmt()), true, true));
-			subreportMap.put("termsCondition",
-					appUtils.getAppDataValues(AppConstants.TERMS_AND_CONDITION_FOR_INVOICE));
+			subreportMap.put("termsCondition", appUtils.getAppDataValues(AppConstants.TERMS_AND_CONDITION_FOR_INVOICE));
 			dataSourceMapsSubReport.add(subreportMap);
 		}
 
@@ -355,6 +356,22 @@ public class PDFReportMapping {
 			map.put("TotalBalanceAmount", report.getTotalBalanceAmount());
 			dataSourceMaps.add(map);
 		}
+		return dataSourceMaps;
+	}
+
+	// GSTR1 Report
+	public List<Map<String, ?>> getDatasourceForGSTR1Report(GSTR1Report report) {
+		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
+		/*
+		 * for (Supplier supplier : report.getSuppliersList()) { Map<String, Object> map
+		 * = new HashMap<String, Object>(); map.put("MobileNo",
+		 * String.valueOf(supplier.getSupplierMobile())); map.put("Name",
+		 * supplier.getSupplierName()); map.put("City", supplier.getCity());
+		 * map.put("Email", supplier.getEmailId()); map.put("BalanceAmount",
+		 * IndianCurrencyFormatting.applyFormatting(supplier.getBalanceAmount()));
+		 * map.put("TotalBalanceAmount", report.getTotalBalanceAmount());
+		 * dataSourceMaps.add(map); }
+		 */
 		return dataSourceMaps;
 	}
 

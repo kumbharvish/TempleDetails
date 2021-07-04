@@ -13,6 +13,7 @@ import com.billing.dto.BillDetails;
 import com.billing.dto.Customer;
 import com.billing.dto.Expense;
 import com.billing.dto.GSTR1Data;
+import com.billing.dto.GSTR1Report;
 import com.billing.dto.Product;
 import com.billing.dto.ProductCategory;
 import com.billing.dto.ReturnDetails;
@@ -457,21 +458,94 @@ public class ExcelReportMapping {
 	}
 
 	// Sales - GSTR1 Report
-	public void setHeaderRowForGSTR1SalesReport(Sheet sheet) {
+	public void setHeaderRowForGSTR1SalesReport(Sheet sheet, GSTR1Report report) {
 		CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
 		setHeaderFont(sheet, cellStyle);
 		setColumnWidth(sheet, gstr1SalesReportHeaders.length);
+		sheet.setColumnWidth(0, 9000);
+
+		Row row1 = sheet.createRow(0);
+		Cell cell1 = row1.createCell(0);
+		cell1.setCellStyle(cellStyle);
+		cell1.setCellValue("From Date :");
+		Cell cell11 = row1.createCell(1);
+		cell11.setCellValue(report.getFromDate());
+
+		Row row2 = sheet.createRow(1);
+		Cell cell12 = row2.createCell(0);
+		cell12.setCellStyle(cellStyle);
+		cell12.setCellValue("To Date :");
+		Cell cell121 = row2.createCell(1);
+		cell121.setCellValue(report.getToDate());
+
+		Row row3 = sheet.createRow(3);
+		Cell cell13 = row3.createCell(0);
+		cell13.setCellStyle(cellStyle);
+		cell13.setCellValue("GSTIN :");
+		Cell cell131 = row3.createCell(1);
+		cell131.setCellValue(report.getGstin());
+
+		Row row4 = sheet.createRow(4);
+		Cell cell14 = row4.createCell(0);
+		cell14.setCellStyle(cellStyle);
+		cell14.setCellValue("Legal name of the registered person :");
+		Cell cell141 = row4.createCell(1);
+		cell141.setCellValue(report.getLeagleName());
 
 		int columnCount = 0;
-		Row row = sheet.createRow(0);
+		Row row = sheet.createRow(6);
 		for (String headerName : gstr1SalesReportHeaders) {
-			Cell cell1 = row.createCell(++columnCount);
-			cell1.setCellStyle(cellStyle);
-			cell1.setCellValue(headerName);
+			Cell c = row.createCell(++columnCount);
+			c.setCellStyle(cellStyle);
+			c.setCellValue(headerName);
 		}
 	}
-	
-	public void addGstr1SalesReportRow(GSTR1Data rd , Row row) {
+
+	// GSTR1 Report
+	public void setHeaderRowForGSTR1SalesReturnReport(Sheet sheet, GSTR1Report report) {
+		CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+		setHeaderFont(sheet, cellStyle);
+		setColumnWidth(sheet, gstr1SalesReturnReportHeaders.length);
+		sheet.setColumnWidth(0, 9000);
+
+		Row row1 = sheet.createRow(0);
+		Cell cell1 = row1.createCell(0);
+		cell1.setCellStyle(cellStyle);
+		cell1.setCellValue("From Date :");
+		Cell cell11 = row1.createCell(1);
+		cell11.setCellValue(report.getFromDate());
+
+		Row row2 = sheet.createRow(1);
+		Cell cell12 = row2.createCell(0);
+		cell12.setCellStyle(cellStyle);
+		cell12.setCellValue("To Date :");
+		Cell cell121 = row2.createCell(1);
+		cell121.setCellValue(report.getToDate());
+
+		Row row3 = sheet.createRow(3);
+		Cell cell13 = row3.createCell(0);
+		cell13.setCellStyle(cellStyle);
+		cell13.setCellValue("GSTIN :");
+		Cell cell131 = row3.createCell(1);
+		cell131.setCellValue(report.getGstin());
+
+		Row row4 = sheet.createRow(4);
+		Cell cell14 = row4.createCell(0);
+		cell14.setCellStyle(cellStyle);
+		cell14.setCellValue("Legal name of the registered person :");
+		Cell cell141 = row4.createCell(1);
+		cell141.setCellValue(report.getLeagleName());
+
+		int columnCount = 0;
+		Row row = sheet.createRow(6);
+		for (String headerName : gstr1SalesReturnReportHeaders) {
+			Cell c = row.createCell(++columnCount);
+			c.setCellStyle(cellStyle);
+			c.setCellValue(headerName);
+		}
+	}
+
+	public void addGstr1SalesReportRow(GSTR1Data rd, Row row) {
 		Cell cell = row.createCell(1);
 		cell.setCellValue(rd.getPartyName());
 		cell = row.createCell(2);
@@ -489,18 +563,41 @@ public class ExcelReportMapping {
 		cell = row.createCell(8);
 		cell.setCellValue(appUtils.getDecimalRoundUp2Decimal(rd.getSgst()));
 	}
-	
+
+	public void addGstr1SalesReturnReportRow(GSTR1Data rd, Row row) {
+		Cell cell = row.createCell(1);
+		cell.setCellValue(rd.getPartyName());
+		cell = row.createCell(2);
+		cell.setCellValue(rd.getReturnNo());
+		cell = row.createCell(3);
+		cell.setCellValue(appUtils.getFormattedDateWithTime(rd.getReturnDate()));
+		cell = row.createCell(4);
+		cell.setCellValue(rd.getInvoiceNo());
+		cell = row.createCell(5);
+		cell.setCellValue(appUtils.getFormattedDateWithTime(rd.getInvoiceDate()));
+		cell = row.createCell(6);
+		cell.setCellValue(appUtils.getDecimalRoundUp2Decimal(rd.getInvoiceTotalAmount()));
+		cell = row.createCell(7);
+		cell.setCellValue(rd.getGstRate());
+		cell = row.createCell(8);
+		cell.setCellValue(appUtils.getDecimalRoundUp2Decimal(rd.getTaxableValue()));
+		cell = row.createCell(9);
+		cell.setCellValue(appUtils.getDecimalRoundUp2Decimal(rd.getCgst()));
+		cell = row.createCell(10);
+		cell.setCellValue(appUtils.getDecimalRoundUp2Decimal(rd.getSgst()));
+	}
+
 	public void addGstr1TotalSalesReportRow(Sheet sheet, int rowNumber) {
 		CellStyle cellStyleHeader = sheet.getWorkbook().createCellStyle();
 		CellStyle cellStyleTotal = sheet.getWorkbook().createCellStyle();
 		setHeaderFont(sheet, cellStyleHeader);
 		setTotalFont(sheet, cellStyleTotal);
 		Row row = sheet.createRow(rowNumber + 1);
-		Cell cell = row.createCell(4);
-		cell.setCellValue("Total");
+		Cell cell = row.createCell(0);
+		cell.setCellValue("Totals");
 		cell.setCellStyle(cellStyleHeader);
-		cell = row.createCell(5);
-		cell.setCellFormula("SUM(F2:F" + rowNumber + ")");
+		cell = row.createCell(4);
+		cell.setCellFormula("SUM(E2:E" + rowNumber + ")");
 		cell.setCellStyle(cellStyleTotal);
 		cell = row.createCell(6);
 		cell.setCellFormula("SUM(G2:G" + rowNumber + ")");
@@ -511,59 +608,17 @@ public class ExcelReportMapping {
 		cell = row.createCell(8);
 		cell.setCellFormula("SUM(I2:I" + rowNumber + ")");
 		cell.setCellStyle(cellStyleTotal);
-		cell = row.createCell(9);
-		cell.setCellFormula("SUM(J2:J" + rowNumber + ")");
-		cell.setCellStyle(cellStyleTotal);
 	}
 
-
-	// Sales Return - GSTR1 Report
-	public void setHeaderRowForGSTR1SalesRetrunReport(Sheet sheet) {
-		CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
-		setHeaderFont(sheet, cellStyle);
-		setColumnWidth(sheet, gstr1SalesReturnReportHeaders.length);
-
-		int columnCount = 0;
-		Row row = sheet.createRow(0);
-		for (String headerName : gstr1SalesReturnReportHeaders) {
-			Cell cell1 = row.createCell(++columnCount);
-			cell1.setCellStyle(cellStyle);
-			cell1.setCellValue(headerName);
-		}
-	}
-	
-	public void addGstr1SalesReturnReportRow(BillDetails bill, Row row) {
-		Cell cell = row.createCell(1);
-		cell.setCellValue(bill.getBillNumber());
-		cell = row.createCell(2);
-		cell.setCellValue(appUtils.getFormattedDateWithTime(bill.getTimestamp()));
-		cell = row.createCell(3);
-		cell.setCellValue(bill.getPaymentMode());
-		cell = row.createCell(4);
-		cell.setCellValue(bill.getCustomerName());
-		cell = row.createCell(5);
-		cell.setCellValue(bill.getNoOfItems());
-		cell = row.createCell(6);
-		cell.setCellValue(bill.getTotalQuantity());
-		cell = row.createCell(7);
-		cell.setCellValue(bill.getDiscountAmt());
-		cell = row.createCell(8);
-		cell.setCellValue(bill.getGstAmount());
-		cell = row.createCell(9);
-		cell.setCellValue(bill.getNetSalesAmt());
-	}
-	
 	public void addGstr1TotalSalesReturnReportRow(Sheet sheet, int rowNumber) {
 		CellStyle cellStyleHeader = sheet.getWorkbook().createCellStyle();
 		CellStyle cellStyleTotal = sheet.getWorkbook().createCellStyle();
 		setHeaderFont(sheet, cellStyleHeader);
 		setTotalFont(sheet, cellStyleTotal);
 		Row row = sheet.createRow(rowNumber + 1);
-		Cell cell = row.createCell(4);
-		cell.setCellValue("Total");
+		Cell cell = row.createCell(0);
+		cell.setCellValue("Totals");
 		cell.setCellStyle(cellStyleHeader);
-		cell = row.createCell(5);
-		cell.setCellFormula("SUM(F2:F" + rowNumber + ")");
 		cell.setCellStyle(cellStyleTotal);
 		cell = row.createCell(6);
 		cell.setCellFormula("SUM(G2:G" + rowNumber + ")");
@@ -576,6 +631,9 @@ public class ExcelReportMapping {
 		cell.setCellStyle(cellStyleTotal);
 		cell = row.createCell(9);
 		cell.setCellFormula("SUM(J2:J" + rowNumber + ")");
+		cell.setCellStyle(cellStyleTotal);
+		cell = row.createCell(10);
+		cell.setCellFormula("SUM(K2:K" + rowNumber + ")");
 		cell.setCellStyle(cellStyleTotal);
 	}
 

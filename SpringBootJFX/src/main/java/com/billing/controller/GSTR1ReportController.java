@@ -298,6 +298,7 @@ public class GSTR1ReportController extends AppContext implements TabContent {
 		gstr1Report.setToDate(dpToDate.getValue().toString());
 		MyStoreDetails details = myStoreService.getMyStoreDetails();
 		gstr1Report.setLeagleName(details.getStoreName());
+		gstr1Report.setGstin(details.getGstNo());
 		return gstr1Report;
 	}
 

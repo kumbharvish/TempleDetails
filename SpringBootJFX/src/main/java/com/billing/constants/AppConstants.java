@@ -76,7 +76,7 @@ public class AppConstants {
 
 	public static final String COMP_DATE_ERROR = "Computer Date changed . Kindly set the correct date !";
 
-	public static final String LICENSE_ERROR_2 = "License Expired. Kindly repurchase license to continue !";
+	public static final String LICENSE_ERROR_2 = "Kindly purchase license to continue !";
 
 	public static final String PROFIT = "Sales Profit";
 
@@ -158,7 +158,11 @@ public class AppConstants {
 	
 	public static final String IT_A4_TAX_3 = "IT_A4_Tax_3.jasper"; 
 	
-	public static final String IT_A4_TAX_4 = "IT_A4_Tax_4.jasper"; 
+	public static final String IT_A4_TAX_4 = "IT_A4_Tax_4.jasper";
+	
+	public static final String IT_A4_TAX_5 = "IT_A4_Tax_5.jasper";
+	
+	public static final String GSTR1 = "GSTR1.jasper";
 
 	// Invoice Template Names
 	public static final String THERMAL_CASH_INVOICE = "Thermal : Cash Invoice";
@@ -172,6 +176,8 @@ public class AppConstants {
 	public static final String A4_TAX_INVOICE_3 = "A4 : Tax Invoice 3";
 	
 	public static final String A4_TAX_INVOICE_4 = "A4 : Tax Invoice 4";
+	
+	public static final String A4_TAX_INVOICE_5 = "A4 : Tax Invoice 5";
 
 	// Instructions
 

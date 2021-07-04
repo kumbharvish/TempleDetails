@@ -262,6 +262,13 @@ public class PrinterService {
 			reportMetadata.setReportName(AppConstants.PRODUCT_CATEOGRY_WISE_STOCK_REPORT_NAME + todaysDate + ".pdf");
 			reportMetadata.setDataSourceMap(pdfReportMapping.getDatasourceForCategoryWiseStockReport(report));
 		}
+		// GSTR1 Report
+		if (reportData instanceof GSTR1Report) {
+			GSTR1Report report = (GSTR1Report) reportData;
+			reportMetadata.setJasperName(AppConstants.GSTR1);
+			reportMetadata.setReportName(AppConstants.GSTR1_REPORT_NAME + todaysDate + ".pdf");
+			reportMetadata.setDataSourceMap(pdfReportMapping.getDatasourceForGSTR1Report(report));
+		}
 		return reportMetadata;
 	}
 
