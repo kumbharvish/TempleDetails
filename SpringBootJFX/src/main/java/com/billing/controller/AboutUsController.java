@@ -23,11 +23,11 @@ public class AboutUsController implements TabContent {
     
     private String version = "(1.0.0)";
     
-    private static final String DEVELOPED_BY = "Vishal Kumbhar";
+    private static final String DEVELOPED_BY = "My Store Team";
     
     private static final String MOBILE = "+91 8149880299";
     
-    private static final String EMAIL_ID = "Kumbharvish@gmail.com";
+    private static final String EMAIL_ID = "MyStore0017@gmail.com";
     
     private static final String MY_STORE ="My Store";
     
@@ -47,9 +47,6 @@ public class AboutUsController implements TabContent {
 
     @FXML
     private Label lblEmailId;
-
-    @FXML
-    private Label lblMobileNo;
 
     @FXML
     private Button btnClose;
@@ -85,7 +82,6 @@ public class AboutUsController implements TabContent {
          txtCopyRight.setText(COPYRIGHT);
          lblDevelopedBy.setText(DEVELOPED_BY);
          lblEmailId.setText(EMAIL_ID);
-         lblMobileNo.setText(MOBILE);
     }
 
     @FXML
