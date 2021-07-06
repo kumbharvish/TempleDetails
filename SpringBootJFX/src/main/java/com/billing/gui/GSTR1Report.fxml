@@ -23,7 +23,7 @@
 	<top>
 		<VBox alignment="TOP_CENTER" spacing="20.0" BorderPane.alignment="CENTER">
 			<children>
-				<Label fx:id="heading" text="GSTR1 Report" />
+				<Label fx:id="heading" text="GSTR 1 Report" />
 				<AnchorPane>
 					<children>
 						<GridPane hgap="10.0" vgap="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">

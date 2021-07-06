@@ -18,6 +18,7 @@ import com.billing.dto.CustomersReport;
 import com.billing.dto.Expense;
 import com.billing.dto.ExpenseReport;
 import com.billing.dto.GSTDetails;
+import com.billing.dto.GSTR1Data;
 import com.billing.dto.GSTR1Report;
 import com.billing.dto.ItemDetails;
 import com.billing.dto.LowStockSummaryReport;
@@ -89,7 +90,8 @@ public class PDFReportMapping {
 		List<Map<String, ?>> dataSourceMapsSubReport = new ArrayList<Map<String, ?>>();
 		HashMap<String, Double> dataMap = new LinkedHashMap<>();
 
-		if (AppConstants.IT_A4_TAX_3.equalsIgnoreCase(jasperName) || AppConstants.IT_A4_TAX_5.equalsIgnoreCase(jasperName)) {
+		if (AppConstants.IT_A4_TAX_3.equalsIgnoreCase(jasperName)
+				|| AppConstants.IT_A4_TAX_5.equalsIgnoreCase(jasperName)) {
 			Map<String, Object> subreportMap = new HashMap<String, Object>();
 			subreportMap.put("netSalesAmount", IndianCurrencyFormatting.applyFormatting(bill.getNetSalesAmt()));
 			subreportMap.put("subTotalAmount", IndianCurrencyFormatting.applyFormatting(bill.getTotalAmount()));
@@ -148,7 +150,8 @@ public class PDFReportMapping {
 		HashMap<String, GSTDetails> dataMap = new LinkedHashMap<>();
 
 		if (AppConstants.IT_A4_TAX_3.equalsIgnoreCase(jasperName)
-				|| AppConstants.IT_A4_TAX_4.equalsIgnoreCase(jasperName) || AppConstants.IT_A4_TAX_5.equalsIgnoreCase(jasperName)) {
+				|| AppConstants.IT_A4_TAX_4.equalsIgnoreCase(jasperName)
+				|| AppConstants.IT_A4_TAX_5.equalsIgnoreCase(jasperName)) {
 			for (ItemDetails item : bill.getItemDetails()) {
 				GSTDetails gstSGST = new GSTDetails();
 				GSTDetails gstCGST = new GSTDetails();
@@ -362,16 +365,84 @@ public class PDFReportMapping {
 	// GSTR1 Report
 	public List<Map<String, ?>> getDatasourceForGSTR1Report(GSTR1Report report) {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
-		/*
-		 * for (Supplier supplier : report.getSuppliersList()) { Map<String, Object> map
-		 * = new HashMap<String, Object>(); map.put("MobileNo",
-		 * String.valueOf(supplier.getSupplierMobile())); map.put("Name",
-		 * supplier.getSupplierName()); map.put("City", supplier.getCity());
-		 * map.put("Email", supplier.getEmailId()); map.put("BalanceAmount",
-		 * IndianCurrencyFormatting.applyFormatting(supplier.getBalanceAmount()));
-		 * map.put("TotalBalanceAmount", report.getTotalBalanceAmount());
-		 * dataSourceMaps.add(map); }
-		 */
+		// Calculate Totals
+		double totalInvoiceValue = 0;
+		double totalTaxableValue = 0;
+		double totalCgst = 0;
+		for (GSTR1Data bill : report.getInvoiceList()) {
+			totalInvoiceValue = totalInvoiceValue + bill.getInvoiceTotalAmount();
+			totalCgst = totalCgst + bill.getCgst();
+			totalTaxableValue = totalTaxableValue + bill.getTaxableValue();
+		}
+		report.setTotalCGST(totalCgst);
+		report.setTotalSGST(totalCgst);
+		report.setTotalTaxableValue(totalTaxableValue);
+		report.setTotalInvoiceValue(totalInvoiceValue);
+
+		// Sales
+		for (GSTR1Data bill : report.getInvoiceList()) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("DateRange", "From  " + appUtils.getFormattedDateForDatePicker(report.getFromDate()) + "  To  "
+					+ appUtils.getFormattedDateForDatePicker(report.getToDate()));
+			map.put("InvoiceNo", String.valueOf(bill.getInvoiceNo()));
+			map.put("PartyName", bill.getPartyName());
+			map.put("Rate", appUtils.getDecimalFormat(bill.getGstRate()));
+			map.put("CGST", IndianCurrencyFormatting.applyFormatting(bill.getCgst()));
+			map.put("SGST", IndianCurrencyFormatting.applyFormatting(bill.getSgst()));
+			map.put("InvoiceValue", IndianCurrencyFormatting.applyFormatting(bill.getInvoiceTotalAmount()));
+			map.put("InvoiceDate", appUtils.getFormattedDateForReport(bill.getInvoiceDate()));
+			map.put("TaxableValue", IndianCurrencyFormatting.applyFormattingWithCurrency(bill.getTaxableValue()));
+
+			map.put("TotalValue", IndianCurrencyFormatting.applyFormattingWithCurrency(report.getTotalInvoiceValue()));
+			map.put("TotalTaxableValue",
+					IndianCurrencyFormatting.applyFormattingWithCurrency(report.getTotalTaxableValue()));
+			map.put("TotalCGST", IndianCurrencyFormatting.applyFormattingWithCurrency(report.getTotalCGST()));
+			map.put("TotalSGST", IndianCurrencyFormatting.applyFormattingWithCurrency(report.getTotalSGST()));
+			dataSourceMaps.add(map);
+		}
+		return dataSourceMaps;
+	}
+
+	// GSTR1 Sales Return Sub-Report
+	public List<Map<String, ?>> getDatasourceForGSTR1SalesRetunReport(GSTR1Report report) {
+		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
+		// Calculate Totals
+		double totalInvoiceValue = 0;
+		double totalTaxableValue = 0;
+		double totalCgst = 0;
+		for (GSTR1Data bill : report.getSaleReturnList()) {
+			totalInvoiceValue = totalInvoiceValue + bill.getInvoiceTotalAmount();
+			totalCgst = totalCgst + bill.getCgst();
+			totalTaxableValue = totalTaxableValue + bill.getTaxableValue();
+		}
+		report.setTotalCGST(totalCgst);
+		report.setTotalSGST(totalCgst);
+		report.setTotalTaxableValue(totalTaxableValue);
+		report.setTotalInvoiceValue(totalInvoiceValue);
+
+		// Sales
+		for (GSTR1Data bill : report.getSaleReturnList()) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("DateRange", "From  " + appUtils.getFormattedDateForDatePicker(report.getFromDate()) + "  To  "
+					+ appUtils.getFormattedDateForDatePicker(report.getToDate()));
+			map.put("InvoiceNo", String.valueOf(bill.getInvoiceNo()));
+			map.put("ReturnNo", String.valueOf(bill.getReturnNo()));
+			map.put("PartyName", bill.getPartyName());
+			map.put("Rate", appUtils.getDecimalFormat(bill.getGstRate()));
+			map.put("CGST", IndianCurrencyFormatting.applyFormatting(bill.getCgst()));
+			map.put("SGST", IndianCurrencyFormatting.applyFormatting(bill.getSgst()));
+			map.put("InvoiceValue", IndianCurrencyFormatting.applyFormatting(bill.getInvoiceTotalAmount()));
+			map.put("InvoiceDate", appUtils.getFormattedDateForReport(bill.getInvoiceDate()));
+			map.put("ReturnDate", appUtils.getFormattedDateForReport(bill.getReturnDate()));
+			map.put("TaxableValue", IndianCurrencyFormatting.applyFormattingWithCurrency(bill.getTaxableValue()));
+
+			map.put("TotalValue", IndianCurrencyFormatting.applyFormattingWithCurrency(report.getTotalInvoiceValue()));
+			map.put("TotalTaxableValue",
+					IndianCurrencyFormatting.applyFormattingWithCurrency(report.getTotalTaxableValue()));
+			map.put("TotalCGST", IndianCurrencyFormatting.applyFormattingWithCurrency(report.getTotalCGST()));
+			map.put("TotalSGST", IndianCurrencyFormatting.applyFormattingWithCurrency(report.getTotalSGST()));
+			dataSourceMaps.add(map);
+		}
 		return dataSourceMaps;
 	}
 

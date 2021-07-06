@@ -268,6 +268,7 @@ public class PrinterService {
 			reportMetadata.setJasperName(AppConstants.GSTR1);
 			reportMetadata.setReportName(AppConstants.GSTR1_REPORT_NAME + todaysDate + ".pdf");
 			reportMetadata.setDataSourceMap(pdfReportMapping.getDatasourceForGSTR1Report(report));
+			reportMetadata.setSubReportDataSourceMap(pdfReportMapping.getDatasourceForGSTR1SalesRetunReport(report));
 		}
 		return reportMetadata;
 	}

@@ -11,10 +11,50 @@ public class GSTR1Report {
 	private String fromDate;
 
 	private String toDate;
-	
+
 	private String leagleName;
-	
+
 	private String gstin;
+
+	private Double totalTaxableValue;
+	
+	private Double totalInvoiceValue;
+	
+	private Double totalCGST;
+	
+	private Double totalSGST;
+
+	public Double getTotalTaxableValue() {
+		return totalTaxableValue;
+	}
+
+	public void setTotalTaxableValue(Double totalTaxableValue) {
+		this.totalTaxableValue = totalTaxableValue;
+	}
+
+	public Double getTotalInvoiceValue() {
+		return totalInvoiceValue;
+	}
+
+	public void setTotalInvoiceValue(Double totalInvoiceValue) {
+		this.totalInvoiceValue = totalInvoiceValue;
+	}
+
+	public Double getTotalCGST() {
+		return totalCGST;
+	}
+
+	public void setTotalCGST(Double totalCGST) {
+		this.totalCGST = totalCGST;
+	}
+
+	public Double getTotalSGST() {
+		return totalSGST;
+	}
+
+	public void setTotalSGST(Double totalSGST) {
+		this.totalSGST = totalSGST;
+	}
 
 	public List<GSTR1Data> getInvoiceList() {
 		return invoiceList;

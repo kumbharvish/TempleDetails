@@ -115,6 +115,10 @@ public class PDFReportService {
 				alertHelper.showErrorNotification("Please add store details");
 				return false;
 			}
+			if(AppConstants.GSTR1.equalsIgnoreCase(reportMetadata.getJasperName())) {
+				headerParamsMap.put("SUBREPORT_DATA", reportMetadata.getSubReportDataSourceMap());
+			}
+			headerParamsMap.put("SUBREPORT_DIR", directoryPath);
 			// compile report
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, headerParamsMap, dataSource);
 

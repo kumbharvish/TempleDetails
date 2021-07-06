@@ -162,7 +162,7 @@ public class AppConstants {
 	
 	public static final String IT_A4_TAX_5 = "IT_A4_Tax_5.jasper";
 	
-	public static final String GSTR1 = "GSTR1.jasper";
+	public static final String GSTR1 = "GSTR1_Report.jasper";
 
 	// Invoice Template Names
 	public static final String THERMAL_CASH_INVOICE = "Thermal : Cash Invoice";
