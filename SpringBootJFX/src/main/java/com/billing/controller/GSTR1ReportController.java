@@ -320,7 +320,7 @@ public class GSTR1ReportController extends AppContext implements TabContent {
 	@Override
 	public boolean validateInput() {
 
-		if (invoiceList.size() == 0 || returnList.size() == 0) {
+		if (invoiceList.size() == 0 && returnList.size() == 0) {
 			alertHelper.showErrorNotification("No records to export");
 			return false;
 		}
