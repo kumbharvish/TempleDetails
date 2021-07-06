@@ -13,6 +13,8 @@ public class ReportMetadata {
 
 	private List<Map<String, ?>> dataSourceMap;
 	
+	private List<Map<String, ?>> subReportDataSourceMap;
+	
 	private String filePath;
 
 	private Workbook workbook;
@@ -55,6 +57,14 @@ public class ReportMetadata {
 
 	public void setWorkbook(Workbook workbook) {
 		this.workbook = workbook;
+	}
+
+	public List<Map<String, ?>> getSubReportDataSourceMap() {
+		return subReportDataSourceMap;
+	}
+
+	public void setSubReportDataSourceMap(List<Map<String, ?>> subReportDataSourceMap) {
+		this.subReportDataSourceMap = subReportDataSourceMap;
 	}
 
 }
