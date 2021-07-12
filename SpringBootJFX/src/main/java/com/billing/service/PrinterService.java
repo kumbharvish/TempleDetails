@@ -196,7 +196,7 @@ public class PrinterService {
 	// This method will create report metadata for PDF
 	private ReportMetadata getReportMetadataForPDF(Object reportData) {
 		ReportMetadata reportMetadata = new ReportMetadata();
-		String todaysDate = "_" + appUtils.getTodaysDate();
+		String todaysDate = "_" + appUtils.getTodaysDateForUI();
 		// Sales Report
 		if (reportData instanceof SalesReport) {
 			SalesReport salesReport = (SalesReport) reportData;
@@ -277,7 +277,7 @@ public class PrinterService {
 	private ReportMetadata getReportMetadataForExcel(Object reportData) {
 		Workbook workbook = new HSSFWorkbook();
 		ReportMetadata reportMetadata = new ReportMetadata();
-		String todaysDate = "_" + appUtils.getTodaysDate();
+		String todaysDate = "_" + appUtils.getTodaysDateForUI();
 		// Sales Report
 		if (reportData instanceof SalesReport) {
 			SalesReport salesReport = (SalesReport) reportData;

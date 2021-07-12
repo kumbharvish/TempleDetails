@@ -237,7 +237,7 @@ public class CashReportController implements TabContent {
 	@FXML
 	void onUpdateOpeningCashCommand(ActionEvent event) {
 
-		Double openCash = reportService.getOpeningCash(appUtils.getTodaysDate());
+		Double openCash = reportService.getOpeningCash(appUtils.getTodaysDateForDB());
 
 		Dialog<String> dialog = new Dialog<>();
 		dialog.setTitle("Update Opening Cash");
@@ -308,7 +308,7 @@ public class CashReportController implements TabContent {
 			try {
 				if (key != null && key != "") {
 					double newopenCash = Double.valueOf(key);
-					StatusDTO status = reportService.updateOpeningCash(newopenCash, appUtils.getTodaysDate());
+					StatusDTO status = reportService.updateOpeningCash(newopenCash, appUtils.getTodaysDateForDB());
 					if (status.getStatusCode() == 0) {
 						loadData();
 					}

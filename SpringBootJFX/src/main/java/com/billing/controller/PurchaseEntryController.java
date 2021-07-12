@@ -235,7 +235,7 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 				isDirty.set(true);
 			}
 		});
-		txtEntryDate.setText(appUtils.getTodaysDate());
+		txtEntryDate.setText(appUtils.getTodaysDateForUI());
 		// Error Messages
 		lblItemNameErrMsg.managedProperty().bind(lblItemNameErrMsg.visibleProperty());
 		lblItemNameErrMsg.visibleProperty().bind(lblItemNameErrMsg.textProperty().length().greaterThanOrEqualTo(1));

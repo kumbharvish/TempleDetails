@@ -105,7 +105,7 @@ public class ReportRepository {
 		try {
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(INS_OPENING_CASH);
-			stmt.setString(1, appUtils.getTodaysDate());
+			stmt.setString(1, appUtils.getTodaysDateForDB());
 			stmt.setDouble(2, amount);
 
 			int i = stmt.executeUpdate();

@@ -770,7 +770,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			valid = false;
 			return valid;
 		} else if (date.isAfter(LocalDate.now())) {
-			lblInvoiceDateErrMsg.setText("Invoice Date can't be later than todays date :" + appUtils.getTodaysDate());
+			lblInvoiceDateErrMsg.setText("Invoice Date can't be later than todays date :" + appUtils.getTodaysDateForUI());
 			valid = false;
 			return valid;
 		}

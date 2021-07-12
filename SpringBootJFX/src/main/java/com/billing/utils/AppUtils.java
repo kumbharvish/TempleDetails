@@ -82,6 +82,8 @@ public class AppUtils {
 	private static final String TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 	private static final String DATE_FORMAT = "yyyy-MM-dd";
+	
+	private static final String DATE_FORMAT_UI = "dd-MM-yyyy";
 
 	private static final String APP_DATA = "SELECT * FROM APP_DATA ;";
 
@@ -448,8 +450,14 @@ public class AppUtils {
 		return sdf.format(timestamp);
 	}
 
-	public String getTodaysDate() {
+	public String getTodaysDateForDB() {
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		return sdf.format(timestamp);
+	}
+	
+	public String getTodaysDateForUI() {
+		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_UI);
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		return sdf.format(timestamp);
 	}
