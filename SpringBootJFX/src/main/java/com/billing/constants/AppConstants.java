@@ -14,7 +14,7 @@ public class AppConstants {
 
 	public static final String PRODUCT_NAME = "PRODUCT_NAME";
 
-	public static final String BARCODE = "Barcode";
+	public static final String BARCODE = "BARCODE";
 
 	public static final String DATA_BACKUP_ON_MAIL = "DATA_BACKUP_ON_MAIL";
 
