@@ -62,6 +62,8 @@ public class UserRepository {
 
 			if (records > 0) {
 				status.setStatusCode(0);
+			} else {
+				status.setStatusCode(-1);
 			}
 		} catch (Exception e) {
 			status.setStatusCode(-1);
@@ -176,6 +178,8 @@ public class UserRepository {
 
 			if (records > 0) {
 				status.setStatusCode(0);
+			} else {
+				status.setStatusCode(-1);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -206,6 +210,8 @@ public class UserRepository {
 
 			if (records > 0) {
 				status.setStatusCode(0);
+			} else {
+				status.setStatusCode(-1);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -234,6 +240,8 @@ public class UserRepository {
 
 			if (records > 0) {
 				status.setStatusCode(0);
+			} else {
+				status.setStatusCode(-1);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
