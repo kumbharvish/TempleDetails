@@ -264,6 +264,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			rbItemName.setSelected(true);
 		}
 		dpInvoiceDate.setValue(LocalDate.now());
+		appUtils.setDateConvertor(dpInvoiceDate);
 		dpInvoiceDate.setDayCellFactory(this::getDateCell);
 		dpInvoiceDate.valueProperty().addListener((observable, oldDate, newDate) -> {
 			isDirty.set(true);

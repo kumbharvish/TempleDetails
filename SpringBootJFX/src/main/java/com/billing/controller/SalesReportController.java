@@ -209,6 +209,8 @@ public class SalesReportController extends AppContext implements TabContent {
 		tableView.setItems(billList);
 		dpFromDate.setValue(LocalDate.now());
 		dpToDate.setValue(LocalDate.now());
+		appUtils.setDateConvertor(dpFromDate);
+		appUtils.setDateConvertor(dpToDate);
 		dpFromDate.setDayCellFactory(this::getDateCell);
 		dpFromDate.valueProperty().addListener((observable, oldDate, newDate) -> {
 			LocalDate today = LocalDate.now();

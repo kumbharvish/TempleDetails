@@ -186,6 +186,7 @@ public class CashReportController implements TabContent {
 	@Override
 	public void initialize() {
 		datePicker.setValue(LocalDate.now());
+		appUtils.setDateConvertor(datePicker);
 		datePicker.setDayCellFactory(this::getDateCell);
 		datePicker.setOnAction(new EventHandler<ActionEvent>() {
 			@Override

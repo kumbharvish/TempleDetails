@@ -226,6 +226,7 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 		totalMrpAmount=0.0;
 		productTableData = FXCollections.observableArrayList();
 		dpBillDate.setValue(LocalDate.now());
+		appUtils.setDateConvertor(dpBillDate);
 		dpBillDate.setDayCellFactory(this::getDateCell);
 		dpBillDate.valueProperty().addListener((observable, oldDate, newDate) -> {
 			isDirty.set(true);

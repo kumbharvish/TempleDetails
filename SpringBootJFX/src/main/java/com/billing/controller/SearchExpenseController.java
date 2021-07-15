@@ -356,6 +356,8 @@ public class SearchExpenseController extends AppContext implements TabContent {
 
 		dpStartDate.setValue(LocalDate.now());
 		dpEndDate.setValue(LocalDate.now());
+		appUtils.setDateConvertor(dpStartDate);
+		appUtils.setDateConvertor(dpEndDate);
 		dpStartDate.valueProperty().addListener((observable, oldDate, newDate) -> {
 			LocalDate today = LocalDate.now();
 			if (newDate == null) {

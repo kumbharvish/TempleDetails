@@ -575,6 +575,8 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 
 		dpStartDate.setValue(LocalDate.now());
 		dpEndDate.setValue(LocalDate.now());
+		appUtils.setDateConvertor(dpStartDate);
+		appUtils.setDateConvertor(dpEndDate);
 		txtInvoiceNo.textProperty().addListener(appUtils.getForceNumberListner());
 		dpStartDate.valueProperty().addListener((observable, oldDate, newDate) -> {
 			LocalDate today = LocalDate.now();

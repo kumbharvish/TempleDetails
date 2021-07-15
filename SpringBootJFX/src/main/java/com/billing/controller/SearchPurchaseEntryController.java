@@ -433,6 +433,8 @@ public class SearchPurchaseEntryController extends AppContext implements TabCont
 
 		dpStartDate.setValue(LocalDate.now());
 		dpEndDate.setValue(LocalDate.now());
+		appUtils.setDateConvertor(dpStartDate);
+		appUtils.setDateConvertor(dpEndDate);
 		txtPENo.textProperty().addListener(appUtils.getForceNumberListner());
 		dpStartDate.valueProperty().addListener((observable, oldDate, newDate) -> {
 			LocalDate today = LocalDate.now();

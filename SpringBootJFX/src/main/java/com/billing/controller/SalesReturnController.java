@@ -240,6 +240,7 @@ public class SalesReturnController extends AppContext implements TabContent {
 		productTableData = FXCollections.observableArrayList();
 		itemQtyMap = new HashMap<Integer, Double>();
 		dpReturnDate.setValue(LocalDate.now());
+		appUtils.setDateConvertor(dpReturnDate);
 		dpReturnDate.setDayCellFactory(this::getDateCell);
 		dpReturnDate.valueProperty().addListener((observable, oldDate, newDate) -> {
 			isDirty.set(true);

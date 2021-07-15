@@ -135,6 +135,7 @@ public class ExpenseController implements TabContent {
 	public boolean loadData() {
 		expensesService.fillExpenseTypes(cbCategory);
 		dateExpense.setValue(LocalDate.now());
+		appUtils.setDateConvertor(dateExpense);
 		isDirty.set(false);
 		return true;
 	}

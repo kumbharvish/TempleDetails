@@ -72,6 +72,8 @@ public class ViewStockLedgerController {
 	public void initialize() {
 		dateFrom.setValue(LocalDate.now());
 		dateTo.setValue(LocalDate.now());
+		appUtils.setDateConvertor(dateFrom);
+		appUtils.setDateConvertor(dateTo);
 		setTableCellFactories();
 	}
 
