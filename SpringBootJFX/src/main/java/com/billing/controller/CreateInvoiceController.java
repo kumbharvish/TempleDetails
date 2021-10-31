@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.billing.constants.AppConstants;
 import com.billing.dto.BillDetails;
 import com.billing.dto.Customer;
 import com.billing.dto.GSTDetails;
@@ -121,6 +122,8 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	ObservableList<Product> productTableData;
 
 	private boolean isGSTInclusive = false;
+	
+	private String defaultCustomerName = "";
 
 	@FXML
 	private DatePicker dpInvoiceDate;
@@ -431,6 +434,10 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			}
 		});
 
+		txtCustomer.setText(defaultCustomerName);
+		if(!defaultCustomerName.equalsIgnoreCase("")) {
+			setNewFocus();
+		}
 	}
 
 	private void setTxtAmount() {
@@ -557,11 +564,20 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	}
 
 	public void getCustomerNameList() {
+		Long defaultCustNo = (long) 0.0;
 		customerEntries = new TreeSet<String>();
 		customerMap = new HashMap<String, Customer>();
+		String defaultCustomer = appUtils.getAppDataValues(AppConstants.CREATE_INVOICE_DEFAULT_CUSTOMER);
+		if(defaultCustomer!=null && !defaultCustomer.equalsIgnoreCase("")) {
+			defaultCustNo = new Long(defaultCustomer);
+		}
 		for (Customer cust : customerService.getAll()) {
 			customerEntries.add(cust.getCustMobileNumber() + " : " + cust.getCustName());
 			customerMap.put(cust.getCustMobileNumber() + " : " + cust.getCustName(), cust);
+			if(cust.getCustMobileNumber() == defaultCustNo) {
+				defaultCustomerName = cust.getCustMobileNumber() + " : " + cust.getCustName();
+				System.out.println("defaultCustomerName==>"+defaultCustomerName);
+			}
 		}
 	}
 
@@ -640,7 +656,11 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 
 	@Override
 	public void putFocusOnNode() {
-		txtCustomer.requestFocus();
+		if(!defaultCustomerName.equalsIgnoreCase("")) {
+			setNewFocus();
+		}else {
+			txtCustomer.requestFocus();
+		}
 	}
 
 	@Override
@@ -816,6 +836,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		txtInvoiceNumber.setText(String.valueOf(invoiceService.getNewInvoiceNumber()));
 		txtCustomer.clear();
 		txtCustomer.requestFocus();
+		txtCustomer.setText(defaultCustomerName);
 		txtNoOfItems.clear();
 		txtTotalQty.clear();
 		txtSubTotal.clear();
@@ -826,6 +847,9 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		isDirty.set(false);
 		getProductNameList();
 		txtItemName.createTextField(productEntries, () -> setProductDetails());
+		if(!defaultCustomerName.equalsIgnoreCase("")) {
+			setNewFocus();
+		}
 
 	}
 

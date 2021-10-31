@@ -27,6 +27,8 @@ public class AppConstants {
 	public static final String LOW_STOCK_QUANTITY_LIMIT = "LOW_STOCK_QUANTITY_LIMIT";
 	
 	public static final String TERMS_AND_CONDITION_FOR_INVOICE = "TERMS_AND_CONDITION_FOR_INVOICE";
+	
+	public static final String CREATE_INVOICE_DEFAULT_CUSTOMER = "CREATE_INVOICE_DEFAULT_CUSTOMER";
 
 	public static final String SELECT_EXPENSE_CATEGORY = "-- Select Category --";
 

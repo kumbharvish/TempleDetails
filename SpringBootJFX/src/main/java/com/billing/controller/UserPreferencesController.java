@@ -87,6 +87,9 @@ public class UserPreferencesController implements TabContent {
 
 	@FXML
 	private Label lblTermsAndConditionErrMsg;
+	
+	@FXML
+	private TextField txtDefaultCustomerMobile;
 
 	@FXML
 	private Button btnUpdate;
@@ -148,6 +151,7 @@ public class UserPreferencesController implements TabContent {
 		txtSalesReturnDays.setText(userPref.get(AppConstants.SALES_RETURN_ALLOWED_DAYS));
 		txtLowStockQtyLimit.setText(userPref.get(AppConstants.LOW_STOCK_QUANTITY_LIMIT));
 		txtTermsAndCondition.setText(userPref.get(AppConstants.TERMS_AND_CONDITION_FOR_INVOICE));
+		txtDefaultCustomerMobile.setText(userPref.get(AppConstants.CREATE_INVOICE_DEFAULT_CUSTOMER));
 		isDirty.set(false);
 		return true;
 	}
@@ -185,6 +189,7 @@ public class UserPreferencesController implements TabContent {
 				.bind(lblTermsAndConditionErrMsg.textProperty().length().greaterThanOrEqualTo(1));
 
 		txtSalesReturnDays.textProperty().addListener(appUtils.getForceNumberListner());
+		txtDefaultCustomerMobile.textProperty().addListener(appUtils.getForceNumberListner());
 		txtLowStockQtyLimit.textProperty().addListener(appUtils.getForceNumberListner());
 
 		rbGSTInclusive.selectedProperty().addListener(this::invalidated);
@@ -198,6 +203,7 @@ public class UserPreferencesController implements TabContent {
 		txtSalesReturnDays.textProperty().addListener(this::invalidated);
 		txtLowStockQtyLimit.textProperty().addListener(this::invalidated);
 		txtTermsAndCondition.textProperty().addListener(this::invalidated);
+		txtDefaultCustomerMobile.textProperty().addListener(this::invalidated);
 
 		btnUpdate.disableProperty().bind(isDirty.not());
 
@@ -241,6 +247,7 @@ public class UserPreferencesController implements TabContent {
 		saveMap.put(AppConstants.SALES_RETURN_ALLOWED_DAYS, txtSalesReturnDays.getText());
 		saveMap.put(AppConstants.LOW_STOCK_QUANTITY_LIMIT, txtLowStockQtyLimit.getText());
 		saveMap.put(AppConstants.TERMS_AND_CONDITION_FOR_INVOICE, txtTermsAndCondition.getText());
+		saveMap.put(AppConstants.CREATE_INVOICE_DEFAULT_CUSTOMER, txtDefaultCustomerMobile.getText());
 
 		StatusDTO status = appUtils.updateUserPreferences(saveMap);
 

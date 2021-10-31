@@ -117,13 +117,15 @@
 										<Tooltip prefWidth="400.0" text="You can set Terms and Condition / Any Note which will be shown in invoice." wrapText="true" />
 									</tooltip>
 								</Label>
-								<Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="9" />
-								<ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="10">
+								<Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="10" />
+								<ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="11">
 									<buttons>
 										<Button fx:id="btnUpdate" defaultButton="true" disable="true" mnemonicParsing="true" onAction="#onUpdateCommand" text="Update" />
 										<Button cancelButton="true" mnemonicParsing="false" onAction="#onCloseCommand" text="Close" />
 									</buttons>
 								</ButtonBar>
+                        <Label styleClass="nodeLabel" text="Default Customer Mobile No :" GridPane.halignment="RIGHT" GridPane.rowIndex="9" />
+                        <TextField fx:id="txtDefaultCustomerMobile" GridPane.columnIndex="1" GridPane.rowIndex="9" />
 							</children>
 							<VBox.margin>
 								<Insets top="20.0" />
@@ -146,6 +148,7 @@
 								<RowConstraints minHeight="10.0" />
 								<RowConstraints minHeight="10.0" prefHeight="30.0" />
 								<RowConstraints minHeight="10.0" prefHeight="30.0" />
+                        <RowConstraints minHeight="-Infinity" />
 								<RowConstraints />
 								<RowConstraints />
 							</rowConstraints>
