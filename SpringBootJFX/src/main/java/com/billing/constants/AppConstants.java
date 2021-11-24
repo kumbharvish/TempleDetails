@@ -98,8 +98,6 @@ public class AppConstants {
 
 	public static final String GST_INCLUSIVE = "GST_INCLUSIVE";
 
-	public static final String INVOICE_PRODUCT_SEARCH_BY = "INVOICE_PRODUCT_SEARCH_BY";
-
 	public static final String DB_DUMP_INTERVAL = "DB_DUMP_INTERVAL";
 
 	public static final String INVOICE_PRINT_ON_SAVE = "INVOICE_PRINT_ON_SAVE";

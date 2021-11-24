@@ -776,4 +776,25 @@ public class AppUtils {
         datePicker.setConverter(converter);
         datePicker.setPromptText("dd-MM-yyyy");
 	}
+	
+	public boolean isNumeric(String strNum) {
+	    if (strNum == null) {
+	        return false;
+	    }
+	    try {
+	     Double.parseDouble(strNum);
+	    } catch (NumberFormatException nfe) {
+	        return false;
+	    }
+	    return true;
+	}
+	
+	public boolean isEmptyString(String str) {
+	    if (str == null) {
+	        return true;
+	    } else if(str.equals("")) {
+	    	return true;
+	    }
+	    return false;
+	}
 }

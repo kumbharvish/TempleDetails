@@ -61,13 +61,11 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -135,19 +133,10 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	private Label lblInvoiceDateErrMsg;
 
 	@FXML
-	private RadioButton rbBarcode;
-
-	@FXML
-	private RadioButton rbItemName;
-
-	@FXML
 	private AutoCompleteTextField txtCustomer;
 
 	@FXML
 	private AutoCompleteTextField txtItemName;
-
-	@FXML
-	private TextField txtItemBarcode;
 
 	@FXML
 	private Label lblCustomerErrMsg;
@@ -258,14 +247,6 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		cbPrintOnSave.setSelected(appUtils.isTrue(appUtils.getAppDataValues("INVOICE_PRINT_ON_SAVE")));
 
 		productTableData = FXCollections.observableArrayList();
-		ToggleGroup radioButtonGroup = new ToggleGroup();
-		rbBarcode.setToggleGroup(radioButtonGroup);
-		rbItemName.setToggleGroup(radioButtonGroup);
-		if ("BARCODE".equals(appUtils.getAppDataValues("INVOICE_PRODUCT_SEARCH_BY"))) {
-			rbBarcode.setSelected(true);
-		} else {
-			rbItemName.setSelected(true);
-		}
 		dpInvoiceDate.setValue(LocalDate.now());
 		appUtils.setDateConvertor(dpInvoiceDate);
 		dpInvoiceDate.setDayCellFactory(this::getDateCell);
@@ -277,10 +258,6 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 				isDirty.set(true);
 			}
 		});
-		txtItemName.managedProperty().bind(txtItemName.visibleProperty());
-		txtItemName.visibleProperty().bind(rbItemName.selectedProperty());
-		txtItemBarcode.managedProperty().bind(txtItemBarcode.visibleProperty());
-		txtItemBarcode.visibleProperty().bind(rbBarcode.selectedProperty());
 
 		// Error Messages
 		lblItemNameErrMsg.managedProperty().bind(lblItemNameErrMsg.visibleProperty());
@@ -313,7 +290,6 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		txtQuantity.textProperty().addListener(appUtils.getForceDecimalNumberListner());
 		txtRate.textProperty().addListener(appUtils.getForceDecimalNumberListner());
 		txtDiscountPercent.textProperty().addListener(appUtils.getForceDecimalNumberListner());
-		txtItemBarcode.textProperty().addListener(appUtils.getForceNumberListner());
 		tableView.setItems(productTableData);
 		btnSave.disableProperty().bind(isDirty.not());
 		// Register textfield listners
@@ -356,14 +332,15 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			}
 		});
 
-		txtItemBarcode.setOnKeyPressed(new EventHandler<KeyEvent>() {
+		txtItemName.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent ke) {
 				if (ke.getCode().equals(KeyCode.ENTER)) {
-					if (!txtItemBarcode.getText().equals("")) {
+					String name = txtItemName.getText();
+					if (!appUtils.isEmptyString(name) && appUtils.isNumeric(name)) {
 						clearItemErrorFields();
-						setProductDetailsWithBarCode(Long.valueOf(txtItemBarcode.getText().trim()));
-						txtItemBarcode.setText("");
+						setProductDetailsWithBarCode(Long.valueOf(txtItemName.getText().trim()));
+						txtItemName.setText("");
 						setNewFocus();
 					}
 				}
@@ -378,21 +355,6 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 						&& !ke.getCode().equals(KeyCode.DECIMAL)) {
 					setTxtAmount();
 				}
-			}
-		});
-
-		rbBarcode.selectedProperty().addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				txtItemBarcode.requestFocus();
-				resetItemFields();
-			}
-		});
-		rbItemName.selectedProperty().addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				txtItemName.requestFocus();
-				resetItemFields();
 			}
 		});
 
@@ -467,7 +429,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	protected void setProductDetailsWithBarCode(Long productBarCode) {
 		Product product = productMapWithBarcode.get(productBarCode);
 		if (product == null) {
-			lblItemNameErrMsg.setText("Product not preset for Barcode : " + productBarCode);
+			lblItemNameErrMsg.setText("Product not found - " + productBarCode);
 		} else {
 			if (product.getQuantity() >= 1) {
 				if (!updateRow(product)) {
@@ -861,7 +823,6 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 
 	private void resetItemFields() {
 		txtItemName.clear();
-		txtItemBarcode.clear();
 		txtAmount.clear();
 		txtRate.clear();
 		txtQuantity.clear();
@@ -869,11 +830,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	}
 
 	protected void setNewFocus() {
-		if (rbBarcode.isSelected()) {
-			txtItemBarcode.requestFocus();
-		} else {
-			txtItemName.requestFocus();
-		}
+		txtItemName.requestFocus();
 	}
 
 	private void clearInvoiceErrorFields() {

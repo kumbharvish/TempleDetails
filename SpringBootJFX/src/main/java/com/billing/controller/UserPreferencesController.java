@@ -56,12 +56,6 @@ public class UserPreferencesController implements TabContent {
 	private RadioButton rbGSTExclusive;
 
 	@FXML
-	private RadioButton rbSearchBarcode;
-
-	@FXML
-	private RadioButton rbSearchName;
-
-	@FXML
 	private ComboBox<String> cbDBBackupInterval;
 
 	@FXML
@@ -138,12 +132,6 @@ public class UserPreferencesController implements TabContent {
 			rbGSTExclusive.setSelected(true);
 		}
 
-		if (AppConstants.BARCODE.equals(userPref.get(AppConstants.INVOICE_PRODUCT_SEARCH_BY))) {
-			rbSearchBarcode.setSelected(true);
-		} else {
-			rbSearchName.setSelected(true);
-		}
-
 		cbPrintOnSave.setSelected(appUtils.isTrue(userPref.get(AppConstants.INVOICE_PRINT_ON_SAVE)));
 		cbShowPrintPreview.setSelected(appUtils.isTrue(userPref.get(AppConstants.SHOW_PRINT_PREVIEW)));
 		cbOpenDocAfterSave.setSelected(appUtils.isTrue(userPref.get(AppConstants.OPEN_REPORT_DOC_ON_SAVE)));
@@ -172,10 +160,6 @@ public class UserPreferencesController implements TabContent {
 		rbGSTInclusive.setToggleGroup(radioButtonGroupGSTType);
 		rbGSTExclusive.setToggleGroup(radioButtonGroupGSTType);
 
-		ToggleGroup radioButtonGroupSearch = new ToggleGroup();
-		rbSearchBarcode.setToggleGroup(radioButtonGroupSearch);
-		rbSearchName.setToggleGroup(radioButtonGroupSearch);
-
 		lblSalesReturnDaysErrMsg.managedProperty().bind(lblSalesReturnDaysErrMsg.visibleProperty());
 		lblSalesReturnDaysErrMsg.visibleProperty()
 				.bind(lblSalesReturnDaysErrMsg.textProperty().length().greaterThanOrEqualTo(1));
@@ -197,8 +181,6 @@ public class UserPreferencesController implements TabContent {
 		cbPrintOnSave.selectedProperty().addListener(this::invalidated);
 		cbShowPrintPreview.selectedProperty().addListener(this::invalidated);
 		cbOpenDocAfterSave.selectedProperty().addListener(this::invalidated);
-		rbSearchBarcode.selectedProperty().addListener(this::invalidated);
-		rbSearchName.selectedProperty().addListener(this::invalidated);
 		cbDBBackupInterval.getSelectionModel().selectedItemProperty().addListener(this::invalidated);
 		txtSalesReturnDays.textProperty().addListener(this::invalidated);
 		txtLowStockQtyLimit.textProperty().addListener(this::invalidated);
@@ -236,12 +218,6 @@ public class UserPreferencesController implements TabContent {
 			saveMap.put(AppConstants.OPEN_REPORT_DOC_ON_SAVE, "Y");
 		} else {
 			saveMap.put(AppConstants.OPEN_REPORT_DOC_ON_SAVE, "N");
-		}
-
-		if (rbSearchBarcode.isSelected()) {
-			saveMap.put(AppConstants.INVOICE_PRODUCT_SEARCH_BY, AppConstants.BARCODE);
-		} else {
-			saveMap.put(AppConstants.INVOICE_PRODUCT_SEARCH_BY, AppConstants.PRODUCT_NAME);
 		}
 		saveMap.put(AppConstants.DB_DUMP_INTERVAL, cbDBBackupInterval.getSelectionModel().getSelectedItem());
 		saveMap.put(AppConstants.SALES_RETURN_ALLOWED_DAYS, txtSalesReturnDays.getText());
