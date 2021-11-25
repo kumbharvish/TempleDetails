@@ -77,6 +77,8 @@ public class Product {
 	private String hsn;
 	
 	private double tableDispTax;
+	
+	private long sequenceNumber;
 
 	public int getProductCode() {
 		return productCode;
@@ -398,8 +400,16 @@ public class Product {
 		return tableDispTax/2;
 	}
 	
+	public long getSequenceNumber() {
+		return sequenceNumber;
+	}
+
+	public void setSequenceNumber(long sequenceNumber) {
+		this.sequenceNumber = sequenceNumber;
+	}
+
 	public enum SortParameter {
-		CATEGORY_NAME_ASCENDING, PROFIT_ASCENDING, PRODUCT_NAME_ASCENDING, STOCK_VALUE_AMT_ASC, STOCK_QUANTITY_ASC
+		CATEGORY_NAME_ASCENDING, PROFIT_ASCENDING, PRODUCT_NAME_ASCENDING, STOCK_VALUE_AMT_ASC, STOCK_QUANTITY_ASC,INSERTION_ORDER
 	}
 
 	private static class ProductComparator implements Comparator<Product> {
@@ -444,6 +454,12 @@ public class Product {
 						return -1;
 					}
 					break;
+				case INSERTION_ORDER:
+					if (o1.getSequenceNumber() < o2.getSequenceNumber()) {
+						return 1;
+					} else if (o1.getSequenceNumber() > o2.getSequenceNumber()) {
+						return -1;
+					}
 				}
 			}
 			return 0;

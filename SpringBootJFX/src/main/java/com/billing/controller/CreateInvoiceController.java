@@ -419,7 +419,10 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			product.setTableDispRate(Double.valueOf(txtRate.getText()));
 			product.setTableDispQuantity(Double.valueOf(txtQuantity.getText()));
 			product.setGstDetails(appUtils.getGSTDetails(product));
+			long seq = System.currentTimeMillis();
+			product.setSequenceNumber(seq);
 			productTableData.add(product);
+			productTableData.sort(Product.getComparator(Product.SortParameter.INSERTION_ORDER));
 			resetItemFields();
 			setNewFocus();
 		}
@@ -440,7 +443,10 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 					product.setTableDispAmount(product.getSellPrice());
 					product.setTableDispRate(product.getSellPrice());
 					product.setGstDetails(appUtils.getGSTDetails(product));
+					long seq = System.currentTimeMillis();
+					product.setSequenceNumber(seq);
 					productTableData.add(product);
+					productTableData.sort(Product.getComparator(Product.SortParameter.INSERTION_ORDER));
 				}
 			} else {
 				lblQuantityErrMsg.setText("Available stock is : " + appUtils.getDecimalFormat(product.getQuantity()));
@@ -992,6 +998,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 					Product p = tableView.getSelectionModel().getSelectedItem();
 					if (productTableData.contains(p)) {
 						productTableData.remove(p);
+						setNewFocus();
 					}
 				}
 			}

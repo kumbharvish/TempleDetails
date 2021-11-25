@@ -7,7 +7,6 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
@@ -21,8 +20,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<?import com.billing.utils.AutoCompleteTextField?>
 <?import javafx.scene.image.*?>
+<?import com.billing.utils.AutoCompleteTextField?>
 
 <HBox alignment="TOP_CENTER" styleClass="rootNode" stylesheets="@../../../css/createInvoice.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.EditInvoiceController">
 	<children>
@@ -65,22 +64,14 @@
 													</columnConstraints>
 													<rowConstraints>
 														<RowConstraints />
-														<RowConstraints />
 														<RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
 													</rowConstraints>
 													<children>														
-														<Label styleClass="nodeLabel" text="Product Search By :" GridPane.halignment="RIGHT" />
-														<HBox spacing="40.0" GridPane.columnIndex="1">
-															<children>
-																<RadioButton fx:id="rbBarcode" mnemonicParsing="false" text="Barcode" />
-																<RadioButton fx:id="rbItemName" mnemonicParsing="false" text="Product Name" />
-															</children>
-														</HBox>														
-														<Label styleClass="requiredInput" text="Customer :" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-														<VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
+														<Label styleClass="requiredInput" text="Customer :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+														<VBox GridPane.columnIndex="1" GridPane.rowIndex="1">
 															<children>
 																<AutoCompleteTextField fx:id="txtCustomer" />
-																<Label fx:id="lblCustomerErrMsg" styleClass="errorLabel" wrapText="true"/>
+																<Label fx:id="lblCustomerErrMsg" styleClass="errorLabel" wrapText="true" />
 															</children>
 														</VBox>
 													</children>
@@ -109,7 +100,6 @@
 												<Label styleClass="nodeLabel" text="Product Name :" />
 												<VBox GridPane.rowIndex="1">
 													<children>
-														<TextField fx:id="txtItemBarcode" />
 														<AutoCompleteTextField fx:id="txtItemName" />
 														<Label fx:id="lblItemNameErrMsg" styleClass="errorLabel" />
 													</children>
@@ -123,7 +113,7 @@
 												<VBox GridPane.columnIndex="2" GridPane.rowIndex="1">
 													<children>
 														<TextField fx:id="txtRate" />
-														<Label fx:id="lblRateErrMsg" styleClass="errorLabel"/>
+														<Label fx:id="lblRateErrMsg" styleClass="errorLabel" />
 													</children>
 												</VBox>
 												<Label styleClass="nodeLabel" text="Quantity :" GridPane.columnIndex="3" />
@@ -152,7 +142,7 @@
 																<TableColumn fx:id="tcUnit" prefWidth="70.0" text="Unit" />
 																<TableColumn fx:id="tcQuantity" prefWidth="90.0" text="Quantity" />
 																<TableColumn fx:id="tcRate" prefWidth="100.0" text="Rate" />
-																<TableColumn  text="Discount" minWidth="0.0" prefWidth="-1.0" >
+																<TableColumn minWidth="0.0" prefWidth="-1.0" text="Discount">
 																	<columns>
 																		<TableColumn fx:id="tcDiscount" prefWidth="50" text="(%)" />
 																		<TableColumn fx:id="tcDiscountAmount" prefWidth="90.0" text="Amt." />
@@ -160,13 +150,13 @@
 																</TableColumn>
 
 																<TableColumn fx:id="tcAmount" prefWidth="100.0" text="Amount" />
-																<TableColumn  text="CGST" minWidth="0.0" prefWidth="-1.0" >
+																<TableColumn minWidth="0.0" prefWidth="-1.0" text="CGST">
 																	<columns>
 																		<TableColumn fx:id="tcCGSTPercent" prefWidth="50.0" text="(%)" />
 																		<TableColumn fx:id="tcCGST" prefWidth="90.0" text="Amt." />
 																	</columns>
 																</TableColumn>
-																<TableColumn  text="SGST" minWidth="0.0" prefWidth="-1.0" >
+																<TableColumn minWidth="0.0" prefWidth="-1.0" text="SGST">
 																	<columns>
 																		<TableColumn fx:id="tcSGSTPercent" minWidth="-1.0" prefWidth="50.0" text="(%)" />
 																		<TableColumn fx:id="tcSGST" minWidth="-1.0" prefWidth="90.0" text="Amt." />
@@ -246,25 +236,35 @@
 											
 											<children>
 												<Label styleClass="nodeLabel" text="No Of Items :" GridPane.halignment="RIGHT" />
-												<TextField fx:id="txtNoOfItems" editable="false" styleClass="totalFields" GridPane.columnIndex="1" alignment="CENTER_RIGHT"/>
+												<TextField fx:id="txtNoOfItems" alignment="CENTER_RIGHT" editable="false" styleClass="totalFields" GridPane.columnIndex="1" />
 												<Label styleClass="nodeLabel" text="Total Quantity :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
-												<TextField fx:id="txtTotalQty" editable="false" styleClass="totalFields" GridPane.columnIndex="1" GridPane.rowIndex="1" alignment="CENTER_RIGHT"/>												
+												<TextField fx:id="txtTotalQty" alignment="CENTER_RIGHT" editable="false" styleClass="totalFields" GridPane.columnIndex="1" GridPane.rowIndex="1" />												
 												<Label styleClass="nodeLabel" text="Sub Total :" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-												<TextField fx:id="txtSubTotal" editable="false" styleClass="totalFields" GridPane.columnIndex="1" GridPane.rowIndex="2" alignment="CENTER_RIGHT"/>
+												<TextField fx:id="txtSubTotal" alignment="CENTER_RIGHT" editable="false" styleClass="totalFields" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 												<Label styleClass="nodeLabel" text="Disc. All (%) :" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
-												<TextField fx:id="txtDiscountPercent" GridPane.columnIndex="1" GridPane.rowIndex="3" alignment="CENTER_RIGHT" />
+												<TextField fx:id="txtDiscountPercent" alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 												<Label styleClass="nodeLabel" text="Disc. Amt. (-):" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
-												<TextField fx:id="txtDiscountAmt" editable="false" styleClass="totalFields" GridPane.columnIndex="1" GridPane.rowIndex="4" alignment="CENTER_RIGHT"/>
-												<Label styleClass="nodeLabel" text="Payment Mode :" GridPane.rowIndex="5"  GridPane.halignment="RIGHT" />
+												<TextField fx:id="txtDiscountAmt" alignment="CENTER_RIGHT" editable="false" styleClass="totalFields" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+												<Label styleClass="nodeLabel" text="Payment Mode :" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
 												<ComboBox fx:id="cbPaymentModes" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-												<Label styleClass="nodeLabel" text="GST Amount :" GridPane.rowIndex="6"  GridPane.halignment="RIGHT" />
-												<TextField fx:id="txtGstAmount" editable="false" styleClass="totalFields" GridPane.columnIndex="1" GridPane.rowIndex="6" alignment="CENTER_RIGHT"/>
-												<Label styleClass="nodeLabel" text="GST Type :" GridPane.rowIndex="7"  GridPane.halignment="RIGHT" />
-												<TextField fx:id="txtGstType" editable="false" styleClass="totalFields" GridPane.columnIndex="1" GridPane.rowIndex="7" alignment="CENTER_RIGHT"/>
+												<Label styleClass="nodeLabel" text="GST Amount :" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
+												<TextField fx:id="txtGstAmount" alignment="CENTER_RIGHT" editable="false" styleClass="totalFields" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+												<Label styleClass="nodeLabel" text="GST Type :" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
+												<TextField fx:id="txtGstType" alignment="CENTER_RIGHT" editable="false" styleClass="totalFields" GridPane.columnIndex="1" GridPane.rowIndex="7" />
 											</children>
 											<padding>
 												<Insets left="10.0" />
 											</padding>
+                                 <rowConstraints>
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                 </rowConstraints>
 										</GridPane>
 										<GridPane alignment="BOTTOM_CENTER" hgap="10.0" layoutX="10.0" layoutY="226.0" vgap="5.0">
 											<columnConstraints>
@@ -278,7 +278,7 @@
 											<children>
 												<Label styleClass="nodeLabel" text="Net Sales Amount :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
 												<Label styleClass="nodeLabel" GridPane.halignment="RIGHT" />
-												<TextField fx:id="txtNetSalesAmount" editable="false" styleClass="netSalesAmountStyle" GridPane.columnIndex="1" GridPane.rowIndex="1" alignment="CENTER_RIGHT"/>
+												<TextField fx:id="txtNetSalesAmount" alignment="CENTER_RIGHT" editable="false" styleClass="netSalesAmountStyle" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 												<Separator prefWidth="200.0" GridPane.columnSpan="2" />
 											</children>
 											<padding>
@@ -302,7 +302,7 @@
 										</HBox>
 										<ButtonBar>
 											<buttons>
-												<Button fx:id="btnSave"  mnemonicParsing="false" onAction="#onUpdateCommand" text="Update" />
+												<Button fx:id="btnSave" mnemonicParsing="false" onAction="#onUpdateCommand" text="Update" />
 												<Button fx:id="btnClose" cancelButton="true" mnemonicParsing="false" onAction="#onCloseAction" text="Close" />
 											</buttons>
 										</ButtonBar>
