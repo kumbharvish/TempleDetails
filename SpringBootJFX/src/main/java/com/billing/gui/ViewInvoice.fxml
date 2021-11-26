@@ -151,6 +151,7 @@
                <children>
                   <ButtonBar>
                     <buttons>
+                        <Button layoutX="780.0" layoutY="10.0" mnemonicParsing="false" onAction="#onPrintAction" text="Print" />
                     <Button fx:id="btnViewSalesReturn" layoutX="905.0" layoutY="10.0" mnemonicParsing="false" onAction="#onViewSalesReturnAction" text="View Sales Return" />
                       <Button mnemonicParsing="false" onAction="#onViewGSTDetailsAction" text="View GST Details" />
                     </buttons>

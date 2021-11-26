@@ -14,6 +14,7 @@ import com.billing.dto.Product;
 import com.billing.dto.ReturnDetails;
 import com.billing.main.AppContext;
 import com.billing.service.InvoiceService;
+import com.billing.service.PrinterService;
 import com.billing.service.SalesReturnService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
@@ -56,6 +57,9 @@ public class ViewInvoiceController extends AppContext {
 
 	@Autowired
 	InvoiceService invoiceService;
+	
+	@Autowired
+	PrinterService printerService;
 
 	ObservableList<ItemDetails> productTableData;
 
@@ -225,6 +229,12 @@ public class ViewInvoiceController extends AppContext {
 	@FXML
 	void onViewSalesReturnAction(ActionEvent event) {
 		getViewSalesReturnPopUp(returnDetails);
+	}
+	
+	@FXML
+	void onPrintAction(ActionEvent event) {
+		printerService.printInvoice(bill);
+
 	}
 
 	private void getViewSalesReturnPopUp(ReturnDetails retunDtls) {
