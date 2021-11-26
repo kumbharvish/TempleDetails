@@ -234,6 +234,12 @@ public class CashReportController implements TabContent {
 		// TODO Auto-generated method stub
 
 	}
+	
+	@FXML
+    void onRefreshCommand(ActionEvent event) {
+		loadData();
+    }
+
 
 	@FXML
 	void onUpdateOpeningCashCommand(ActionEvent event) {

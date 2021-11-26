@@ -292,6 +292,11 @@ public class SalesReportController extends AppContext implements TabContent {
 		pinterService.exportPDF(salesReport,currentStage);
 
 	}
+	
+	@FXML
+    void onRefreshCommand(ActionEvent event) {
+		loadData();
+    }
 
 	private SalesReport getSalesReport() {
 		SalesReport salesReport = new SalesReport();

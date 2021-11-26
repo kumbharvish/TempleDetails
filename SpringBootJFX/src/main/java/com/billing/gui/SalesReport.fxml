@@ -31,6 +31,7 @@
 								<ColumnConstraints fillWidth="false" hgrow="NEVER" minWidth="10.0" />
 								<ColumnConstraints fillWidth="false" hgrow="NEVER" minWidth="50.0" />
 								<ColumnConstraints fillWidth="false" hgrow="NEVER" minWidth="10.0" />
+                        <ColumnConstraints fillWidth="false" halignment="RIGHT" hgrow="NEVER" minWidth="100.0" />
 							</columnConstraints>
 							<rowConstraints>
 								<RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
@@ -40,6 +41,7 @@
 								<DatePicker fx:id="dpFromDate" GridPane.columnIndex="1" />
 								<DatePicker fx:id="dpToDate" GridPane.columnIndex="3" />
 								<Label styleClass="nodeLabel" text="To :" GridPane.columnIndex="2" GridPane.halignment="RIGHT" />
+                        <Button mnemonicParsing="false" onAction="#onRefreshCommand" text="Refresh" GridPane.columnIndex="4" />
 							</children>
 						</GridPane>
 						<ToolBar styleClass="parent" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -72,8 +74,8 @@
 			<center>
 				<TableView fx:id="tableView" BorderPane.alignment="CENTER">
 					<columns>
-						<TableColumn fx:id="tcInvoiceNo" prefWidth="90.0" text="Invoice No" />
-						<TableColumn fx:id="tcDate" minWidth="150.0" prefWidth="110.0" text="Date" />
+						<TableColumn fx:id="tcInvoiceNo" text="Invoice No" />
+						<TableColumn fx:id="tcDate" minWidth="120.0" prefWidth="110.0" text="Date" />
 						<TableColumn fx:id="tcCustomer" prefWidth="230.0" text="Customer Name" />
 						<TableColumn fx:id="tcNoOfItems" prefWidth="90.0" text="No Of Items" />
 						<TableColumn fx:id="tcQuantity" prefWidth="100.0" text="Quantity">
