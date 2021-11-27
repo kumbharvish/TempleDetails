@@ -334,17 +334,15 @@ public class EditInvoiceController extends AppContext implements TabContent {
 			}
 		});
 
-		txtItemName.setOnKeyPressed(new EventHandler<KeyEvent>() {
+		txtItemName.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
-			public void handle(KeyEvent ke) {
-				if (ke.getCode().equals(KeyCode.ENTER)) {
-					String name = txtItemName.getText();
-					if (!appUtils.isEmptyString(name) && appUtils.isNumeric(name)) {
-						clearItemErrorFields();
-						setProductDetailsWithBarCode(Long.valueOf(txtItemName.getText().trim()));
-						txtItemName.setText("");
-						setNewFocus();
-					}
+			public void handle(ActionEvent event) {
+				String name = txtItemName.getText();
+				if (!appUtils.isEmptyString(name) && appUtils.isNumeric(name)) {
+					clearItemErrorFields();
+					setProductDetailsWithBarCode(Long.valueOf(txtItemName.getText().trim()));
+					txtItemName.setText("");
+					setNewFocus();
 				}
 			}
 		});

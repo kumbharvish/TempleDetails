@@ -120,7 +120,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	ObservableList<Product> productTableData;
 
 	private boolean isGSTInclusive = false;
-	
+
 	private String defaultCustomerName = "";
 
 	@FXML
@@ -332,17 +332,15 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			}
 		});
 
-		txtItemName.setOnKeyPressed(new EventHandler<KeyEvent>() {
+		txtItemName.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
-			public void handle(KeyEvent ke) {
-				if (ke.getCode().equals(KeyCode.ENTER)) {
-					String name = txtItemName.getText();
-					if (!appUtils.isEmptyString(name) && appUtils.isNumeric(name)) {
-						clearItemErrorFields();
-						setProductDetailsWithBarCode(Long.valueOf(txtItemName.getText().trim()));
-						txtItemName.setText("");
-						setNewFocus();
-					}
+			public void handle(ActionEvent event) {
+				String name = txtItemName.getText();
+				if (!appUtils.isEmptyString(name) && appUtils.isNumeric(name)) {
+					clearItemErrorFields();
+					setProductDetailsWithBarCode(Long.valueOf(txtItemName.getText().trim()));
+					txtItemName.setText("");
+					setNewFocus();
 				}
 			}
 		});
@@ -397,7 +395,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		});
 
 		txtCustomer.setText(defaultCustomerName);
-		if(!defaultCustomerName.equalsIgnoreCase("")) {
+		if (!defaultCustomerName.equalsIgnoreCase("")) {
 			setNewFocus();
 		}
 	}
@@ -536,15 +534,15 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		customerEntries = new TreeSet<String>();
 		customerMap = new HashMap<String, Customer>();
 		String defaultCustomer = appUtils.getAppDataValues(AppConstants.CREATE_INVOICE_DEFAULT_CUSTOMER);
-		if(defaultCustomer!=null && !defaultCustomer.equalsIgnoreCase("")) {
+		if (defaultCustomer != null && !defaultCustomer.equalsIgnoreCase("")) {
 			defaultCustNo = new Long(defaultCustomer);
 		}
 		for (Customer cust : customerService.getAll()) {
 			customerEntries.add(cust.getCustMobileNumber() + " : " + cust.getCustName());
 			customerMap.put(cust.getCustMobileNumber() + " : " + cust.getCustName(), cust);
-			if(cust.getCustMobileNumber() == defaultCustNo) {
+			if (cust.getCustMobileNumber() == defaultCustNo) {
 				defaultCustomerName = cust.getCustMobileNumber() + " : " + cust.getCustName();
-				System.out.println("defaultCustomerName==>"+defaultCustomerName);
+				System.out.println("defaultCustomerName==>" + defaultCustomerName);
 			}
 		}
 	}
@@ -624,9 +622,9 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 
 	@Override
 	public void putFocusOnNode() {
-		if(!defaultCustomerName.equalsIgnoreCase("")) {
+		if (!defaultCustomerName.equalsIgnoreCase("")) {
 			setNewFocus();
-		}else {
+		} else {
 			txtCustomer.requestFocus();
 		}
 	}
@@ -759,7 +757,8 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			valid = false;
 			return valid;
 		} else if (date.isAfter(LocalDate.now())) {
-			lblInvoiceDateErrMsg.setText("Invoice Date can't be later than todays date :" + appUtils.getTodaysDateForUI());
+			lblInvoiceDateErrMsg
+					.setText("Invoice Date can't be later than todays date :" + appUtils.getTodaysDateForUI());
 			valid = false;
 			return valid;
 		}
@@ -815,7 +814,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		isDirty.set(false);
 		getProductNameList();
 		txtItemName.createTextField(productEntries, () -> setProductDetails());
-		if(!defaultCustomerName.equalsIgnoreCase("")) {
+		if (!defaultCustomerName.equalsIgnoreCase("")) {
 			setNewFocus();
 		}
 
