@@ -33,11 +33,13 @@ import com.billing.utils.IndianCurrencyFormatting;
 import com.billing.utils.TabContent;
 import com.billing.utils.Task;
 
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -75,6 +77,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 @Controller
 public class EditInvoiceController extends AppContext implements TabContent {
@@ -82,6 +85,10 @@ public class EditInvoiceController extends AppContext implements TabContent {
 	private static final Logger logger = LoggerFactory.getLogger(EditInvoiceController.class);
 
 	private BooleanProperty isDirty = new SimpleBooleanProperty(false);
+
+	final PauseTransition scannerDelay = new PauseTransition(Duration.seconds(0.20));
+
+	final StringProperty barcode = new SimpleStringProperty();
 
 	BillDetails bill;
 
@@ -334,18 +341,10 @@ public class EditInvoiceController extends AppContext implements TabContent {
 			}
 		});
 
-		txtItemName.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				String name = txtItemName.getText();
-				if (!appUtils.isEmptyString(name) && appUtils.isNumeric(name)) {
-					clearItemErrorFields();
-					setProductDetailsWithBarCode(Long.valueOf(txtItemName.getText().trim()));
-					txtItemName.setText("");
-					setNewFocus();
-				}
-			}
-		});
+		// Read Barcode Scanner Events
+		scannerDelay.setOnFinished(event -> barcode.set(txtItemName.getText()));
+		txtItemName.textProperty().addListener((obs, oldText, newText) -> scannerDelay.playFromStart());
+		barcode.addListener((obs, oldBarcode, newBarcode) -> barcodeScanEvent());
 
 		txtRate.setOnKeyReleased(new EventHandler<KeyEvent>() {
 			@Override
@@ -399,6 +398,16 @@ public class EditInvoiceController extends AppContext implements TabContent {
 			}
 		});
 
+	}
+	
+	public void barcodeScanEvent() {
+		String name = txtItemName.getText();
+		if (!appUtils.isEmptyString(name) && appUtils.isNumeric(name) && name.length()> 4) {
+			clearItemErrorFields();
+			setProductDetailsWithBarCode(Long.valueOf(txtItemName.getText().trim()));
+			txtItemName.setText("");
+			setNewFocus();
+		}
 	}
 
 	private void setTxtAmount() {
