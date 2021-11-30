@@ -34,6 +34,8 @@ import javafx.scene.Parent;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -70,6 +72,9 @@ public class HomeController extends AppContext {
 	private final static String INVOICE_VIEW_FILE_NAME = "Invoice";
 
 	@FXML
+	private MenuBar menuBar;
+
+	@FXML
 	private MenuItem customersMenuItem;
 
 	@FXML
@@ -92,10 +97,6 @@ public class HomeController extends AppContext {
 
 	@FXML
 	private MenuItem userPreferencesMenuItem;
-
-	/*
-	 * @FXML private MenuItem databackupMailSettingsMenuItem;
-	 */
 
 	@FXML
 	private MenuItem dataBackupMenuItem;
@@ -137,10 +138,27 @@ public class HomeController extends AppContext {
 	}
 
 	public void loadData() {
+		if (userDetails.getUserType().equals("EXTERNAL")) {
+			String allowedMenus = appUtils.getAppDataValues("EXTERNAL_USER_MENUS");
+			logger.info("--- Allowed Menus for External User ---> "+allowedMenus);
+			toolBar.getItems().removeIf(item->(item.getId()!= null && !allowedMenus.contains(item.getId())));
+			menuBar.getMenus().stream().forEach(menu -> {
+				updateMenuForExternalUser(menu,allowedMenus);
+			});
+			//Default tab create invoice
+			addTab("CreateInvoice", "Invoice");
+		}
 		appUtils.licenseExpiryAlert();
 		if (null == storeDetails) {
 			alertHelper.showInstructionsAlert(currentStage, "Store Setup", "Instructions",
 					AppConstants.INSTR_MYSTORE_SETUP, 600, 140);
+		}
+	}
+
+	private void updateMenuForExternalUser(Menu menu,String allowedMenus) {
+		menu.getItems().removeIf(item -> (item.getId()!= null && !allowedMenus.contains(item.getId())));
+		if(menu.getItems().size()==0) {
+			menu.setVisible(false);
 		}
 	}
 
@@ -234,11 +252,6 @@ public class HomeController extends AppContext {
 		}
 	}
 
-	/*
-	 * @FXML void onDataBackupMailSettingsCommand(ActionEvent event) {
-	 * addTab("BackupMailSetting", "Data Backup Mail Settings"); }
-	 */
-
 	@FXML
 	void onDataBackupCommand(ActionEvent event) {
 		dbBackupService.saveDBDumpToChoosenLocation(currentStage);
@@ -258,7 +271,7 @@ public class HomeController extends AppContext {
 	void onCreateExpenseCommand(ActionEvent event) {
 		addTab("Expense", "Expense");
 	}
-	
+
 	@FXML
 	void onDeleteDataCommand(ActionEvent event) {
 		addTab("DeleteData", "Delete Data");
@@ -317,7 +330,6 @@ public class HomeController extends AppContext {
 		addTab("GSTR1Report", "GSTR1 Report");
 	}
 
-	
 	@FXML
 	void onPrintBarcodeCommand(ActionEvent event) {
 		addTab("PrintBarcode", "Print Barcode");
@@ -435,7 +447,7 @@ public class HomeController extends AppContext {
 	void onSuppliersPayHistoryCommand(ActionEvent event) {
 		addTab("SupplierPaymentHistory", "Supplier Payment History");
 	}
-	
+
 	@FXML
 	void onSuppliersPurchaseHistoryCommand(ActionEvent event) {
 		addTab("SupplierPurchaseHistory", "Supplier Purchase History");

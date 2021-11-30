@@ -19,7 +19,7 @@
 	<top>
 		<VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
 			<children>
-				<MenuBar>
+				<MenuBar fx:id="menuBar">
 					<menus>
 						<Menu fx:id="homeMenu" mnemonicParsing="false" text="_Home">
 							<items>
@@ -85,7 +85,7 @@
 								</MenuItem>
 							</items>
 						</Menu>
-						<Menu fx:id="purchaseMenu" text="S_uppliers">
+						<Menu fx:id="suppliersMenu" text="S_uppliers">
 							<items>								
 								<MenuItem fx:id="suppliersMenuItem" onAction="#onSuppliersCommand" text="Suppl_iers">
 									<accelerator>
