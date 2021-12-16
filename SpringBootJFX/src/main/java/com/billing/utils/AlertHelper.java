@@ -1,6 +1,9 @@
 package com.billing.utils;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.util.Optional;
 
 import org.controlsfx.control.Notifications;
@@ -9,11 +12,17 @@ import org.springframework.stereotype.Component;
 
 import com.billing.constants.AppConstants;
 import com.billing.properties.AppProperties;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 
 import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
@@ -24,7 +33,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -77,14 +88,15 @@ public class AlertHelper {
 
 	}
 
-	public void showInstructionsAlert(Stage alertOwner, String title, String headerText, String contextText,double prefWidth,double prefHeight) {
+	public void showInstructionsAlert(Stage alertOwner, String title, String headerText, String contextText,
+			double prefWidth, double prefHeight) {
 		Alert alert = new Alert(Alert.AlertType.INFORMATION);
 		if (headerText != null) {
 			alert.setHeaderText(headerText);
 		}
 		alert.setTitle(title);
 		WebView webView = new WebView();
-		webView.getEngine().loadContent("<html><div style='font-family: Arial;'>"+contextText+"</div></html>");
+		webView.getEngine().loadContent("<html><div style='font-family: Arial;'>" + contextText + "</div></html>");
 		webView.setPrefSize(prefWidth, prefHeight);
 		alert.getDialogPane().setContent(webView);
 		alert.initOwner(alertOwner);
@@ -311,6 +323,55 @@ public class AlertHelper {
 				e.printStackTrace();
 			}
 		});
+	}
+
+	public void showQRCodePopUp(Stage initStage, String productKey) {
+		QRCodeWriter qrCodeWriter = new QRCodeWriter();
+		int width = 300;
+		int height = 300;
+
+		BufferedImage bufferedImage = null;
+		try {
+			BitMatrix byteMatrix = qrCodeWriter.encode(productKey, BarcodeFormat.QR_CODE, width, height);
+			bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+			bufferedImage.createGraphics();
+
+			Graphics2D graphics = (Graphics2D) bufferedImage.getGraphics();
+			graphics.setColor(Color.WHITE);
+			graphics.fillRect(0, 0, width, height);
+			graphics.setColor(Color.BLACK);
+
+			for (int i = 0; i < height; i++) {
+				for (int j = 0; j < width; j++) {
+					if (byteMatrix.get(i, j)) {
+						graphics.fillRect(i, j, 1, 1);
+					}
+				}
+			}
+
+		} catch (WriterException ex) {
+			ex.printStackTrace();
+		}
+
+		final Stage stage = new Stage();
+		stage.initModality(Modality.APPLICATION_MODAL);
+		stage.getIcons().add(new Image("/images/shop32X32.png"));
+		stage.setTitle("Application QR Code");
+		stage.initOwner(initStage);
+		WebView webView = new WebView();
+		webView.getEngine()
+				.loadContent("<html><div style='font-family: Arial;'> Please Share us below QR Code <br><br>Email : <b>"
+						+ appUtils.getAppDataValues("CUSTOMER_SUPPORT_EMAIL") + "</b><br><br> Mobile : <b>"
+						+ appUtils.getAppDataValues("CUSTOMER_SUPPORT_MOBILE") + "</b></div></html>");
+		webView.setPrefSize(300, 130);
+		ImageView qrView = new ImageView();
+		qrView.setImage(SwingFXUtils.toFXImage(bufferedImage, null));
+		VBox root = new VBox();
+		root.getChildren().add(webView);
+		root.getChildren().add(qrView);
+		Scene scene = new Scene(root);
+		stage.setScene(scene);
+		stage.showAndWait();
 	}
 
 }

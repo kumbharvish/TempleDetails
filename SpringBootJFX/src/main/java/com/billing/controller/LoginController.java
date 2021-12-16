@@ -92,6 +92,12 @@ public class LoginController extends AppContext {
 
 	@FXML
 	private Label lblLicenseValideUpto;
+	
+	@FXML
+	private Label lblSupportEmail;
+	
+	@FXML
+	private Label lblSupportMobile;
 
 	@FXML
 	public void initialize() {
@@ -197,6 +203,8 @@ public class LoginController extends AppContext {
 
 		try {
 			lblLicenseValideUpto.setText(appUtils.dec(appUtils.getAppDataValues("APP_SECURE_KEY")));
+			lblSupportEmail.setText(appUtils.getAppDataValues("CUSTOMER_SUPPORT_EMAIL"));
+			lblSupportMobile.setText(appUtils.getAppDataValues("CUSTOMER_SUPPORT_MOBILE"));
 		} catch (Exception e) {
 			logger.error("LogginController.show-->" + e);
 			e.printStackTrace();

@@ -48,12 +48,19 @@ public class AppProperties {
 	}
 	
 	public boolean check() throws Exception{
+		boolean isValidLicense=false;
+		String sysKey = getSystemInfo();
+		if(appUtils.enc(sysKey).equals(appUtils.getAppDataValues("APP_KEY")))
+			isValidLicense=true;
+		return isValidLicense;
+	}
+	
+	public String getSystemInfo() throws Exception{
 		List<String> licenseKeys = new ArrayList<String>();
 		licenseKeys.add(COMPUTER+MAC_ADDRESS);
 		licenseKeys.add(USER+MAC_ADDRESS);
 		licenseKeys.add(VERSION);
 		licenseKeys.add(IPADDRESS);
-		boolean isValidLicense=false;
 		String sysKey="";
 		String tempString="";
 		Map<String,String> details =  getDetails();
@@ -63,9 +70,13 @@ public class AppProperties {
 			tempString=details.get(s);
 			sysKey=sysKey+tempString;
 		}
-		if(appUtils.enc(sysKey).equals(appUtils.getAppDataValues("APP_KEY")))
-			isValidLicense=true;
-		return isValidLicense;
+		return sysKey;
+	}
+	
+	public String getQRCodeKey() throws Exception{
+		String sysKey = getSystemInfo();
+		String qrCodeKey = appUtils.encodeSystemInfo(sysKey);
+		return qrCodeKey;
 	}
 	
 	public boolean validateKeyUpdate(String key) throws Exception{

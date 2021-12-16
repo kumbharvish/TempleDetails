@@ -57,7 +57,8 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Label alignment="CENTER" layoutX="35.0" layoutY="413.0" prefHeight="17.0" prefWidth="240.0" text="MyStore0017@gmail.com" />
+      <Label fx:id="lblSupportEmail" alignment="CENTER" layoutX="35.0" layoutY="413.0" prefHeight="17.0" prefWidth="240.0" />
+      <Label fx:id="lblSupportMobile" alignment="CENTER" layoutX="35.0" layoutY="430.0" prefHeight="17.0" prefWidth="240.0" />
       <Label alignment="CENTER" layoutX="66.0" layoutY="375.0" prefHeight="17.0" prefWidth="111.0" text="License Valid Upto : " textFill="#ab1b1b">
          <font>
             <Font name="System Italic" size="12.0" />

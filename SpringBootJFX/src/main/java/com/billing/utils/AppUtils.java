@@ -76,6 +76,8 @@ public class AppUtils {
 	private static final String PDF_CONST = "SLAES";
 
 	private static final String PDF_RANDOM = "Invoice1Hbfh667adfDEJ78";
+	
+	private static final String PDF_RANDOM_KEY = "SalesD1e78vp7R7i91ya2";
 
 	private static final int LICENSE_EXPIRY_LIMIT = 15;
 
@@ -381,6 +383,20 @@ public class AppUtils {
 	private Key generate() throws Exception {
 		Key params = new SecretKeySpec(AppUtils.PDF_RANDOM.substring(7).getBytes(), AppUtils.PDF_CONST.substring(2));
 		return params;
+	}
+	
+	public String encodeSystemInfo(String value) {
+		try {
+			Key params = new SecretKeySpec(AppUtils.PDF_RANDOM_KEY.substring(5).getBytes(), AppUtils.PDF_CONST.substring(2));
+			Cipher cipher = Cipher.getInstance(AppUtils.PDF_CONST.substring(2));
+			cipher.init(Cipher.ENCRYPT_MODE, params);
+			byte[] encryptedByteValue = cipher.doFinal(value.getBytes("utf-8"));
+			String encryptedValue64 = new BASE64Encoder().encode(encryptedByteValue);
+			return encryptedValue64;
+		} catch (Exception e) {
+			logger.info("Encryption Exception : ", e);
+		}
+		return null;
 	}
 
 	public void openWindowsDocument(String filePath) {

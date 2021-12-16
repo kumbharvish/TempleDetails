@@ -249,14 +249,14 @@
 	<bottom>
 		<BorderPane BorderPane.alignment="CENTER">
 			<right>
-				<Label text="Contact Us" BorderPane.alignment="CENTER">
+				<Label fx:id="lblSupportMobile" BorderPane.alignment="CENTER">
 					<BorderPane.margin>
 						<Insets right="4.0" />
 					</BorderPane.margin>
 				</Label>
 			</right>
 			<left>
-				<Label text="Copyright © MyStore0017@gmail.com" BorderPane.alignment="CENTER">
+				<Label fx:id="lblSupportEmail" BorderPane.alignment="CENTER">
 					<BorderPane.margin>
 						<Insets left="4.0" />
 					</BorderPane.margin>

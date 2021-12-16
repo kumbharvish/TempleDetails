@@ -1,8 +1,10 @@
 package com.billing.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.billing.dto.UserDetails;
+import com.billing.utils.AppUtils;
 import com.billing.utils.TabContent;
 
 import javafx.beans.Observable;
@@ -18,16 +20,15 @@ import javafx.stage.Stage;
 @SuppressWarnings("restriction")
 @Controller
 public class AboutUsController implements TabContent {
+	
+	@Autowired
+	AppUtils appUtils;
 
     private TabPane tabPane;
     
     private String version = "(1.0.0)";
     
     private static final String DEVELOPED_BY = "My Store Team";
-    
-    private static final String MOBILE = "+91 8149880299";
-    
-    private static final String EMAIL_ID = "MyStore0017@gmail.com";
     
     private static final String MY_STORE ="My Store";
     
@@ -46,7 +47,10 @@ public class AboutUsController implements TabContent {
     private Text txtCopyRight;
 
     @FXML
-    private Label lblEmailId;
+	private Label lblSupportEmail;
+	
+	@FXML
+	private Label lblSupportMobile;
 
     @FXML
     private Button btnClose;
@@ -81,7 +85,8 @@ public class AboutUsController implements TabContent {
          txtVersion.setText("Version " + version);
          txtCopyRight.setText(COPYRIGHT);
          lblDevelopedBy.setText(DEVELOPED_BY);
-         lblEmailId.setText(EMAIL_ID);
+         lblSupportEmail.setText(appUtils.getAppDataValues("CUSTOMER_SUPPORT_EMAIL"));
+         lblSupportMobile.setText(appUtils.getAppDataValues("CUSTOMER_SUPPORT_MOBILE"));
     }
 
     @FXML

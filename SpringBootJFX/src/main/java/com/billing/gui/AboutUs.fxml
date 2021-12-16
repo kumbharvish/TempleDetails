@@ -37,8 +37,10 @@
 					<children>
 						<Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" styleClass="nodeLabel" text="Developed by :" GridPane.halignment="RIGHT" />
 						<Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" styleClass="nodeLabel" text="Email Id :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+						<Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" styleClass="nodeLabel" text="Mobile :" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
 						<Label fx:id="lblDevelopedBy" styleClass="right" GridPane.columnIndex="1" />
-						<Label fx:id="lblEmailId" styleClass="right" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+						<Label fx:id="lblSupportEmail" styleClass="right" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+						<Label fx:id="lblSupportMobile" styleClass="right" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 						<VBox GridPane.columnSpan="2" GridPane.rowIndex="3">
 							<children>
 								<Separator />

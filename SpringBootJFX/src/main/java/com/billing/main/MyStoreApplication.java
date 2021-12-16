@@ -57,6 +57,7 @@ public class MyStoreApplication extends Application {
 		try {
 			if (!appProperties.check()) {
 				alertHelper.showErrorAlert(null,AppConstants.LICENSE_ERROR,null,AppConstants.LICENSE_ERROR_1);
+				alertHelper.showQRCodePopUp(initStage, appProperties.getQRCodeKey());
 				alertHelper.showProductKeyDialog();
 				System.exit(0);
 			} else {

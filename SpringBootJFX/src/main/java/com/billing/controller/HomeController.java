@@ -72,6 +72,12 @@ public class HomeController extends AppContext {
 	private final static String INVOICE_VIEW_FILE_NAME = "Invoice";
 
 	@FXML
+	private Label lblSupportEmail;
+	
+	@FXML
+	private Label lblSupportMobile;
+	
+	@FXML
 	private MenuBar menuBar;
 
 	@FXML
@@ -129,6 +135,8 @@ public class HomeController extends AppContext {
 		try {
 			lblLicenseValidUpto
 					.setText("License Valid Upto : " + appUtils.dec(appUtils.getAppDataValues("APP_SECURE_KEY")));
+			lblSupportEmail.setText("Copyright © "+appUtils.getAppDataValues("CUSTOMER_SUPPORT_EMAIL"));
+			lblSupportMobile.setText("Contact Us : "+appUtils.getAppDataValues("CUSTOMER_SUPPORT_MOBILE"));
 		} catch (Exception e) {
 			logger.error("lblLicenseValidUpto -->" + e);
 		}
