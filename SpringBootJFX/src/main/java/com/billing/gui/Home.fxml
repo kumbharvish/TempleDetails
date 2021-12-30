@@ -189,53 +189,42 @@
 				</MenuBar>
 				<ToolBar fx:id="toolBar">
 					<items>
-						<Label fx:id="lblCreateInvoice" onMouseClicked="#onCreateInvoiceClick">
+						<Label fx:id="lblCreateInvoice" text="Create Invoice" onMouseClicked="#onCreateInvoiceClick">
 							<tooltip>
 								<Tooltip text="Create Invoice" />
 							</tooltip>
 						</Label>
-						<Label fx:id="lblSearchInvoice" onMouseClicked="#onSearchInvoiceClick">
+						<Label fx:id="lblSearchInvoice" text="Search Invoice" onMouseClicked="#onSearchInvoiceClick">
 							<tooltip>
 								<Tooltip text="Search Invoice" />
 							</tooltip>
 						</Label>
 						<Separator maxHeight="24.0" orientation="VERTICAL" />
-						<Label fx:id="lblProducts" onMouseClicked="#onProductsClick">
+						<Label fx:id="lblProducts" text="Products" onMouseClicked="#onProductsClick">
 							<tooltip>
 								<Tooltip text="Products" />
 							</tooltip>
 						</Label>
-						<Label fx:id="lblQuickStockCorrection" onMouseClicked="#onQuickStockCorrectionClick">
+						<Label fx:id="lblQuickStockCorrection" text="Stock Correction" onMouseClicked="#onQuickStockCorrectionClick">
 							<tooltip>
 								<Tooltip text="Quick Stock Correction" />
 							</tooltip>
 						</Label>
 						<Separator maxHeight="24.0" orientation="VERTICAL" />
-						<Label fx:id="lblSaleReport" onMouseClicked="#onSaleReportClick">
+						<Label fx:id="lblSaleReport" text="Sales Report" onMouseClicked="#onSaleReportClick">
 							<tooltip>
 								<Tooltip text="Sales Report" />
 							</tooltip>
 						</Label>
-						<Label fx:id="lblCashReport" onMouseClicked="#onCashReportClick">
+						<Label fx:id="lblCashReport" text="Cash Report" onMouseClicked="#onCashReportClick">
 							<tooltip>
 								<Tooltip text="Cash Report" />
 							</tooltip>
 						</Label>
 						<Separator maxHeight="24.0" orientation="VERTICAL" />
-						<Label fx:id="lblCustomers" layoutX="68.0" layoutY="10.0" onMouseClicked="#onCustomersClick">
+						<Label fx:id="lblCustomers" text="Customers" layoutX="68.0" layoutY="10.0" onMouseClicked="#onCustomersClick">
 							<tooltip>
 								<Tooltip text="Customers" />
-							</tooltip>
-						</Label>
-						<Separator layoutX="54.0" layoutY="10.0" maxHeight="24.0" orientation="VERTICAL" />
-						<Label fx:id="lblDataBackup" onMouseClicked="#onDataBackupClick">
-							<tooltip>
-								<Tooltip text="Data Backup" />
-							</tooltip>
-						</Label>
-						<Label fx:id="lblUserSettings" onMouseClicked="#onUserPreferencesClick">
-							<tooltip>
-								<Tooltip text="User Preferences" />
 							</tooltip>
 						</Label>
 					</items>

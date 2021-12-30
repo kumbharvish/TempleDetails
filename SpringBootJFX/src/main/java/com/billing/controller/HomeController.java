@@ -253,13 +253,13 @@ public class HomeController extends AppContext {
 		addTab("GraphicalDailySalesReport", "Daily Sales Report");
 	}
 
-	@FXML
+	/*@FXML
 	void onDataBackupClick(MouseEvent event) {
 		if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
 			dataBackupMenuItem.fire();
 		}
 	}
-
+*/
 	@FXML
 	void onDataBackupCommand(ActionEvent event) {
 		dbBackupService.saveDBDumpToChoosenLocation(currentStage);
@@ -466,12 +466,12 @@ public class HomeController extends AppContext {
 		addTab("UserPreferences", "User Preferences");
 	}
 
-	@FXML
+	/*@FXML
 	void onUserPreferencesClick(MouseEvent event) {
 		if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
 			userPreferencesMenuItem.fire();
 		}
-	}
+	}*/
 
 	@FXML
 	void onLowStockSummaryCommand(ActionEvent event) {
