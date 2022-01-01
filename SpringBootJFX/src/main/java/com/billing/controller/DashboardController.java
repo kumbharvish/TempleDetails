@@ -1,0 +1,97 @@
+package com.billing.controller;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+
+import com.billing.dto.GraphDTO;
+import com.billing.dto.UserDetails;
+import com.billing.service.ReportService;
+import com.billing.utils.AppUtils;
+import com.billing.utils.IndianCurrencyFormatting;
+
+import javafx.fxml.FXML;
+import javafx.scene.chart.AreaChart;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.Label;
+import javafx.stage.Stage;
+
+@Controller
+public class DashboardController {
+
+	public UserDetails userDetails;
+	
+	public Stage currentStage;
+	
+    @FXML
+    private Label lblLast7DaysSales;
+
+    @FXML
+    private Label lblNoOfInvoicesMade;
+
+    @FXML
+    private Label lblDateRange;
+    
+    @FXML
+    private AreaChart<String, Number> areaChart;
+    
+    @Autowired
+    ReportService reportService;
+    
+    @Autowired
+	AppUtils appUtils;
+    
+    double last7DaysSalesAmount = 0;
+    
+    int noOfInvoicesMade = 0;
+
+
+	
+	public void loadData() {
+		last7DaysSalesAmount = 0;
+		noOfInvoicesMade = 0;
+		System.out.println(".... Dasboard Controller Loaded ...");
+		// Sales Report
+		List<GraphDTO> list = reportService.getDailySalesReport();
+		// Create Dataset
+		Date todaysDate = new Date();
+		DateTime dateTime = new DateTime();
+		Date backDate = dateTime.minusDays(7).toDate();
+		// Create list of Last 7 Days Date Range
+		List<String> dateList = appUtils.getListOfDaysBetweenTwoDates(backDate, todaysDate);
+		lblDateRange.setText(appUtils.getFormattedDate(backDate)+" to "+appUtils.getFormattedDate(todaysDate));
+		List<GraphDTO> graphFinalList = new ArrayList<GraphDTO>();
+
+		HashMap<String, GraphDTO> dateMap = new HashMap<String, GraphDTO>();
+		for (GraphDTO gr : list) {
+			dateMap.put(gr.getDate(), gr);
+		}
+
+		for (String dt : dateList) {
+			GraphDTO grp = new GraphDTO();
+			if (dateMap.containsKey(dt)) {
+				grp.setDate(dt.subSequence(0, 5).toString());
+				grp.setTotalCollection(dateMap.get(dt).getTotalCollection());
+				last7DaysSalesAmount = last7DaysSalesAmount + dateMap.get(dt).getTotalCollection();
+				noOfInvoicesMade = noOfInvoicesMade + dateMap.get(dt).getNoOfInvoicesMade();
+			} else {
+				grp.setDate(dt.subSequence(0, 5).toString());
+				grp.setTotalCollection(0);
+			}
+			graphFinalList.add(grp);
+		}
+		XYChart.Series<String, Number> series1 = new XYChart.Series<>();
+		series1.setName("Sales");
+		for (GraphDTO graph : graphFinalList) {
+			series1.getData().add(new XYChart.Data<String, Number>(graph.getDate(), graph.getTotalCollection()));
+		}
+		areaChart.getData().add(series1);
+		lblLast7DaysSales.setText(IndianCurrencyFormatting.applyFormattingWithCurrency(last7DaysSalesAmount));
+		lblNoOfInvoicesMade.setText(String.valueOf(noOfInvoicesMade));
+	}
+}

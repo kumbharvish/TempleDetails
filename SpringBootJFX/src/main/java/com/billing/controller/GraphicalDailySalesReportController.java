@@ -62,7 +62,7 @@ public class GraphicalDailySalesReportController implements TabContent {
 		DateTime dateTime = new DateTime();
 		Date backDate = dateTime.minusDays(7).toDate();
 		// Create list of Last 7 Days Date Range
-		List<String> dateList = getListOfDaysBetweenTwoDates(backDate, todaysDate);
+		List<String> dateList = appUtils.getListOfDaysBetweenTwoDates(backDate, todaysDate);
 		List<GraphDTO> graphFinalList = new ArrayList<GraphDTO>();
 
 		HashMap<String, GraphDTO> dateMap = new HashMap<String, GraphDTO>();
@@ -142,19 +142,5 @@ public class GraphicalDailySalesReportController implements TabContent {
 	public boolean validateInput() {
 		return true;
 	}
-
-	private List<String> getListOfDaysBetweenTwoDates(Date startDate, Date endDate) {
-		List<String> dates = new ArrayList<String>();
-		Calendar start = Calendar.getInstance();
-		start.setTime(startDate);
-		Calendar end = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-		end.setTime(endDate);
-		end.add(Calendar.DAY_OF_YEAR, 1);
-		while (start.before(end)) {
-			dates.add(sdf.format(start.getTime()));
-			start.add(Calendar.DAY_OF_YEAR, 1);
-		}
-		return dates;
-	}
+	
 }

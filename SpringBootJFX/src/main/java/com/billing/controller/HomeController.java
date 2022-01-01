@@ -24,6 +24,7 @@ import com.billing.utils.TabContent;
 
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -42,6 +43,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.ToolBar;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -73,10 +75,10 @@ public class HomeController extends AppContext {
 
 	@FXML
 	private Label lblSupportEmail;
-	
+
 	@FXML
 	private Label lblSupportMobile;
-	
+
 	@FXML
 	private MenuBar menuBar;
 
@@ -115,6 +117,9 @@ public class HomeController extends AppContext {
 	private TabPane tabPane;
 
 	@FXML
+	private BorderPane rootPane;
+
+	@FXML
 	private Label lblLicenseValidUpto;
 
 	public void initialize() {
@@ -131,12 +136,22 @@ public class HomeController extends AppContext {
 				});
 
 		toolBar.managedProperty().bind(toolBar.visibleProperty());
+		// Listner to load dashboard if no tab in tabpane
+		tabPane.getTabs().addListener(new ListChangeListener<Tab>() {
+	        @Override
+	        public void onChanged(javafx.collections.ListChangeListener.Change<? extends Tab> c) {
+	        	if(tabPane.getTabs().size() == 0) {
+	        		loadDashboard();
+	        	}
+	        }
+
+	    });
 
 		try {
 			lblLicenseValidUpto
 					.setText("License Valid Upto : " + appUtils.dec(appUtils.getAppDataValues("APP_SECURE_KEY")));
-			lblSupportEmail.setText("Copyright © "+appUtils.getAppDataValues("CUSTOMER_SUPPORT_EMAIL"));
-			lblSupportMobile.setText("Contact Us : "+appUtils.getAppDataValues("CUSTOMER_SUPPORT_MOBILE"));
+			lblSupportEmail.setText("Copyright © " + appUtils.getAppDataValues("CUSTOMER_SUPPORT_EMAIL"));
+			lblSupportMobile.setText("Contact Us : " + appUtils.getAppDataValues("CUSTOMER_SUPPORT_MOBILE"));
 		} catch (Exception e) {
 			logger.error("lblLicenseValidUpto -->" + e);
 		}
@@ -148,12 +163,12 @@ public class HomeController extends AppContext {
 	public void loadData() {
 		if (userDetails.getUserType().equals("EXTERNAL")) {
 			String allowedMenus = appUtils.getAppDataValues("EXTERNAL_USER_MENUS");
-			logger.info("--- Allowed Menus for External User ---> "+allowedMenus);
-			toolBar.getItems().removeIf(item->(item.getId()!= null && !allowedMenus.contains(item.getId())));
+			logger.info("--- Allowed Menus for External User ---> " + allowedMenus);
+			toolBar.getItems().removeIf(item -> (item.getId() != null && !allowedMenus.contains(item.getId())));
 			menuBar.getMenus().stream().forEach(menu -> {
-				updateMenuForExternalUser(menu,allowedMenus);
+				updateMenuForExternalUser(menu, allowedMenus);
 			});
-			//Default tab create invoice
+			// Default tab create invoice
 			addTab("CreateInvoice", "Invoice");
 		}
 		appUtils.licenseExpiryAlert();
@@ -161,11 +176,37 @@ public class HomeController extends AppContext {
 			alertHelper.showInstructionsAlert(currentStage, "Store Setup", "Instructions",
 					AppConstants.INSTR_MYSTORE_SETUP, 600, 140);
 		}
+		// Load Dashboard
+		loadDashboard();
 	}
 
-	private void updateMenuForExternalUser(Menu menu,String allowedMenus) {
-		menu.getItems().removeIf(item -> (item.getId()!= null && !allowedMenus.contains(item.getId())));
-		if(menu.getItems().size()==0) {
+	private void loadDashboard() {
+		URL resource = this.getClass().getResource("/com/billing/gui/Dashboard.fxml");
+		FXMLLoader fxmlLoader = new FXMLLoader();
+		fxmlLoader.setControllerFactory(springContext::getBean);
+		fxmlLoader.setLocation(resource);
+		Parent pane = null;
+		try {
+			pane = fxmlLoader.load();
+		} catch (IOException e) {
+			e.printStackTrace();
+			alertHelper.beep();
+			alertHelper.showErrorAlert(currentStage, "Error Occurred", "Error in creating user interface",
+					"An error occurred in creating user interface " + "for the selected command");
+
+			return;
+		}
+
+		final DashboardController controller = (DashboardController) fxmlLoader.getController();
+		controller.currentStage = currentStage;
+		controller.userDetails = userDetails;
+		controller.loadData();
+		rootPane.setCenter(pane);
+	}
+
+	private void updateMenuForExternalUser(Menu menu, String allowedMenus) {
+		menu.getItems().removeIf(item -> (item.getId() != null && !allowedMenus.contains(item.getId())));
+		if (menu.getItems().size() == 0) {
 			menu.setVisible(false);
 		}
 	}
@@ -253,13 +294,11 @@ public class HomeController extends AppContext {
 		addTab("GraphicalDailySalesReport", "Daily Sales Report");
 	}
 
-	/*@FXML
-	void onDataBackupClick(MouseEvent event) {
-		if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
-			dataBackupMenuItem.fire();
-		}
-	}
-*/
+	/*
+	 * @FXML void onDataBackupClick(MouseEvent event) { if (event.getButton() ==
+	 * MouseButton.PRIMARY && event.getClickCount() == 1) {
+	 * dataBackupMenuItem.fire(); } }
+	 */
 	@FXML
 	void onDataBackupCommand(ActionEvent event) {
 		dbBackupService.saveDBDumpToChoosenLocation(currentStage);
@@ -466,12 +505,11 @@ public class HomeController extends AppContext {
 		addTab("UserPreferences", "User Preferences");
 	}
 
-	/*@FXML
-	void onUserPreferencesClick(MouseEvent event) {
-		if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
-			userPreferencesMenuItem.fire();
-		}
-	}*/
+	/*
+	 * @FXML void onUserPreferencesClick(MouseEvent event) { if (event.getButton()
+	 * == MouseButton.PRIMARY && event.getClickCount() == 1) {
+	 * userPreferencesMenuItem.fire(); } }
+	 */
 
 	@FXML
 	void onLowStockSummaryCommand(ActionEvent event) {
@@ -518,9 +556,9 @@ public class HomeController extends AppContext {
 		FXMLLoader fxmlLoader = new FXMLLoader();
 		fxmlLoader.setControllerFactory(springContext::getBean);
 		fxmlLoader.setLocation(resource);
-		Parent rootPane = null;
+		Parent pane = null;
 		try {
-			rootPane = fxmlLoader.load();
+			pane = fxmlLoader.load();
 		} catch (IOException e) {
 			e.printStackTrace();
 			logger.error("HomeController addTab Error in loading the view file :" + fxmlFileName, e);
@@ -544,7 +582,7 @@ public class HomeController extends AppContext {
 		Tab tab = new Tab();
 		tab.getProperties().put("controller", controller);
 		tab.getProperties().put(KEY, fxmlFileName);
-		tab.setContent(rootPane);
+		tab.setContent(pane);
 		tab.setText(title);
 		setContextMenu(tab);
 
@@ -553,6 +591,9 @@ public class HomeController extends AppContext {
 				event1.consume();
 			}
 		});
+		if (tabPane.getTabs().size() == 0) {
+			rootPane.setCenter(tabPane);
+		}
 
 		tabPane.getTabs().add(tab);
 		tabPane.getSelectionModel().select(tab);
@@ -619,7 +660,7 @@ public class HomeController extends AppContext {
 			}
 		}
 
-		tabs.removeAll(tabsToRemove); // actually remove the tags here
+		tabs.removeAll(tabsToRemove); // actually remove the tabs here
 		return true;
 	}
 

@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane id="rootPane" stylesheets="@../../../css/home.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.HomeController">
+<BorderPane fx:id="rootPane" stylesheets="@../../../css/home.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.HomeController">
 	<top>
 		<VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
 			<children>

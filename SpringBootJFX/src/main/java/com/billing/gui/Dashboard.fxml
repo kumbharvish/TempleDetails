@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.AreaChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="borderPane" stylesheets="@../../../css/dashboard.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.DashboardController">
+   <left>
+      <BorderPane BorderPane.alignment="CENTER">
+         <center>
+            <VBox>
+               <children>
+                  <GridPane hgap="10.0" vgap="10.0">
+                     <columnConstraints>
+                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label alignment="CENTER" styleClass="nodeLabel" text="Last 7 Days Sales :" />
+                        <Label fx:id="lblLast7DaysSales" styleClass="lblBoldValue" text="Label" GridPane.columnIndex="1" />
+                        <Label styleClass="nodeLabel" text="No of Invoices made :" GridPane.rowIndex="1" />
+                        <Label fx:id="lblNoOfInvoicesMade" styleClass="lblBoldValue" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                     </children>
+                     <VBox.margin>
+                        <Insets right="10.0" />
+                     </VBox.margin>
+                  </GridPane>
+                  <AreaChart fx:id="areaChart">
+                    <xAxis>
+                      <CategoryAxis side="BOTTOM" styleClass="nodeLabel" />
+                    </xAxis>
+                    <yAxis>
+                      <NumberAxis side="LEFT" />
+                    </yAxis>
+                  </AreaChart>
+               </children>
+            </VBox>
+         </center>
+         <top>
+            <HBox BorderPane.alignment="CENTER">
+               <children>
+                  <Label styleClass="nodeLabel" text="Sales Report :  " />
+                  <Label fx:id="lblDateRange" styleClass="valueLabel" />
+               </children>
+               <padding>
+                  <Insets bottom="20.0" />
+               </padding>
+            </HBox>
+         </top>
+      </BorderPane>
+   </left>
+   <top>
+      <Label fx:id="heading" text="Dashboard" BorderPane.alignment="CENTER" />
+   </top>
+</BorderPane>

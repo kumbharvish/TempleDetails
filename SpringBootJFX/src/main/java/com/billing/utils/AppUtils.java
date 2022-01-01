@@ -22,6 +22,8 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -812,5 +814,20 @@ public class AppUtils {
 	    	return true;
 	    }
 	    return false;
+	}
+	
+	public List<String> getListOfDaysBetweenTwoDates(Date startDate, Date endDate) {
+		List<String> dates = new ArrayList<String>();
+		Calendar start = Calendar.getInstance();
+		start.setTime(startDate);
+		Calendar end = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		end.setTime(endDate);
+		end.add(Calendar.DAY_OF_YEAR, 1);
+		while (start.before(end)) {
+			dates.add(sdf.format(start.getTime()));
+			start.add(Calendar.DAY_OF_YEAR, 1);
+		}
+		return dates;
 	}
 }

@@ -10,6 +10,7 @@ public class GraphDTO {
 	private Integer totalCollection;
 	private Integer totalPurchaseAmt;
 	private Integer totalProfit;
+	private Integer noOfInvoicesMade;
 	
 	
 	public String getDate() {
@@ -54,6 +55,12 @@ public class GraphDTO {
 				+ totalAmount + ", date=" + date + ", totalCollection="
 				+ totalCollection + ", totalPurchaseAmt=" + totalPurchaseAmt
 				+ ", totalProfit=" + getTotalProfit() + "]";
+	}
+	public Integer getNoOfInvoicesMade() {
+		return noOfInvoicesMade;
+	}
+	public void setNoOfInvoicesMade(Integer noOfInvoicesMade) {
+		this.noOfInvoicesMade = noOfInvoicesMade;
 	}
 	
 }
