@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -752,6 +754,41 @@ public class ReportRepository {
 			DBUtils.closeConnection(stmt, conn);
 		}
 		return list;
+	}
+
+	public Map<String, Double> getDashboardReportValues() {
+		Map<String, Double> map = new HashMap<>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			conn = dbUtils.getConnection();
+			stmt = conn.prepareStatement("SELECT SUM(QUANTITY*SELL_PRICE) AS STOCK_VALUE FROM PRODUCT_DETAILS");
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				map.put("STOCK_VALUE", rs.getDouble("STOCK_VALUE"));
+			}
+			rs.close();
+			stmt.close();
+			stmt = conn.prepareStatement("SELECT SUM(BALANCE_AMOUNT) AS TO_PAY FROM SUPPLIER_DETAILS");
+			rs = stmt.executeQuery();
+			if (rs.next()) {
+				map.put("TO_PAY", rs.getDouble("TO_PAY"));
+			}
+			rs.close();
+			stmt.close();
+			stmt = conn.prepareStatement("SELECT SUM(BALANCE_AMOUNT) AS TO_COLLECT FROM CUSTOMER_DETAILS");
+			rs = stmt.executeQuery();
+			if (rs.next()) {
+				map.put("TO_COLLECT", rs.getDouble("TO_COLLECT"));
+			}
+			rs.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception : ", e);
+		} finally {
+			DBUtils.closeConnection(stmt, conn);
+		}
+		return map;
 	}
 
 }

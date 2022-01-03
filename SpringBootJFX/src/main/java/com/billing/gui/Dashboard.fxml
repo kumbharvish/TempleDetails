@@ -5,6 +5,7 @@
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -13,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane fx:id="borderPane" stylesheets="@../../../css/dashboard.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.DashboardController">
-   <left>
+   <center>
       <BorderPane BorderPane.alignment="CENTER">
          <center>
             <VBox>
@@ -44,6 +45,9 @@
                     <yAxis>
                       <NumberAxis side="LEFT" />
                     </yAxis>
+                     <VBox.margin>
+                        <Insets left="30.0" />
+                     </VBox.margin>
                   </AreaChart>
                </children>
             </VBox>
@@ -57,11 +61,56 @@
                <padding>
                   <Insets bottom="20.0" />
                </padding>
+               <BorderPane.margin>
+                  <Insets left="65.0" top="10.0" />
+               </BorderPane.margin>
             </HBox>
          </top>
+         <BorderPane.margin>
+            <Insets left="20.0" />
+         </BorderPane.margin>
       </BorderPane>
-   </left>
+   </center>
    <top>
       <Label fx:id="heading" text="Dashboard" BorderPane.alignment="CENTER" />
    </top>
+   <left>
+      <VBox prefWidth="300.0" spacing="10.0" BorderPane.alignment="CENTER">
+         <children>
+            <AnchorPane fx:id="toCollectPane" prefHeight="50.0" styleClass="rectanglePane">
+               <children>
+                  <Label alignment="CENTER" styleClass="nodeLabel" text="To Collect" textAlignment="CENTER" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="15.0" />
+                  <Label fx:id="lblToCollect" styleClass="lblBoldValue" text="Label" textFill="#37cd48" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="15.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="toPayPane" layoutX="10.0" layoutY="10.0" prefHeight="50.0" styleClass="rectanglePane">
+               <children>
+                  <Label alignment="CENTER" styleClass="nodeLabel" text="To Pay" textAlignment="CENTER" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="15.0" />
+                  <Label fx:id="lblToPay" styleClass="lblBoldValue" text="Label" textFill="#f50202" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="15.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="todaysCashPane" layoutX="10.0" layoutY="60.0" prefHeight="50.0" styleClass="rectanglePane">
+               <children>
+                  <Label alignment="CENTER" styleClass="nodeLabel" text="Todays Cash" textAlignment="CENTER" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="15.0" />
+                  <Label fx:id="lblTodayCash" styleClass="lblBoldValue" text="Label" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="15.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="stockValuePane" layoutX="10.0" layoutY="110.0" prefHeight="50.0" styleClass="rectanglePane">
+               <children>
+                  <Label alignment="CENTER" styleClass="nodeLabel" text="Stock Value" textAlignment="CENTER" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="15.0" />
+                  <Label fx:id="lblStockValue" styleClass="lblBoldValue" text="Label" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="15.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="lowStockPane" layoutX="10.0" layoutY="190.0" prefHeight="50.0" styleClass="rectanglePane">
+               <children>
+                  <Label alignment="CENTER" styleClass="nodeLabel" text="Low Stock" textAlignment="CENTER" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="15.0" />
+                  <Label fx:id="lblLowStock" styleClass="lblBoldValue" text="Label" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="15.0" />
+               </children>
+            </AnchorPane>
+         </children>
+         <BorderPane.margin>
+            <Insets top="130.0" />
+         </BorderPane.margin>
+      </VBox>
+   </left>
 </BorderPane>

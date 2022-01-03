@@ -84,6 +84,18 @@ public class HomeController extends AppContext {
 
 	@FXML
 	private MenuItem customersMenuItem;
+	
+	@FXML
+	private MenuItem customersReportMenuItem;
+	
+	@FXML
+	private MenuItem stockSummaryReportMenuItem;
+	
+	@FXML
+	private MenuItem suppliersReportMenuItem;
+	
+	@FXML
+	private MenuItem lowStockSummaryReportMenuItem;
 
 	@FXML
 	private MenuItem productsMenuItem;
@@ -200,6 +212,11 @@ public class HomeController extends AppContext {
 		final DashboardController controller = (DashboardController) fxmlLoader.getController();
 		controller.currentStage = currentStage;
 		controller.userDetails = userDetails;
+		controller.cashReportMenuItem = cashReportMenuItem;
+		controller.customersReportMenuItem = customersReportMenuItem;
+		controller.lowStockSummaryReportMenuItem = lowStockSummaryReportMenuItem;
+		controller.stockSummaryReportMenuItem = stockSummaryReportMenuItem;
+		controller.suppliersReportMenuItem = suppliersReportMenuItem;
 		controller.loadData();
 		rootPane.setCenter(pane);
 	}

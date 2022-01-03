@@ -1,7 +1,9 @@
 package com.billing.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +12,7 @@ import com.billing.dto.BillDetails;
 import com.billing.dto.CashReport;
 import com.billing.dto.ConsolidatedReport;
 import com.billing.dto.Customer;
+import com.billing.dto.Dashboard;
 import com.billing.dto.GSTR1Data;
 import com.billing.dto.GSTR1Report;
 import com.billing.dto.GraphDTO;
@@ -20,6 +23,7 @@ import com.billing.dto.StatusDTO;
 import com.billing.repository.InvoiceRepository;
 import com.billing.repository.ReportRepository;
 import com.billing.repository.SalesReturnRepository;
+import com.billing.utils.AppUtils;
 
 @Service
 public class ReportService {
@@ -32,6 +36,9 @@ public class ReportService {
 
 	@Autowired
 	SalesReturnRepository salesReturnRepository;
+	
+	@Autowired
+	AppUtils appUtils;
 
 	public List<CashReport> getCashCounterDetails(String fromDate, String toDate) {
 		return reportRepository.getCashCounterDetails(fromDate, toDate);
@@ -125,6 +132,30 @@ public class ReportService {
 		report.setInvoiceList(invoiceList);
 		report.setSaleReturnList(saleReturnList);
 		return report;
+	}
+
+	public Dashboard getDashboardDetails() {
+		Dashboard dashboard = new Dashboard();
+
+		// To collect, To pay & stock Value
+		Map<String, Double> map = reportRepository.getDashboardReportValues();
+		dashboard.setStockValue(map.get("STOCK_VALUE"));
+		dashboard.setToCollectAmount(map.get("TO_COLLECT"));
+		dashboard.setToPayAmount(map.get("TO_PAY"));
+
+		// Sales Report
+		dashboard.setSalesReport(reportRepository.getDailySalesReport());
+
+		// Cash Report
+		CashReport totalAmount = new CashReport();
+		for (CashReport cash : getCashCounterDetails(appUtils.getTodaysDateForDB(), appUtils.getTodaysDateForDB())) {
+			if (cash.getDescription().equals("TOTAL")) {
+				totalAmount = cash;
+			}
+		}
+		dashboard.setTodaysCashAmount(totalAmount.getClosingBalance());
+
+		return dashboard;
 	}
 
 }

@@ -18,3 +18,23 @@
 	-fx-font-weight: bold;
 	-fx-wrap-text: true;
 }
+
+.rectanglePane {
+	-fx-background-color: cornsilk;
+	-fx-background-size: 1200 900;
+	-fx-effect: dropshadow(three-pass-box, derive(#fdf8f6, -20%), 10, 0, 4,
+		4);
+	-fx-background-color: derive(#fdf8f6, -10%);
+	-fx-background-radius: 6;
+	-fx-cursor: hand;
+}
+
+.rectanglePane:hover {
+	-fx-background-color: derive(#fdf8f6, -20%);
+	-fx-scale-y: 1.1;
+}
+
+.rectanglePane:pressed {
+	-fx-scale-y: 0.9;
+	-fx-scale-x: 0.9;
+}
