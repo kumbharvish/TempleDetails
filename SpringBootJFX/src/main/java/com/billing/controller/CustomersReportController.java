@@ -1,12 +1,14 @@
 package com.billing.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.billing.dto.Customer;
 import com.billing.dto.CustomersReport;
+import com.billing.dto.Product;
 import com.billing.dto.UserDetails;
 import com.billing.service.CustomerService;
 import com.billing.service.PrinterService;
@@ -17,11 +19,14 @@ import com.billing.utils.TabContent;
 
 import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableCell;
@@ -78,6 +83,9 @@ public class CustomersReportController implements TabContent {
 
 	@FXML
 	private TextField txtTotalPendingAmount;
+	
+    @FXML
+    private CheckBox cbShowOnlyPendingCustomer;
 
 	@Override
 	public boolean shouldClose() {
@@ -91,6 +99,15 @@ public class CustomersReportController implements TabContent {
 
 	@Override
 	public boolean loadData() {
+		customerList = FXCollections.observableArrayList();
+		tableView.setItems(customerList);
+		customerList.addListener(new ListChangeListener<Customer>() {
+			@Override
+			public void onChanged(ListChangeListener.Change<? extends Customer> c) {
+				updateTotals();
+			}
+
+		});
 		List<Customer> list = customerService.getAll();
 		customerList.addAll(list);
 		return true;
@@ -163,14 +180,19 @@ public class CustomersReportController implements TabContent {
 	@Override
 	public void initialize() {
 		setTableCellFactories();
-		customerList = FXCollections.observableArrayList();
-		tableView.setItems(customerList);
-		customerList.addListener(new ListChangeListener<Customer>() {
+		cbShowOnlyPendingCustomer.selectedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
-			public void onChanged(ListChangeListener.Change<? extends Customer> c) {
-				updateTotals();
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				if (newValue) {
+					customerList = FXCollections.observableArrayList();
+					tableView.setItems(customerList);
+					List<Customer> list = customerService.getAll();
+					customerList.addAll(list.stream().filter(c-> c.getBalanceAmt()>0).collect(Collectors.toList()));
+					updateTotals();
+				} else {
+					loadData();
+				}
 			}
-
 		});
 	}
 

@@ -100,8 +100,6 @@ public class DashboardController {
     public MenuItem suppliersReportMenuItem;
 	
     public MenuItem lowStockSummaryReportMenuItem;
-
-
 	
 	public void loadData() {
 		last7DaysSalesAmount = 0;
@@ -149,8 +147,7 @@ public class DashboardController {
 		lblStockValue.setText(IndianCurrencyFormatting.applyFormattingWithCurrency(dashboard.getStockValue()));
 		lblTodayCash.setText(IndianCurrencyFormatting.applyFormattingWithCurrency(dashboard.getTodaysCashAmount()));
 		//low stock report
-		Integer lowStockQtyLimit = Integer.valueOf(appUtils.getAppDataValues(AppConstants.LOW_STOCK_QUANTITY_LIMIT));
-		List<Product> list = productService.getZeroStockProducts(lowStockQtyLimit);
+		List<Product> list = productService.getZeroStockProducts();
 		lblLowStock.setText(String.valueOf(list.size()) + " Products");
 		
 		toCollectPane.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {

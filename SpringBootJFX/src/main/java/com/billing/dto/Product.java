@@ -79,6 +79,8 @@ public class Product {
 	private double tableDispTax;
 	
 	private long sequenceNumber;
+	
+	private Integer lowStockLevel;
 
 	public int getProductCode() {
 		return productCode;
@@ -406,6 +408,14 @@ public class Product {
 
 	public void setSequenceNumber(long sequenceNumber) {
 		this.sequenceNumber = sequenceNumber;
+	}
+
+	public Integer getLowStockLevel() {
+		return lowStockLevel;
+	}
+
+	public void setLowStockLevel(Integer lowStockLevel) {
+		this.lowStockLevel = lowStockLevel;
 	}
 
 	public enum SortParameter {

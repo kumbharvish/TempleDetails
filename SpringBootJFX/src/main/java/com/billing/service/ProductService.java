@@ -56,8 +56,8 @@ public class ProductService implements AppService<Product> {
 		return productRepository.saveBarcode(product);
 	}
 
-	public List<Product> getZeroStockProducts(Integer lowStockQtyLimit) {
-		return productRepository.getZeroStockProducts(lowStockQtyLimit);
+	public List<Product> getZeroStockProducts() {
+		return productRepository.getZeroStockProducts();
 	}
 
 	public StatusDTO updateProductPurchasePrice(List<Product> productList, Connection conn) {

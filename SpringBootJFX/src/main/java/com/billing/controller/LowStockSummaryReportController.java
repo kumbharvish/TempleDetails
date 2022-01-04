@@ -1,13 +1,12 @@
 package com.billing.controller;
 
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.billing.constants.AppConstants;
 import com.billing.dto.LowStockSummaryReport;
 import com.billing.dto.Product;
 import com.billing.dto.UserDetails;
@@ -20,10 +19,13 @@ import com.billing.utils.TabContent;
 
 import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableCell;
@@ -62,7 +64,7 @@ public class LowStockSummaryReportController implements TabContent {
 
 	@FXML
 	private TableColumn<Product, String> tcProductName;
-	
+
 	@FXML
 	private TableColumn<Product, String> tcProductCategory;
 
@@ -73,10 +75,13 @@ public class LowStockSummaryReportController implements TabContent {
 	private TableColumn<Product, Double> tcStockValue;
 
 	@FXML
+	private TableColumn<Product, Double> tcLowStockLevel;
+
+	@FXML
 	private TextField txtTotalProductCount;
-	
-    @FXML
-    private TextField txtLowStockConfigured;
+
+	@FXML
+	private CheckBox cbShowInStock;
 
 	@Override
 	public boolean shouldClose() {
@@ -90,9 +95,9 @@ public class LowStockSummaryReportController implements TabContent {
 
 	@Override
 	public boolean loadData() {
-		Integer lowStockQtyLimit = Integer.valueOf(appUtils.getAppDataValues(AppConstants.LOW_STOCK_QUANTITY_LIMIT));
-		txtLowStockConfigured.setText(String.valueOf(lowStockQtyLimit));
-		List<Product> list = productService.getZeroStockProducts(lowStockQtyLimit);
+		productList = FXCollections.observableArrayList();
+		tableView.setItems(productList);
+		List<Product> list = productService.getZeroStockProducts();
 		productList.addAll(list);
 		txtTotalProductCount.setText(String.valueOf(productList.size()));
 		return true;
@@ -146,9 +151,11 @@ public class LowStockSummaryReportController implements TabContent {
 
 		tcProductName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProductName()));
 		tcProductName.getStyleClass().add("character-cell");
-		tcProductCategory.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProductCategory()));
+		tcProductCategory
+				.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProductCategory()));
 		tcProductCategory.getStyleClass().add("character-cell");
 		tcStockQuantity.setCellFactory(callbackQty);
+		tcLowStockLevel.getStyleClass().add("numeric-cell");
 		tcStockValue.setCellFactory(callback);
 	}
 
@@ -170,8 +177,20 @@ public class LowStockSummaryReportController implements TabContent {
 	@Override
 	public void initialize() {
 		setTableCellFactories();
-		productList = FXCollections.observableArrayList();
-		tableView.setItems(productList);
+		cbShowInStock.selectedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				if (newValue) {
+					productList = FXCollections.observableArrayList();
+					tableView.setItems(productList);
+					List<Product> list = productService.getZeroStockProducts();
+					productList.addAll(list.stream().filter(p->p.getQuantity()> 0).collect(Collectors.toList()));
+					txtTotalProductCount.setText(String.valueOf(productList.size()));
+				} else {
+					loadData();
+				}
+			}
+		});
 	}
 
 	@Override

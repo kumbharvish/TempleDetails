@@ -3,6 +3,7 @@ package com.billing.controller;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,11 +20,14 @@ import com.billing.utils.TabContent;
 
 import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableCell;
@@ -86,6 +90,10 @@ public class StockSummaryReportController implements TabContent {
 
 	@FXML
 	private TextField txtTotalStockValueAmt;
+	
+
+    @FXML
+    private CheckBox cbShowOnlyInStock;
 
 	@Override
 	public boolean shouldClose() {
@@ -99,6 +107,15 @@ public class StockSummaryReportController implements TabContent {
 
 	@Override
 	public boolean loadData() {
+		productList = FXCollections.observableArrayList();
+		tableView.setItems(productList);
+		productList.addListener(new ListChangeListener<Product>() {
+			@Override
+			public void onChanged(ListChangeListener.Change<? extends Product> c) {
+				updateTotals();
+			}
+
+		});
 		List<Product> list = productService.getAll();
 		Comparator<Product> cp = Product.getComparator(Product.SortParameter.STOCK_VALUE_AMT_ASC);
 		Collections.sort(list, cp);
@@ -198,15 +215,23 @@ public class StockSummaryReportController implements TabContent {
 	@Override
 	public void initialize() {
 		setTableCellFactories();
-		productList = FXCollections.observableArrayList();
-		tableView.setItems(productList);
-		productList.addListener(new ListChangeListener<Product>() {
+		cbShowOnlyInStock.selectedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
-			public void onChanged(ListChangeListener.Change<? extends Product> c) {
-				updateTotals();
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				if (newValue) {
+					productList = FXCollections.observableArrayList();
+					tableView.setItems(productList);
+					List<Product> list = productService.getAll();
+					Comparator<Product> cp = Product.getComparator(Product.SortParameter.STOCK_VALUE_AMT_ASC);
+					Collections.sort(list, cp);
+					productList.addAll(list.stream().filter(p->p.getQuantity()> 0).collect(Collectors.toList()));
+					updateTotals();
+				} else {
+					loadData();
+				}
 			}
-
 		});
+		
 	}
 
 	@Override

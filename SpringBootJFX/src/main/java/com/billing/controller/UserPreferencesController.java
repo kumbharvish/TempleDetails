@@ -71,12 +71,6 @@ public class UserPreferencesController implements TabContent {
 	private Label lblSalesReturnDaysErrMsg;
 
 	@FXML
-	private TextField txtLowStockQtyLimit;
-
-	@FXML
-	private Label lblLowStockQtyLimitErrMsg;
-
-	@FXML
 	private TextField txtTermsAndCondition;
 
 	@FXML
@@ -137,7 +131,6 @@ public class UserPreferencesController implements TabContent {
 		cbOpenDocAfterSave.setSelected(appUtils.isTrue(userPref.get(AppConstants.OPEN_REPORT_DOC_ON_SAVE)));
 		cbDBBackupInterval.getSelectionModel().select(userPref.get(AppConstants.DB_DUMP_INTERVAL));
 		txtSalesReturnDays.setText(userPref.get(AppConstants.SALES_RETURN_ALLOWED_DAYS));
-		txtLowStockQtyLimit.setText(userPref.get(AppConstants.LOW_STOCK_QUANTITY_LIMIT));
 		txtTermsAndCondition.setText(userPref.get(AppConstants.TERMS_AND_CONDITION_FOR_INVOICE));
 		txtDefaultCustomerMobile.setText(userPref.get(AppConstants.CREATE_INVOICE_DEFAULT_CUSTOMER));
 		isDirty.set(false);
@@ -164,17 +157,12 @@ public class UserPreferencesController implements TabContent {
 		lblSalesReturnDaysErrMsg.visibleProperty()
 				.bind(lblSalesReturnDaysErrMsg.textProperty().length().greaterThanOrEqualTo(1));
 
-		lblLowStockQtyLimitErrMsg.managedProperty().bind(lblLowStockQtyLimitErrMsg.visibleProperty());
-		lblLowStockQtyLimitErrMsg.visibleProperty()
-				.bind(lblLowStockQtyLimitErrMsg.textProperty().length().greaterThanOrEqualTo(1));
-
 		lblTermsAndConditionErrMsg.managedProperty().bind(lblTermsAndConditionErrMsg.visibleProperty());
 		lblTermsAndConditionErrMsg.visibleProperty()
 				.bind(lblTermsAndConditionErrMsg.textProperty().length().greaterThanOrEqualTo(1));
 
 		txtSalesReturnDays.textProperty().addListener(appUtils.getForceNumberListner());
 		txtDefaultCustomerMobile.textProperty().addListener(appUtils.getForceNumberListner());
-		txtLowStockQtyLimit.textProperty().addListener(appUtils.getForceNumberListner());
 
 		rbGSTInclusive.selectedProperty().addListener(this::invalidated);
 		rbGSTExclusive.selectedProperty().addListener(this::invalidated);
@@ -183,7 +171,6 @@ public class UserPreferencesController implements TabContent {
 		cbOpenDocAfterSave.selectedProperty().addListener(this::invalidated);
 		cbDBBackupInterval.getSelectionModel().selectedItemProperty().addListener(this::invalidated);
 		txtSalesReturnDays.textProperty().addListener(this::invalidated);
-		txtLowStockQtyLimit.textProperty().addListener(this::invalidated);
 		txtTermsAndCondition.textProperty().addListener(this::invalidated);
 		txtDefaultCustomerMobile.textProperty().addListener(this::invalidated);
 
@@ -221,7 +208,6 @@ public class UserPreferencesController implements TabContent {
 		}
 		saveMap.put(AppConstants.DB_DUMP_INTERVAL, cbDBBackupInterval.getSelectionModel().getSelectedItem());
 		saveMap.put(AppConstants.SALES_RETURN_ALLOWED_DAYS, txtSalesReturnDays.getText());
-		saveMap.put(AppConstants.LOW_STOCK_QUANTITY_LIMIT, txtLowStockQtyLimit.getText());
 		saveMap.put(AppConstants.TERMS_AND_CONDITION_FOR_INVOICE, txtTermsAndCondition.getText());
 		saveMap.put(AppConstants.CREATE_INVOICE_DEFAULT_CUSTOMER, txtDefaultCustomerMobile.getText());
 
@@ -259,18 +245,6 @@ public class UserPreferencesController implements TabContent {
 			return valid;
 		} else {
 			lblSalesReturnDaysErrMsg.setText("");
-		}
-
-		// Low Stock Quantity Limit
-		int lowQty = txtLowStockQtyLimit.getText().trim().length();
-		if (lowQty == 0) {
-			alertHelper.beep();
-			lblLowStockQtyLimitErrMsg.setText("Please enter Low stock quantity limit");
-			txtLowStockQtyLimit.requestFocus();
-			valid = false;
-			return valid;
-		} else {
-			lblLowStockQtyLimitErrMsg.setText("");
 		}
 
 		// Terms and Condition

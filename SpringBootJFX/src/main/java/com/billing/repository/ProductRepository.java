@@ -54,8 +54,8 @@ public class ProductRepository {
 			+ "FROM PRODUCT_DETAILS PD,PRODUCT_CATEGORY_DETAILS PCD WHERE PD.CATEGORY_ID = PCD.CATEGORY_ID AND BAR_CODE=0;";
 
 	private static final String INS_PRODUCT = "INSERT INTO PRODUCT_DETAILS (PRODUCT_ID,PRODUCT_NAME,MEASURE,QUANTITY,PURCHASE_PRICE,"
-			+ "SELL_PRICE,PRODUCT_MRP,DISCOUNT,ENTRY_DATE,LAST_UPDATE_DATE,DESCRIPTION,ENTER_BY,CATEGORY_ID,PURCHASE_RATE,PRODUCT_TAX,BAR_CODE,HSN)"
-			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			+ "SELL_PRICE,PRODUCT_MRP,DISCOUNT,ENTRY_DATE,LAST_UPDATE_DATE,DESCRIPTION,ENTER_BY,CATEGORY_ID,PURCHASE_RATE,PRODUCT_TAX,BAR_CODE,HSN,LOW_STOCK_LEVEL)"
+			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static final String DELETE_PRODUCT = "DELETE FROM PRODUCT_DETAILS WHERE PRODUCT_ID=?";
 
@@ -64,7 +64,7 @@ public class ProductRepository {
 
 	private static final String UPDATE_PRODUCT = "UPDATE PRODUCT_DETAILS SET PRODUCT_NAME=?,MEASURE=?,QUANTITY=?,PURCHASE_PRICE=?,"
 			+ "SELL_PRICE=?,PRODUCT_MRP=?,DISCOUNT=?,LAST_UPDATE_DATE=?,DESCRIPTION=?,"
-			+ "ENTER_BY=?,CATEGORY_ID=?,PURCHASE_RATE=?,PRODUCT_TAX=?,BAR_CODE=?,HSN=? WHERE PRODUCT_ID=?";
+			+ "ENTER_BY=?,CATEGORY_ID=?,PURCHASE_RATE=?,PRODUCT_TAX=?,BAR_CODE=?,HSN=?,LOW_STOCK_LEVEL=? WHERE PRODUCT_ID=?";
 
 	private static final String UPDATE_PRODUCT_PURCHASE_HISTORY = "UPDATE PRODUCT_DETAILS SET PURCHASE_PRICE=?,LAST_UPDATE_DATE=?,PURCHASE_RATE=?,PRODUCT_TAX=? WHERE PRODUCT_ID=?";
 
@@ -73,7 +73,7 @@ public class ProductRepository {
 	private static final String SAVE_BARCODE = "UPDATE PRODUCT_DETAILS SET BAR_CODE=? WHERE PRODUCT_ID=?";
 
 	private static final String LOW_STOCK_PRODUCTS = "SELECT  PD.*,PCD.CATEGORY_NAME "
-			+ "FROM PRODUCT_DETAILS PD,PRODUCT_CATEGORY_DETAILS PCD WHERE PD.CATEGORY_ID = PCD.CATEGORY_ID AND QUANTITY<=?;";
+			+ "FROM PRODUCT_DETAILS PD,PRODUCT_CATEGORY_DETAILS PCD WHERE PD.CATEGORY_ID = PCD.CATEGORY_ID AND PD.LOW_STOCK_LEVEL NOT NULL AND PD.QUANTITY<=PD.LOW_STOCK_LEVEL";
 
 	private static final String INS_PRODUCT_STOCK_IN_LEDGER = "INSERT INTO PRODUCT_STOCK_LEDGER (PRODUCT_CODE,TIMESTAMP,STOCK_IN,NARRATION,TRANSACTION_TYPE)"
 			+ " VALUES(?,?,?,?,?)";
@@ -115,7 +115,8 @@ public class ProductRepository {
 				pc.setProductCategory(rs.getString("CATEGORY_NAME"));
 				pc.setProductBarCode(rs.getLong("BAR_CODE"));
 				pc.setHsn(rs.getString("HSN"));
-
+				pc.setLowStockLevel(rs.getInt("LOW_STOCK_LEVEL"));
+				
 				productList.add(pc);
 				Comparator<Product> cp = Product.getComparator(Product.SortParameter.CATEGORY_NAME_ASCENDING);
 				Collections.sort(productList, cp);
@@ -160,6 +161,7 @@ public class ProductRepository {
 				pc.setProductTax(rs.getDouble("PRODUCT_TAX"));
 				pc.setProductBarCode(rs.getLong("BAR_CODE"));
 				pc.setHsn(rs.getString("HSN"));
+				pc.setLowStockLevel(rs.getInt("LOW_STOCK_LEVEL"));
 
 			}
 			rs.close();
@@ -198,6 +200,7 @@ public class ProductRepository {
 				stmt.setDouble(15, product.getProductTax());
 				stmt.setLong(16, product.getProductBarCode());
 				stmt.setString(17, product.getHsn());
+				stmt.setInt(18, product.getLowStockLevel());
 
 				int i = stmt.executeUpdate();
 				if (i > 0) {
@@ -274,7 +277,8 @@ public class ProductRepository {
 				stmt.setDouble(13, product.getProductTax());
 				stmt.setLong(14, product.getProductBarCode());
 				stmt.setString(15, product.getHsn());
-				stmt.setInt(16, product.getProductCode());
+				stmt.setInt(16, product.getLowStockLevel());
+				stmt.setInt(17, product.getProductCode());
 
 				int i = stmt.executeUpdate();
 				if (i > 0) {
@@ -293,7 +297,7 @@ public class ProductRepository {
 	}
 
 	// Get Low Stock Products
-	public List<Product> getZeroStockProducts(Integer lowStockQtyLimit) {
+	public List<Product> getZeroStockProducts() {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		Product pc = null;
@@ -301,7 +305,6 @@ public class ProductRepository {
 		try {
 			conn = dbUtils.getConnection();
 			stmt = conn.prepareStatement(LOW_STOCK_PRODUCTS);
-			stmt.setInt(1, lowStockQtyLimit);
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
@@ -323,6 +326,7 @@ public class ProductRepository {
 				pc.setProductCategory(rs.getString("CATEGORY_NAME"));
 				pc.setProductBarCode(rs.getLong("BAR_CODE"));
 				pc.setHsn(rs.getString("HSN"));
+				pc.setLowStockLevel(rs.getInt("LOW_STOCK_LEVEL"));
 
 				productList.add(pc);
 				Comparator<Product> cp = Product.getComparator(Product.SortParameter.CATEGORY_NAME_ASCENDING);

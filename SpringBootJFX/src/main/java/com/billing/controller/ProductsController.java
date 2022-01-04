@@ -166,6 +166,9 @@ public class ProductsController extends AppContext implements TabContent {
 
 	@FXML
 	private TextField txtSearchProduct;
+	
+    @FXML
+    private TextField txtLowStockLevel;
 
 	@FXML
 	private TableView<Product> tableView;
@@ -358,6 +361,7 @@ public class ProductsController extends AppContext implements TabContent {
 			lblEnteredBy.setText(newValue.getEnterBy());
 			lblEntryDate.setText(appUtils.getFormattedDateWithTime(newValue.getEntryDate()));
 			txtDescription.setText(newValue.getDescription());
+			txtLowStockLevel.setText(newValue.getLowStockLevel()== null ? "0" : String.valueOf(newValue.getLowStockLevel()));
 		}
 	}
 
@@ -531,6 +535,7 @@ public class ProductsController extends AppContext implements TabContent {
 		productToSave.setEntryDate(appUtils.getCurrentTimestamp());
 		productToSave.setLastUpdateDate(appUtils.getCurrentTimestamp());
 		productToSave.setHsn(txtHSN.getText());
+		productToSave.setLowStockLevel(txtLowStockLevel.getText().equals("") ? 0 : Integer.parseInt(txtLowStockLevel.getText()));
 		if (txtBarcode.getText().equals("")) {
 			productToSave.setProductBarCode(Long.valueOf(0));
 		} else {
@@ -583,6 +588,7 @@ public class ProductsController extends AppContext implements TabContent {
 		productToUpdate.setEnterBy(userDetails.getFirstName() + " " + userDetails.getLastName());
 		productToUpdate.setLastUpdateDate(appUtils.getCurrentTimestamp());
 		productToUpdate.setHsn(txtHSN.getText());
+		productToUpdate.setLowStockLevel(txtLowStockLevel.getText().equals("") ? 0 : Integer.parseInt(txtLowStockLevel.getText()));
 		if (txtBarcode.getText().equals("")) {
 			productToUpdate.setProductBarCode(Long.valueOf(0));
 		} else {
@@ -722,6 +728,7 @@ public class ProductsController extends AppContext implements TabContent {
 		lblEnteredBy.setText("");
 		lblEntryDate.setText("");
 		txtDescription.setText("");
+		txtLowStockLevel.setText("");
 		// Reset Error msg
 		lblProductCategoryErrMsg.setText("");
 		lblProductNameErrMsg.setText("");

@@ -1,11 +1,12 @@
 package com.billing.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.billing.dto.CustomersReport;
+import com.billing.dto.Customer;
 import com.billing.dto.Supplier;
 import com.billing.dto.SuppliersReport;
 import com.billing.dto.UserDetails;
@@ -18,11 +19,14 @@ import com.billing.utils.TabContent;
 
 import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableCell;
@@ -79,6 +83,9 @@ public class SuppliersReportController implements TabContent {
 
 	@FXML
 	private TextField txtTotalBalanceAmount;
+	
+    @FXML
+    private CheckBox cbShowOnlyBalanceSuppliers;
 
 	@Override
 	public boolean shouldClose() {
@@ -92,6 +99,15 @@ public class SuppliersReportController implements TabContent {
 
 	@Override
 	public boolean loadData() {
+		suppliersList = FXCollections.observableArrayList();
+		tableView.setItems(suppliersList);
+		suppliersList.addListener(new ListChangeListener<Supplier>() {
+			@Override
+			public void onChanged(ListChangeListener.Change<? extends Supplier> c) {
+				updateTotals();
+			}
+
+		});
 		List<Supplier> list = supplierService.getAll();
 		suppliersList.addAll(list);
 		return true;
@@ -163,14 +179,20 @@ public class SuppliersReportController implements TabContent {
 	@Override
 	public void initialize() {
 		setTableCellFactories();
-		suppliersList = FXCollections.observableArrayList();
-		tableView.setItems(suppliersList);
-		suppliersList.addListener(new ListChangeListener<Supplier>() {
+		
+		cbShowOnlyBalanceSuppliers.selectedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
-			public void onChanged(ListChangeListener.Change<? extends Supplier> c) {
-				updateTotals();
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				if (newValue) {
+					suppliersList = FXCollections.observableArrayList();
+					tableView.setItems(suppliersList);
+					List<Supplier> list = supplierService.getAll();
+					suppliersList.addAll(list.stream().filter(s->s.getBalanceAmount()>0).collect(Collectors.toList()));
+					updateTotals();
+				} else {
+					loadData();
+				}
 			}
-
 		});
 	}
 
