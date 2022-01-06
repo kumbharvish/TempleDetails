@@ -152,7 +152,7 @@ public class HomeController extends AppContext {
 		tabPane.getTabs().addListener(new ListChangeListener<Tab>() {
 	        @Override
 	        public void onChanged(javafx.collections.ListChangeListener.Change<? extends Tab> c) {
-	        	if(tabPane.getTabs().size() == 0) {
+	        	if(tabPane.getTabs().size() == 0 && userDetails.getUserType().equals("INTERNAL")) {
 	        		loadDashboard();
 	        	}
 	        }
@@ -188,8 +188,10 @@ public class HomeController extends AppContext {
 			alertHelper.showInstructionsAlert(currentStage, "Store Setup", "Instructions",
 					AppConstants.INSTR_MYSTORE_SETUP, 600, 140);
 		}
-		// Load Dashboard
-		loadDashboard();
+		if(userDetails.getUserType().equals("INTERNAL")) {
+			// Load Dashboard
+			loadDashboard();
+		}
 	}
 
 	private void loadDashboard() {
