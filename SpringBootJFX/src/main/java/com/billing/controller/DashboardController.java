@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import com.billing.constants.AppConstants;
 import com.billing.dto.Dashboard;
 import com.billing.dto.GraphDTO;
+import com.billing.dto.MyStoreDetails;
 import com.billing.dto.Product;
 import com.billing.dto.UserDetails;
 import com.billing.service.ProductService;
@@ -33,87 +34,92 @@ import javafx.stage.Stage;
 public class DashboardController {
 
 	public UserDetails userDetails;
-	
+
 	public Stage currentStage;
-	
-    @FXML
-    private Label lblLast7DaysSales;
 
-    @FXML
-    private Label lblNoOfInvoicesMade;
+	@FXML
+	private Label lblStoreName;
 
-    @FXML
-    private Label lblDateRange;
-    
-    @FXML
-    private Label lblToCollect;
+	@FXML
+	private Label lblLast7DaysSales;
 
-    @FXML
-    private Label lblToPay;
+	@FXML
+	private Label lblNoOfInvoicesMade;
 
-    @FXML
-    private Label lblTodayCash;
+	@FXML
+	private Label lblDateRange;
 
-    @FXML
-    private Label lblStockValue;
+	@FXML
+	private Label lblToCollect;
 
-    @FXML
-    private Label lblLowStock;
-    
-    @FXML
-    private AnchorPane toPayPane;
+	@FXML
+	private Label lblToPay;
 
-    @FXML
-    private AnchorPane todaysCashPane;
+	@FXML
+	private Label lblTodayCash;
 
-    @FXML
-    private AnchorPane stockValuePane;
+	@FXML
+	private Label lblStockValue;
 
-    @FXML
-    private AnchorPane lowStockPane;
-    
-    @FXML
-    private AnchorPane toCollectPane;
+	@FXML
+	private Label lblLowStock;
 
-    @FXML
-    private AreaChart<String, Number> areaChart;
-    
-    @Autowired
-    ReportService reportService;
-    
-    @Autowired
+	@FXML
+	private AnchorPane toPayPane;
+
+	@FXML
+	private AnchorPane todaysCashPane;
+
+	@FXML
+	private AnchorPane stockValuePane;
+
+	@FXML
+	private AnchorPane lowStockPane;
+
+	@FXML
+	private AnchorPane toCollectPane;
+
+	@FXML
+	private AreaChart<String, Number> areaChart;
+
+	@Autowired
+	ReportService reportService;
+
+	@Autowired
 	AppUtils appUtils;
-    
-    @Autowired
-    ProductService productService;
-    
-    double last7DaysSalesAmount = 0;
-    
-    int noOfInvoicesMade = 0;
-    
-    public MenuItem cashReportMenuItem;
 
-    public MenuItem customersReportMenuItem;
-	
-    public MenuItem stockSummaryReportMenuItem;
-	
-    public MenuItem suppliersReportMenuItem;
-	
-    public MenuItem lowStockSummaryReportMenuItem;
-	
+	@Autowired
+	ProductService productService;
+
+	double last7DaysSalesAmount = 0;
+
+	int noOfInvoicesMade = 0;
+
+	MyStoreDetails storeDetails;
+
+	public MenuItem cashReportMenuItem;
+
+	public MenuItem customersReportMenuItem;
+
+	public MenuItem stockSummaryReportMenuItem;
+
+	public MenuItem suppliersReportMenuItem;
+
+	public MenuItem lowStockSummaryReportMenuItem;
+
 	public void loadData() {
 		last7DaysSalesAmount = 0;
 		noOfInvoicesMade = 0;
-				
+
 		// Create Dataset
 		Date todaysDate = new Date();
 		DateTime dateTime = new DateTime();
 		Date backDate = dateTime.minusDays(7).toDate();
-		
+
 		Dashboard dashboard = reportService.getDashboardDetails();
 		// Create list of Last 7 Days Date Range
 		List<String> dateList = appUtils.getListOfDaysBetweenTwoDates(backDate, todaysDate);
-		lblDateRange.setText(appUtils.getFormattedDate(backDate)+" to "+appUtils.getFormattedDate(todaysDate));
+		lblDateRange.setText(appUtils.getFormattedDate(backDate) + " to " + appUtils.getFormattedDate(todaysDate));
 		List<GraphDTO> graphFinalList = new ArrayList<GraphDTO>();
 
 		HashMap<String, GraphDTO> dateMap = new HashMap<String, GraphDTO>();
@@ -146,53 +152,59 @@ public class DashboardController {
 		lblToPay.setText(IndianCurrencyFormatting.applyFormattingWithCurrency(dashboard.getToPayAmount()));
 		lblStockValue.setText(IndianCurrencyFormatting.applyFormattingWithCurrency(dashboard.getStockValue()));
 		lblTodayCash.setText(IndianCurrencyFormatting.applyFormattingWithCurrency(dashboard.getTodaysCashAmount()));
-		//low stock report
+		// low stock report
 		List<Product> list = productService.getZeroStockProducts();
 		lblLowStock.setText(String.valueOf(list.size()) + " Products");
-		
+
 		toCollectPane.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				// Open Customers Report
 				customersReportMenuItem.fire();
 			}
-			
+
 		});
-		
+
 		toPayPane.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				// Open Suppliers Report
 				suppliersReportMenuItem.fire();
 			}
-			
+
 		});
-		
+
 		lowStockPane.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				// Open Low Stock Report
 				lowStockSummaryReportMenuItem.fire();
 			}
-			
+
 		});
-		
+
 		stockValuePane.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				// Open Stock Summary Report
 				stockSummaryReportMenuItem.fire();
 			}
-			
+
 		});
-		
+
 		todaysCashPane.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				// Open Cash Report
 				cashReportMenuItem.fire();
 			}
-			
+
 		});
+		if (storeDetails == null) {
+			lblStoreName.setText("Please add store details");
+		} else {
+			lblStoreName.setText(storeDetails.getStoreName() + ", " + storeDetails.getCity());
+		}
+
 	}
 }

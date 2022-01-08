@@ -219,6 +219,7 @@ public class HomeController extends AppContext {
 		controller.lowStockSummaryReportMenuItem = lowStockSummaryReportMenuItem;
 		controller.stockSummaryReportMenuItem = stockSummaryReportMenuItem;
 		controller.suppliersReportMenuItem = suppliersReportMenuItem;
+		controller.storeDetails = storeDetails;
 		controller.loadData();
 		rootPane.setCenter(pane);
 	}

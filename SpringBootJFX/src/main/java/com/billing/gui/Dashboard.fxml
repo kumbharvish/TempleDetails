@@ -53,18 +53,23 @@
             </VBox>
          </center>
          <top>
-            <HBox BorderPane.alignment="CENTER">
-               <children>
-                  <Label styleClass="nodeLabel" text="Sales Report :  " />
-                  <Label fx:id="lblDateRange" styleClass="valueLabel" />
-               </children>
-               <padding>
-                  <Insets bottom="20.0" />
-               </padding>
+            <AnchorPane BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets left="65.0" top="10.0" />
                </BorderPane.margin>
-            </HBox>
+               <children>
+                  <HBox>
+                     <children>
+                        <Label styleClass="nodeLabel" text="Sales Report :  " />
+                        <Label fx:id="lblDateRange" styleClass="valueLabel" />
+                     </children>
+                     <padding>
+                        <Insets bottom="20.0" />
+                     </padding>
+                  </HBox>
+                  <Label fx:id="lblStoreName" styleClass="lblBoldValue" text="Label" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
          </top>
          <BorderPane.margin>
             <Insets left="20.0" />
