@@ -44,3 +44,7 @@
 .tableCellCursor {
 	-fx-cursor: hand;
 }
+
+.shortcut {
+	-fx-text-fill: sienna;
+}

@@ -70,6 +70,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -641,6 +643,9 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	@Override
 	public boolean loadData() {
 		isDirty.set(false);
+		KeyCombination kc = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_ANY);
+		Runnable rn = ()-> onSaveCommand(null);
+		currentStage.getScene().getAccelerators().put(kc, rn);
 		return true;
 	}
 

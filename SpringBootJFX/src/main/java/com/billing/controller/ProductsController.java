@@ -47,6 +47,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
@@ -166,9 +169,9 @@ public class ProductsController extends AppContext implements TabContent {
 
 	@FXML
 	private TextField txtSearchProduct;
-	
-    @FXML
-    private TextField txtLowStockLevel;
+
+	@FXML
+	private TextField txtLowStockLevel;
 
 	@FXML
 	private TableView<Product> tableView;
@@ -361,7 +364,8 @@ public class ProductsController extends AppContext implements TabContent {
 			lblEnteredBy.setText(newValue.getEnterBy());
 			lblEntryDate.setText(appUtils.getFormattedDateWithTime(newValue.getEntryDate()));
 			txtDescription.setText(newValue.getDescription());
-			txtLowStockLevel.setText(newValue.getLowStockLevel()== null ? "0" : String.valueOf(newValue.getLowStockLevel()));
+			txtLowStockLevel
+					.setText(newValue.getLowStockLevel() == null ? "0" : String.valueOf(newValue.getLowStockLevel()));
 		}
 	}
 
@@ -494,6 +498,27 @@ public class ProductsController extends AppContext implements TabContent {
 		productTableData.addAll(list);
 		filteredList = new FilteredList(productTableData, null);
 		tableView.setItems(filteredList);
+		// Set Shortcuts
+		// Add
+		KeyCombination kc = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_ANY);
+		Runnable rn = () -> onAddCommand(null);
+		currentStage.getScene().getAccelerators().put(kc, rn);
+
+		// Update
+		KeyCombination ku = new KeyCodeCombination(KeyCode.U, KeyCombination.CONTROL_ANY);
+		Runnable ru = () -> onUpdateCommand(null);
+		currentStage.getScene().getAccelerators().put(ku, ru);
+
+		// Delete
+		KeyCombination kd = new KeyCodeCombination(KeyCode.D, KeyCombination.CONTROL_ANY);
+		Runnable rd = () -> onDeleteCommand(null);
+		currentStage.getScene().getAccelerators().put(kd, rd);
+
+		// Reset
+		KeyCombination kr = new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_ANY);
+		Runnable rr = () -> onResetCommand(null);
+		currentStage.getScene().getAccelerators().put(kr, rr);
+
 		return true;
 	}
 
@@ -535,7 +560,8 @@ public class ProductsController extends AppContext implements TabContent {
 		productToSave.setEntryDate(appUtils.getCurrentTimestamp());
 		productToSave.setLastUpdateDate(appUtils.getCurrentTimestamp());
 		productToSave.setHsn(txtHSN.getText());
-		productToSave.setLowStockLevel(txtLowStockLevel.getText().equals("") ? 0 : Integer.parseInt(txtLowStockLevel.getText()));
+		productToSave.setLowStockLevel(
+				txtLowStockLevel.getText().equals("") ? 0 : Integer.parseInt(txtLowStockLevel.getText()));
 		if (txtBarcode.getText().equals("")) {
 			productToSave.setProductBarCode(Long.valueOf(0));
 		} else {
@@ -588,7 +614,8 @@ public class ProductsController extends AppContext implements TabContent {
 		productToUpdate.setEnterBy(userDetails.getFirstName() + " " + userDetails.getLastName());
 		productToUpdate.setLastUpdateDate(appUtils.getCurrentTimestamp());
 		productToUpdate.setHsn(txtHSN.getText());
-		productToUpdate.setLowStockLevel(txtLowStockLevel.getText().equals("") ? 0 : Integer.parseInt(txtLowStockLevel.getText()));
+		productToUpdate.setLowStockLevel(
+				txtLowStockLevel.getText().equals("") ? 0 : Integer.parseInt(txtLowStockLevel.getText()));
 		if (txtBarcode.getText().equals("")) {
 			productToUpdate.setProductBarCode(Long.valueOf(0));
 		} else {
@@ -737,6 +764,7 @@ public class ProductsController extends AppContext implements TabContent {
 		lblSellPriceErrMsg.setText("");
 		lblTaxErrMsg.setText("");
 		lblUnitErrMsg.setText("");
+		txtProductName.requestFocus();
 
 	}
 

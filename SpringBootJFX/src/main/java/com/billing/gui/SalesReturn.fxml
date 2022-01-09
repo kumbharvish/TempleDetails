@@ -186,6 +186,9 @@
 																		</Button>
 																	</children>
 																</HBox>
+																<HBox spacing="20.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="0.0">
+																<Label styleClass="shortcut" text="Save Return : CTRL + S"/>
+																</HBox>
 															</children>
 														</AnchorPane>
 													</children>

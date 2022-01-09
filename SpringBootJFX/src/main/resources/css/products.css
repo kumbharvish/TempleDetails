@@ -27,3 +27,7 @@
 	-fx-background-position: 97%, 4;
 	-fx-padding: 3px 27px 3px 7px;
 }
+
+.shortcut {
+	-fx-text-fill: sienna;
+}

@@ -30,3 +30,7 @@
 	-fx-background-color: -lookupBackground;
 	-fx-border-insets: 15px 30px 15px 30px;
 }
+
+.shortcut {
+	-fx-text-fill: sienna;
+}

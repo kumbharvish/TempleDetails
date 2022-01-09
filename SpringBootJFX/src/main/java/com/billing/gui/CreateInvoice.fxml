@@ -210,6 +210,9 @@
 																		</Button>
 																	</children>
 																</HBox>
+																<HBox spacing="20.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="0.0">
+																<Label styleClass="shortcut" text="Save Invoice : CTRL + S"/>
+																</HBox>
 															</children>
 														</AnchorPane>
 													</children>
@@ -302,7 +305,11 @@
 										</HBox>
 										<ButtonBar>
 											<buttons>
-												<Button fx:id="btnSave" mnemonicParsing="false" onAction="#onSaveCommand" text="Save" />
+												<Button fx:id="btnSave" mnemonicParsing="false" onAction="#onSaveCommand" text="Save">
+												<tooltip>
+														<Tooltip text="CTRL + S" />
+													</tooltip>
+													</Button>
 												<Button fx:id="btnClose" cancelButton="true" mnemonicParsing="false" onAction="#onCloseAction" text="Close" />
 											</buttons>
 										</ButtonBar>

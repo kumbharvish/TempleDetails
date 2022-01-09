@@ -63,6 +63,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -482,6 +484,11 @@ public class SalesReturnController extends AppContext implements TabContent {
 		txtDiscountPercent.setText(String.valueOf(bill.getDiscount()));
 		isDirty.set(false);
 		tableLoaded = true;
+		// Set Shortcuts
+		// Add
+		KeyCombination kc = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_ANY);
+		Runnable rn = () -> onUpdateCommand(null);
+		currentStage.getScene().getAccelerators().put(kc, rn);
 		return true;
 	}
 
@@ -608,7 +615,8 @@ public class SalesReturnController extends AppContext implements TabContent {
 			valid = false;
 			return valid;
 		} else if (date.isAfter(LocalDate.now())) {
-			lblReturnDateErrMsg.setText("Return Date can't be later than todays date :" + appUtils.getTodaysDateForUI());
+			lblReturnDateErrMsg
+					.setText("Return Date can't be later than todays date :" + appUtils.getTodaysDateForUI());
 			valid = false;
 			return valid;
 		}

@@ -46,6 +46,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -351,6 +354,26 @@ public class CustomersController extends AppContext implements TabContent {
 		tableData.addAll(list);
 		filteredList = new FilteredList(tableData, null);
 		tableView.setItems(filteredList);
+		// Set Shortcuts
+		// Add
+		KeyCombination kc = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_ANY);
+		Runnable rn = () -> onAddCommand(null);
+		currentStage.getScene().getAccelerators().put(kc, rn);
+
+		// Update
+		KeyCombination ku = new KeyCodeCombination(KeyCode.U, KeyCombination.CONTROL_ANY);
+		Runnable ru = () -> onUpdateCommand(null);
+		currentStage.getScene().getAccelerators().put(ku, ru);
+
+		// Delete
+		KeyCombination kd = new KeyCodeCombination(KeyCode.D, KeyCombination.CONTROL_ANY);
+		Runnable rd = () -> onDeleteCommand(null);
+		currentStage.getScene().getAccelerators().put(kd, rd);
+
+		// Reset
+		KeyCombination kr = new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_ANY);
+		Runnable rr = () -> onResetCommand(null);
+		currentStage.getScene().getAccelerators().put(kr, rr);
 		return true;
 	}
 
@@ -471,6 +494,7 @@ public class CustomersController extends AppContext implements TabContent {
 		txtState.setText("");
 		txtGstin.setText("");
 		txtAddress.setText("");
+		txtMobileNo.requestFocus();
 	}
 
 	private void getPopup(Customer customer, String type) {
