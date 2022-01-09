@@ -56,7 +56,6 @@ public class MyStoreApplication extends Application {
 		AlertHelper alertHelper = (AlertHelper)springContext.getBean(AlertHelper.class);
 		try {
 			if (!appProperties.check()) {
-				alertHelper.showErrorAlert(null,AppConstants.LICENSE_ERROR,null,AppConstants.LICENSE_ERROR_1);
 				alertHelper.showQRCodePopUp(initStage, appProperties.getQRCodeKey());
 				alertHelper.showProductKeyDialog();
 				System.exit(0);
@@ -66,7 +65,6 @@ public class MyStoreApplication extends Application {
 					System.exit(0);
 				} else {
 					if (!appProperties.doCheck()) {
-						alertHelper.showErrorAlert(null,AppConstants.LICENSE_EXPIRED,null,AppConstants.LICENSE_ERROR_2);
 						alertHelper.showLicenseKeyDialog();
 						System.exit(0);
 					} else {

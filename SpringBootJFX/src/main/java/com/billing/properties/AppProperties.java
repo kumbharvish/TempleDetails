@@ -109,9 +109,10 @@ public class AppProperties {
 	}
 	
 	public void updateLicenseKey(String key) throws Exception {
+		String date = appUtils.dec(key);
 		StatusDTO status = appUtils.updateAppData("APP_SECURE_KEY", key);
 		if(status.getStatusCode()==0) {
-			alertHelper.showInfoAlert(null, "Success", "License Updated", AppConstants.LICENSE_UPDATED+appUtils.dec(key));
+			alertHelper.showInfoAlert(null, "Success", "License Updated", AppConstants.LICENSE_UPDATED+date+" Please reopen the MyStore application");
 		}else {
 			alertHelper.showDataSaveErrAlert(null);
 		}

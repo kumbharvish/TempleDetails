@@ -256,7 +256,6 @@ public class AlertHelper {
 			try {
 				appProperties.validateKeyUpdate(key);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		});
@@ -319,7 +318,7 @@ public class AlertHelper {
 			try {
 				appProperties.updateLicenseKey(key);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
+				showErrorAlert(null, "Error", null, AppConstants.INVALID_LICENSE_KEY);
 				e.printStackTrace();
 			}
 		});
@@ -360,7 +359,7 @@ public class AlertHelper {
 		stage.initOwner(initStage);
 		WebView webView = new WebView();
 		webView.getEngine()
-				.loadContent("<html><div style='font-family: Arial;'> Please Share us below QR Code <br><br>Email : <b>"
+				.loadContent("<html><div style='font-family: Arial;'> To purchase product key, Please Share us below QR Code <br><br>Email : <b>"
 						+ appUtils.getAppDataValues("CUSTOMER_SUPPORT_EMAIL") + "</b><br><br> Mobile : <b>"
 						+ appUtils.getAppDataValues("CUSTOMER_SUPPORT_MOBILE") + "</b></div></html>");
 		webView.setPrefSize(300, 130);
