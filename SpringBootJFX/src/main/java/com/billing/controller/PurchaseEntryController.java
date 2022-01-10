@@ -63,6 +63,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -218,12 +220,12 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 
 	@FXML
 	private Button btnSave;
-	
-	private double totalMrpAmount=0.0;
+
+	private double totalMrpAmount = 0.0;
 
 	@Override
 	public void initialize() {
-		totalMrpAmount=0.0;
+		totalMrpAmount = 0.0;
 		productTableData = FXCollections.observableArrayList();
 		dpBillDate.setValue(LocalDate.now());
 		appUtils.setDateConvertor(dpBillDate);
@@ -524,6 +526,10 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 	@Override
 	public boolean loadData() {
 		isDirty.set(false);
+		// Add
+		KeyCombination kc = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_ANY);
+		Runnable rn = () -> onSaveCommand(null);
+		currentStage.getScene().getAccelerators().put(kc, rn);
 		return true;
 	}
 

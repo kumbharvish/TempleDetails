@@ -261,3 +261,7 @@
 .summation {
 	-fx-font-weight: bold;
 }
+
+.shortcut {
+	-fx-text-fill: sienna;
+}

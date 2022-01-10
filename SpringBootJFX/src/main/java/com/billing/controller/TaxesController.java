@@ -31,6 +31,9 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
 
 @SuppressWarnings("restriction")
@@ -120,6 +123,26 @@ public class TaxesController implements TabContent {
 		ObservableList<Tax> taxTableData = FXCollections.observableArrayList();
 		taxTableData.addAll(list);
 		tableView.setItems(taxTableData);
+		// Set Shortcuts
+		// Add
+		KeyCombination kc = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_ANY);
+		Runnable rn = () -> onAddCommand(null);
+		currentStage.getScene().getAccelerators().put(kc, rn);
+
+		// Update
+		KeyCombination ku = new KeyCodeCombination(KeyCode.U, KeyCombination.CONTROL_ANY);
+		Runnable ru = () -> onUpdateCommand(null);
+		currentStage.getScene().getAccelerators().put(ku, ru);
+
+		// Delete
+		KeyCombination kd = new KeyCodeCombination(KeyCode.D, KeyCombination.CONTROL_ANY);
+		Runnable rd = () -> onDeleteCommand(null);
+		currentStage.getScene().getAccelerators().put(kd, rd);
+
+		// Reset
+		KeyCombination kr = new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_ANY);
+		Runnable rr = () -> onResetCommand(null);
+		currentStage.getScene().getAccelerators().put(kr, rr);
 		return true;
 	}
 

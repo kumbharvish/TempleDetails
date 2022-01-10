@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
@@ -12,10 +13,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Text?>
-<?import javafx.scene.control.ButtonBar?>
 
 <HBox alignment="TOP_CENTER" stylesheets="@../../../css/productCategory.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.ProductCategoryController">
 	<children>
@@ -53,7 +51,7 @@
 							</padding>
 							<columnConstraints>
 								<ColumnConstraints />
-								<ColumnConstraints prefWidth="250.0"/>
+								<ColumnConstraints prefWidth="250.0" />
 							</columnConstraints>
 							<rowConstraints>
 								<RowConstraints />
@@ -69,7 +67,7 @@
 				<TableView fx:id="tableView" BorderPane.alignment="CENTER">
 					<columns>
 						<TableColumn fx:id="tcCategoryName" prefWidth="233.0" text="Category Name" />
-						<TableColumn fx:id="tcCategoryDesc" prefWidth="189.0" text="Category Description" />
+						<TableColumn fx:id="tcCategoryDesc" prefWidth="233.0" text="Category Description" />
 					</columns>
 					<BorderPane.margin>
 						<Insets bottom="20.0" top="20.0" />
@@ -82,10 +80,18 @@
 			<bottom>
 				<VBox BorderPane.alignment="CENTER">
 					<children>
-						<Separator/>
+                  <HBox spacing="20.0">
+                     <children>
+                        <Label styleClass="shortcut" text="Add : CTRL + S" />
+                        <Label layoutX="10.0" layoutY="10.0" styleClass="shortcut" text="Update : CTRL + U" />
+                        <Label layoutX="89.0" layoutY="10.0" styleClass="shortcut" text="Delete : CTRL + D" />
+                        <Label layoutX="168.0" layoutY="10.0" styleClass="shortcut" text="Reset : CTRL + R" />
+                     </children>
+                  </HBox>
+						<Separator />
 						<ButtonBar BorderPane.alignment="CENTER">
 							<buttons>
-								<Button fx:id="btnClose" cancelButton="true" mnemonicParsing="false" text="Close" onAction="#onCloseCommand"/>
+								<Button fx:id="btnClose" cancelButton="true" mnemonicParsing="false" onAction="#onCloseCommand" text="Close" />
 							</buttons>
 							<padding>
 								<Insets top="10.0" />

@@ -28,6 +28,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
 
 @SuppressWarnings("restriction")
@@ -137,6 +140,11 @@ public class ExpenseController implements TabContent {
 		dateExpense.setValue(LocalDate.now());
 		appUtils.setDateConvertor(dateExpense);
 		isDirty.set(false);
+		// Set Shortcuts
+		// Add
+		KeyCombination kc = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_ANY);
+		Runnable rn = () -> onSaveCommand(null);
+		currentStage.getScene().getAccelerators().put(kc, rn);
 		return true;
 	}
 

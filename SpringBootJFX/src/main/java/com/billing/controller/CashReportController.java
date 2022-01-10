@@ -345,7 +345,7 @@ public class CashReportController implements TabContent {
 
 		TableColumn<Customer, String> tcName = new TableColumn<>("Customer Name");
 		tcName.setPrefWidth(200);
-		TableColumn<Customer, String> tcAmount = new TableColumn<>("Amounts");
+		TableColumn<Customer, String> tcAmount = new TableColumn<>("Amount");
 		tcAmount.setPrefWidth(150);
 		tableView.getColumns().add(tcName);
 		tableView.getColumns().add(tcAmount);
