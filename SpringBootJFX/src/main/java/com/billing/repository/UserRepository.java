@@ -31,6 +31,8 @@ public class UserRepository {
 	private static final String GET_USER_DEATILS = "SELECT FIRST_NAME,LAST_NAME,USER_ID,USERNAME,MOBILE_NO,EMAIL FROM "
 			+ "APP_USER_DETAILS WHERE USER_ID=?";
 
+	private static final String IS_USER_SETUP_COMPLETE = "SELECT * FROM APP_USER_DETAILS WHERE USER_TYPE='INTERNAL'";
+
 	private static final String UPDATE_USER_PWD = "UPDATE APP_USER_DETAILS SET PASSWORD=? WHERE USER_ID=? AND PASSWORD=?";
 
 	private static final String UPDATE_USERNAME = "UPDATE APP_USER_DETAILS SET USERNAME=? WHERE USERNAME=? AND USER_ID=?";
@@ -132,6 +134,28 @@ public class UserRepository {
 			DBUtils.closeConnection(stmt, conn);
 		}
 		return userDetails;
+	}
+
+	public boolean isUserSetupComplete() {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		boolean flag = false;
+		try {
+			conn = dbUtils.getConnection();
+			stmt = conn.prepareStatement(IS_USER_SETUP_COMPLETE);
+			ResultSet rs = stmt.executeQuery();
+
+			if (rs.next()) {
+				flag = true;
+			}
+			rs.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception : ", e);
+		} finally {
+			DBUtils.closeConnection(stmt, conn);
+		}
+		return flag;
 	}
 
 	// Update username

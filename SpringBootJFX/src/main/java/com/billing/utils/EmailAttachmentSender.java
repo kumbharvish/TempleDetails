@@ -95,36 +95,4 @@ public class EmailAttachmentSender {
     	}
     	return status;
     }
- 
-    /**
-     * Test sending e-mail with attachments
-     */
-    /*public static void main(String[] args) {
-        // SMTP info
-        String host = "smtp.gmail.com";
-        String port = "587";
-        String mailFrom = "kumbharvish@gmail.com";
-        String password = "158vishal";
- 
-        // message info
-        String mailTo = "kumbharvish@gmail.com";
-        String subject = "New email with attachments";
-        String message = "I have some attachments for you.";
- 
-        // attachments
-        String[] attachFiles = new String[1];
-        attachFiles[0] = "E:/Billing_Application/Data_Backup/DataBackup_13-04-2017.sql";
-        //attachFiles[1] = "e:/Test/Music.mp3";
-       // attachFiles[2] = "e:/Test/Video.mp4";
- 
-        try {
-            sendEmailWithAttachments(host, port, mailFrom, password, mailTo,
-                subject, message, attachFiles);
-            System.out.println("Email sent.");
-        } catch (Exception ex) {
-            System.out.println("Could not send email.");
-            ex.printStackTrace();
-        }
-    }*/
-    
 }

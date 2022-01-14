@@ -3,9 +3,12 @@ package com.billing.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.billing.constants.AppConstants;
+import com.billing.dto.Customer;
 import com.billing.dto.StatusDTO;
 import com.billing.dto.UserDetails;
 import com.billing.main.AppContext;
+import com.billing.service.CustomerService;
 import com.billing.service.UserService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
@@ -28,6 +31,9 @@ public class AddUserController extends AppContext {
 
 	@Autowired
 	UserService userService;
+
+	@Autowired
+	CustomerService customerService;
 
 	public Stage currentStage = null;
 
@@ -69,6 +75,9 @@ public class AddUserController extends AppContext {
 	@FXML
 	private Label lblConfirmPasswordErrorMsg;
 
+	@FXML
+	private Label lblMobileNoErrMsg;
+
 	public void loadData() {
 		currentStage = (Stage) lblPasswordErrorMsg.getScene().getWindow();
 		lblFirstNameErrorMsg.managedProperty().bind(lblFirstNameErrorMsg.visibleProperty());
@@ -82,7 +91,10 @@ public class AddUserController extends AppContext {
 		lblUsernameErrorMsg.managedProperty().bind(lblUsernameErrorMsg.visibleProperty());
 		lblUsernameErrorMsg.visibleProperty().bind(lblUsernameErrorMsg.textProperty().length().greaterThanOrEqualTo(1));
 		lblConfirmPasswordErrorMsg.managedProperty().bind(lblConfirmPasswordErrorMsg.visibleProperty());
-		lblConfirmPasswordErrorMsg.visibleProperty().bind(lblConfirmPasswordErrorMsg.textProperty().length().greaterThanOrEqualTo(1));
+		lblConfirmPasswordErrorMsg.visibleProperty()
+				.bind(lblConfirmPasswordErrorMsg.textProperty().length().greaterThanOrEqualTo(1));
+		lblMobileNoErrMsg.managedProperty().bind(lblMobileNoErrMsg.visibleProperty());
+		lblMobileNoErrMsg.visibleProperty().bind(lblMobileNoErrMsg.textProperty().length().greaterThanOrEqualTo(1));
 		txtMobile.textProperty().addListener(appUtils.getForceNumberListner());
 		txtFirstName.requestFocus();
 	}
@@ -94,6 +106,15 @@ public class AddUserController extends AppContext {
 			alertHelper.beep();
 			lblFirstNameErrorMsg.setText("Please enter first name");
 			txtFirstName.requestFocus();
+			valid = false;
+		} else {
+			lblFirstNameErrorMsg.setText("");
+		}
+		int mobile = txtMobile.getText().trim().length();
+		if (mobile == 0) {
+			alertHelper.beep();
+			lblMobileNoErrMsg.setText("Please enter mobile number");
+			txtMobile.requestFocus();
 			valid = false;
 		} else {
 			lblFirstNameErrorMsg.setText("");
@@ -177,6 +198,14 @@ public class AddUserController extends AppContext {
 		userDtls.setUserName(txtUsername.getText());
 		StatusDTO status = userService.add(userDtls);
 		if (status.getStatusCode() == 0) {
+			Customer customer = new Customer();
+			customer.setCustMobileNumber(Long.valueOf(txtMobile.getText()));
+			customer.setCustName("Cash Sale");
+			customer.setCustEmail(txtEmail.getText());
+			StatusDTO addCustSataus = customerService.add(customer);
+			if (addCustSataus.getStatusCode() == 0) {
+				appUtils.updateAppData(AppConstants.CREATE_INVOICE_DEFAULT_CUSTOMER, txtMobile.getText());
+			}
 			alertHelper.showInfoAlert(currentStage, "Add User", "Success",
 					"User added successfully. Please login with new user");
 		} else {

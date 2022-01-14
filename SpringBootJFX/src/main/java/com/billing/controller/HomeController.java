@@ -84,16 +84,16 @@ public class HomeController extends AppContext {
 
 	@FXML
 	private MenuItem customersMenuItem;
-	
+
 	@FXML
 	private MenuItem customersReportMenuItem;
-	
+
 	@FXML
 	private MenuItem stockSummaryReportMenuItem;
-	
+
 	@FXML
 	private MenuItem suppliersReportMenuItem;
-	
+
 	@FXML
 	private MenuItem lowStockSummaryReportMenuItem;
 
@@ -150,14 +150,14 @@ public class HomeController extends AppContext {
 		toolBar.managedProperty().bind(toolBar.visibleProperty());
 		// Listner to load dashboard if no tab in tabpane
 		tabPane.getTabs().addListener(new ListChangeListener<Tab>() {
-	        @Override
-	        public void onChanged(javafx.collections.ListChangeListener.Change<? extends Tab> c) {
-	        	if(tabPane.getTabs().size() == 0 && userDetails.getUserType().equals("INTERNAL")) {
-	        		loadDashboard();
-	        	}
-	        }
+			@Override
+			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Tab> c) {
+				if (tabPane.getTabs().size() == 0 && userDetails.getUserType().equals("INTERNAL")) {
+					loadDashboard();
+				}
+			}
 
-	    });
+		});
 
 		try {
 			lblLicenseValidUpto
@@ -185,10 +185,11 @@ public class HomeController extends AppContext {
 		}
 		appUtils.licenseExpiryAlert();
 		if (null == storeDetails) {
-			alertHelper.showInstructionsAlert(currentStage, "Store Setup", "Instructions",
+			alertHelper.showInstructionsAlert(currentStage, "MyStore Setup", "Welcome to MyStore,",
 					AppConstants.INSTR_MYSTORE_SETUP, 600, 140);
-		}
-		if(userDetails.getUserType().equals("INTERNAL")) {
+			// Show Store Details tab
+			addTab("StoreDetails", "Store Details");
+		} else if (userDetails.getUserType().equals("INTERNAL")) {
 			// Load Dashboard
 			loadDashboard();
 		}

@@ -177,18 +177,20 @@ public class AppConstants {
 
 	// Instructions
 
-	public static final String INSTR_MYSTORE_USER_SETUP = "<h5>Please follow below instructions,<h5/><h5><ul style='line-height:1.6;'><li>Please setup a New User to use MyStore Billing. </li>"
-			+ "<li> After successful new user creation admin user will be blocked.</li>"
-			+ "<li>Please use newly created user for login.</li></ul></h5>";
+	public static final String INSTR_MYSTORE_USER_SETUP = "<h5> Please follow below instructions, <ul style='line-height:1.6;'><li>Add a new user to use MyStore.</li>"
+			+ "<li>Login using newly created user.</li></ul></h5>";
 
-	public static final String INSTR_MYSTORE_SETUP = "<h5><ul style='line-height:1.6;'><li>Please add Store Details in (Settings-> Store Details)</li>"
-			+ "<li>Please configure your preferences in (Settings-> User Preferences)</li>"
-			+ "<li>Please configure your default Invoice Print template in (Settings-> Invoice Templates)</li>"
+	public static final String INSTR_MYSTORE_SETUP = "<h5>Please follow below instructions, <ul style='line-height:1.6;'><li>Add Store Details in (Settings-> Store Details)</li>"
+			+ "<li>Set your preferences in (Settings-> User Preferences)</li>"
+			+ "<li>Choose your default Invoice Print template in (Settings-> Invoice Templates)</li>"
 			+ "<li>Start adding your products.</li></ul></h5>";
 
 	public static final String INSTR_RESTORE_BACKUP = "<h5><ul style='line-height:1.6;'><li>Please make sure you choose valid backup file.</li>"
 			+ "<li>Backup file should be of taken from MyStore only.</li>"
 			+ "<li>Invaild backup file restore might cause issues.</li>"
 			+ "<li>Please restart the MyStore application after successful restore.</li></ul></h5>";
+	
+	public static final String STORE_DETAILS = "<h5><ul style='line-height:1.6;'><li>Updated details will reflect after software restart.</li>"
+			+ "<li>Please reopen MyStore.</li></ul></h5>";
 
 }

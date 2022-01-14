@@ -42,8 +42,13 @@
                               <Label fx:id="lblLastNameErrorMsg" styleClass="errorLabel" />
                            </children>
                         </VBox>
-                        <Label styleClass="nodeLabel" text="Mobile :" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-                        <TextField fx:id="txtMobile" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label styleClass="requiredInput" text="Mobile :" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                        <VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
+                           <children>
+                              <TextField fx:id="txtMobile" />
+                              <Label fx:id="lblMobileNoErrMsg" styleClass="errorLabel" />
+                           </children>
+                        </VBox>
                         <Label styleClass="nodeLabel" text="Email :" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
                         <TextField fx:id="txtEmail" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                        <Label styleClass="requiredInput" text="Username :" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />

@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.billing.constants.AppConstants;
 import com.billing.dto.MyStoreDetails;
 import com.billing.dto.StatusDTO;
 import com.billing.dto.UserDetails;
@@ -200,11 +201,13 @@ public class StoreDetailsController implements TabContent {
 		StatusDTO statusUpdate = myStoreService.update(myStoreDetails);
 		StatusDTO statusAdd = null;
 		if (statusUpdate.getStatusCode()==0) {
-			alertHelper.showSuccessNotification("Store details updated successfully");
+			alertHelper.showInstructionsAlert(currentStage, "Store Details", "Store details updated successfully",
+					AppConstants.STORE_DETAILS, 530, 70);
 		} else if(statusUpdate.getStatusCode()==1){
 			statusAdd = myStoreService.add(myStoreDetails);
 			if(statusAdd.getStatusCode()==0){
-				alertHelper.showSuccessNotification("Store details saved successfully");
+				alertHelper.showInstructionsAlert(currentStage, "Store Details", "Store details saved successfully",
+						AppConstants.STORE_DETAILS, 530, 70);
 			}else {
 				alertHelper.showDataSaveErrAlert(currentStage);
 				return false;

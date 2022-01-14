@@ -22,6 +22,10 @@ public class UserService implements AppService<UserDetails> {
 	public UserDetails getUserDetails(UserDetails userDtls) {
 		return userRepository.getUserDetails(userDtls);
 	}
+	
+	public boolean isUserSetupComplete() {
+		return userRepository.isUserSetupComplete();
+	}
 
 	public StatusDTO changePassword(UserDetails userDetails, String existingPwd, String newPassword) {
 		return userRepository.changePassword(userDetails, existingPwd, newPassword);
@@ -34,14 +38,6 @@ public class UserService implements AppService<UserDetails> {
 	@Override
 	public StatusDTO add(UserDetails userDetails) {
 		StatusDTO status = userRepository.addUser(userDetails);
-		//Add new User and Mark admin user as inactive
-		if (status.getStatusCode() == 0) {
-			UserDetails user = new UserDetails();
-			user.setUserName("admin");
-			user.setUserType("ADMIN");
-			StatusDTO markStatus = userRepository.markUserAsInactive(user);
-			return markStatus;
-		}
 		return status;
 	}
 

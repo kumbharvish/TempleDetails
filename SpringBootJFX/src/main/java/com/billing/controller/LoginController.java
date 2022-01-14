@@ -92,10 +92,10 @@ public class LoginController extends AppContext {
 
 	@FXML
 	private Label lblLicenseValideUpto;
-	
+
 	@FXML
 	private Label lblSupportEmail;
-	
+
 	@FXML
 	private Label lblSupportMobile;
 
@@ -115,60 +115,53 @@ public class LoginController extends AppContext {
 		} else {
 			UserDetails userDetails = userService.validateUser(user, pwd);
 			if (userDetails != null) {
-				if ("ADMIN".equals(userDetails.getUserType())) {
-					currentStage.close();
-					alertHelper.showInstructionsAlert(currentStage, "MyStore Setup", "Welcome,",
-							AppConstants.INSTR_MYSTORE_USER_SETUP, 500, 150);
-					getAddNewUserPopUp();
-				} else {
-					currentStage.close();
-					// Open Home Window
-					fxmlLoader.setLocation(getClass().getResource("/com/billing/gui/Home.fxml"));
-					Parent root = null;
-					try {
-						root = fxmlLoader.<BorderPane>load();
-					} catch (IOException e) {
-						e.printStackTrace();
-						logger.error("Error in loading the Home page view file : ", e);
-					}
-					final Scene scene = new Scene(root, 850, 700);
-					addKeyFilter(scene);
-					Stage stage = new Stage();
-					stage.setScene(scene);
-					HomeController homeController = fxmlLoader.getController();
-					homeController.currentStage = stage;
-					homeController.userDetails = userDetails;
-					homeController.storeDetails = storeDetails;
-					stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop32X32.png")));
-					stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop48X48.png")));
-					stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop64X64.png")));
-
-					final WindowState s = Global.getDefaultWindowState();
-					stage.setX(s.getXPos());
-					stage.setY(s.getYPos());
-					stage.setWidth(s.getWidth());
-					stage.setHeight(s.getHeight());
-
-					if (storeDetails != null) {
-						stage.setTitle("My Store - " + storeDetails.getStoreName());
-					} else {
-						stage.setTitle("My Store");
-					}
-					stage.setMaximized(true);
-					stage.show();
-					// Call Load Data for Home
-					homeController.loadData();
-					stage.setOnCloseRequest((WindowEvent event2) -> {
-						if (!homeController.closeAllTabs()) {
-							event2.consume();
-							return;
-						}
-						Alert alert = alertHelper.showConfirmAlertWithYesNo(stage, null, "Do you want to exit?");
-						if (alert.getResult() == ButtonType.NO) {
-							event2.consume();
-						}
-					});
+				currentStage.close();
+				// Open Home Window
+				fxmlLoader.setLocation(getClass().getResource("/com/billing/gui/Home.fxml"));
+				Parent root = null;
+				try {
+					root = fxmlLoader.<BorderPane>load();
+				} catch (IOException e) {
+					e.printStackTrace();
+					logger.error("Error in loading the Home page view file : ", e);
 				}
+				final Scene scene = new Scene(root, 850, 700);
+				addKeyFilter(scene);
+				Stage stage = new Stage();
+				stage.setScene(scene);
+				HomeController homeController = fxmlLoader.getController();
+				homeController.currentStage = stage;
+				homeController.userDetails = userDetails;
+				homeController.storeDetails = storeDetails;
+				stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop32X32.png")));
+				stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop48X48.png")));
+				stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/shop64X64.png")));
+
+				final WindowState s = Global.getDefaultWindowState();
+				stage.setX(s.getXPos());
+				stage.setY(s.getYPos());
+				stage.setWidth(s.getWidth());
+				stage.setHeight(s.getHeight());
+
+				if (storeDetails != null) {
+					stage.setTitle("My Store - " + storeDetails.getStoreName());
+				} else {
+					stage.setTitle("My Store");
+				}
+				stage.setMaximized(true);
+				stage.show();
+				// Call Load Data for Home
+				homeController.loadData();
+				stage.setOnCloseRequest((WindowEvent event2) -> {
+					if (!homeController.closeAllTabs()) {
+						event2.consume();
+						return;
+					}
+					Alert alert = alertHelper.showConfirmAlertWithYesNo(stage, null, "Do you want to exit?");
+					if (alert.getResult() == ButtonType.NO) {
+						event2.consume();
+					}
+				});
 			} else {
 				errorMessage.setText("Incorrect Username / Password");
 			}
@@ -288,38 +281,6 @@ public class LoginController extends AppContext {
 				event.consume();
 			}
 		});
-	}
-
-	private void getAddNewUserPopUp() {
-		FXMLLoader fxmlLoader = new FXMLLoader();
-		fxmlLoader.setControllerFactory(springContext::getBean);
-		fxmlLoader.setLocation(this.getClass().getResource("/com/billing/gui/AddUser.fxml"));
-
-		Parent rootPane = null;
-		try {
-			rootPane = fxmlLoader.load();
-		} catch (IOException e) {
-			e.printStackTrace();
-			logger.error("getAddNewUserPopUp Error in loading the view file :", e);
-			alertHelper.beep();
-
-			alertHelper.showErrorAlert(currentStage, "Error Occurred", "Error in creating user interface",
-					"An error occurred in creating user interface " + "for the selected command");
-
-			return;
-		}
-
-		final Scene scene = new Scene(rootPane);
-		final AddUserController controller = (AddUserController) fxmlLoader.getController();
-		final Stage stage = new Stage();
-		stage.initModality(Modality.APPLICATION_MODAL);
-		stage.initOwner(currentStage);
-		stage.setUserData(controller);
-		stage.getIcons().add(new Image("/images/shop32X32.png"));
-		stage.setScene(scene);
-		stage.setTitle("User Setup");
-		controller.loadData();
-		stage.showAndWait();
 	}
 
 }
