@@ -41,17 +41,17 @@
 								<CheckBox fx:id="cbShowPrintPreview" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 								<Label styleClass="nodeLabel" text="Open Report Document after save :" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
 								<CheckBox fx:id="cbOpenDocAfterSave" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-								<Label styleClass="nodeLabel" text="Data Backup Time Interval  :" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
-								<ComboBox fx:id="cbDBBackupInterval" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-								<Label styleClass="requiredInput" text="Sales Return allowed days :" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
-								<VBox GridPane.columnIndex="1" GridPane.rowIndex="5">
+								<Label styleClass="nodeLabel" text="Data Backup Time Interval  :" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
+								<ComboBox fx:id="cbDBBackupInterval" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+								<Label styleClass="requiredInput" text="Sales Return allowed days :" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
+								<VBox GridPane.columnIndex="1" GridPane.rowIndex="6">
 									<children>
 										<TextField fx:id="txtSalesReturnDays" />
 										<Label fx:id="lblSalesReturnDaysErrMsg" styleClass="errorLabel" wrapText="true" />
 									</children>
 								</VBox>								
-								<Label layoutX="59.0" layoutY="284.0" styleClass="requiredInput" text="Terms &amp; Condition / Note for Invoice :" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
-								<VBox layoutX="233.0" layoutY="271.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+								<Label layoutX="59.0" layoutY="284.0" styleClass="requiredInput" text="Terms &amp; Condition / Note for Invoice :" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
+								<VBox layoutX="233.0" layoutY="271.0" GridPane.columnIndex="1" GridPane.rowIndex="7">
 									<children>
 										<TextField fx:id="txtTermsAndCondition" />
 										<Label fx:id="lblTermsAndConditionErrMsg" styleClass="errorLabel" wrapText="true" />
@@ -77,35 +77,42 @@
 										<Tooltip prefWidth="400.0" text="If selected, Once any type report is downloaded application will automatically open newly downloaded report." wrapText="true" />
 									</tooltip>
 								</Label>
-								<Label fx:id="lblDBBackupInterval" GridPane.columnIndex="2" GridPane.rowIndex="4">
+								<Label fx:id="lblOpenDocOnSave" GridPane.columnIndex="2" GridPane.rowIndex="4">
+									<tooltip>
+										<Tooltip prefWidth="400.0" text="If selected, Category name will be shown on invoice print instead of product name." wrapText="true" />
+									</tooltip>
+								</Label>
+								<Label fx:id="lblDBBackupInterval" GridPane.columnIndex="2" GridPane.rowIndex="5">
 									<tooltip>
 										<Tooltip prefWidth="400.0" text="Application will take data backup automatically in background with mentioned time interval" wrapText="true" />
 									</tooltip>
 								</Label>
-								<Label fx:id="lblSRAllowedDays" GridPane.columnIndex="2" GridPane.rowIndex="5">
+								<Label fx:id="lblSRAllowedDays" GridPane.columnIndex="2" GridPane.rowIndex="6">
 									<tooltip>
 										<Tooltip prefWidth="400.0" text="Sales return will be allowed upto mentioned days (Inclusive of Invoice Date) else application will not allow to accept returns." wrapText="true" />
 									</tooltip>
 								</Label>
-								<Label fx:id="lblTermsAndCondition" GridPane.columnIndex="2" GridPane.rowIndex="6">
+								<Label fx:id="lblTermsAndCondition" GridPane.columnIndex="2" GridPane.rowIndex="7">
 									<tooltip>
 										<Tooltip prefWidth="400.0" text="You can set Terms and Condition / Any Note which will be shown in invoice." wrapText="true" />
 									</tooltip>
 								</Label>
-								<Label fx:id="lblTermsAndCondition" GridPane.columnIndex="2" GridPane.rowIndex="7">
+								<Label fx:id="lblTermsAndCondition" GridPane.columnIndex="2" GridPane.rowIndex="8">
 									<tooltip>
 										<Tooltip prefWidth="400.0" text="Set default customer for cash sales. This customer will be selected by default in create invoice." wrapText="true" />
 									</tooltip>
 								</Label>
-								<Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="8" />
-								<ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="9">
+								<Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="9" />
+								<ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="10">
 									<buttons>
 										<Button fx:id="btnUpdate" defaultButton="true" disable="true" mnemonicParsing="true" onAction="#onUpdateCommand" text="Update" />
 										<Button cancelButton="true" mnemonicParsing="false" onAction="#onCloseCommand" text="Close" />
 									</buttons>
 								</ButtonBar>
-                        <Label styleClass="nodeLabel" text="Default Customer Mobile No :" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
-                        <TextField fx:id="txtDefaultCustomerMobile" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                        <Label styleClass="nodeLabel" text="Default Customer Mobile No :" GridPane.halignment="RIGHT" GridPane.rowIndex="8" />
+                        <TextField fx:id="txtDefaultCustomerMobile" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                        <Label layoutX="26.0" layoutY="116.0" styleClass="nodeLabel" text="Show Category Name on Invoice" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+                        <CheckBox fx:id="cbShowCategoryNameOnInvoice" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 							</children>
 							<VBox.margin>
 								<Insets top="20.0" />
@@ -123,6 +130,7 @@
 								<RowConstraints minHeight="10.0" />
 								<RowConstraints minHeight="10.0" />
 								<RowConstraints minHeight="10.0" />
+                        <RowConstraints minHeight="10.0" />
 								<RowConstraints minHeight="10.0" />
 								<RowConstraints minHeight="10.0" />
 								<RowConstraints minHeight="10.0" prefHeight="30.0" />

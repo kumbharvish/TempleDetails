@@ -97,10 +97,10 @@
 												<RowConstraints />
 											</rowConstraints>
 											<children>
-												<Label styleClass="nodeLabel" text="Product Name :" />
+												<Label styleClass="nodeLabel" text="Product :" />
 												<VBox GridPane.rowIndex="1">
 													<children>
-														<AutoCompleteTextField fx:id="txtItemName" />
+														<AutoCompleteTextField promptText="Barcode / Name / Code" fx:id="txtItemName" />
 														<Label fx:id="lblItemNameErrMsg" styleClass="errorLabel" />
 													</children>
 													<GridPane.margin>

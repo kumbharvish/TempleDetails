@@ -91,6 +91,9 @@ public class ProductsController extends AppContext implements TabContent {
 
 	@FXML
 	private Label lblProductCategoryErrMsg;
+	
+	@FXML
+	private Label lblProductCode;
 
 	@FXML
 	private TextField txtQuantity;
@@ -175,6 +178,9 @@ public class ProductsController extends AppContext implements TabContent {
 
 	@FXML
 	private TableView<Product> tableView;
+	
+	@FXML
+	private TableColumn<Product, String> tcProductCode;
 
 	@FXML
 	private TableColumn<Product, String> tcCategory;
@@ -284,7 +290,10 @@ public class ProductsController extends AppContext implements TabContent {
 								return true;
 							} else if (t.getProductCategory().toLowerCase().contains(lowerCaseFilter)) {
 								return true;
+							} else if (String.valueOf(t.getProductCode()).contains(lowerCaseFilter)) {
+								return true;
 							}
+							
 							return false;
 						});
 					}
@@ -293,6 +302,7 @@ public class ProductsController extends AppContext implements TabContent {
 
 	private void setTableCellFactories() {
 		// Table Column Mapping
+		tcProductCode.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getProductCode())));
 		tcCategory.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProductCategory()));
 		tcName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProductName()));
 		tcQuantity.setCellValueFactory(
@@ -320,6 +330,7 @@ public class ProductsController extends AppContext implements TabContent {
 		tcMUnit.getStyleClass().add("character-cell");
 		tcDescription.getStyleClass().add("character-cell");
 		tcHSN.getStyleClass().add("character-cell");
+		tcProductCode.getStyleClass().add("character-cell");
 	}
 
 	private void setPurchasePrice() {
@@ -350,6 +361,7 @@ public class ProductsController extends AppContext implements TabContent {
 		if (newValue != null) {
 			txtProductName.setText(newValue.getProductName());
 			productCode = String.valueOf(newValue.getProductCode());
+			lblProductCode.setText(productCode);
 			cbProductCategory.getSelectionModel().select(newValue.getProductCategory());
 			cbMeasuringUnit.getSelectionModel().select(newValue.getMeasure());
 			txtQuantity.setText(appUtils.getDecimalFormat(newValue.getQuantity()));
@@ -446,12 +458,14 @@ public class ProductsController extends AppContext implements TabContent {
 					alertHelper.showSuccessNotification("Product deleted successfully");
 					resetFields();
 					loadData();
+					txtProductName.requestFocus();
 				} else {
 					alertHelper.showErrorNotification("Error occured during delete product");
 				}
 
 			} else {
 				resetFields();
+				txtProductName.requestFocus();
 			}
 
 		}
@@ -465,6 +479,7 @@ public class ProductsController extends AppContext implements TabContent {
 	@FXML
 	void onResetCommand(ActionEvent event) {
 		resetFields();
+		txtProductName.requestFocus();
 		tableView.getSelectionModel().clearSelection();
 	}
 
@@ -634,6 +649,7 @@ public class ProductsController extends AppContext implements TabContent {
 				alertHelper.showSuccessNotification("Product updated successfully");
 				loadData();
 				resetFields();
+				txtProductName.requestFocus();
 			} else {
 				if (status.getException().contains("UNIQUE")) {
 					alertHelper.beep();
@@ -741,6 +757,7 @@ public class ProductsController extends AppContext implements TabContent {
 	private void resetFields() {
 		txtProductName.setText("");
 		productCode = "";
+		lblProductCode.setText(productCode);
 		cbProductCategory.getSelectionModel().select(0);
 		cbMeasuringUnit.getSelectionModel().select(0);
 		txtQuantity.setText("");
@@ -764,7 +781,6 @@ public class ProductsController extends AppContext implements TabContent {
 		lblSellPriceErrMsg.setText("");
 		lblTaxErrMsg.setText("");
 		lblUnitErrMsg.setText("");
-		txtProductName.requestFocus();
 
 	}
 

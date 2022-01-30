@@ -30,6 +30,8 @@ public class ItemDetails {
 	
 	private String hsn;
 	
+	private String categoryName;
+	
 	//Fields for Purchase Entry
 	
 	private int purchaseEntryNo;
@@ -159,6 +161,14 @@ public class ItemDetails {
 
 	public void setPurchaseEntryNo(int purchaseEntryNo) {
 		this.purchaseEntryNo = purchaseEntryNo;
+	}
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
 	}
 
 }

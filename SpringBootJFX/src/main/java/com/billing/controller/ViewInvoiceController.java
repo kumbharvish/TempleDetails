@@ -80,6 +80,9 @@ public class ViewInvoiceController extends AppContext {
 
 	@FXML
 	private TableView<ItemDetails> tableView;
+	
+	@FXML
+	private TableColumn<ItemDetails, String> tcProductCode;
 
 	@FXML
 	private TableColumn<ItemDetails, String> tcItemName;
@@ -153,6 +156,7 @@ public class ViewInvoiceController extends AppContext {
 	}
 
 	private void setTableCellFactories() {
+		tcProductCode.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getItemNo())));
 		tcItemName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getItemName()));
 		tcUnit.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUnit()));
 		tcQuantity.setCellValueFactory(
@@ -186,6 +190,7 @@ public class ViewInvoiceController extends AppContext {
 		tcCGSTPercent.getStyleClass().add("numeric-cell");
 		tcSGSTPercent.getStyleClass().add("numeric-cell");
 		tcSGST.getStyleClass().add("numeric-cell");
+		tcProductCode.getStyleClass().add("character-cell");
 	}
 
 	public void loadData() {

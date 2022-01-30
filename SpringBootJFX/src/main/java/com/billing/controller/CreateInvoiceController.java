@@ -354,6 +354,9 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 						&& !ke.getCode().equals(KeyCode.DECIMAL)) {
 					setTxtAmount();
 				}
+				if (ke.getCode().equals(KeyCode.ENTER)) {
+					txtQuantity.requestFocus();
+				}
 			}
 		});
 
@@ -403,7 +406,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	
 	public void barcodeScanEvent() {
 		String name = txtItemName.getText();
-		if (!appUtils.isEmptyString(name) && appUtils.isNumeric(name) && name.length()> 4) {
+		if (!appUtils.isEmptyString(name) && appUtils.isNumeric(name) && name.length()> 5) {
 			clearItemErrorFields();
 			setProductDetailsWithBarCode(Long.valueOf(txtItemName.getText().trim()));
 			txtItemName.setText("");
@@ -563,8 +566,8 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		productMap = new HashMap<String, Product>();
 		productMapWithBarcode = new HashMap<Long, Product>();
 		for (Product p : productService.getAll()) {
-			productEntries.add(p.getProductName());
-			productMap.put(p.getProductName(), p);
+			productEntries.add(p.getProductName()+" # "+p.getProductCode());
+			productMap.put(p.getProductName()+" # "+p.getProductCode(), p);
 			productMapWithBarcode.put(p.getProductBarCode(), p);
 		}
 	}
@@ -744,6 +747,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			item.setDiscountAmount(p.getDiscountAmount());
 			item.setUnit(p.getMeasure());
 			item.setHsn(p.getHsn());
+			item.setCategoryName(p.getProductCategory());
 			itemList.add(item);
 		}
 		return itemList;

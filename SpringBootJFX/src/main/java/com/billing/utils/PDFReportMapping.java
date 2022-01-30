@@ -47,7 +47,10 @@ public class PDFReportMapping {
 		for (ItemDetails item : bill.getItemDetails()) {
 			totalAmtForCashInvice += item.getItemAmount();
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("Name", item.getItemName());
+			map.put("Name",
+					appUtils.getAppDataValues(AppConstants.SHOW_CATEGORY_NAME_ON_INVOICE).equalsIgnoreCase("N")
+							? item.getItemName().toUpperCase()
+							: item.getCategoryName().toUpperCase()+" # "+item.getItemNo());
 			map.put("Qty", appUtils.getDecimalFormat(item.getQuantity()));
 			map.put("Rate", appUtils.getDecimalFormat(item.getRate()));
 			map.put("Amount", IndianCurrencyFormatting.applyFormatting(item.getAmount()));

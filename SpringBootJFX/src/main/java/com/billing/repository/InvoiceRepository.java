@@ -66,7 +66,7 @@ public class InvoiceRepository {
 	private static final String SELECT_BILL_WITH_BILLNO = "SELECT CBD.*,CD.CUST_NAME AS CUSTOMER_NAME FROM CUSTOMER_BILL_DETAILS CBD,CUSTOMER_DETAILS CD WHERE CBD.BILL_NUMBER=? AND"
 			+ " CBD.CUST_ID=CD.CUST_ID";
 
-	private static final String SELECT_ITEM_DETAILS = "SELECT BID.*,PD.PRODUCT_NAME FROM BILL_ITEM_DETAILS BID,PRODUCT_DETAILS PD WHERE BILL_NUMBER=? AND BID.ITEM_NUMBER=PD.PRODUCT_ID";
+	private static final String SELECT_ITEM_DETAILS = "SELECT BID.*,PD.PRODUCT_NAME,PCD.CATEGORY_NAME FROM BILL_ITEM_DETAILS BID,PRODUCT_DETAILS PD,PRODUCT_CATEGORY_DETAILS PCD WHERE BILL_NUMBER=? AND BID.ITEM_NUMBER=PD.PRODUCT_ID AND PD.CATEGORY_ID=PCD.CATEGORY_ID";
 
 	private static final String NEW_BILL_NUMBER = "SELECT (MAX(BILL_NUMBER)+1) AS BILL_NO FROM CUSTOMER_BILL_DETAILS ";
 
@@ -253,6 +253,7 @@ public class InvoiceRepository {
 				itemDetails.setUnit(rs.getString("UNIT"));
 				itemDetails.setHsn(rs.getString("HSN"));
 				itemDetails.setBillNumber(rs.getInt("BILL_NUMBER"));
+				itemDetails.setCategoryName(rs.getString("CATEGORY_NAME"));
 
 				GSTDetails gstDetails = new GSTDetails();
 

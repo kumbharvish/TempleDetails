@@ -79,6 +79,9 @@ public class UserPreferencesController implements TabContent {
 	@FXML
 	private TextField txtDefaultCustomerMobile;
 
+    @FXML
+    private CheckBox cbShowCategoryNameOnInvoice;
+    
 	@FXML
 	private Button btnUpdate;
 
@@ -133,6 +136,7 @@ public class UserPreferencesController implements TabContent {
 		txtSalesReturnDays.setText(userPref.get(AppConstants.SALES_RETURN_ALLOWED_DAYS));
 		txtTermsAndCondition.setText(userPref.get(AppConstants.TERMS_AND_CONDITION_FOR_INVOICE));
 		txtDefaultCustomerMobile.setText(userPref.get(AppConstants.CREATE_INVOICE_DEFAULT_CUSTOMER));
+		cbShowCategoryNameOnInvoice.setSelected(appUtils.isTrue(userPref.get(AppConstants.SHOW_CATEGORY_NAME_ON_INVOICE)));
 		isDirty.set(false);
 		return true;
 	}
@@ -173,7 +177,8 @@ public class UserPreferencesController implements TabContent {
 		txtSalesReturnDays.textProperty().addListener(this::invalidated);
 		txtTermsAndCondition.textProperty().addListener(this::invalidated);
 		txtDefaultCustomerMobile.textProperty().addListener(this::invalidated);
-
+		cbShowCategoryNameOnInvoice.selectedProperty().addListener(this::invalidated);
+		
 		btnUpdate.disableProperty().bind(isDirty.not());
 
 	}
@@ -205,6 +210,11 @@ public class UserPreferencesController implements TabContent {
 			saveMap.put(AppConstants.OPEN_REPORT_DOC_ON_SAVE, "Y");
 		} else {
 			saveMap.put(AppConstants.OPEN_REPORT_DOC_ON_SAVE, "N");
+		}
+		if (cbShowCategoryNameOnInvoice.isSelected()) {
+			saveMap.put(AppConstants.SHOW_CATEGORY_NAME_ON_INVOICE, "Y");
+		} else {
+			saveMap.put(AppConstants.SHOW_CATEGORY_NAME_ON_INVOICE, "N");
 		}
 		saveMap.put(AppConstants.DB_DUMP_INTERVAL, cbDBBackupInterval.getSelectionModel().getSelectedItem());
 		saveMap.put(AppConstants.SALES_RETURN_ALLOWED_DAYS, txtSalesReturnDays.getText());

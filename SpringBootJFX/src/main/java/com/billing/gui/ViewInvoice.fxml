@@ -65,6 +65,7 @@
 					<center>
 						<TableView fx:id="tableView" prefHeight="200.0" prefWidth="400.0" BorderPane.alignment="CENTER">
 							<columns>
+                        <TableColumn fx:id="tcProductCode" prefWidth="90.0" text="Code #" />
 								<TableColumn fx:id="tcItemName" prefWidth="220.0" text="Product Name" />
 								<TableColumn fx:id="tcUnit" prefWidth="75.0" text="Unit" />
 								<TableColumn fx:id="tcQuantity" prefWidth="75.0" text="Quantity" />
