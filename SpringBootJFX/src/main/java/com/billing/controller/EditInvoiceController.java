@@ -977,7 +977,7 @@ public class EditInvoiceController extends AppContext implements TabContent {
 				Product p = tableView.getSelectionModel().getSelectedItem();
 				if (productTableData.contains(p)) {
 					productTableData.remove(p);
-					txtItemName.setText(p.getProductName());
+					txtItemName.setText(p.getProductName()+" # "+p.getProductCode());
 					setProductDetails();
 				}
 			} else if (dialogButton == deleteButtonType) {

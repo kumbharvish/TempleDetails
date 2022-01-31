@@ -23,17 +23,21 @@
 <?import javafx.scene.image.*?>
 <?import com.billing.utils.AutoCompleteTextField?>
 
-<HBox alignment="TOP_CENTER" styleClass="rootNode" stylesheets="@../../../css/createInvoice.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.CreateInvoiceController">
-	<children>
-		<ScrollPane fx:id="scrollPane" styleClass="parent">
-			<content>
-				<HBox alignment="TOP_CENTER" styleClass="parent">
-					<children>
-						<BorderPane fx:id="rootContainer" styleClass="parent">
+<BorderPane styleClass="rootNode" stylesheets="@../../../css/createInvoice.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.CreateInvoiceController">
+ <top>
+      <VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
+         <children>
+			<Label fx:id="heading" text="Invoice" />
+         </children>
+      </VBox>
+   </top>
+   <center>
+      		<ScrollPane fitToHeight="true" fitToWidth="true" styleClass="parent" BorderPane.alignment="TOP_CENTER">
+      			<content>
+						<BorderPane>
 							<top>
-								<VBox alignment="TOP_CENTER" styleClass="parent" BorderPane.alignment="CENTER">
+								<VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
 									<children>
-										<Label fx:id="heading" text="Invoice" />
 										<AnchorPane>
 											<children>
 												<GridPane alignment="TOP_CENTER" hgap="10.0" vgap="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -82,7 +86,7 @@
 								</VBox>
 							</top>
 							<center>
-								<BorderPane styleClass="parent" BorderPane.alignment="CENTER">
+								<BorderPane BorderPane.alignment="CENTER">
 									<top>
 										<GridPane hgap="10.0" vgap="5.0" BorderPane.alignment="CENTER">
 											<columnConstraints>
@@ -100,7 +104,7 @@
 												<Label styleClass="nodeLabel" text="Product :" />
 												<VBox GridPane.rowIndex="1">
 													<children>
-														<AutoCompleteTextField promptText="Barcode / Name / Code" fx:id="txtItemName" />
+														<AutoCompleteTextField fx:id="txtItemName" promptText="Barcode / Name / Code" />
 														<Label fx:id="lblItemNameErrMsg" styleClass="errorLabel" />
 													</children>
 													<GridPane.margin>
@@ -127,38 +131,36 @@
 												<TextField fx:id="txtAmount" editable="false" styleClass="readOnlyField" GridPane.columnIndex="4" GridPane.rowIndex="1" GridPane.valignment="TOP" />
 											</children>
 											<padding>
-												<Insets top="10.0" />
+												<Insets bottom="10.0" top="10.0" />
 											</padding>
 										</GridPane>
 									</top>
 									<center>
 										<BorderPane BorderPane.alignment="CENTER">
 											<center>
-												<VBox spacing="5.0">
-													<children>
-														<TableView fx:id="tableView" minHeight="-Infinity" prefHeight="300.0" prefWidth="970.0">
+														<TableView fx:id="tableView">
 															<columns>
-																<TableColumn fx:id="tcItemName" prefWidth="250.0" text="Product Name" />
-																<TableColumn fx:id="tcUnit" prefWidth="70.0" text="Unit" />
-																<TableColumn fx:id="tcQuantity" prefWidth="90.0" text="Quantity" />
-																<TableColumn fx:id="tcRate" prefWidth="100.0" text="Rate" />
-																<TableColumn minWidth="0.0" prefWidth="-1.0" text="Discount">
+																<TableColumn fx:id="tcItemName" minWidth="200.0" prefWidth="300.0" text="Product Name" />
+																<TableColumn fx:id="tcUnit" prefWidth="50.0" text="Unit" />
+																<TableColumn fx:id="tcQuantity" prefWidth="50.0" text="Qty" />
+																<TableColumn fx:id="tcRate" text="Rate" />
+																<TableColumn minWidth="0.0" prefWidth="150.0" text="Discount">
 																	<columns>
-																		<TableColumn fx:id="tcDiscount" prefWidth="50" text="(%)" />
+																		<TableColumn fx:id="tcDiscount" prefWidth="20.0" text="(%)" />
 																		<TableColumn fx:id="tcDiscountAmount" prefWidth="90.0" text="Amt." />
 																	</columns>
 																</TableColumn>
 
-																<TableColumn fx:id="tcAmount" prefWidth="100.0" text="Amount" />
+                  																<TableColumn fx:id="tcAmount" prefWidth="100.0" text="Amount" />
 																<TableColumn minWidth="0.0" prefWidth="-1.0" text="CGST">
 																	<columns>
-																		<TableColumn fx:id="tcCGSTPercent" prefWidth="50.0" text="(%)" />
+																		<TableColumn fx:id="tcCGSTPercent" prefWidth="20.0" text="(%)" />
 																		<TableColumn fx:id="tcCGST" prefWidth="90.0" text="Amt." />
 																	</columns>
 																</TableColumn>
 																<TableColumn minWidth="0.0" prefWidth="-1.0" text="SGST">
 																	<columns>
-																		<TableColumn fx:id="tcSGSTPercent" minWidth="-1.0" prefWidth="50.0" text="(%)" />
+																		<TableColumn fx:id="tcSGSTPercent" minWidth="-1.0" prefWidth="20.0" text="(%)" />
 																		<TableColumn fx:id="tcSGST" minWidth="-1.0" prefWidth="90.0" text="Amt." />
 																	</columns>
 																</TableColumn>
@@ -166,20 +168,24 @@
 															<placeholder>
 																<Label fx:id="placeholderText" text="&lt; No product added &gt;" />
 															</placeholder>
+                                       <columnResizePolicy>
+                                          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                       </columnResizePolicy>
 														</TableView>
-														<Label fx:id="lblNoItemError" styleClass="errorLabel" />
-														<AnchorPane>
+											</center>
+                           <bottom>
+														<AnchorPane BorderPane.alignment="CENTER">
 															<children>
 																<HBox spacing="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
 																	<children>
 																		<Button fx:id="btnRefresh" mnemonicParsing="false" onAction="#onRefereshCommand" styleClass="graphicButton">
 																			<graphic>
 																				<ImageView>
-																					<image>
-																						<Image url="/images/refresh.png" />
-																					</image>
-																				</ImageView>
-																			</graphic>
+            																					<image>
+                  																						<Image url="/images/refresh.png" />
+                  																					</image>
+                  																				</ImageView>
+                  																			</graphic>
 																			<tooltip>
 																				<Tooltip text="Refresh Item / Customer List" />
 																			</tooltip>
@@ -187,11 +193,11 @@
 																		<Button fx:id="btnCashHelp" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onCashHelpCommand" styleClass="graphicButton">
 																			<graphic>
 																				<ImageView>
-																					<image>
-																						<Image url="/images/CashHelp.png" />
-																					</image>
-																				</ImageView>
-																			</graphic>
+            																					<image>
+                  																						<Image url="/images/CashHelp.png" />
+                  																					</image>
+                  																				</ImageView>
+                  																			</graphic>
 																			<tooltip>
 																				<Tooltip text="Cash Help" />
 																			</tooltip>
@@ -199,11 +205,11 @@
 																		<Button fx:id="btnGSTDetails" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onGSTDetailsCommand" styleClass="graphicButton">
 																			<graphic>
 																				<ImageView>
-																					<image>
-																						<Image url="/images/GSTDetails.png" />
-																					</image>
-																				</ImageView>
-																			</graphic>
+            																					<image>
+                  																						<Image url="/images/GSTDetails.png" />
+                  																					</image>
+                  																				</ImageView>
+                  																			</graphic>
 																			<tooltip>
 																				<Tooltip text="View GST Details" />
 																			</tooltip>
@@ -211,16 +217,18 @@
 																	</children>
 																</HBox>
 																<HBox spacing="20.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="0.0">
-																<Label styleClass="shortcut" text="Save : CTRL + S"/>
+																<Label styleClass="shortcut" text="Double click on product row from table to edit / remove">
+                                          <padding>
+                                             <Insets right="70.0" />
+                                          </padding></Label>
+                                       <Label layoutX="10.0" layoutY="10.0" styleClass="shortcut" text="Save : CTRL + S" />
 																</HBox>
 															</children>
+                                 <padding>
+                                    <Insets top="5.0" />
+                                 </padding>
 														</AnchorPane>
-													</children>
-													<padding>
-														<Insets top="10.0" />
-													</padding>
-												</VBox>
-											</center>
+                           </bottom>
 										</BorderPane>
 									</center>
 									<bottom>
@@ -237,7 +245,7 @@
 												<ColumnConstraints prefWidth="180.0" />
 											</columnConstraints>
 											
-											<children>
+            											<children>
 												<Label styleClass="nodeLabel" text="No Of Items :" GridPane.halignment="RIGHT" />
 												<TextField fx:id="txtNoOfItems" alignment="CENTER_RIGHT" editable="false" styleClass="totalFields" GridPane.columnIndex="1" />
 												<Label styleClass="nodeLabel" text="Total Quantity :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
@@ -258,16 +266,16 @@
 											<padding>
 												<Insets left="10.0" />
 											</padding>
-                                 <rowConstraints>
-                                    <RowConstraints />
-                                    <RowConstraints />
-                                    <RowConstraints />
-                                    <RowConstraints />
-                                    <RowConstraints />
-                                    <RowConstraints />
-                                    <RowConstraints />
-                                    <RowConstraints />
-                                 </rowConstraints>
+                           <rowConstraints>
+                              <RowConstraints />
+                              <RowConstraints />
+                              <RowConstraints />
+                              <RowConstraints />
+                              <RowConstraints />
+                              <RowConstraints />
+                              <RowConstraints />
+                              <RowConstraints />
+                           </rowConstraints>
 										</GridPane>
 										<GridPane alignment="BOTTOM_CENTER" hgap="10.0" layoutX="10.0" layoutY="226.0" vgap="5.0">
 											<columnConstraints>
@@ -317,9 +325,7 @@
 								</HBox>
 							</bottom>
 						</BorderPane>
-					</children>
-				</HBox>
-			</content>
-		</ScrollPane>
-	</children>
-</HBox>
+      			</content>
+      		</ScrollPane>
+   </center>
+</BorderPane>

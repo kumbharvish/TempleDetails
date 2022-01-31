@@ -172,9 +172,6 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	private TextField txtAmount;
 
 	@FXML
-	private Label lblNoItemError;
-
-	@FXML
 	private TableView<Product> tableView;
 
 	@FXML
@@ -280,8 +277,6 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		lblInvoiceDateErrMsg.managedProperty().bind(lblInvoiceDateErrMsg.visibleProperty());
 		lblInvoiceDateErrMsg.visibleProperty()
 				.bind(lblInvoiceDateErrMsg.textProperty().length().greaterThanOrEqualTo(1));
-		lblNoItemError.managedProperty().bind(lblNoItemError.visibleProperty());
-		lblNoItemError.visibleProperty().bind(lblNoItemError.textProperty().length().greaterThanOrEqualTo(1));
 
 		populatePaymentModes();
 		setTableCellFactories();
@@ -366,7 +361,6 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			public void onChanged(ListChangeListener.Change<? extends Product> c) {
 				isDirty.set(true);
 				updateInvoiceAmount();
-				lblNoItemError.setText("");
 			}
 		});
 
@@ -378,13 +372,6 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 					updateDiscount();
 					isDirty.set(true);
 				}
-			}
-		});
-
-		txtDiscountPercent.textProperty().addListener((observable, oldValue, newValue) -> {
-			if (newValue == null || newValue.equals("")) {
-				txtDiscountPercent.setText("0.0");
-				isDirty.set(true);
 			}
 		});
 
@@ -801,13 +788,17 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		}
 
 		if (productTableData.size() == 0) {
-			lblNoItemError.setText("Please add product to invoice");
+			alertHelper.showErrorNotification("Please add product to invoice");
 			txtItemName.requestFocus();
 			valid = false;
 			return valid;
-		} else {
-			lblNoItemError.setText("");
-		}
+		} 
+		if (txtDiscountPercent.getText().equals("") || txtDiscountPercent.getText().equals(".")) {
+			alertHelper.showErrorNotification("Please enter discount percent");
+			txtDiscountPercent.requestFocus();
+			valid = false;
+			return valid;
+		} 
 
 		return valid;
 	}
@@ -859,7 +850,6 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	private void clearInvoiceErrorFields() {
 		lblInvoiceDateErrMsg.setText("");
 		lblCustomerErrMsg.setText("");
-		lblNoItemError.setText("");
 	}
 
 	private boolean validateInvoiceItem(Product product) {
@@ -1006,7 +996,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 				Product p = tableView.getSelectionModel().getSelectedItem();
 				if (productTableData.contains(p)) {
 					productTableData.remove(p);
-					txtItemName.setText(p.getProductName());
+					txtItemName.setText(p.getProductName()+" # "+p.getProductCode());
 					setProductDetails();
 				}
 			} else if (dialogButton == deleteButtonType) {
