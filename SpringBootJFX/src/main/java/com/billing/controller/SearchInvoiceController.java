@@ -621,9 +621,10 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 		for (BillDetails b : tableDataList) {
 			result = result + b.getNetSalesAmt();
 		}
-
-		lblTotalOfInvoices.setText(String.format("Total of %d invoice(s) is \u20b9 %s", invoiceCount,
-				IndianCurrencyFormatting.applyFormatting(result)));
+		if (userDetails.getUserType().equals("INTERNAL")) {
+			lblTotalOfInvoices.setText(String.format("Total of %d invoice(s) is \u20b9 %s", invoiceCount,
+					IndianCurrencyFormatting.applyFormatting(result)));
+		}
 	}
 
 	private void setTableCellFactories() {
@@ -788,4 +789,9 @@ public class SearchInvoiceController extends AppContext implements TabContent {
 
 		return valid;
 	}
+	
+	@FXML
+    void onSearchByInvoiceNo(ActionEvent event) {
+		txtInvoiceNo.requestFocus();
+    }
 }

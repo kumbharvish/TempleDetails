@@ -156,9 +156,6 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 	private Label lblRateErrMsg;
 
 	@FXML
-	private Label lblNoItemError;
-
-	@FXML
 	private TextField txtQuantity;
 
 	@FXML
@@ -250,8 +247,6 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 		lblRateErrMsg.visibleProperty().bind(lblRateErrMsg.textProperty().length().greaterThanOrEqualTo(1));
 		lblBillNoErrMsg.managedProperty().bind(lblBillNoErrMsg.visibleProperty());
 		lblBillNoErrMsg.visibleProperty().bind(lblBillNoErrMsg.textProperty().length().greaterThanOrEqualTo(1));
-		lblNoItemError.managedProperty().bind(lblNoItemError.visibleProperty());
-		lblNoItemError.visibleProperty().bind(lblNoItemError.textProperty().length().greaterThanOrEqualTo(1));
 		lblProductTaxErrMsg.managedProperty().bind(lblProductTaxErrMsg.visibleProperty());
 		lblProductTaxErrMsg.visibleProperty().bind(lblProductTaxErrMsg.textProperty().length().greaterThanOrEqualTo(1));
 
@@ -269,7 +264,8 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 		txtRate.textProperty().addListener(appUtils.getForceDecimalNumberListner());
 		txtDiscountAmount.textProperty().addListener(appUtils.getForceDecimalNumberListner());
 		txtExtraCharges.textProperty().addListener(appUtils.getForceDecimalNumberListner());
-
+		txtBillNo.textProperty().addListener(appUtils.getForceDecimalNumberListner());
+		
 		tableView.setItems(productTableData);
 		btnSave.disableProperty().bind(isDirty.not());
 		// Register textfield listners
@@ -311,6 +307,17 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 				}
 			}
 		});
+		
+		txtBillNo.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (ke.getCode().equals(KeyCode.ENTER)) {
+					if (!txtBillNo.getText().equals("")) {
+						txtSupplier.requestFocus();
+					}
+				}
+			}
+		});
 
 		txtRate.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
@@ -329,7 +336,6 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 			public void onChanged(ListChangeListener.Change<? extends Product> c) {
 				isDirty.set(true);
 				updateTotalAmount();
-				lblNoItemError.setText("");
 			}
 		});
 
@@ -662,14 +668,11 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 		}
 
 		if (productTableData.size() == 0) {
-			lblNoItemError.setText("Please add product to purchase entry");
+			alertHelper.showErrorNotification("Please add product to purchase entry");
 			txtItemName.requestFocus();
 			valid = false;
 			return valid;
-		} else {
-			lblNoItemError.setText("");
-		}
-
+		} 
 		return valid;
 	}
 
@@ -681,7 +684,7 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 		txtBillNo.clear();
 		txtPurchaseEntryNo.setText(String.valueOf(purchaseEntryService.getNewPurchaseEntryNumber()));
 		txtSupplier.clear();
-		txtSupplier.requestFocus();
+		txtBillNo.requestFocus();
 		txtNoOfItems.clear();
 		txtTotalQty.clear();
 		txtTotalBefTax.clear();
@@ -706,7 +709,6 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 
 	private void clearPurchaseEntryErrorFields() {
 		lblSupplierErrMsg.setText("");
-		lblNoItemError.setText("");
 		lblBillNoErrMsg.setText("");
 	}
 

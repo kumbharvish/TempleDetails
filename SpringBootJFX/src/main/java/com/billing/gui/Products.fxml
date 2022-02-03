@@ -65,7 +65,7 @@
 										<Label alignment="TOP_RIGHT" styleClass="requiredInput" text="Quantity :" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
 										<VBox spacing="3.0" styleClass="parent" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.vgrow="NEVER">
 											<children>
-												<TextField fx:id="txtQuantity" VBox.vgrow="NEVER" />
+												<TextField fx:id="txtQuantity" promptText="Opening Stock Quantity" VBox.vgrow="NEVER" />
 												<Label fx:id="lblQuantityErrMsg" styleClass="errorLabel" visible="false" />
 											</children>
 										</VBox>
@@ -89,14 +89,14 @@
 										<Label alignment="TOP_RIGHT" styleClass="requiredInput" text="Sell Price :" GridPane.halignment="RIGHT" GridPane.rowIndex="8" />
 										<VBox GridPane.columnIndex="1" GridPane.rowIndex="8">
 											<children>
-												<TextField fx:id="txtSellPrice" />
+												<TextField fx:id="txtSellPrice" promptText="MRP" />
 												<Label fx:id="lblSellPriceErrMsg" styleClass="errorLabel" />
 											</children>
 										</VBox>
 										<Label styleClass="nodeLabel" text="Discount (%) :" GridPane.halignment="RIGHT" GridPane.rowIndex="9" />
 										<TextField fx:id="txtDiscount" GridPane.columnIndex="1" GridPane.rowIndex="9" />
 										<Label alignment="TOP_RIGHT" styleClass="nodeLabel" text="Barcode :" GridPane.halignment="RIGHT" GridPane.rowIndex="10" />
-										<TextField fx:id="txtBarcode" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+										<TextField fx:id="txtBarcode" promptText="Scan Barcode here" GridPane.columnIndex="1" GridPane.rowIndex="10" />
 										<Label styleClass="nodeLabel" text="HSN :" GridPane.halignment="RIGHT" GridPane.rowIndex="11" />
 										<TextField fx:id="txtHSN" GridPane.columnIndex="1" GridPane.rowIndex="11" />
 										<Label styleClass="nodeLabel" text="Low Stock Level :" GridPane.halignment="RIGHT" GridPane.rowIndex="12" />
@@ -154,29 +154,27 @@
 						</ScrollPane>
 					</center>
 					<top>
-						<ToolBar nodeOrientation="RIGHT_TO_LEFT" styleClass="parent" BorderPane.alignment="CENTER_RIGHT">
-							<items>
-								<Label fx:id="lblViewStockLedger" onMouseClicked="#onViewStockLedgertClick">
-									<tooltip>
-										<Tooltip text="View Stock Ledger" />
-									</tooltip>
+                  <AnchorPane BorderPane.alignment="CENTER_RIGHT">
+                     <BorderPane.margin>
+                        <Insets bottom="5.0" />
+                     </BorderPane.margin>
+                     <children>
+      						<ToolBar styleClass="parent" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+      							<items>
+      								<Label fx:id="lblViewStockLedger" onMouseClicked="#onViewStockLedgertClick" text="View Stock Ledger">
 								</Label>
-								<Label fx:id="lblPurchasePriceHistory" onMouseClicked="#onPurchasePriceHistClick">
-									<tooltip>
-										<Tooltip text="Purchase Price History" />
-									</tooltip>
+      								<Label fx:id="lblPurchasePriceHistory" onMouseClicked="#onPurchasePriceHistClick" text="Purchase Price History">
 								</Label>
-							</items>
-							<BorderPane.margin>
-								<Insets bottom="5.0" />
-							</BorderPane.margin>
-						</ToolBar>
+      							</items>
+      						</ToolBar>
+                     </children>
+                  </AnchorPane>
 					</top>
 				</BorderPane>
 
 				<BorderPane styleClass="parent">
 					<top>
-						<TextField fx:id="txtSearchProduct" promptText="Search product by Product code / Product Name / Product Category" BorderPane.alignment="CENTER">
+						<TextField fx:id="txtSearchProduct" promptText="Search Product by Product code / Name / Category" BorderPane.alignment="CENTER">
 							<BorderPane.margin>
 								<Insets bottom="5.0" left="400.0" right="5.0" top="10.0" />
 							</BorderPane.margin>

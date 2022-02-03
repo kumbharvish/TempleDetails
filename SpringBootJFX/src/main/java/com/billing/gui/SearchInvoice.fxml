@@ -12,10 +12,10 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.cell.PropertyValueFactory?>
 
 <BorderPane styleClass="rootNode" stylesheets="@../../../css/searchInvoice.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.SearchInvoiceController">
 	<top>
@@ -35,11 +35,11 @@
 					<children>
 						<VBox alignment="TOP_CENTER" spacing="15.0">
 							<children>
-								<TitledPane fx:id="panelSearchCriteria"  styleClass="titlePane" text="Invoice Search Criteria">
+								<TitledPane fx:id="panelSearchCriteria" styleClass="titlePane" text="Invoice Search Criteria">
 									<content>
-										<VBox minWidth="700.0" spacing="20.0" fillWidth="true">
+										<VBox fillWidth="true" minWidth="700.0" spacing="20.0">
 											<children>
-												<RadioButton fx:id="rbSearchByInvoiceNo" mnemonicParsing="false" styleClass="nodeLabel" text="Search By Invoice Number" />
+												<RadioButton fx:id="rbSearchByInvoiceNo" mnemonicParsing="false" onAction="#onSearchByInvoiceNo" styleClass="nodeLabel" text="Search By Invoice Number" />
 												<HBox fx:id="panelInvoiceNo" alignment="BASELINE_LEFT">
 													<children>
 														<Label alignment="BASELINE_CENTER" styleClass="nodeLabel" text="Invoice Number : " />
@@ -135,7 +135,7 @@
 																<Insets left="20.0" />
 															</padding>
 														</VBox>
-														<Label fx:id="lblErrNoCriteria" styleClass="errorLabel"/>
+														<Label fx:id="lblErrNoCriteria" styleClass="errorLabel" />
 													</children>
 												</VBox>
 												<ButtonBar>
@@ -147,16 +147,16 @@
 										</VBox>
 									</content>
 								</TitledPane>
-								<TitledPane fx:id="panelSearchResult" styleClass="titlePane" text="Search Result">
+								<TitledPane fx:id="panelSearchResult" styleClass="titlePane" text="Search Result" VBox.vgrow="ALWAYS">
 									<content>
 										<BorderPane>
 											<center>
-												<TableView fx:id="tableView" prefHeight="300.0" BorderPane.alignment="CENTER">
+												<TableView fx:id="tableView" BorderPane.alignment="CENTER">
 													<columns>
 														<TableColumn fx:id="tcInvoiceNo" prefWidth="120.0" text="Invoice No" />
 														<TableColumn fx:id="tcDate" prefWidth="150.0" text="Date" />
 														<TableColumn fx:id="tcCustomer" prefWidth="200.0" text="Customer" />
-														<TableColumn fx:id="tcAmount"  prefWidth="140.0" text="Amount" >
+														<TableColumn fx:id="tcAmount" prefWidth="140.0" text="Amount">
 															<cellValueFactory>
 																<PropertyValueFactory property="netSalesAmt" />
 															</cellValueFactory>
@@ -204,7 +204,7 @@
 	<bottom>
 		<ButtonBar BorderPane.alignment="CENTER">
 			<buttons>
-				<Button mnemonicParsing="false" cancelButton="true" onAction="#onCloseAction" text="Close" />
+				<Button cancelButton="true" mnemonicParsing="false" onAction="#onCloseAction" text="Close" />
 			</buttons>
 			<padding>
 				<Insets top="20.0" />

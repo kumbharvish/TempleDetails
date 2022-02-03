@@ -138,7 +138,7 @@
 
 				<BorderPane styleClass="parent">
 					<top>
-						<TextField fx:id="txtSearchSupplier" BorderPane.alignment="CENTER">
+						<TextField fx:id="txtSearchSupplier" promptText="Search Supplier by Name / Mobile " BorderPane.alignment="CENTER">
 							<BorderPane.margin>
 								<Insets bottom="5.0" left="400.0" right="5.0" top="10.0" />
 							</BorderPane.margin>
