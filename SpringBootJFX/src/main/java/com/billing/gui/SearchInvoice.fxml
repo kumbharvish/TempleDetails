@@ -29,10 +29,8 @@
 		</VBox>
 	</top>
 	<center>
-		<ScrollPane fx:id="scrollPane" styleClass="titlePane" BorderPane.alignment="TOP_CENTER">
+		<ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" styleClass="titlePane" BorderPane.alignment="TOP_CENTER">
 			<content>
-				<HBox alignment="TOP_CENTER" minWidth="${scrollPane.viewportBounds.width}" styleClass="parent">
-					<children>
 						<VBox alignment="TOP_CENTER" spacing="15.0">
 							<children>
 								<TitledPane fx:id="panelSearchCriteria" styleClass="titlePane" text="Invoice Search Criteria">
@@ -165,6 +163,9 @@
 													<placeholder>
 														<Label fx:id="placeholderText" text="&lt; No matching invoice found &gt;" />
 													</placeholder>
+                                 <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                 </columnResizePolicy>
 												</TableView>
 											</center>
 											<right>
@@ -196,8 +197,6 @@
 								</TitledPane>
 							</children>
 						</VBox>
-					</children>
-				</HBox>
 			</content>
 		</ScrollPane>
 	</center>

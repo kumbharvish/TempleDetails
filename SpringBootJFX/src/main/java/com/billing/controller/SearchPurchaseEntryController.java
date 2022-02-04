@@ -173,6 +173,12 @@ public class SearchPurchaseEntryController extends AppContext implements TabCont
 
 	@FXML
 	private TableColumn<PurchaseEntry, Double> tcAmount;
+	
+	@FXML
+	private TableColumn<PurchaseEntry, String> tcComments;
+	
+	@FXML
+	private TableColumn<PurchaseEntry, String> tcBillNo;
 
 	@FXML
 	private Label lblTotalOfPurEntires;
@@ -518,14 +524,19 @@ public class SearchPurchaseEntryController extends AppContext implements TabCont
 		};
 		tcInvoiceNo.setCellValueFactory(
 				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getPurchaseEntryNo())));
+		tcBillNo.setCellValueFactory(
+				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getBillNumber())));
 		tcDate.setCellValueFactory(cellData -> new SimpleStringProperty(
 				appUtils.getFormattedDateWithTime(cellData.getValue().getPurchaseEntryDate())));
 		tcSupplier.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSupplierName()));
+		tcComments.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getComments()));
 		tcAmount.setCellFactory(callback);
 
 		tcInvoiceNo.getStyleClass().add("character-cell");
 		tcDate.getStyleClass().add("character-cell");
 		tcSupplier.getStyleClass().add("character-cell");
+		tcBillNo.getStyleClass().add("character-cell");
+		tcComments.getStyleClass().add("character-cell");
 	}
 
 	@Override

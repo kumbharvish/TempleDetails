@@ -79,7 +79,7 @@
 
 				<BorderPane styleClass="parent">
 					<top>
-						<TextField fx:id="txtSearchProduct" BorderPane.alignment="CENTER">
+						<TextField fx:id="txtSearchProduct" promptText="Search Product by Product Code / Name / Category" BorderPane.alignment="CENTER">
 							<BorderPane.margin>
 								<Insets bottom="5.0" left="400.0" right="5.0" top="10.0" />
 							</BorderPane.margin>
@@ -91,10 +91,10 @@
 					<bottom>
 						<VBox BorderPane.alignment="CENTER">
 							<children>
-								<Separator/>
+								<Separator />
 								<ButtonBar BorderPane.alignment="CENTER">
 									<buttons>
-										<Button fx:id="btnClose" cancelButton="true" mnemonicParsing="false" text="Close" onAction="#onCloseAction"/>
+										<Button fx:id="btnClose" cancelButton="true" mnemonicParsing="false" onAction="#onCloseAction" text="Close" />
 									</buttons>
 									<padding>
 										<Insets top="10.0" />
@@ -113,11 +113,12 @@
 					<center>
 						<TableView fx:id="tableView" BorderPane.alignment="CENTER">
 							<columns>
-								<TableColumn fx:id="tcName" minWidth="120.0" prefWidth="200.0" text="Product Name" />
+                        <TableColumn fx:id="tcProductCode" minWidth="70.0" prefWidth="200.0" text="Product Code" />
+								<TableColumn fx:id="tcName" minWidth="170.0" prefWidth="200.0" text="Product Name" />
 								<TableColumn fx:id="tcCategory" minWidth="120.0" prefWidth="200.0" text="Category" />
 								<TableColumn fx:id="tcQuantity" minWidth="60.0" prefWidth="120.0" text="Quantity" />
 								<TableColumn fx:id="tcUOM" prefWidth="90.0" text="UOM" />
-								<TableColumn fx:id="tcDescription" prefWidth="159.0" text="Description" />
+								<TableColumn fx:id="tcDescription" minWidth="80.0" prefWidth="159.0" text="Description" />
 							</columns>
 							<BorderPane.margin>
 								<Insets bottom="10.0" right="5.0" />
@@ -125,6 +126,9 @@
 							<placeholder>
 								<Label fx:id="placeholderText" text="&lt; No products found &gt;" />
 							</placeholder>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
 						</TableView>
 					</center></BorderPane>
 			</items>

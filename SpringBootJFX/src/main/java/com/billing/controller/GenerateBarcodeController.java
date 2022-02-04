@@ -97,6 +97,10 @@ public class GenerateBarcodeController extends AppContext implements TabContent 
 
 	@FXML
 	private TableColumn<Product, String> tcDescription;
+	
+	@FXML
+	private TableColumn<Product, String> tcProductCode;
+
 
 	@Override
 	public void initialize() {
@@ -109,8 +113,18 @@ public class GenerateBarcodeController extends AppContext implements TabContent 
 					if (newValue == null || newValue.isEmpty()) {
 						filteredList.setPredicate(null);
 					} else {
-						filteredList.setPredicate(
-								(Product t) -> t.getProductName().toLowerCase().contains(newValue.toLowerCase()));
+						filteredList.setPredicate((Product t) -> {
+							// Compare name and category
+							String lowerCaseFilter = newValue.toLowerCase();
+							if (t.getProductName().toLowerCase().contains(lowerCaseFilter)) {
+								return true;
+							} else if (t.getProductCategory().toLowerCase().contains(lowerCaseFilter)) {
+								return true;
+							} else if (String.valueOf(t.getProductCode()).contains(lowerCaseFilter)) {
+								return true;
+							}
+							return false;
+						});
 					}
 				});
 		txtBarcode.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -126,6 +140,7 @@ public class GenerateBarcodeController extends AppContext implements TabContent 
 
 	private void setTableCellFactories() {
 		// Table Column Mapping
+		tcProductCode.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getProductCode())));
 		tcQuantity.setCellValueFactory(
 				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getQuantity())));
 		tcName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProductName()));
@@ -138,6 +153,7 @@ public class GenerateBarcodeController extends AppContext implements TabContent 
 		tcDescription.getStyleClass().add("character-cell");
 		tcCategory.getStyleClass().add("character-cell");
 		tcUOM.getStyleClass().add("character-cell");
+		tcProductCode.getStyleClass().add("character-cell");
 	}
 
 	public void onSelectedRowChanged(ObservableValue<? extends Product> observable, Product oldValue,
