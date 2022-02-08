@@ -90,6 +90,9 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 
 	@FXML
 	private RadioButton rb_24Stickers;
+	
+	@FXML
+	private RadioButton rb_Thermal_Single_5025;
 
 	@FXML
 	private TextField txtStartPosition;
@@ -110,6 +113,7 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 		rb_24Stickers.setToggleGroup(radioButtonGroup);
 		rb_40Stickers.setToggleGroup(radioButtonGroup);
 		rb_65Stickers.setToggleGroup(radioButtonGroup);
+		rb_Thermal_Single_5025.setToggleGroup(radioButtonGroup);
 
 		txtCategory.textProperty().addListener((observable, oldValue, newValue) -> {
 			btnGenerateBarcode.setDisable(newValue.isEmpty());
@@ -124,6 +128,7 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 		rb_65Stickers.setOnAction(e -> populateImageView());
 		rb_24Stickers.setOnAction(e -> populateImageView());
 		rb_40Stickers.setOnAction(e -> populateImageView());
+		rb_Thermal_Single_5025.setOnAction(e -> populateImageView());
 
 		rb_65Stickers.setSelected(true);
 		imageView.setImage(new Image(this.getClass().getResource("/images/65_Labels.png").toString()));
@@ -132,17 +137,25 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 	private void populateImageView() {
 		String imageName = "65_Labels.png";
 		if (rb_65Stickers.isSelected()) {
+			txtStartPosition.setDisable(false);
 			imageName = "65_Labels.png";
 			txtStartPosition.setText("1");
 			txtNoOfBarcodes.setText("65");
 		} else if (rb_40Stickers.isSelected()) {
+			txtStartPosition.setDisable(false);
 			imageName = "40_Labels.png";
 			txtStartPosition.setText("1");
 			txtNoOfBarcodes.setText("40");
-		} else {
+		} else if (rb_24Stickers.isSelected()){
+			txtStartPosition.setDisable(false);
 			imageName = "24_Labels.png";
 			txtStartPosition.setText("1");
 			txtNoOfBarcodes.setText("24");
+		} else if(rb_Thermal_Single_5025.isSelected()){
+			imageName = "Single_5025mm.png";
+			txtStartPosition.setDisable(true);
+			txtStartPosition.setText("Not Applicable");
+			txtNoOfBarcodes.setText("1");
 		}
 
 		imageView.setImage(new Image(this.getClass().getResource("/images/" + imageName).toString()));
@@ -160,11 +173,13 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 			int startPosition = 1;
 			int noOfLabels = 0;
 			try {
+				Product p = productMap.get(txtName.getText());
 				Barcode barcode = new Barcode();
 				barcode.setBarcode(txtBarcode.getText().trim());
 				barcode.setPrice(Double.valueOf(txtSellPrice.getText()));
 				barcode.setProductName(txtName.getText());
-
+				barcode.setProductCode(p.getProductCode());
+				barcode.setCategoryName(p.getProductCategory());
 				if (rb_65Stickers.isSelected()) {
 					JrxmlName = AppConstants.BARCODE_65_JASPER;
 					noOfLabels = 65;
@@ -174,9 +189,14 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 				} else if (rb_40Stickers.isSelected()) {
 					JrxmlName = AppConstants.BARCODE_40_JASPER;
 					noOfLabels = 40;
+				}else if (rb_Thermal_Single_5025.isSelected()) {
+					JrxmlName = AppConstants.BARCODE_THERMAL_SINGLE_5025_JASPER;
+					noOfLabels = 1;
 				}
-				if (!txtStartPosition.getText().equals("")) {
+				if (!txtStartPosition.getText().equals("") && !txtStartPosition.getText().equals("Not Applicable")) {
 					startPosition = Integer.valueOf(txtStartPosition.getText());
+				} else if(txtStartPosition.getText().equals("Not Applicable")) {
+					startPosition = 0;
 				} else {
 					alertHelper.showErrorNotification("Please enter start position");
 					return;

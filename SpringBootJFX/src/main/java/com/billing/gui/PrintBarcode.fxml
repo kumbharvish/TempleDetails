@@ -9,13 +9,13 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
-<?import com.billing.utils.AutoCompleteTextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import com.billing.utils.AutoCompleteTextField?>
 
 <BorderPane styleClass="rootNode" stylesheets="@../../../css/barcode.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.billing.controller.PrintBarcodeController">
 	<top>
@@ -58,9 +58,10 @@
 										<Label styleClass="nodeLabel" text="Sticker Paper Type :" GridPane.rowIndex="5" />
 										<VBox spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
 											<children>
-												<RadioButton fx:id="rb_65Stickers" mnemonicParsing="false" text="65 Stickers" />
-												<RadioButton fx:id="rb_40Stickers" mnemonicParsing="false" text="40 Stickers" />
-												<RadioButton fx:id="rb_24Stickers" mnemonicParsing="false" text="24 Stickers" />
+												<RadioButton fx:id="rb_65Stickers" mnemonicParsing="false" text="A4 - 65 Stickers" />
+												<RadioButton fx:id="rb_40Stickers" mnemonicParsing="false" text="A4 - 40 Stickers" />
+												<RadioButton fx:id="rb_24Stickers" mnemonicParsing="false" text="A4 - 24 Stickers" />
+                                    <RadioButton fx:id="rb_Thermal_Single_5025" layoutX="10.0" layoutY="64.0" mnemonicParsing="false" text="Thermal Label Single 50 X 25 mm" />
 											</children>
 										</VBox>
 										<Label styleClass="nodeLabel" text="Start Position :" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
@@ -98,10 +99,10 @@
 					<bottom>
 						<VBox BorderPane.alignment="CENTER">
 							<children>
-								<Separator/>
+								<Separator />
 								<ButtonBar BorderPane.alignment="CENTER">
 									<buttons>
-										<Button fx:id="btnClose" cancelButton="true" mnemonicParsing="false" text="Close" onAction="#onCloseAction"/>
+										<Button fx:id="btnClose" cancelButton="true" mnemonicParsing="false" onAction="#onCloseAction" text="Close" />
 									</buttons>
 									<padding>
 										<Insets top="10.0" />

@@ -6,6 +6,8 @@ public class Barcode {
 	private double price;
 	private String barcode;
 	private String shopName;
+	private String categoryName;
+	private int productCode;
 	
 	public String getProductName() {
 		return productName;
@@ -30,6 +32,18 @@ public class Barcode {
 	}
 	public void setShopName(String shopName) {
 		this.shopName = shopName;
+	}
+	public String getCategoryName() {
+		return categoryName;
+	}
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+	public int getProductCode() {
+		return productCode;
+	}
+	public void setProductCode(int productCode) {
+		this.productCode = productCode;
 	}
 
 }

@@ -461,7 +461,9 @@ public class PDFReportMapping {
 
 		for (int i = 1; i <= noOfLabels; i++) {
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("ProductName", barcode.getProductName());
+			map.put("ProductName", appUtils.getAppDataValues(AppConstants.SHOW_CATEGORY_NAME_ON_INVOICE).equalsIgnoreCase("N")
+					? barcode.getProductName().toUpperCase()
+					: barcode.getCategoryName().toUpperCase()+" # "+barcode.getProductCode());
 			map.put("Barcode", barcode.getBarcode());
 			map.put("Price", appUtils.getDecimalFormat(barcode.getPrice()));
 			dataSourceMaps.add(map);
