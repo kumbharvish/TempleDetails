@@ -61,7 +61,10 @@
 												<RadioButton fx:id="rb_65Stickers" mnemonicParsing="false" text="A4 - 65 Stickers" />
 												<RadioButton fx:id="rb_40Stickers" mnemonicParsing="false" text="A4 - 40 Stickers" />
 												<RadioButton fx:id="rb_24Stickers" mnemonicParsing="false" text="A4 - 24 Stickers" />
-                                    <RadioButton fx:id="rb_Thermal_Single_5025" layoutX="10.0" layoutY="64.0" mnemonicParsing="false" text="Thermal Label Single 50 X 25 mm" />
+                                    <RadioButton fx:id="rb_Thermal_Single_5025" layoutX="10.0" layoutY="64.0" mnemonicParsing="false" text="Thermal 1 Label 50 X 25 mm" />
+                                    <RadioButton fx:id="rb_Thermal_Double_5025" layoutX="10.0" layoutY="91.0" mnemonicParsing="false" text="Thermal 2 Label 50 X 25 mm" />
+                                    <RadioButton fx:id="rb_Thermal_Single_3825" layoutX="10.0" layoutY="118.0" mnemonicParsing="false" text="Thermal 1 Label 38 X 25 mm" />
+                                    <RadioButton fx:id="rb_Thermal_Double_3825" layoutX="10.0" layoutY="145.0" mnemonicParsing="false" text="Thermal 2 Label 38 X 25 mm" />
 											</children>
 										</VBox>
 										<Label styleClass="nodeLabel" text="Start Position :" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />

@@ -25,9 +25,9 @@ public class AppConstants {
 	public static final String SALES_RETURN_ALLOWED_DAYS = "SALES_RETURN_ALLOWED_DAYS";
 
 	public static final String TERMS_AND_CONDITION_FOR_INVOICE = "TERMS_AND_CONDITION_FOR_INVOICE";
-	
+
 	public static final String CREATE_INVOICE_DEFAULT_CUSTOMER = "CREATE_INVOICE_DEFAULT_CUSTOMER";
-	
+
 	public static final String SHOW_CATEGORY_NAME_ON_INVOICE = "SHOW_CATEGORY_NAME_ON_INVOICE";
 
 	public static final String SELECT_EXPENSE_CATEGORY = "-- Select Category --";
@@ -87,7 +87,7 @@ public class AppConstants {
 	public static final String DATA_FETCH_ERROR = "An error occurred in saving the data !";
 
 	public static final String INVALID_PRODUCT_KEY = "Invalid product key";
-	
+
 	public static final String INVALID_LICENSE_KEY = "Invalid license key";
 
 	public static final String SOFTWARE_ACTIVATED = "Software activated successfully. Please reopen the MyStore application";
@@ -126,7 +126,7 @@ public class AppConstants {
 	public static final String SUPPLIERS_REPORT_NAME = "Suppliers_Report";
 
 	public static final String PRODUCT_CATEOGRY_WISE_STOCK_REPORT_NAME = "Product_Category_Wise_Stock_Report";
-	
+
 	public static final String GSTR1_REPORT_NAME = "GSTR1_Report";
 
 	// Jasper File Names
@@ -153,30 +153,36 @@ public class AppConstants {
 	public static final String BARCODE_40_JASPER = "Barcode_40.jasper";
 
 	public static final String BARCODE_24_JASPER = "Barcode_24.jasper";
-	
+
 	public static final String BARCODE_THERMAL_SINGLE_5025_JASPER = "Barcode_50X25MM_Single.jasper";
-	
-	public static final String IT_A4_TAX_3 = "IT_A4_Tax_3.jasper"; 
-	
+
+	public static final String BARCODE_THERMAL_DOUBLE_5025_JASPER = "Barcode_50X25MM_Double.jasper";
+
+	public static final String BARCODE_THERMAL_SINGLE_3825_JASPER = "Barcode_38X25MM_Single.jasper";
+
+	public static final String BARCODE_THERMAL_DOUBLE_3825_JASPER = "Barcode_38X25MM_Double.jasper";
+
+	public static final String IT_A4_TAX_3 = "IT_A4_Tax_3.jasper";
+
 	public static final String IT_A4_TAX_4 = "IT_A4_Tax_4.jasper";
-	
+
 	public static final String IT_A4_TAX_5 = "IT_A4_Tax_5.jasper";
-	
+
 	public static final String GSTR1 = "GSTR1_Report.jasper";
 
 	// Invoice Template Names
 	public static final String THERMAL_CASH_INVOICE = "Thermal : Cash Invoice";
-	
+
 	public static final String THERMAL_TAX_INVOICE = "Thermal : Tax Invoice";
-	
+
 	public static final String A4_TAX_INVOICE_1 = "A4 : Tax Invoice 1";
-	
+
 	public static final String A4_TAX_INVOICE_2 = "A4 : Tax Invoice 2";
-	
+
 	public static final String A4_TAX_INVOICE_3 = "A4 : Tax Invoice 3";
-	
+
 	public static final String A4_TAX_INVOICE_4 = "A4 : Tax Invoice 4";
-	
+
 	public static final String A4_TAX_INVOICE_5 = "A4 : Tax Invoice 5";
 
 	// Instructions
@@ -193,7 +199,7 @@ public class AppConstants {
 			+ "<li>Backup file should be of taken from MyStore only.</li>"
 			+ "<li>Invaild backup file restore might cause issues.</li>"
 			+ "<li>Please restart the MyStore application after successful restore.</li></ul></h5>";
-	
+
 	public static final String STORE_DETAILS = "<h5><ul style='line-height:1.6;'><li>Updated details will reflect after software restart.</li>"
 			+ "<li>Please reopen MyStore.</li></ul></h5>";
 
