@@ -87,9 +87,9 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	private static final Logger logger = LoggerFactory.getLogger(CreateInvoiceController.class);
 
 	private BooleanProperty isDirty = new SimpleBooleanProperty(false);
-	
+
 	final PauseTransition scannerDelay = new PauseTransition(Duration.seconds(0.20));
-	
+
 	final StringProperty barcode = new SimpleStringProperty();
 
 	@Autowired
@@ -243,14 +243,22 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	@Override
 	public void initialize() {
 
-		if ("Y".equalsIgnoreCase(appUtils.getAppDataValues("GST_INCLUSIVE"))) {
+		if ("Y".equalsIgnoreCase(appUtils.getAppDataValues(AppConstants.GST_INCLUSIVE))) {
 			isGSTInclusive = true;
 			txtGstType.setText("Inclusive");
 		} else {
 			txtGstType.setText("Exclusive");
 		}
 
-		cbPrintOnSave.setSelected(appUtils.isTrue(appUtils.getAppDataValues("INVOICE_PRINT_ON_SAVE")));
+		if ("N".equalsIgnoreCase(appUtils.getAppDataValues(AppConstants.ALLOW_RATE_CHANGE_IN_INVOICE))) {
+			txtRate.setEditable(false);
+			txtRate.setStyle("-fx-background-color: antiquewhite;");
+		} else {
+			txtRate.setEditable(true);
+			txtRate.setStyle("");
+		}
+
+		cbPrintOnSave.setSelected(appUtils.isTrue(appUtils.getAppDataValues(AppConstants.INVOICE_PRINT_ON_SAVE)));
 
 		productTableData = FXCollections.observableArrayList();
 		dpInvoiceDate.setValue(LocalDate.now());
@@ -337,19 +345,14 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		});
 		// Read Barcode Scanner Events
 		scannerDelay.setOnFinished(event -> barcode.set(txtItemName.getText()));
-		txtItemName.textProperty().addListener((obs, oldText, newText) -> 
-	    scannerDelay.playFromStart());
-		barcode.addListener((obs, oldBarcode, newBarcode) ->barcodeScanEvent());
-		
-		txtRate.setOnKeyReleased(new EventHandler<KeyEvent>() {
+		txtItemName.textProperty().addListener((obs, oldText, newText) -> scannerDelay.playFromStart());
+		barcode.addListener((obs, oldBarcode, newBarcode) -> barcodeScanEvent());
+
+		txtRate.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent ke) {
 				txtAmount.setText("");
-				if (!txtRate.getText().equals("") && !ke.getCode().equals(KeyCode.PERIOD)
-						&& !ke.getCode().equals(KeyCode.DECIMAL)) {
-					setTxtAmount();
-				}
-				if (ke.getCode().equals(KeyCode.ENTER)) {
+				if(!txtRate.getText().equals("") && ke.getCode().equals(KeyCode.ENTER)) {
 					txtQuantity.requestFocus();
 				}
 			}
@@ -390,10 +393,10 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			setNewFocus();
 		}
 	}
-	
+
 	public void barcodeScanEvent() {
 		String name = txtItemName.getText();
-		if (!appUtils.isEmptyString(name) && appUtils.isNumeric(name) && name.length()> 5) {
+		if (!appUtils.isEmptyString(name) && appUtils.isNumeric(name) && name.length() > 5) {
 			clearItemErrorFields();
 			setProductDetailsWithBarCode(Long.valueOf(txtItemName.getText().trim()));
 			txtItemName.setText("");
@@ -543,7 +546,6 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			customerMap.put(cust.getCustMobileNumber() + " : " + cust.getCustName(), cust);
 			if (cust.getCustMobileNumber() == defaultCustNo) {
 				defaultCustomerName = cust.getCustMobileNumber() + " : " + cust.getCustName();
-				System.out.println("defaultCustomerName==>" + defaultCustomerName);
 			}
 		}
 	}
@@ -552,9 +554,16 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		productEntries = new TreeSet<String>();
 		productMap = new HashMap<String, Product>();
 		productMapWithBarcode = new HashMap<Long, Product>();
+		boolean showCategoryName = appUtils.getAppDataValues(AppConstants.SHOW_CATEGORY_NAME_ON_INVOICE)
+				.equalsIgnoreCase("Y") ? true : false;
 		for (Product p : productService.getAll()) {
-			productEntries.add(p.getProductName()+" # "+p.getProductCode());
-			productMap.put(p.getProductName()+" # "+p.getProductCode(), p);
+			if (!showCategoryName) {
+				productEntries.add(p.getProductName());
+				productMap.put(p.getProductName(), p);
+			} else {
+				productEntries.add(p.getProductName() + " # " + p.getProductCode());
+				productMap.put(p.getProductName() + " # " + p.getProductCode(), p);
+			}
 			productMapWithBarcode.put(p.getProductBarCode(), p);
 		}
 	}
@@ -566,7 +575,11 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			if (product != null) {
 				txtUnit.setText(product.getMeasure());
 				txtRate.setText(appUtils.getDecimalFormat(product.getSellPrice()));
-				txtQuantity.requestFocus();
+				if (txtRate.isEditable()) {
+					txtRate.requestFocus();
+				} else {
+					txtQuantity.requestFocus();
+				}
 				clearItemErrorFields();
 			}
 		}
@@ -634,7 +647,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	public boolean loadData() {
 		isDirty.set(false);
 		KeyCombination kc = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_ANY);
-		Runnable rn = ()-> onSaveCommand(null);
+		Runnable rn = () -> onSaveCommand(null);
 		currentStage.getScene().getAccelerators().put(kc, rn);
 		return true;
 	}
@@ -792,13 +805,13 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			txtItemName.requestFocus();
 			valid = false;
 			return valid;
-		} 
+		}
 		if (txtDiscountPercent.getText().equals("") || txtDiscountPercent.getText().equals(".")) {
 			alertHelper.showErrorNotification("Please enter discount percent");
 			txtDiscountPercent.requestFocus();
 			valid = false;
 			return valid;
-		} 
+		}
 
 		return valid;
 	}
@@ -996,7 +1009,11 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 				Product p = tableView.getSelectionModel().getSelectedItem();
 				if (productTableData.contains(p)) {
 					productTableData.remove(p);
-					txtItemName.setText(p.getProductName()+" # "+p.getProductCode());
+					if (appUtils.getAppDataValues(AppConstants.SHOW_CATEGORY_NAME_ON_INVOICE).equalsIgnoreCase("N")) {
+						txtItemName.setText(p.getProductName());
+					} else {
+						txtItemName.setText(p.getProductName() + " # " + p.getProductCode());
+					}
 					setProductDetails();
 				}
 			} else if (dialogButton == deleteButtonType) {

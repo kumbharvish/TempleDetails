@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.billing.constants.AppConstants;
 import com.billing.dto.BillDetails;
 import com.billing.dto.Customer;
 import com.billing.dto.GSTDetails;
@@ -248,14 +249,22 @@ public class EditInvoiceController extends AppContext implements TabContent {
 	@Override
 	public void initialize() {
 		tableLoaded = false;
-		if ("Y".equalsIgnoreCase(appUtils.getAppDataValues("GST_INCLUSIVE"))) {
+		if ("Y".equalsIgnoreCase(appUtils.getAppDataValues(AppConstants.GST_INCLUSIVE))) {
 			isGSTInclusive = true;
 			txtGstType.setText("Inclusive");
 		} else {
 			txtGstType.setText("Exclusive");
 		}
+		
+		if ("N".equalsIgnoreCase(appUtils.getAppDataValues(AppConstants.ALLOW_RATE_CHANGE_IN_INVOICE))) {
+			txtRate.setEditable(false);
+			txtRate.setStyle("-fx-background-color: antiquewhite;");
+		} else {
+			txtRate.setEditable(true);
+			txtRate.setStyle("");
+		}
 
-		cbPrintOnSave.setSelected(appUtils.isTrue(appUtils.getAppDataValues("INVOICE_PRINT_ON_SAVE")));
+		cbPrintOnSave.setSelected(appUtils.isTrue(appUtils.getAppDataValues(AppConstants.INVOICE_PRINT_ON_SAVE)));
 
 		productTableData = FXCollections.observableArrayList();
 		dpInvoiceDate.setDayCellFactory(this::getDateCell);
@@ -346,15 +355,11 @@ public class EditInvoiceController extends AppContext implements TabContent {
 		txtItemName.textProperty().addListener((obs, oldText, newText) -> scannerDelay.playFromStart());
 		barcode.addListener((obs, oldBarcode, newBarcode) -> barcodeScanEvent());
 
-		txtRate.setOnKeyReleased(new EventHandler<KeyEvent>() {
+		txtRate.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent ke) {
 				txtAmount.setText("");
-				if (!txtRate.getText().equals("") && !ke.getCode().equals(KeyCode.PERIOD)
-						&& !ke.getCode().equals(KeyCode.DECIMAL)) {
-					setTxtAmount();
-				}
-				if (ke.getCode().equals(KeyCode.ENTER)) {
+				if(!txtRate.getText().equals("") && ke.getCode().equals(KeyCode.ENTER)) {
 					txtQuantity.requestFocus();
 				}
 			}
@@ -554,9 +559,15 @@ public class EditInvoiceController extends AppContext implements TabContent {
 		productEntries = new TreeSet<String>();
 		productMap = new HashMap<String, Product>();
 		productMapWithBarcode = new HashMap<Long, Product>();
+		boolean showCategoryName = appUtils.getAppDataValues(AppConstants.SHOW_CATEGORY_NAME_ON_INVOICE).equalsIgnoreCase("Y") ? true : false; 
 		for (Product p : productService.getAll()) {
-			productEntries.add(p.getProductName()+" # "+p.getProductCode());
-			productMap.put(p.getProductName()+" # "+p.getProductCode(), p);
+			if (!showCategoryName) {
+				productEntries.add(p.getProductName());
+				productMap.put(p.getProductName(), p);
+			} else {
+				productEntries.add(p.getProductName() + " # " + p.getProductCode());
+				productMap.put(p.getProductName() + " # " + p.getProductCode(), p);
+			}
 			productMapWithBarcode.put(p.getProductBarCode(), p);
 		}
 	}
@@ -568,7 +579,11 @@ public class EditInvoiceController extends AppContext implements TabContent {
 			if (product != null) {
 				txtUnit.setText(product.getMeasure());
 				txtRate.setText(appUtils.getDecimalFormat(product.getSellPrice()));
-				txtQuantity.requestFocus();
+				if (txtRate.isEditable()) {
+					txtRate.requestFocus();
+				} else {
+					txtQuantity.requestFocus();
+				}
 				clearItemErrorFields();
 			}
 		}
@@ -752,6 +767,7 @@ public class EditInvoiceController extends AppContext implements TabContent {
 			item.setDiscountAmount(p.getDiscountAmount());
 			item.setUnit(p.getMeasure());
 			item.setHsn(p.getHsn());
+			item.setCategoryName(p.getProductCategory());
 			itemList.add(item);
 		}
 		return itemList;
@@ -977,7 +993,11 @@ public class EditInvoiceController extends AppContext implements TabContent {
 				Product p = tableView.getSelectionModel().getSelectedItem();
 				if (productTableData.contains(p)) {
 					productTableData.remove(p);
-					txtItemName.setText(p.getProductName()+" # "+p.getProductCode());
+					if (appUtils.getAppDataValues(AppConstants.SHOW_CATEGORY_NAME_ON_INVOICE).equalsIgnoreCase("N")) {
+						txtItemName.setText(p.getProductName());
+					} else {
+						txtItemName.setText(p.getProductName() + " # " + p.getProductCode());
+					}
 					setProductDetails();
 				}
 			} else if (dialogButton == deleteButtonType) {

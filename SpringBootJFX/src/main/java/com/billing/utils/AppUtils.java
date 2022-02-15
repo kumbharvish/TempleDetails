@@ -130,7 +130,7 @@ public class AppUtils {
 		} finally {
 			DBUtils.closeConnection(stmt, conn);
 		}
-		logger.info("===== Application Properties Loaded ===== ");
+		logger.info("===== Application Properties Loaded From DB ===== ");
 		return properties;
 	}
 
@@ -154,6 +154,10 @@ public class AppUtils {
 			return true;
 		}
 		return false;
+	}
+	
+	public void reloadAppData() {
+		properties = getAppData();
 	}
 
 	public StatusDTO updateAppData(String dataName, String valueString) {
@@ -749,6 +753,7 @@ public class AppUtils {
 		p.setDiscountAmount(item.getDiscountAmount());
 		p.setTableDispAmount(item.getRate() * item.getQuantity());
 		p.setProductTax(item.getGstDetails().getRate());
+		p.setProductCategory(item.getCategoryName());
 		return p;
 	}
 

@@ -24,7 +24,6 @@
 				<VBox alignment="TOP_CENTER" spacing="20.0" BorderPane.alignment="CENTER">
 					<children>
 						<Label fx:id="heading" alignment="TOP_CENTER" contentDisplay="CENTER" text="User Preferences" textAlignment="CENTER" />
-						<Label styleClass="note" text="Changes will take effect after software restart." />
 						<GridPane fx:id="gridPane" alignment="TOP_CENTER" hgap="20.0" vgap="15.0">
 							<children>
 								<Label styleClass="nodeLabel" text="GST Calculation Type :" GridPane.halignment="RIGHT" />
@@ -102,8 +101,13 @@
 										<Tooltip prefWidth="400.0" text="Set default customer for cash sales. This customer will be selected by default in create invoice." wrapText="true" />
 									</tooltip>
 								</Label>
-								<Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="9" />
-								<ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="10">
+								<Label fx:id="lblTermsAndCondition" GridPane.columnIndex="2" GridPane.rowIndex="9">
+									<tooltip>
+										<Tooltip prefWidth="400.0" text="If selected, You will be allowed to change the product rate while creating invoice." wrapText="true" />
+									</tooltip>
+								</Label>
+								<Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="10" />
+								<ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="11">
 									<buttons>
 										<Button fx:id="btnUpdate" defaultButton="true" disable="true" mnemonicParsing="true" onAction="#onUpdateCommand" text="Update" />
 										<Button cancelButton="true" mnemonicParsing="false" onAction="#onCloseCommand" text="Close" />
@@ -113,6 +117,8 @@
                         <TextField fx:id="txtDefaultCustomerMobile" GridPane.columnIndex="1" GridPane.rowIndex="8" />
                         <Label layoutX="26.0" layoutY="116.0" styleClass="nodeLabel" text="Show Category Name on Invoice" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
                         <CheckBox fx:id="cbShowCategoryNameOnInvoice" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <Label styleClass="nodeLabel" text="Allow Product rate change in Create Invoice" GridPane.halignment="RIGHT" GridPane.rowIndex="9" />
+                        <CheckBox fx:id="cbAllowRateChangeInInvoice" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="9" />
 							</children>
 							<VBox.margin>
 								<Insets top="20.0" />
@@ -135,6 +141,7 @@
 								<RowConstraints minHeight="10.0" />
 								<RowConstraints minHeight="10.0" prefHeight="30.0" />
                         <RowConstraints minHeight="-Infinity" />
+                        <RowConstraints minHeight="10.0" />
 								<RowConstraints />
 								<RowConstraints />
 							</rowConstraints>

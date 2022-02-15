@@ -82,6 +82,9 @@ public class UserPreferencesController implements TabContent {
     @FXML
     private CheckBox cbShowCategoryNameOnInvoice;
     
+    @FXML
+    private CheckBox cbAllowRateChangeInInvoice;
+    
 	@FXML
 	private Button btnUpdate;
 
@@ -137,6 +140,7 @@ public class UserPreferencesController implements TabContent {
 		txtTermsAndCondition.setText(userPref.get(AppConstants.TERMS_AND_CONDITION_FOR_INVOICE));
 		txtDefaultCustomerMobile.setText(userPref.get(AppConstants.CREATE_INVOICE_DEFAULT_CUSTOMER));
 		cbShowCategoryNameOnInvoice.setSelected(appUtils.isTrue(userPref.get(AppConstants.SHOW_CATEGORY_NAME_ON_INVOICE)));
+		cbAllowRateChangeInInvoice.setSelected(appUtils.isTrue(userPref.get(AppConstants.ALLOW_RATE_CHANGE_IN_INVOICE)));
 		isDirty.set(false);
 		return true;
 	}
@@ -178,6 +182,7 @@ public class UserPreferencesController implements TabContent {
 		txtTermsAndCondition.textProperty().addListener(this::invalidated);
 		txtDefaultCustomerMobile.textProperty().addListener(this::invalidated);
 		cbShowCategoryNameOnInvoice.selectedProperty().addListener(this::invalidated);
+		cbAllowRateChangeInInvoice.selectedProperty().addListener(this::invalidated);
 		
 		btnUpdate.disableProperty().bind(isDirty.not());
 
@@ -216,6 +221,12 @@ public class UserPreferencesController implements TabContent {
 		} else {
 			saveMap.put(AppConstants.SHOW_CATEGORY_NAME_ON_INVOICE, "N");
 		}
+		if (cbAllowRateChangeInInvoice.isSelected()) {
+			saveMap.put(AppConstants.ALLOW_RATE_CHANGE_IN_INVOICE, "Y");
+		} else {
+			saveMap.put(AppConstants.ALLOW_RATE_CHANGE_IN_INVOICE, "N");
+		}
+		
 		saveMap.put(AppConstants.DB_DUMP_INTERVAL, cbDBBackupInterval.getSelectionModel().getSelectedItem());
 		saveMap.put(AppConstants.SALES_RETURN_ALLOWED_DAYS, txtSalesReturnDays.getText());
 		saveMap.put(AppConstants.TERMS_AND_CONDITION_FOR_INVOICE, txtTermsAndCondition.getText());
@@ -226,6 +237,7 @@ public class UserPreferencesController implements TabContent {
 		if (status.getStatusCode() == 0) {
 			alertHelper.showSuccessNotification("Preferences updated successfully");
 			result = true;
+			appUtils.reloadAppData();
 		}
 		return result;
 	}
