@@ -115,7 +115,7 @@ public class PDFReportService {
 				alertHelper.showErrorNotification("Please add store details");
 				return false;
 			}
-			if(AppConstants.GSTR1.equalsIgnoreCase(reportMetadata.getJasperName())) {
+			if (AppConstants.GSTR1.equalsIgnoreCase(reportMetadata.getJasperName())) {
 				headerParamsMap.put("SUBREPORT_DATA", reportMetadata.getSubReportDataSourceMap());
 			}
 			headerParamsMap.put("SUBREPORT_DIR", directoryPath);
@@ -191,10 +191,19 @@ public class PDFReportService {
 		if (details == null) {
 			return null;
 		} else {
+			String address2 = "";
+			if (details.getAddress2().isEmpty()) {
+				address2 = details.getCity();
+			} else {
+				address2 = details.getAddress2() + ", " + details.getCity();
+			}
+			if (!details.getDistrict().isEmpty()) {
+				address2 = address2 + ", " + details.getDistrict();
+			}
+
 			headerParamsMap.put("StoreName", details.getStoreName());
 			headerParamsMap.put("Address", details.getAddress());
-			headerParamsMap.put("Address2",
-					details.getAddress2() + ", " + details.getCity() + ", " + details.getDistrict());
+			headerParamsMap.put("Address2", address2);
 			headerParamsMap.put("MobileNumber", String.valueOf(details.getMobileNo()));
 			headerParamsMap.put("State", details.getState());
 			headerParamsMap.put("GSTIN", details.getGstNo());
