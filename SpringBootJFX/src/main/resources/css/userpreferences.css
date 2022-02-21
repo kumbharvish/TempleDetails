@@ -6,6 +6,10 @@
 	-fx-border-color: -lookupBorder;
 }
 
+#scrollPane {
+	-fx-background-color: transparent;
+}
+
 #lblGSTCalculationType {
 	-fx-graphic: url("/images/QuestionMark_16.png");
 }

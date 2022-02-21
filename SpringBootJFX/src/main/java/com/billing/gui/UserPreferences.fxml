@@ -7,6 +7,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Tooltip?>
@@ -24,6 +25,15 @@
 				<VBox alignment="TOP_CENTER" spacing="20.0" BorderPane.alignment="CENTER">
 					<children>
 						<Label fx:id="heading" alignment="TOP_CENTER" contentDisplay="CENTER" text="User Preferences" textAlignment="CENTER" />
+					</children>
+               <BorderPane.margin>
+                  <Insets bottom="10.0" />
+               </BorderPane.margin>
+				</VBox>
+			</top>
+         <center>
+            <ScrollPane fx:id="scrollPane" BorderPane.alignment="CENTER">
+               <content>
 						<GridPane fx:id="gridPane" alignment="TOP_CENTER" hgap="20.0" vgap="15.0">
 							<children>
 								<Label styleClass="nodeLabel" text="GST Calculation Type :" GridPane.halignment="RIGHT" />
@@ -34,7 +44,7 @@
 									</children>
 								</HBox>
 
-								<Label styleClass="nodeLabel" text="Invoice Print On Save :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+      								<Label styleClass="nodeLabel" text="Invoice Print On Save :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
 								<CheckBox fx:id="cbPrintOnSave" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 								<Label styleClass="nodeLabel" text="Show Print Preview :" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
 								<CheckBox fx:id="cbShowPrintPreview" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
@@ -106,8 +116,13 @@
 										<Tooltip prefWidth="400.0" text="If selected, You will be allowed to change the product rate while creating invoice." wrapText="true" />
 									</tooltip>
 								</Label>
-								<Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="10" />
-								<ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="11">
+								<Label fx:id="lblTermsAndCondition" GridPane.columnIndex="2" GridPane.rowIndex="10">
+									<tooltip>
+										<Tooltip prefWidth="400.0" text="If selected, Barcode number will be generated once product is added." wrapText="true" />
+									</tooltip>
+								</Label>
+								<Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="11" />
+								<ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="12">
 									<buttons>
 										<Button fx:id="btnUpdate" defaultButton="true" disable="true" mnemonicParsing="true" onAction="#onUpdateCommand" text="Update" />
 										<Button cancelButton="true" mnemonicParsing="false" onAction="#onCloseCommand" text="Close" />
@@ -119,10 +134,9 @@
                         <CheckBox fx:id="cbShowCategoryNameOnInvoice" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                         <Label styleClass="nodeLabel" text="Allow Product rate change in Create Invoice" GridPane.halignment="RIGHT" GridPane.rowIndex="9" />
                         <CheckBox fx:id="cbAllowRateChangeInInvoice" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                        <Label styleClass="nodeLabel" text="Generate Barcode number on Product add:" GridPane.rowIndex="10" />
+                        <CheckBox fx:id="cbGenerateBarcodeOnAddProduct" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="10" />
 							</children>
-							<VBox.margin>
-								<Insets top="20.0" />
-							</VBox.margin>
 							<padding>
 								<Insets top="10.0" />
 							</padding>
@@ -142,13 +156,14 @@
 								<RowConstraints minHeight="10.0" prefHeight="30.0" />
                         <RowConstraints minHeight="-Infinity" />
                         <RowConstraints minHeight="10.0" />
+                        <RowConstraints minHeight="10.0" />
 								<RowConstraints />
 								<RowConstraints />
 							</rowConstraints>
 						</GridPane>
-					</children>
-				</VBox>
-			</top>
+               </content>
+            </ScrollPane>
+         </center>
 		</BorderPane>
 	</children>
 	<padding>

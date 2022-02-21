@@ -48,9 +48,10 @@
 										<TextField fx:id="txtBarcode" editable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
 										<Separator GridPane.columnSpan="2" GridPane.rowIndex="8" />
-										<ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="9">
+										<ButtonBar buttonMinWidth="90.0" GridPane.columnSpan="2" GridPane.rowIndex="9">
 											<buttons>
-												<Button fx:id="btnGenerateBarcode" defaultButton="true" mnemonicParsing="true" onAction="#onGenerateBarcodeCommand" text="Generate Barcode Sheet" />
+												<Button fx:id="btnPreview" defaultButton="true" mnemonicParsing="true" onAction="#onPreview" text="Preview" />
+												<Button fx:id="btnPrint" defaultButton="true" mnemonicParsing="true" onAction="#onPrint" text="Print" />
 											</buttons>
 										</ButtonBar>
 										<Label styleClass="nodeLabel" text="Sell Price :" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />

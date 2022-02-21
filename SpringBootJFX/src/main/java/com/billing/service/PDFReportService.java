@@ -135,7 +135,8 @@ public class PDFReportService {
 		return isSucess;
 	}
 
-	public boolean printBarcodeSheet(Barcode barcode, int noOfLabels, int startPosition, String jasperName) {
+	public boolean printBarcodeSheet(Barcode barcode, int noOfLabels, int startPosition, String jasperName,
+			boolean isPrintPreview) {
 		boolean isSucess = true;
 		try {
 
@@ -161,8 +162,13 @@ public class PDFReportService {
 			}
 			// compile report
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, headerParamsMap, dataSource);
-			// Show Print Preview
-			previewPrint(jasperPrint, "Barcode Sheet");
+			if(isPrintPreview) {
+				// Show Print Preview
+				previewPrint(jasperPrint, "Barcode Sheet");
+			} else {
+				JasperPrintManager.printReport(jasperPrint, false);
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			isSucess = false;

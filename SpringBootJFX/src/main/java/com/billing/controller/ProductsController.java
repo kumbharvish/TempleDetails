@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.billing.constants.AppConstants;
 import com.billing.dto.MeasurementUnit;
 import com.billing.dto.Product;
 import com.billing.dto.ProductCategory;
@@ -32,6 +33,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -50,6 +52,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
@@ -91,7 +94,7 @@ public class ProductsController extends AppContext implements TabContent {
 
 	@FXML
 	private Label lblProductCategoryErrMsg;
-	
+
 	@FXML
 	private Label lblProductCode;
 
@@ -178,7 +181,7 @@ public class ProductsController extends AppContext implements TabContent {
 
 	@FXML
 	private TableView<Product> tableView;
-	
+
 	@FXML
 	private TableColumn<Product, String> tcProductCode;
 
@@ -293,7 +296,7 @@ public class ProductsController extends AppContext implements TabContent {
 							} else if (String.valueOf(t.getProductCode()).contains(lowerCaseFilter)) {
 								return true;
 							}
-							
+
 							return false;
 						});
 					}
@@ -302,7 +305,8 @@ public class ProductsController extends AppContext implements TabContent {
 
 	private void setTableCellFactories() {
 		// Table Column Mapping
-		tcProductCode.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getProductCode())));
+		tcProductCode.setCellValueFactory(
+				cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getProductCode())));
 		tcCategory.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProductCategory()));
 		tcName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getProductName()));
 		tcQuantity.setCellValueFactory(
@@ -534,7 +538,127 @@ public class ProductsController extends AppContext implements TabContent {
 		Runnable rr = () -> onResetCommand(null);
 		currentStage.getScene().getAccelerators().put(kr, rr);
 
+		setEnterButtonRules();
 		return true;
+	}
+
+	private void setEnterButtonRules() {
+		// Product Name
+		txtProductName.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (!txtProductName.getText().equals("") && ke.getCode().equals(KeyCode.ENTER)) {
+					cbProductCategory.requestFocus();
+					cbProductCategory.show();
+				}
+			}
+		});
+		// Product Category
+		cbProductCategory.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (!cbProductCategory.getSelectionModel().getSelectedItem().equals("-- Select Category --")
+						&& ke.getCode().equals(KeyCode.ENTER)) {
+					cbMeasuringUnit.requestFocus();
+					cbMeasuringUnit.show();
+				}
+			}
+		});
+		// UOM
+		cbMeasuringUnit.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (!cbMeasuringUnit.getSelectionModel().getSelectedItem().equals("-- Select Measurement Unit --")
+						&& ke.getCode().equals(KeyCode.ENTER)) {
+					txtQuantity.requestFocus();
+				}
+			}
+		});
+		// Quantity
+		txtQuantity.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (!txtQuantity.getText().equals("") && ke.getCode().equals(KeyCode.ENTER)) {
+					txtPurchaseRate.requestFocus();
+				}
+			}
+		});
+		// Purchase Rate
+		txtPurchaseRate.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (!txtPurchaseRate.getText().equals("") && ke.getCode().equals(KeyCode.ENTER)) {
+					cbTax.requestFocus();
+					cbTax.show();
+				}
+			}
+		});
+		// TAX
+		cbTax.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (!cbTax.getSelectionModel().getSelectedItem().equals("-- Select Tax --")
+						&& ke.getCode().equals(KeyCode.ENTER)) {
+					txtSellPrice.requestFocus();
+				}
+			}
+		});
+		// Sell Price
+		txtSellPrice.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (!txtSellPrice.getText().equals("") && ke.getCode().equals(KeyCode.ENTER)) {
+					txtDiscount.requestFocus();
+				}
+			}
+		});
+		// Discount
+		txtDiscount.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (ke.getCode().equals(KeyCode.ENTER)) {
+					txtBarcode.requestFocus();
+				}
+			}
+		});
+		// Barcode
+		txtBarcode.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (ke.getCode().equals(KeyCode.ENTER)) {
+					txtHSN.requestFocus();
+				}
+			}
+		});
+		// Barcode
+		txtHSN.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (ke.getCode().equals(KeyCode.ENTER)) {
+					txtLowStockLevel.requestFocus();
+				}
+			}
+		});
+		// Low Stock Level
+		txtLowStockLevel.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (ke.getCode().equals(KeyCode.ENTER)) {
+					txtDescription.requestFocus();
+				}
+			}
+		});
+		// Description
+		txtDescription.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (ke.getCode().equals(KeyCode.ENTER)) {
+					btnAdd.requestFocus();
+					;
+				}
+			}
+		});
+
 	}
 
 	@Override
@@ -577,10 +701,14 @@ public class ProductsController extends AppContext implements TabContent {
 		productToSave.setHsn(txtHSN.getText());
 		productToSave.setLowStockLevel(
 				txtLowStockLevel.getText().equals("") ? 0 : Integer.parseInt(txtLowStockLevel.getText()));
-		if (txtBarcode.getText().equals("")) {
-			productToSave.setProductBarCode(Long.valueOf(0));
+		if ("Y".equalsIgnoreCase(appUtils.getAppDataValues(AppConstants.GENERATE_BARCODE_ON_ADD_PRODUCT))) {
+			productToSave.setProductBarCode(appUtils.getBarcode());
 		} else {
-			productToSave.setProductBarCode(Long.valueOf(txtBarcode.getText()));
+			if (txtBarcode.getText().equals("")) {
+				productToSave.setProductBarCode(Long.valueOf(0));
+			} else {
+				productToSave.setProductBarCode(Long.valueOf(txtBarcode.getText()));
+			}
 		}
 
 		if (productService.getProductBarCodeMap().containsKey(productToSave.getProductBarCode())) {

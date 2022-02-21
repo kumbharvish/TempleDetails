@@ -141,8 +141,9 @@ public class PrinterService {
 	}
 
 	// Print Barcode Sheet
-	public boolean printBarcodeSheet(Barcode barcode, int noOfLabels, int startPosition, String jasperName) {
-		return pdfReportService.printBarcodeSheet(barcode, noOfLabels, startPosition, jasperName);
+	public boolean printBarcodeSheet(Barcode barcode, int noOfLabels, int startPosition, String jasperName,
+			boolean isPrintPreview) {
+		return pdfReportService.printBarcodeSheet(barcode, noOfLabels, startPosition, jasperName, isPrintPreview);
 	}
 
 	// Export PDF

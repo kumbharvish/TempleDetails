@@ -80,7 +80,10 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 	private TextField txtBarcode;
 
 	@FXML
-	private Button btnGenerateBarcode;
+	private Button btnPreview;
+	
+	@FXML
+	private Button btnPrint;
 
 	@FXML
 	private RadioButton rb_65Stickers;
@@ -96,7 +99,7 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 
 	@FXML
 	private RadioButton rb_Thermal_Double_5025;
-	
+
 	@FXML
 	private RadioButton rb_Thermal_Single_3825;
 
@@ -128,9 +131,11 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 		rb_Thermal_Double_3825.setToggleGroup(radioButtonGroup);
 
 		txtCategory.textProperty().addListener((observable, oldValue, newValue) -> {
-			btnGenerateBarcode.setDisable(newValue.isEmpty());
+			btnPreview.setDisable(newValue.isEmpty());
+			btnPrint.setDisable(newValue.isEmpty());
 		});
-		btnGenerateBarcode.setDisable(true);
+		btnPreview.setDisable(true);
+		btnPrint.setDisable(true);
 
 		getProductsName();
 		txtName.createTextField(entries, () -> setProductDetails());
@@ -192,7 +197,16 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 	}
 
 	@FXML
-	void onGenerateBarcodeCommand(ActionEvent event) {
+	void onPrint(ActionEvent event) {
+		prepareSheet(false);
+	}
+
+	@FXML
+	void onPreview(ActionEvent event) {
+		prepareSheet(true);
+	}
+
+	private void prepareSheet(boolean isPrintPreview) {
 		if (txtName.getText().equals("")) {
 			alertHelper.showErrorNotification("Please select product");
 		} else if (txtBarcode.getText().equals("")) {
@@ -247,10 +261,10 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 					return;
 				}
 
-				boolean isSuccess = printerService.printBarcodeSheet(barcode, noOfLabels, startPosition, JrxmlName);
+				boolean isSuccess = printerService.printBarcodeSheet(barcode, noOfLabels, startPosition, JrxmlName,
+						isPrintPreview);
 				if (!isSuccess) {
-					alertHelper
-							.showErrorNotification("Error occurred while generating barcode sheet");
+					alertHelper.showErrorNotification("Error occurred while generating barcode sheet");
 				}
 			} catch (Exception e1) {
 				e1.printStackTrace();

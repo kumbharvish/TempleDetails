@@ -75,16 +75,19 @@ public class UserPreferencesController implements TabContent {
 
 	@FXML
 	private Label lblTermsAndConditionErrMsg;
-	
+
 	@FXML
 	private TextField txtDefaultCustomerMobile;
 
-    @FXML
-    private CheckBox cbShowCategoryNameOnInvoice;
-    
-    @FXML
-    private CheckBox cbAllowRateChangeInInvoice;
-    
+	@FXML
+	private CheckBox cbShowCategoryNameOnInvoice;
+
+	@FXML
+	private CheckBox cbAllowRateChangeInInvoice;
+
+	@FXML
+	private CheckBox cbGenerateBarcodeOnAddProduct;
+
 	@FXML
 	private Button btnUpdate;
 
@@ -139,8 +142,12 @@ public class UserPreferencesController implements TabContent {
 		txtSalesReturnDays.setText(userPref.get(AppConstants.SALES_RETURN_ALLOWED_DAYS));
 		txtTermsAndCondition.setText(userPref.get(AppConstants.TERMS_AND_CONDITION_FOR_INVOICE));
 		txtDefaultCustomerMobile.setText(userPref.get(AppConstants.CREATE_INVOICE_DEFAULT_CUSTOMER));
-		cbShowCategoryNameOnInvoice.setSelected(appUtils.isTrue(userPref.get(AppConstants.SHOW_CATEGORY_NAME_ON_INVOICE)));
-		cbAllowRateChangeInInvoice.setSelected(appUtils.isTrue(userPref.get(AppConstants.ALLOW_RATE_CHANGE_IN_INVOICE)));
+		cbShowCategoryNameOnInvoice
+				.setSelected(appUtils.isTrue(userPref.get(AppConstants.SHOW_CATEGORY_NAME_ON_INVOICE)));
+		cbAllowRateChangeInInvoice
+				.setSelected(appUtils.isTrue(userPref.get(AppConstants.ALLOW_RATE_CHANGE_IN_INVOICE)));
+		cbGenerateBarcodeOnAddProduct
+		.setSelected(appUtils.isTrue(userPref.get(AppConstants.GENERATE_BARCODE_ON_ADD_PRODUCT)));
 		isDirty.set(false);
 		return true;
 	}
@@ -183,7 +190,8 @@ public class UserPreferencesController implements TabContent {
 		txtDefaultCustomerMobile.textProperty().addListener(this::invalidated);
 		cbShowCategoryNameOnInvoice.selectedProperty().addListener(this::invalidated);
 		cbAllowRateChangeInInvoice.selectedProperty().addListener(this::invalidated);
-		
+		cbGenerateBarcodeOnAddProduct.selectedProperty().addListener(this::invalidated);
+
 		btnUpdate.disableProperty().bind(isDirty.not());
 
 	}
@@ -226,7 +234,12 @@ public class UserPreferencesController implements TabContent {
 		} else {
 			saveMap.put(AppConstants.ALLOW_RATE_CHANGE_IN_INVOICE, "N");
 		}
-		
+		if (cbGenerateBarcodeOnAddProduct.isSelected()) {
+			saveMap.put(AppConstants.GENERATE_BARCODE_ON_ADD_PRODUCT, "Y");
+		} else {
+			saveMap.put(AppConstants.GENERATE_BARCODE_ON_ADD_PRODUCT, "N");
+		}
+
 		saveMap.put(AppConstants.DB_DUMP_INTERVAL, cbDBBackupInterval.getSelectionModel().getSelectedItem());
 		saveMap.put(AppConstants.SALES_RETURN_ALLOWED_DAYS, txtSalesReturnDays.getText());
 		saveMap.put(AppConstants.TERMS_AND_CONDITION_FOR_INVOICE, txtTermsAndCondition.getText());

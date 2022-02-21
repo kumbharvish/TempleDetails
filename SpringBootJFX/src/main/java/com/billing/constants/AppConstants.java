@@ -31,6 +31,8 @@ public class AppConstants {
 	public static final String SHOW_CATEGORY_NAME_ON_INVOICE = "SHOW_CATEGORY_NAME_ON_INVOICE";
 	
 	public static final String ALLOW_RATE_CHANGE_IN_INVOICE = "ALLOW_RATE_CHANGE_IN_INVOICE";
+	
+	public static final String GENERATE_BARCODE_ON_ADD_PRODUCT = "GENERATE_BARCODE_ON_ADD_PRODUCT";
 
 	public static final String SELECT_EXPENSE_CATEGORY = "-- Select Category --";
 
