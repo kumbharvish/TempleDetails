@@ -29,3 +29,5 @@ build/
 
 ### VS Code ###
 .vscode/
+/Data_Backup
+/log
