@@ -101,6 +101,10 @@ public class AppConstants {
 	public static final String GST_INCLUSIVE = "GST_INCLUSIVE";
 
 	public static final String DB_DUMP_INTERVAL = "DB_DUMP_INTERVAL";
+	
+	public static final String BARCODE_LABEL_TYPE = "BARCODE_LABEL_TYPE";
+	
+	public static final String BARCODE_AMOUNT_LABEL = "BARCODE_AMOUNT_LABEL";
 
 	public static final String INVOICE_PRINT_ON_SAVE = "INVOICE_PRINT_ON_SAVE";
 
@@ -206,5 +210,14 @@ public class AppConstants {
 
 	public static final String STORE_DETAILS = "<h5><ul style='line-height:1.6;'><li>Updated details will reflect after software restart.</li>"
 			+ "<li>Please reopen MyStore.</li></ul></h5>";
+	
+	// Barcode Label Type
+	public static final String A4_65 = "A4 - 65 Stickers";
+	public static final String A4_40 = "A4 - 40 Stickers";
+	public static final String A4_24 = "A4 - 24 Stickers";
+	public static final String TH_5025_1 = "Thermal 1 Label 50 X 25 mm";
+	public static final String TH_5025_2 = "Thermal 2 Label 50 X 25 mm";
+	public static final String TH_3825_1 = "Thermal 1 Label 38 X 25 mm";
+	public static final String TH_3825_2 = "Thermal 2 Label 38 X 25 mm";
 
 }

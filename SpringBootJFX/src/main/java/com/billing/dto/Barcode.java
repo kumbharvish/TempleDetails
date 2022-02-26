@@ -8,6 +8,7 @@ public class Barcode {
 	private String shopName;
 	private String categoryName;
 	private int productCode;
+	private String amountLabel;
 	
 	public String getProductName() {
 		return productName;
@@ -44,6 +45,12 @@ public class Barcode {
 	}
 	public void setProductCode(int productCode) {
 		this.productCode = productCode;
+	}
+	public String getAmountLabel() {
+		return amountLabel;
+	}
+	public void setAmountLabel(String amountLabel) {
+		this.amountLabel = amountLabel;
 	}
 
 }

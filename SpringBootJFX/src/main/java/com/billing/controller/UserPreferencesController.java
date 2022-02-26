@@ -57,6 +57,9 @@ public class UserPreferencesController implements TabContent {
 
 	@FXML
 	private ComboBox<String> cbDBBackupInterval;
+	
+	@FXML
+	private ComboBox<String> cbBarcodeLabelPaperType;
 
 	@FXML
 	private CheckBox cbPrintOnSave;
@@ -127,6 +130,8 @@ public class UserPreferencesController implements TabContent {
 		cbDBBackupInterval.getItems().add("2 Hour");
 		cbDBBackupInterval.getItems().add("3 Hour");
 		cbDBBackupInterval.getItems().add("4 Hour");
+		
+		populateBarcdeTypes();
 
 		HashMap<String, String> userPref = appUtils.getAppData();
 		if ("Y".equals(userPref.get(AppConstants.GST_INCLUSIVE))) {
@@ -139,6 +144,7 @@ public class UserPreferencesController implements TabContent {
 		cbShowPrintPreview.setSelected(appUtils.isTrue(userPref.get(AppConstants.SHOW_PRINT_PREVIEW)));
 		cbOpenDocAfterSave.setSelected(appUtils.isTrue(userPref.get(AppConstants.OPEN_REPORT_DOC_ON_SAVE)));
 		cbDBBackupInterval.getSelectionModel().select(userPref.get(AppConstants.DB_DUMP_INTERVAL));
+		cbBarcodeLabelPaperType.getSelectionModel().select(userPref.get(AppConstants.BARCODE_LABEL_TYPE));
 		txtSalesReturnDays.setText(userPref.get(AppConstants.SALES_RETURN_ALLOWED_DAYS));
 		txtTermsAndCondition.setText(userPref.get(AppConstants.TERMS_AND_CONDITION_FOR_INVOICE));
 		txtDefaultCustomerMobile.setText(userPref.get(AppConstants.CREATE_INVOICE_DEFAULT_CUSTOMER));
@@ -150,6 +156,16 @@ public class UserPreferencesController implements TabContent {
 		.setSelected(appUtils.isTrue(userPref.get(AppConstants.GENERATE_BARCODE_ON_ADD_PRODUCT)));
 		isDirty.set(false);
 		return true;
+	}
+
+	private void populateBarcdeTypes() {
+		cbBarcodeLabelPaperType.getItems().add(AppConstants.A4_65);
+		cbBarcodeLabelPaperType.getItems().add(AppConstants.A4_40);		
+		cbBarcodeLabelPaperType.getItems().add(AppConstants.A4_24);	
+		cbBarcodeLabelPaperType.getItems().add(AppConstants.TH_5025_1);
+		cbBarcodeLabelPaperType.getItems().add(AppConstants.TH_5025_2);
+		cbBarcodeLabelPaperType.getItems().add(AppConstants.TH_3825_1);
+		cbBarcodeLabelPaperType.getItems().add(AppConstants.TH_3825_2);
 	}
 
 	@Override
@@ -185,6 +201,7 @@ public class UserPreferencesController implements TabContent {
 		cbShowPrintPreview.selectedProperty().addListener(this::invalidated);
 		cbOpenDocAfterSave.selectedProperty().addListener(this::invalidated);
 		cbDBBackupInterval.getSelectionModel().selectedItemProperty().addListener(this::invalidated);
+		cbBarcodeLabelPaperType.getSelectionModel().selectedItemProperty().addListener(this::invalidated);
 		txtSalesReturnDays.textProperty().addListener(this::invalidated);
 		txtTermsAndCondition.textProperty().addListener(this::invalidated);
 		txtDefaultCustomerMobile.textProperty().addListener(this::invalidated);
@@ -241,6 +258,7 @@ public class UserPreferencesController implements TabContent {
 		}
 
 		saveMap.put(AppConstants.DB_DUMP_INTERVAL, cbDBBackupInterval.getSelectionModel().getSelectedItem());
+		saveMap.put(AppConstants.BARCODE_LABEL_TYPE, cbBarcodeLabelPaperType.getSelectionModel().getSelectedItem());
 		saveMap.put(AppConstants.SALES_RETURN_ALLOWED_DAYS, txtSalesReturnDays.getText());
 		saveMap.put(AppConstants.TERMS_AND_CONDITION_FOR_INVOICE, txtTermsAndCondition.getText());
 		saveMap.put(AppConstants.CREATE_INVOICE_DEFAULT_CUSTOMER, txtDefaultCustomerMobile.getText());

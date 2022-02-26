@@ -324,6 +324,38 @@ public class JRViewerFX extends Control {
     }
     return SwingFXUtils.toFXImage(image, null);
   }
+  
+  public Image getImage(JasperPrint report) {
+	  int pageIndex = 0;
+	  float zoom = 2;
+	    //JasperPrint report = getReport();
+	    PrintPageFormat pageFormat = report.getPageFormat(pageIndex);
+	    int width = (int) Math.ceil(pageFormat.getPageWidth() * zoom);
+	    int height = (int) Math.ceil(pageFormat.getPageHeight() * zoom);
+
+	    BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+	    Graphics2D graphics = image.createGraphics();
+	    graphics.setColor(Color.white);
+	    graphics.fillRect(0, 0, width, height);
+
+	    try {
+	      JRGraphics2DExporter exporter = new JRGraphics2DExporter(getJasperReportsContext());
+	      exporter.setExporterInput(new SimpleExporterInput(report));
+	      SimpleGraphics2DExporterOutput output = new SimpleGraphics2DExporterOutput();
+	      output.setGraphics2D(graphics);
+	      exporter.setExporterOutput(output);
+	      SimpleGraphics2DReportConfiguration configuration = new SimpleGraphics2DReportConfiguration();
+	      configuration.setPageIndex(pageIndex);
+	      configuration.setZoomRatio(zoom);
+	      exporter.setConfiguration(configuration);
+	      exporter.exportReport();
+	    } catch (JRException ex) {
+	      throw new RuntimeException("Print page failed", ex);
+	    } finally {
+	      graphics.dispose();
+	    }
+	    return SwingFXUtils.toFXImage(image, null);
+	  }
 
   private JasperReportsContext getJasperReportsContext() {
     if (jasperReportsContext == null)

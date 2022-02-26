@@ -27,11 +27,10 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
@@ -61,7 +60,7 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 
 	private TabPane tabPane = null;
 
-	int productCode = 0;
+	long barcode = 0;
 
 	private HashMap<String, Product> productMap;
 
@@ -77,34 +76,16 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 	private TextField txtCategory;
 
 	@FXML
-	private TextField txtBarcode;
+	private TextField txtSellRate;
 
 	@FXML
 	private Button btnPreview;
-	
+
 	@FXML
 	private Button btnPrint;
-
+	
 	@FXML
-	private RadioButton rb_65Stickers;
-
-	@FXML
-	private RadioButton rb_40Stickers;
-
-	@FXML
-	private RadioButton rb_24Stickers;
-
-	@FXML
-	private RadioButton rb_Thermal_Single_5025;
-
-	@FXML
-	private RadioButton rb_Thermal_Double_5025;
-
-	@FXML
-	private RadioButton rb_Thermal_Single_3825;
-
-	@FXML
-	private RadioButton rb_Thermal_Double_3825;
+	private Button btnSave;
 
 	@FXML
 	private TextField txtStartPosition;
@@ -113,80 +94,79 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 	private TextField txtNoOfBarcodes;
 
 	@FXML
-	private TextField txtSellPrice;
+	private TextField txtAmountLabel;
 
 	@FXML
 	private ImageView imageView;
 
+	@FXML
+	private ComboBox<String> cbBarcodeLabelPaperType;
+
 	@Override
 	public void initialize() {
-		productCode = 0;
-		ToggleGroup radioButtonGroup = new ToggleGroup();
-		rb_24Stickers.setToggleGroup(radioButtonGroup);
-		rb_40Stickers.setToggleGroup(radioButtonGroup);
-		rb_65Stickers.setToggleGroup(radioButtonGroup);
-		rb_Thermal_Single_5025.setToggleGroup(radioButtonGroup);
-		rb_Thermal_Double_5025.setToggleGroup(radioButtonGroup);
-		rb_Thermal_Single_3825.setToggleGroup(radioButtonGroup);
-		rb_Thermal_Double_3825.setToggleGroup(radioButtonGroup);
+		barcode = 0;
 
 		txtCategory.textProperty().addListener((observable, oldValue, newValue) -> {
 			btnPreview.setDisable(newValue.isEmpty());
 			btnPrint.setDisable(newValue.isEmpty());
+			btnSave.setDisable(newValue.isEmpty());
 		});
 		btnPreview.setDisable(true);
 		btnPrint.setDisable(true);
+		btnSave.setDisable(true);
 
 		getProductsName();
 		txtName.createTextField(entries, () -> setProductDetails());
-		txtStartPosition.setText("1");
-		txtNoOfBarcodes.setText("65");
+		populateBarcdeTypes();
+		cbBarcodeLabelPaperType.getSelectionModel().selectedItemProperty().addListener(e -> populateImageView());
+		cbBarcodeLabelPaperType.getSelectionModel().select(appUtils.getAppDataValues(AppConstants.BARCODE_LABEL_TYPE));
+		txtAmountLabel.setText(appUtils.getAppDataValues(AppConstants.BARCODE_AMOUNT_LABEL));
+	}
 
-		rb_65Stickers.setOnAction(e -> populateImageView());
-		rb_24Stickers.setOnAction(e -> populateImageView());
-		rb_40Stickers.setOnAction(e -> populateImageView());
-		rb_Thermal_Single_5025.setOnAction(e -> populateImageView());
-		rb_Thermal_Double_5025.setOnAction(e -> populateImageView());
-		rb_Thermal_Single_3825.setOnAction(e -> populateImageView());
-		rb_Thermal_Double_3825.setOnAction(e -> populateImageView());
-
-		rb_65Stickers.setSelected(true);
-		imageView.setImage(new Image(this.getClass().getResource("/images/65_Labels.png").toString()));
+	private void populateBarcdeTypes() {
+		cbBarcodeLabelPaperType.getItems().add(AppConstants.A4_65);
+		cbBarcodeLabelPaperType.getItems().add(AppConstants.A4_40);
+		cbBarcodeLabelPaperType.getItems().add(AppConstants.A4_24);
+		cbBarcodeLabelPaperType.getItems().add(AppConstants.TH_5025_1);
+		cbBarcodeLabelPaperType.getItems().add(AppConstants.TH_5025_2);
+		cbBarcodeLabelPaperType.getItems().add(AppConstants.TH_3825_1);
+		cbBarcodeLabelPaperType.getItems().add(AppConstants.TH_3825_2);
 	}
 
 	private void populateImageView() {
 		String imageName = "65_Labels.png";
-		if (rb_65Stickers.isSelected()) {
+		String selectedType = cbBarcodeLabelPaperType.getSelectionModel().getSelectedItem();
+		if (selectedType.equalsIgnoreCase(AppConstants.A4_65)) {
 			txtStartPosition.setDisable(false);
 			imageName = "65_Labels.png";
 			txtStartPosition.setText("1");
 			txtNoOfBarcodes.setText("65");
-		} else if (rb_40Stickers.isSelected()) {
+		} else if (selectedType.equalsIgnoreCase(AppConstants.A4_40)) {
 			txtStartPosition.setDisable(false);
 			imageName = "40_Labels.png";
 			txtStartPosition.setText("1");
 			txtNoOfBarcodes.setText("40");
-		} else if (rb_24Stickers.isSelected()) {
+		} else if (selectedType.equalsIgnoreCase(AppConstants.A4_24)) {
 			txtStartPosition.setDisable(false);
 			imageName = "24_Labels.png";
 			txtStartPosition.setText("1");
 			txtNoOfBarcodes.setText("24");
-		} else if (rb_Thermal_Single_5025.isSelected()) {
+		} else if (selectedType.equalsIgnoreCase(AppConstants.TH_5025_1)) {
 			imageName = "Single_5025mm.png";
 			txtStartPosition.setDisable(true);
 			txtStartPosition.setText("Not Applicable");
 			txtNoOfBarcodes.setText("1");
-		} else if (rb_Thermal_Double_5025.isSelected()) {
+		} else if (selectedType.equalsIgnoreCase(AppConstants.TH_5025_2)) {
 			imageName = "Double_5025mm.png";
 			txtStartPosition.setDisable(true);
 			txtStartPosition.setText("Not Applicable");
 			txtNoOfBarcodes.setText("2");
-		} else if (rb_Thermal_Single_3825.isSelected()) {
+		} else if (selectedType.equalsIgnoreCase(AppConstants.TH_3825_1)) {
 			imageName = "Single_3825mm.png";
 			txtStartPosition.setDisable(true);
 			txtStartPosition.setText("Not Applicable");
 			txtNoOfBarcodes.setText("1");
-		} else if (rb_Thermal_Double_3825.isSelected()) {
+		} else if (selectedType.equalsIgnoreCase(AppConstants.TH_3825_2)) {
 			imageName = "Double_3825mm.png";
 			txtStartPosition.setDisable(true);
 			txtStartPosition.setText("Not Applicable");
@@ -194,23 +174,41 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 		}
 
 		imageView.setImage(new Image(this.getClass().getResource("/images/" + imageName).toString()));
+		if (!txtName.getText().equals("")) {
+			prepareSheet("PREVIEW");
+			imageView.setImage(appUtils.getBarcodeImage());
+		}
 	}
 
 	@FXML
 	void onPrint(ActionEvent event) {
-		prepareSheet(false);
+		prepareSheet("PRINT");
+	}
+
+	@FXML
+	void onAmountLabelUpdateCommand(ActionEvent event) {
+		appUtils.updateAppData(AppConstants.BARCODE_AMOUNT_LABEL, txtAmountLabel.getText());
+		alertHelper.showSuccessNotification("Amount Label updated successfully");
+		appUtils.reloadAppData();
 	}
 
 	@FXML
 	void onPreview(ActionEvent event) {
-		prepareSheet(true);
+		prepareSheet("PREVIEW");
+		imageView.setImage(appUtils.getBarcodeImage());
+	}
+	
+	@FXML
+	void onSave(ActionEvent event) {
+		prepareSheet("SAVE");
 	}
 
-	private void prepareSheet(boolean isPrintPreview) {
+
+	private void prepareSheet(String action) {
 		if (txtName.getText().equals("")) {
 			alertHelper.showErrorNotification("Please select product");
-		} else if (txtBarcode.getText().equals("")) {
-			alertHelper.showErrorNotification("Please generate the barcode for product");
+		} else if (barcode == 0) {
+			alertHelper.showErrorNotification("Please generate the barcode for the product");
 		} else {
 
 			String JrxmlName = null;
@@ -219,30 +217,32 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 			try {
 				Product p = productMap.get(txtName.getText());
 				Barcode barcode = new Barcode();
-				barcode.setBarcode(txtBarcode.getText().trim());
-				barcode.setPrice(Double.valueOf(txtSellPrice.getText()));
+				barcode.setBarcode(String.valueOf(p.getProductBarCode()));
+				barcode.setPrice(p.getSellPrice());
 				barcode.setProductName(txtName.getText());
 				barcode.setProductCode(p.getProductCode());
 				barcode.setCategoryName(p.getProductCategory());
-				if (rb_65Stickers.isSelected()) {
+				barcode.setAmountLabel(txtAmountLabel.getText());
+				String selectedType = cbBarcodeLabelPaperType.getSelectionModel().getSelectedItem();
+				if (selectedType.equalsIgnoreCase(AppConstants.A4_65)) {
 					JrxmlName = AppConstants.BARCODE_65_JASPER;
 					noOfLabels = 65;
-				} else if (rb_24Stickers.isSelected()) {
+				} else if (selectedType.equalsIgnoreCase(AppConstants.A4_24)) {
 					JrxmlName = AppConstants.BARCODE_24_JASPER;
 					noOfLabels = 24;
-				} else if (rb_40Stickers.isSelected()) {
+				} else if (selectedType.equalsIgnoreCase(AppConstants.A4_40)) {
 					JrxmlName = AppConstants.BARCODE_40_JASPER;
 					noOfLabels = 40;
-				} else if (rb_Thermal_Single_5025.isSelected()) {
+				} else if (selectedType.equalsIgnoreCase(AppConstants.TH_5025_1)) {
 					JrxmlName = AppConstants.BARCODE_THERMAL_SINGLE_5025_JASPER;
 					noOfLabels = 1;
-				} else if (rb_Thermal_Double_5025.isSelected()) {
+				} else if (selectedType.equalsIgnoreCase(AppConstants.TH_5025_2)) {
 					JrxmlName = AppConstants.BARCODE_THERMAL_DOUBLE_5025_JASPER;
 					noOfLabels = 1;
-				} else if (rb_Thermal_Single_3825.isSelected()) {
+				} else if (selectedType.equalsIgnoreCase(AppConstants.TH_3825_1)) {
 					JrxmlName = AppConstants.BARCODE_THERMAL_SINGLE_3825_JASPER;
 					noOfLabels = 1;
-				} else if (rb_Thermal_Double_3825.isSelected()) {
+				} else if (selectedType.equalsIgnoreCase(AppConstants.TH_3825_2)) {
 					JrxmlName = AppConstants.BARCODE_THERMAL_DOUBLE_3825_JASPER;
 					noOfLabels = 1;
 				}
@@ -262,7 +262,7 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 				}
 
 				boolean isSuccess = printerService.printBarcodeSheet(barcode, noOfLabels, startPosition, JrxmlName,
-						isPrintPreview);
+						action);
 				if (!isSuccess) {
 					alertHelper.showErrorNotification("Error occurred while generating barcode sheet");
 				}
@@ -276,11 +276,6 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 	@FXML
 	void onCloseAction(ActionEvent event) {
 		closeTab();
-	}
-
-	@FXML
-	void onResetCommand(ActionEvent event) {
-		resetFields();
 	}
 
 	@Override
@@ -336,29 +331,15 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 		return valid;
 	}
 
-	private void resetFields() {
-		txtName.setText("");
-		txtCategory.setText("");
-		txtQuantity.setText("");
-		txtBarcode.setText("");
-		txtStartPosition.setText("1");
-		txtSellPrice.setText("");
-		txtNoOfBarcodes.setText("65");
-		productCode = 0;
-	}
-
 	private void setProductDetails() {
 		Product p = productMap.get(txtName.getText());
 		if (p != null) {
 			txtCategory.setText(p.getProductCategory());
 			txtQuantity.setText(appUtils.getDecimalFormat(p.getQuantity()));
-			txtSellPrice.setText(appUtils.getDecimalFormat(p.getSellPrice()));
-			if (p.getProductBarCode() == 0) {
-				txtBarcode.setText("");
-			} else {
-				txtBarcode.setText(String.valueOf(p.getProductBarCode()));
-			}
+			barcode = p.getProductBarCode();
+			txtSellRate.setText(appUtils.getDecimalFormat(p.getSellPrice()));
 		}
+		onPreview(null);
 	}
 
 	public void getProductsName() {

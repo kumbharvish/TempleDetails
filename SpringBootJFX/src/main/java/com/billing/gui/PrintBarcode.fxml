@@ -3,8 +3,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SplitPane?>
@@ -13,6 +13,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import com.billing.utils.AutoCompleteTextField?>
@@ -29,7 +30,7 @@
 		</VBox>
 	</top>
 	<center>
-		<SplitPane fx:id="splitPane" dividerPositions="0.39" BorderPane.alignment="CENTER">
+		<SplitPane fx:id="splitPane" dividerPositions="0.4" BorderPane.alignment="CENTER">
 			<items>
 				<BorderPane styleClass="parent">
 					<center>
@@ -44,34 +45,30 @@
 										<TextField fx:id="txtQuantity" editable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 										<Label styleClass="nodeLabel" text="Category :" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
 										<TextField fx:id="txtCategory" editable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-										<Label styleClass="nodeLabel" text="Barcode :" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
-										<TextField fx:id="txtBarcode" editable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+										<Label styleClass="nodeLabel" text="Sell Price :" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+										<TextField fx:id="txtSellRate" editable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
 										<Separator GridPane.columnSpan="2" GridPane.rowIndex="8" />
 										<ButtonBar buttonMinWidth="90.0" GridPane.columnSpan="2" GridPane.rowIndex="9">
 											<buttons>
 												<Button fx:id="btnPreview" defaultButton="true" mnemonicParsing="true" onAction="#onPreview" text="Preview" />
 												<Button fx:id="btnPrint" defaultButton="true" mnemonicParsing="true" onAction="#onPrint" text="Print" />
+                                    <Button fx:id="btnSave" defaultButton="true" layoutX="187.0" layoutY="10.0" mnemonicParsing="true" onAction="#onSave" text="Save" />
 											</buttons>
 										</ButtonBar>
-										<Label styleClass="nodeLabel" text="Sell Price :" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
-										<TextField fx:id="txtSellPrice" editable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-										<Label styleClass="nodeLabel" text="Sticker Paper Type :" GridPane.rowIndex="5" />
-										<VBox spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
-											<children>
-												<RadioButton fx:id="rb_65Stickers" mnemonicParsing="false" text="A4 - 65 Stickers" />
-												<RadioButton fx:id="rb_40Stickers" mnemonicParsing="false" text="A4 - 40 Stickers" />
-												<RadioButton fx:id="rb_24Stickers" mnemonicParsing="false" text="A4 - 24 Stickers" />
-                                    <RadioButton fx:id="rb_Thermal_Single_5025" layoutX="10.0" layoutY="64.0" mnemonicParsing="false" text="Thermal 1 Label 50 X 25 mm" />
-                                    <RadioButton fx:id="rb_Thermal_Double_5025" layoutX="10.0" layoutY="91.0" mnemonicParsing="false" text="Thermal 2 Label 50 X 25 mm" />
-                                    <RadioButton fx:id="rb_Thermal_Single_3825" layoutX="10.0" layoutY="118.0" mnemonicParsing="false" text="Thermal 1 Label 38 X 25 mm" />
-                                    <RadioButton fx:id="rb_Thermal_Double_3825" layoutX="10.0" layoutY="145.0" mnemonicParsing="false" text="Thermal 2 Label 38 X 25 mm" />
-											</children>
-										</VBox>
+										<Label styleClass="nodeLabel" text="Amount Label :" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+                              <HBox spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                 <children>
+      										<TextField fx:id="txtAmountLabel" />
+                                    <Button mnemonicParsing="false" onAction="#onAmountLabelUpdateCommand" text="Update" />
+                                 </children>
+                              </HBox>
+										<Label styleClass="nodeLabel" text="Label Paper Type :" GridPane.rowIndex="5" />
 										<Label styleClass="nodeLabel" text="Start Position :" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
-										<Label styleClass="nodeLabel" text="No of barcodes :" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
+										<Label styleClass="nodeLabel" text="No of labels:" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
 										<TextField fx:id="txtStartPosition" GridPane.columnIndex="1" GridPane.rowIndex="6" />
 										<TextField fx:id="txtNoOfBarcodes" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                              <ComboBox fx:id="cbBarcodeLabelPaperType" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 									</children>
 									<columnConstraints>
 										<ColumnConstraints hgrow="NEVER" />
@@ -131,20 +128,6 @@
 							</content>
 						</ScrollPane>
 					</center>
-					<left>
-						<VBox alignment="CENTER" fillWidth="false" spacing="15.0" BorderPane.alignment="CENTER">
-							<children>
-								<Label fx:id="lblGuidelines" styleClass="note" text="Guidelines :" />
-								<Label styleClass="note" text="1) Please choose product" />
-								<Label styleClass="note" text="2) Please select sticker type as per your need" />
-								<Label styleClass="note" text="3) Refer paper format for choosing start position" />
-								<Label styleClass="note" text="4) Enter required count of barcodes" />
-								<Label styleClass="note" text="5) Click on Generate Barcode Sheet button" />
-								<Label styleClass="note" text="6) It will show document" />
-								<Label styleClass="note" text="7) Print / Save the document" />
-							</children>
-						</VBox>
-					</left>
 				</BorderPane>
 			</items>
 		</SplitPane>

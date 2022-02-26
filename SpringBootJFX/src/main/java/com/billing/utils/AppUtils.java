@@ -54,6 +54,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
+import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
@@ -100,6 +101,8 @@ public class AppUtils {
 	List<String> paymentModes = null;
 
 	SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+	
+	private Image barcodeImage  = null;
 
 	public static int getRecordsCount(ResultSet resultset) throws SQLException {
 		if (resultset.last()) {
@@ -834,5 +837,13 @@ public class AppUtils {
 			start.add(Calendar.DAY_OF_YEAR, 1);
 		}
 		return dates;
+	}
+
+	public Image getBarcodeImage() {
+		return barcodeImage;
+	}
+
+	public void setBarcodeImage(Image barcodeImage) {
+		this.barcodeImage = barcodeImage;
 	}
 }

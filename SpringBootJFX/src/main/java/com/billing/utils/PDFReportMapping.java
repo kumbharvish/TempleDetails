@@ -466,6 +466,7 @@ public class PDFReportMapping {
 					: barcode.getCategoryName().toUpperCase()+" # "+barcode.getProductCode());
 			map.put("Barcode", barcode.getBarcode());
 			map.put("Price", appUtils.getDecimalFormat(barcode.getPrice()));
+			map.put("AmountLabel", barcode.getAmountLabel());
 			dataSourceMaps.add(map);
 		}
 		return dataSourceMaps;
