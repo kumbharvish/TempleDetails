@@ -254,6 +254,7 @@ public class InvoiceRepository {
 				itemDetails.setHsn(rs.getString("HSN"));
 				itemDetails.setBillNumber(rs.getInt("BILL_NUMBER"));
 				itemDetails.setCategoryName(rs.getString("CATEGORY_NAME"));
+				itemDetails.setPurchasePrice(rs.getDouble("ITEM_PURCHASE_AMT"));
 
 				GSTDetails gstDetails = new GSTDetails();
 
