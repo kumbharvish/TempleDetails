@@ -178,18 +178,8 @@
 															<children>
 																<HBox spacing="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
 																	<children>
-																		<Button fx:id="btnRefresh" mnemonicParsing="false" onAction="#onRefereshCommand" styleClass="graphicButton">
-																			<graphic>
-																				<ImageView>
-            																					<image>
-                  																						<Image url="/images/refresh.png" />
-                  																					</image>
-                  																				</ImageView>
-                  																			</graphic>
-																			<tooltip>
-																				<Tooltip text="Refresh Item / Customer List" />
-																			</tooltip>
-																		</Button>
+																	<VBox alignment="TOP_CENTER">
+																	<children>
 																		<Button fx:id="btnCashHelp" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onCashHelpCommand" styleClass="graphicButton">
 																			<graphic>
 																				<ImageView>
@@ -202,6 +192,11 @@
 																				<Tooltip text="Cash Help" />
 																			</tooltip>
 																		</Button>
+																		<Label styleClass="nodeLabel" text="Cash Help" />
+																		</children>
+																		</VBox>
+																	<VBox alignment="TOP_CENTER">
+																	<children>
 																		<Button fx:id="btnGSTDetails" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onGSTDetailsCommand" styleClass="graphicButton">
 																			<graphic>
 																				<ImageView>
@@ -214,6 +209,26 @@
 																				<Tooltip text="View GST Details" />
 																			</tooltip>
 																		</Button>
+																		<Label styleClass="nodeLabel" text="GST Details" />
+																		</children>
+																		</VBox>
+																	<VBox alignment="TOP_CENTER">
+																	<children>
+																		<Button fx:id="btnStockCorrection" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onStockCorrectionCommand" styleClass="graphicButton">
+																			<graphic>
+																				<ImageView>
+            																					<image>
+                  																						<Image url="/images/StockCorrection.png" />
+                  																					</image>
+                  																				</ImageView>
+                  																			</graphic>
+																			<tooltip>
+																				<Tooltip text="Stock Correction" />
+																			</tooltip>
+																		</Button>
+																		<Label styleClass="nodeLabel" text="Stock Correction" />
+																		</children>
+																		</VBox>
 																	</children>
 																</HBox>
 																<HBox spacing="20.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="0.0">

@@ -293,11 +293,6 @@ public class SalesReportController extends AppContext implements TabContent {
 
 	}
 	
-	@FXML
-    void onRefreshCommand(ActionEvent event) {
-		loadData();
-    }
-
 	private SalesReport getSalesReport() {
 		SalesReport salesReport = new SalesReport();
 		salesReport.setBillList(billList);

@@ -41,7 +41,6 @@
                <children>
                   <Button fx:id="btnUpdateOpeningCash" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onUpdateOpeningCashCommand" text="Update Opening Cash" />
                   <Button fx:id="btnViewSettlementDetails" mnemonicParsing="false" onAction="#onViewSettlementDetailsCommand" text="View Customer Settlement" />
-                  <Button fx:id="btnRefresh" mnemonicParsing="false" onAction="#onRefreshCommand" text="Refresh" />
                </children>
                <padding>
                   <Insets left="20.0" />

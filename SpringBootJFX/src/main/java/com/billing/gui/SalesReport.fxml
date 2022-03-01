@@ -41,7 +41,6 @@
 								<DatePicker fx:id="dpFromDate" GridPane.columnIndex="1" />
 								<DatePicker fx:id="dpToDate" GridPane.columnIndex="3" />
 								<Label styleClass="nodeLabel" text="To :" GridPane.columnIndex="2" GridPane.halignment="RIGHT" />
-                        <Button mnemonicParsing="false" onAction="#onRefreshCommand" text="Refresh" GridPane.columnIndex="4" />
 							</children>
 						</GridPane>
 						<ToolBar styleClass="parent" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">

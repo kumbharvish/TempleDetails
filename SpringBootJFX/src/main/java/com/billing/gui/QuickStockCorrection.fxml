@@ -21,7 +21,7 @@
          <top>
             <VBox alignment="TOP_CENTER" spacing="10.0" BorderPane.alignment="CENTER">
                <children>
-                  <Label fx:id="heading" alignment="TOP_CENTER" contentDisplay="CENTER" text="Quick Stock Correction" textAlignment="CENTER" />
+                  <Label fx:id="heading" alignment="TOP_CENTER" contentDisplay="CENTER" text="Stock Correction" textAlignment="CENTER" />
                   <Label alignment="CENTER_RIGHT" styleClass="nodeLabel" text="Product Search :" />
                   <AutoCompleteTextField fx:id="txtSearchByItemName" />
                   <Label fx:id="lblErrProductSearch" styleClass="errorLabel">

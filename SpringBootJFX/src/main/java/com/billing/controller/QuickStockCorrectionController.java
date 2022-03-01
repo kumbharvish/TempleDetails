@@ -9,11 +9,12 @@ import org.springframework.stereotype.Controller;
 
 import com.billing.dto.Product;
 import com.billing.dto.UserDetails;
+import com.billing.main.AppContext;
 import com.billing.service.ProductService;
 import com.billing.utils.AlertHelper;
 import com.billing.utils.AppUtils;
 import com.billing.utils.AutoCompleteTextField;
-import com.billing.utils.TabContent;
+import com.billing.utils.Task;
 
 import javafx.animation.PauseTransition;
 import javafx.beans.Observable;
@@ -26,7 +27,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -36,7 +36,7 @@ import javafx.util.Duration;
 
 @SuppressWarnings("restriction")
 @Controller
-public class QuickStockCorrectionController implements TabContent {
+public class QuickStockCorrectionController extends AppContext {
 
 	@Autowired
 	ProductService productService;
@@ -78,9 +78,9 @@ public class QuickStockCorrectionController implements TabContent {
 
 	@FXML
 	private TextField txtSellPrice;
-	
-    @FXML
-    private Label lblErrProductSearch;
+
+	@FXML
+	private Label lblErrProductSearch;
 
 	private BooleanProperty isDirty = new SimpleBooleanProperty(false);
 
@@ -89,33 +89,25 @@ public class QuickStockCorrectionController implements TabContent {
 	private HashMap<Long, Product> productMapWithBarcode;
 
 	private SortedSet<String> entries;
+	
+	Task task;
 
-	@Override
 	public boolean shouldClose() {
 		return true;
 	}
 
-	@Override
-	public void putFocusOnNode() {
-		txtSearchByItemName.requestFocus();
-	}
-
-	@Override
 	public boolean loadData() {
 		return true;
 	}
 
-	@Override
 	public void setMainWindow(Stage stage) {
 		currentStage = stage;
 	}
 
-	@Override
 	public void setTabPane(TabPane tabPane) {
 		this.tabPane = tabPane;
 	}
 
-	@Override
 	public void initialize() {
 
 		txtQuantityErrMsg.managedProperty().bind(txtQuantityErrMsg.visibleProperty());
@@ -137,6 +129,16 @@ public class QuickStockCorrectionController implements TabContent {
 				}
 			}
 		});
+		txtSearchByItemName.requestFocus();
+		// Qty
+		txtQuantity.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (!txtQuantity.getText().equals("") && ke.getCode().equals(KeyCode.ENTER)) {
+					onUpdateCommand(null);
+				}
+			}
+		});
 	}
 
 	private void setProductDetails() {
@@ -150,14 +152,13 @@ public class QuickStockCorrectionController implements TabContent {
 
 	public void barcodeScanEvent() {
 		String name = txtSearchByItemName.getText();
-		if (!appUtils.isEmptyString(name) && appUtils.isNumeric(name) && name.length()> 4) {
+		if (!appUtils.isEmptyString(name) && appUtils.isNumeric(name) && name.length() > 4) {
 			long barcode = 0;
 			barcode = Long.valueOf(name);
 			Product p = productMapWithBarcode.get(barcode);
-			setTextFields(p);			
+			setTextFields(p);
 		}
 	}
-
 
 	private void setTextFields(Product p) {
 		if (null != p) {
@@ -185,23 +186,14 @@ public class QuickStockCorrectionController implements TabContent {
 		setNewFocus();
 	}
 
-	@Override
 	public boolean saveData() {
 		return false;
 	}
 
-	@Override
 	public void invalidated(Observable observable) {
 		isDirty.set(true);
 	}
 
-	@Override
-	public void closeTab() {
-		Tab tab = tabPane.selectionModelProperty().get().selectedItemProperty().get();
-		tabPane.getTabs().remove(tab); // close the current tab
-	}
-
-	@Override
 	public boolean validateInput() {
 		boolean valid = true;
 		int name = txtName.getText().trim().length();
@@ -229,7 +221,8 @@ public class QuickStockCorrectionController implements TabContent {
 
 	@FXML
 	void onCloseCommand(ActionEvent event) {
-		closeTab();
+		Stage stage = (Stage) txtSearchByItemName.getScene().getWindow();
+		stage.close();
 	}
 
 	@FXML
@@ -248,8 +241,13 @@ public class QuickStockCorrectionController implements TabContent {
 		boolean flag = productService.doQuickStockCorrection(product, qty);
 		if (flag) {
 			resetFields();
-			alertHelper.showSuccessNotification("Product stock updated successfully");
-			closeTab();
+			
+			if(task != null) {
+				onCloseCommand(null);
+				task.doTask();
+			} else {
+				alertHelper.showSuccessNotification("Product stock updated successfully");
+			}
 		} else {
 			alertHelper.showDataSaveErrAlert(currentStage);
 		}
@@ -267,10 +265,12 @@ public class QuickStockCorrectionController implements TabContent {
 		}
 	}
 
-	@Override
 	public void setUserDetails(UserDetails user) {
 		// TODO Auto-generated method stub
 
 	}
 
+	public void setTask(Task task) {
+		this.task = task;
+	}
 }

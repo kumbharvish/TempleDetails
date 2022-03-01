@@ -44,7 +44,7 @@
 										<KeyCodeCombination alt="UP" code="P" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
 									</accelerator>
 								</MenuItem>
-								<MenuItem fx:id="quickStockCorrectionMenuItem" onAction="#onQuickStockCorrectionCommand" text="_Quick Stock Correction">
+								<MenuItem fx:id="quickStockCorrectionMenuItem" onAction="#onQuickStockCorrectionCommand" text="Stoc_k Correction">
 									<accelerator>
 										<KeyCodeCombination alt="UP" code="Q" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
 									</accelerator>
@@ -73,12 +73,12 @@
 						</Menu>
 						<Menu fx:id="purchaseMenu" text="_Purchase">
 							<items>								
-								<MenuItem fx:id="stockEntryMenuItem" onAction="#onPurchaseEntryCommand" text="Purchase E_ntry">
+								<MenuItem fx:id="stockEntryMenuItem" onAction="#onPurchaseEntryCommand" text="Purchase _Entry">
 									<accelerator>
 										<KeyCodeCombination alt="UP" code="E" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
 									</accelerator>
 								</MenuItem>
-								<MenuItem fx:id="stockHistoryMenuItem" onAction="#onSearchPurchaseEntryCommand" text="Search P_urchase Entry">
+								<MenuItem fx:id="stockHistoryMenuItem" onAction="#onSearchPurchaseEntryCommand" text="Search Purc_hase Entry">
 									<accelerator>
 										<KeyCodeCombination alt="UP" code="H" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
 									</accelerator>
@@ -203,11 +203,6 @@
 						<Label fx:id="lblProducts" text="Products" onMouseClicked="#onProductsClick">
 							<tooltip>
 								<Tooltip text="Products" />
-							</tooltip>
-						</Label>
-						<Label fx:id="lblQuickStockCorrection" text="Stock Correction" onMouseClicked="#onQuickStockCorrectionClick">
-							<tooltip>
-								<Tooltip text="Quick Stock Correction" />
 							</tooltip>
 						</Label>
 						<Separator maxHeight="24.0" orientation="VERTICAL" />

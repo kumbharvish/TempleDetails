@@ -352,7 +352,7 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 			@Override
 			public void handle(KeyEvent ke) {
 				txtAmount.setText("");
-				if(!txtRate.getText().equals("") && ke.getCode().equals(KeyCode.ENTER)) {
+				if (!txtRate.getText().equals("") && ke.getCode().equals(KeyCode.ENTER)) {
 					txtQuantity.requestFocus();
 				}
 			}
@@ -593,14 +593,6 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	}
 
 	@FXML
-	void onRefereshCommand(ActionEvent event) {
-		getProductNameList();
-		getCustomerNameList();
-		txtCustomer.createTextField(customerEntries, () -> setNewFocus());
-		txtItemName.createTextField(productEntries, () -> setProductDetails());
-	}
-
-	@FXML
 	void onCashHelpCommand(ActionEvent event) {
 		if (!txtNetSalesAmount.getText().equals("")) {
 			getCashHelpPopup();
@@ -610,6 +602,11 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 	@FXML
 	void onGSTDetailsCommand(ActionEvent event) {
 		getGSTDetailsPopUp();
+	}
+
+	@FXML
+	void onStockCorrectionCommand(ActionEvent event) {
+		showQuickStockCorrectionPopup();
 	}
 
 	@FXML
@@ -1101,6 +1098,46 @@ public class CreateInvoiceController extends AppContext implements TabContent {
 		stage.setTitle("GST Details");
 		controller.loadData();
 		stage.showAndWait();
+	}
+
+	private void showQuickStockCorrectionPopup() {
+		FXMLLoader fxmlLoader = new FXMLLoader();
+		fxmlLoader.setControllerFactory(springContext::getBean);
+		fxmlLoader.setLocation(this.getClass().getResource("/com/billing/gui/QuickStockCorrection.fxml"));
+
+		Parent rootPane = null;
+		try {
+			rootPane = fxmlLoader.load();
+		} catch (IOException e) {
+			e.printStackTrace();
+			logger.error("showQuickStockCorrectionPopup Error in loading the view file :", e);
+			alertHelper.beep();
+
+			alertHelper.showErrorAlert(currentStage, "Error Occurred", "Error in creating user interface",
+					"An error occurred in creating user interface " + "for the selected command");
+
+			return;
+		}
+
+		final Scene scene = new Scene(rootPane);
+		final QuickStockCorrectionController controller = (QuickStockCorrectionController) fxmlLoader.getController();
+		final Stage stage = new Stage();
+		stage.initModality(Modality.APPLICATION_MODAL);
+		stage.initOwner(currentStage);
+		stage.setUserData(controller);
+		stage.getIcons().add(new Image("/images/shop32X32.png"));
+		stage.setScene(scene);
+		stage.setTitle("Stock Correction");
+		controller.loadData();
+		controller.setTask(() -> onStockCorrectionUpdate());
+		stage.showAndWait();
+	}
+
+	void onStockCorrectionUpdate() {
+		getProductNameList();
+		txtItemName.createTextField(productEntries, () -> setProductDetails());
+		txtItemName.requestFocus();
+		alertHelper.showSuccessNotification("Product stock updated successfully");
 	}
 
 }

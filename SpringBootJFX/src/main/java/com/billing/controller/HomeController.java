@@ -32,6 +32,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -41,9 +42,11 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.ToolBar;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -149,7 +152,9 @@ public class HomeController extends AppContext {
 
 		toolBar.managedProperty().bind(toolBar.visibleProperty());
 		// Listner to load dashboard if no tab in tabpane
+
 		tabPane.getTabs().addListener(new ListChangeListener<Tab>() {
+
 			@Override
 			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Tab> c) {
 				if (tabPane.getTabs().size() == 0 && userDetails.getUserType().equals("INTERNAL")) {
@@ -408,12 +413,12 @@ public class HomeController extends AppContext {
 		addTab("ProductCategory", "Product Categories");
 	}
 
-	@FXML
+	/*@FXML
 	void onQuickStockCorrectionClick(MouseEvent event) {
 		if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
 			quickStockCorrectionMenuItem.fire();
 		}
-	}
+	}*/
 
 	@FXML
 	void onProductCategoryWiseStockCommand(ActionEvent event) {
@@ -549,27 +554,41 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onQuickStockCorrectionCommand(ActionEvent event) {
-		addTab("QuickStockCorrection", "Quick Stock Correction");
+		FXMLLoader fxmlLoader = new FXMLLoader();
+		fxmlLoader.setControllerFactory(springContext::getBean);
+		fxmlLoader.setLocation(this.getClass().getResource("/com/billing/gui/QuickStockCorrection.fxml"));
+
+		Parent rootPane = null;
+		try {
+			rootPane = fxmlLoader.load();
+		} catch (IOException e) {
+			e.printStackTrace();
+			logger.error("showQuickStockCorrectionPopup Error in loading the view file :", e);
+			alertHelper.beep();
+
+			alertHelper.showErrorAlert(currentStage, "Error Occurred", "Error in creating user interface",
+					"An error occurred in creating user interface " + "for the selected command");
+
+			return;
+		}
+
+		final Scene scene = new Scene(rootPane);
+		final QuickStockCorrectionController controller = (QuickStockCorrectionController) fxmlLoader.getController();
+		final Stage stage = new Stage();
+		stage.initModality(Modality.APPLICATION_MODAL);
+		stage.initOwner(currentStage);
+		stage.setUserData(controller);
+		stage.getIcons().add(new Image("/images/shop32X32.png"));
+		stage.setScene(scene);
+		stage.setTitle("Stock Correction");
+		controller.loadData();
+		controller.setTask(null);
+		stage.showAndWait();
 	}
 
 	private void addTab(final String fxmlFileName, final String title) {
 
 		final String KEY = "fxml";
-
-		/*
-		 * Ensure that no second instance of a view other than that of Invoice view is
-		 * instantiated
-		 */
-		if (!fxmlFileName.equalsIgnoreCase(INVOICE_VIEW_FILE_NAME)) { // view other than Invoice view
-			ObservableList<Tab> tabs = tabPane.getTabs();
-			for (Tab tabInstance : tabs) {
-				if (tabInstance.getProperties().get(KEY).toString().equalsIgnoreCase(fxmlFileName)) { // view already
-																										// instantiated
-					tabPane.getSelectionModel().select(tabInstance);
-					return;
-				}
-			}
-		}
 
 		final String viewPath = "/com/billing/gui/" + fxmlFileName + ".fxml";
 
@@ -612,10 +631,10 @@ public class HomeController extends AppContext {
 				event1.consume();
 			}
 		});
+		tabPane.getTabs().clear();
 		if (tabPane.getTabs().size() == 0) {
 			rootPane.setCenter(tabPane);
 		}
-
 		tabPane.getTabs().add(tab);
 		tabPane.getSelectionModel().select(tab);
 		controller.putFocusOnNode();

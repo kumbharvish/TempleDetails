@@ -58,7 +58,7 @@ public class AppConstants {
 
 	public static final String PURCHASE = "PURCHASE";
 
-	public static final String QUICK_STOCK_CORR = "QUICK STOCK CORR";
+	public static final String QUICK_STOCK_CORR = "STOCK CORRECTION";
 
 	public static final String ADD_PRODUCT = "ADD PRODUCT";
 

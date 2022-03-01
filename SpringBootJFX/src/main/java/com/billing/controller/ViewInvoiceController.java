@@ -307,5 +307,12 @@ public class ViewInvoiceController extends AppContext {
 		controller.loadData();
 		stage.showAndWait();
 	}
+	
+	@FXML
+	void onCloseCommand(ActionEvent event) {
+		Stage stage = (Stage) btnViewSalesReturn.getScene().getWindow();
+		stage.close();
+	}
+
 
 }

@@ -236,12 +236,6 @@ public class CashReportController implements TabContent {
 	}
 	
 	@FXML
-    void onRefreshCommand(ActionEvent event) {
-		loadData();
-    }
-
-
-	@FXML
 	void onUpdateOpeningCashCommand(ActionEvent event) {
 
 		Double openCash = reportService.getOpeningCash(appUtils.getTodaysDateForDB());

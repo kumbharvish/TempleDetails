@@ -19,6 +19,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -31,6 +32,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 @SuppressWarnings("restriction")
@@ -131,7 +133,46 @@ public class ExpenseController implements TabContent {
 
 	@Override
 	public void putFocusOnNode() {
-		txtAmount.requestFocus();
+		cbCategory.requestFocus();
+		cbCategory.show();
+		// Expense Category
+		cbCategory.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (!cbCategory.getSelectionModel().getSelectedItem().equals("-- Select Category --")
+						&& ke.getCode().equals(KeyCode.ENTER)) {
+					txtAmount.requestFocus();
+				}
+			}
+		});
+		// Amount
+		txtAmount.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (!txtAmount.getText().equals("") && ke.getCode().equals(KeyCode.ENTER)) {
+					txtDescription.requestFocus();
+				}
+			}
+		});
+		// Description
+		txtDescription.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (ke.getCode().equals(KeyCode.ENTER)) {
+					dateExpense.requestFocus();
+				}
+			}
+		});
+
+		// Date
+		dateExpense.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (ke.getCode().equals(KeyCode.ENTER)) {
+					btnSave.requestFocus();
+				}
+			}
+		});
 	}
 
 	@Override
@@ -140,11 +181,6 @@ public class ExpenseController implements TabContent {
 		dateExpense.setValue(LocalDate.now());
 		appUtils.setDateConvertor(dateExpense);
 		isDirty.set(false);
-		// Set Shortcuts
-		// Add
-		KeyCombination kc = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_ANY);
-		Runnable rn = () -> onSaveCommand(null);
-		currentStage.getScene().getAccelerators().put(kc, rn);
 		return true;
 	}
 

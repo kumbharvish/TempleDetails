@@ -49,11 +49,10 @@
             </VBox>
             <Separator GridPane.columnSpan="2" GridPane.rowIndex="5" />
             <AnchorPane GridPane.columnSpan="2" GridPane.rowIndex="6">
-               <children>
-                  <Label styleClass="shortcut" text="Save : CTRL + S" />
+               <children>                  
                   <ButtonBar AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <buttons>
-                        <Button fx:id="btnSave" defaultButton="true" disable="true" mnemonicParsing="true" onAction="#onSaveCommand" text="_Save" />
+                        <Button fx:id="btnSave" disable="true" mnemonicParsing="true" onAction="#onSaveCommand" text="_Save" />
                         <Button fx:id="btnClose" cancelButton="true" mnemonicParsing="true" onAction="#onCloseCommand" text="_Close" />
                      </buttons>
                   </ButtonBar>

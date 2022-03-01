@@ -152,9 +152,10 @@
                <children>
                   <ButtonBar>
                     <buttons>
+                    	<Button fx:id="btnViewSalesReturn" layoutX="905.0" layoutY="10.0" mnemonicParsing="false" onAction="#onViewSalesReturnAction" text="View Sales Return" />
                         <Button layoutX="780.0" layoutY="10.0" mnemonicParsing="false" onAction="#onPrintAction" text="Print" />
-                    <Button fx:id="btnViewSalesReturn" layoutX="905.0" layoutY="10.0" mnemonicParsing="false" onAction="#onViewSalesReturnAction" text="View Sales Return" />
-                      <Button mnemonicParsing="false" onAction="#onViewGSTDetailsAction" text="View GST Details" />
+                      	<Button mnemonicParsing="false" onAction="#onViewGSTDetailsAction" text="View GST Details" />
+                      	<Button fx:id="btnClose" cancelButton="true" mnemonicParsing="false" onAction="#onCloseCommand" text="Close" />
                     </buttons>
                   </ButtonBar>
                </children>
