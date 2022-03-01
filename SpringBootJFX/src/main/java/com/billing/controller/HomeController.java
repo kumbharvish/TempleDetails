@@ -413,12 +413,11 @@ public class HomeController extends AppContext {
 		addTab("ProductCategory", "Product Categories");
 	}
 
-	/*@FXML
-	void onQuickStockCorrectionClick(MouseEvent event) {
-		if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
-			quickStockCorrectionMenuItem.fire();
-		}
-	}*/
+	/*
+	 * @FXML void onQuickStockCorrectionClick(MouseEvent event) { if
+	 * (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+	 * quickStockCorrectionMenuItem.fire(); } }
+	 */
 
 	@FXML
 	void onProductCategoryWiseStockCommand(ActionEvent event) {
@@ -631,7 +630,15 @@ public class HomeController extends AppContext {
 				event1.consume();
 			}
 		});
-		tabPane.getTabs().clear();
+		if (tabPane.getTabs().size() != 0) {
+			TabContent controllerPrev = (TabContent) tabPane.getTabs().get(0).getProperties().get("controller");
+			if (controllerPrev.shouldClose()) {
+				tabPane.getTabs().clear();
+			} else {
+				return;
+			}
+		}
+
 		if (tabPane.getTabs().size() == 0) {
 			rootPane.setCenter(tabPane);
 		}
