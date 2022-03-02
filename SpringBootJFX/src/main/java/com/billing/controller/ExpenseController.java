@@ -30,8 +30,6 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
@@ -134,7 +132,6 @@ public class ExpenseController implements TabContent {
 	@Override
 	public void putFocusOnNode() {
 		cbCategory.requestFocus();
-		cbCategory.show();
 		// Expense Category
 		cbCategory.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
@@ -272,11 +269,6 @@ public class ExpenseController implements TabContent {
 		dateExpense.valueProperty().addListener(this::invalidated);
 		txtAmount.textProperty().addListener(appUtils.getForceNumberListner());
 		btnSave.disableProperty().bind(isDirty.not());
-		cbCategory.focusedProperty().addListener((observable, oldValue, newValue) -> {
-			if (newValue) {
-				cbCategory.show();
-			}
-		});
 		txtAmount.textProperty().addListener(this::invalidated);
 		txtDescription.textProperty().addListener(this::invalidated);
 		cbCategory.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
