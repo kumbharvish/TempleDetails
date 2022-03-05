@@ -36,7 +36,24 @@
 		<SplitPane fx:id="splitPane" dividerPositions="0.37" BorderPane.alignment="CENTER">
 			<items>
 				<BorderPane styleClass="parent">
-					<center>
+					<top>
+                  <AnchorPane BorderPane.alignment="CENTER_RIGHT">
+                     <BorderPane.margin>
+                        <Insets bottom="5.0" />
+                     </BorderPane.margin>
+                     <children>
+      						<ToolBar styleClass="parent" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+      							<items>
+      								<Label fx:id="lblViewStockLedger" onMouseClicked="#onViewStockLedgertClick" text="View Stock Ledger">
+								</Label>
+      								<Label fx:id="lblPurchasePriceHistory" onMouseClicked="#onPurchasePriceHistClick" text="Purchase Price History">
+								</Label>
+      							</items>
+      						</ToolBar>
+                     </children>
+                  </AnchorPane>
+					</top>
+               <bottom>
 						<ScrollPane prefHeight="708.0" prefWidth="585.0" styleClass="parent" BorderPane.alignment="CENTER">
 							<content>
 								<GridPane fx:id="gridPane" hgap="20.0" vgap="15.0">
@@ -51,14 +68,14 @@
 										<Label alignment="TOP_RIGHT" contentDisplay="RIGHT" styleClass="requiredInput" text="Category :" textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
 										<VBox spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.vgrow="NEVER">
 											<children>
-												<ComboBox fx:id="cbProductCategory" />
+												<ComboBox fx:id="cbProductCategory" prefWidth="250.0" />
 												<Label fx:id="lblProductCategoryErrMsg" styleClass="errorLabel" visible="false" VBox.vgrow="NEVER" />
 											</children>
 										</VBox>
 										<Label alignment="TOP_RIGHT" styleClass="requiredInput" text="UoM :" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
 										<VBox GridPane.columnIndex="1" GridPane.rowIndex="3">
 											<children>
-												<ComboBox fx:id="cbMeasuringUnit" />
+												<ComboBox fx:id="cbMeasuringUnit" prefWidth="250.0" />
 												<Label fx:id="lblUnitErrMsg" styleClass="errorLabel" />
 											</children>
 										</VBox>
@@ -80,7 +97,7 @@
 										<Label alignment="TOP_RIGHT" styleClass="requiredInput" text="Tax (%) :" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
 										<VBox GridPane.columnIndex="1" GridPane.rowIndex="6">
 											<children>
-												<ComboBox fx:id="cbTax" />
+												<ComboBox fx:id="cbTax" prefWidth="250.0" />
 												<Label fx:id="lblTaxErrMsg" styleClass="errorLabel" />
 											</children>
 										</VBox>
@@ -89,7 +106,7 @@
 										<Label alignment="TOP_RIGHT" styleClass="requiredInput" text="Sell Price :" GridPane.halignment="RIGHT" GridPane.rowIndex="8" />
 										<VBox GridPane.columnIndex="1" GridPane.rowIndex="8">
 											<children>
-												<TextField fx:id="txtSellPrice" promptText="MRP" />
+												<TextField fx:id="txtSellPrice" promptText="Sell Price" />
 												<Label fx:id="lblSellPriceErrMsg" styleClass="errorLabel" />
 											</children>
 										</VBox>
@@ -152,24 +169,7 @@
 								</GridPane>
 							</content>
 						</ScrollPane>
-					</center>
-					<top>
-                  <AnchorPane BorderPane.alignment="CENTER_RIGHT">
-                     <BorderPane.margin>
-                        <Insets bottom="5.0" />
-                     </BorderPane.margin>
-                     <children>
-      						<ToolBar styleClass="parent" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
-      							<items>
-      								<Label fx:id="lblViewStockLedger" onMouseClicked="#onViewStockLedgertClick" text="View Stock Ledger">
-								</Label>
-      								<Label fx:id="lblPurchasePriceHistory" onMouseClicked="#onPurchasePriceHistClick" text="Purchase Price History">
-								</Label>
-      							</items>
-      						</ToolBar>
-                     </children>
-                  </AnchorPane>
-					</top>
+               </bottom>
 				</BorderPane>
 
 				<BorderPane styleClass="parent">

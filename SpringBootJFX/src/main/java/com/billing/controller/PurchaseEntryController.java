@@ -490,14 +490,6 @@ public class PurchaseEntryController extends AppContext implements TabContent {
 	}
 
 	@FXML
-	void onRefereshCommand(ActionEvent event) {
-		getProductNameList();
-		getSupplierNameList();
-		txtSupplier.createTextField(supplierEntries, () -> supplierTxtFieldTask());
-		txtItemName.createTextField(productEntries, () -> setProductDetails());
-	}
-
-	@FXML
 	void onGSTDetailsCommand(ActionEvent event) {
 		getGSTDetailsPopUp();
 	}

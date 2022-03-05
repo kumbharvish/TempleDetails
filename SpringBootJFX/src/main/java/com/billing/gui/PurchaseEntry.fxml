@@ -61,7 +61,7 @@
 													</GridPane.margin>
 												</VBox>
 												<Label styleClass="nodeLabel" text="Unit :" GridPane.columnIndex="1" />
-												<TextField fx:id="txtUnit" editable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+												<TextField fx:id="txtUnit" editable="false"  focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="TOP" />
 												<Label styleClass="nodeLabel" text="Tax(%) :" GridPane.columnIndex="2" />
 												<VBox GridPane.columnIndex="2" GridPane.rowIndex="1">
 													<children>
@@ -128,18 +128,6 @@
 															<children>
 																<HBox spacing="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
 																	<children>
-																		<Button fx:id="btnRefresh" mnemonicParsing="false" onAction="#onRefereshCommand" styleClass="graphicButton">
-																			<graphic>
-																				<ImageView>
-																					<image>
-            																						<Image url="/images/refresh.png" />
-            																					</image>
-            																				</ImageView>
-            																			</graphic>
-																			<tooltip>
-																				<Tooltip text="Refresh Item / Customer List" />
-																			</tooltip>
-																		</Button>
 																		<Button fx:id="btnGSTDetails" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onGSTDetailsCommand" styleClass="graphicButton">
 																			<graphic>
 																				<ImageView>
@@ -180,13 +168,13 @@
 
             											<children>
 												<Label styleClass="nodeLabel" text="No Of Items :" GridPane.halignment="RIGHT" />
-												<TextField fx:id="txtNoOfItems" alignment="CENTER_RIGHT" editable="false" styleClass="totalFields" GridPane.columnIndex="1" />
+												<TextField fx:id="txtNoOfItems" alignment="CENTER_RIGHT" editable="false"  focusTraversable="false" styleClass="totalFields" GridPane.columnIndex="1" />
 												<Label styleClass="nodeLabel" text="Total Quantity :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
-												<TextField fx:id="txtTotalQty" alignment="CENTER_RIGHT" editable="false" styleClass="totalFields" GridPane.columnIndex="1" GridPane.rowIndex="1" />												
+												<TextField fx:id="txtTotalQty" alignment="CENTER_RIGHT" editable="false"  focusTraversable="false" styleClass="totalFields" GridPane.columnIndex="1" GridPane.rowIndex="1" />												
 												<Label styleClass="nodeLabel" text="Total Bef. Tax :" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-												<TextField fx:id="txtTotalBefTax" alignment="CENTER_RIGHT" editable="false" styleClass="totalFields" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+												<TextField fx:id="txtTotalBefTax" alignment="CENTER_RIGHT" editable="false"  focusTraversable="false" styleClass="totalFields" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 												<Label styleClass="nodeLabel" text="Total GST Amount :" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
-												<TextField fx:id="txtTotalGSTAmt" alignment="CENTER_RIGHT" editable="false" styleClass="totalFields" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+												<TextField fx:id="txtTotalGSTAmt" alignment="CENTER_RIGHT" editable="false"  focusTraversable="false" styleClass="totalFields" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 												<Label styleClass="nodeLabel" text="Extra Charges (+) :" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
 												<TextField fx:id="txtExtraCharges" alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 												<Label styleClass="nodeLabel" text="Discount Amount (-) :" GridPane.rowIndex="5" />
@@ -219,7 +207,7 @@
 											<children>
 												<Label styleClass="nodeLabel" text="Total Amount :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
 												<Label styleClass="nodeLabel" GridPane.halignment="RIGHT" />
-												<TextField fx:id="txtTotalAmount" alignment="CENTER_RIGHT" editable="false" styleClass="netSalesAmountStyle" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+												<TextField fx:id="txtTotalAmount" alignment="CENTER_RIGHT" editable="false"  focusTraversable="false" styleClass="netSalesAmountStyle" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 												<Separator prefWidth="200.0" GridPane.columnSpan="2" />
 											</children>
 											<padding>
@@ -256,9 +244,9 @@
       													</rowConstraints>
       													<children>
       														<Label styleClass="nodeLabel" text="Pur. Entry  No. :" GridPane.halignment="RIGHT" />
-      														<TextField fx:id="txtPurchaseEntryNo" editable="false" styleClass="readOnlyField" GridPane.columnIndex="1" />
+      														<TextField fx:id="txtPurchaseEntryNo" editable="false"  focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" />
       														<Label styleClass="nodeLabel" text="Entry Date :" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
-      														<TextField fx:id="txtEntryDate" editable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      														<TextField fx:id="txtEntryDate" editable="false"  focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       														<Label styleClass="nodeLabel" text="Comments :" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
       														<TextField fx:id="txtComments" GridPane.columnIndex="1" GridPane.rowIndex="2" />														
       													</children>

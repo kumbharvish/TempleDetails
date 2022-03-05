@@ -244,8 +244,6 @@ public class ProductsController extends AppContext implements TabContent {
 		txtDiscount.textProperty().addListener(appUtils.getForceDecimalNumberListner());
 		// Table row selection
 		tableView.getSelectionModel().selectedItemProperty().addListener(this::onSelectedRowChanged);
-		cbProductCategory.prefWidthProperty().bind(cbMeasuringUnit.widthProperty());
-		cbTax.prefWidthProperty().bind(cbMeasuringUnit.widthProperty());
 		// Fetch comboxes data
 		HashMap<String, List> dataMap = productService.getComboboxData();
 		populateCategoryComboBox(dataMap.get("CATEGORIES"));
@@ -392,7 +390,7 @@ public class ProductsController extends AppContext implements TabContent {
 			cbProductCategory.getItems().add(s.getCategoryName());
 			productCategoryMap.put(s.getCategoryName(), s.getCategoryCode());
 		}
-		cbProductCategory.getSelectionModel().select(0);
+		cbProductCategory.getSelectionModel().selectFirst();
 	}
 
 	public void populateMUnitComboBox(List<MeasurementUnit> list) {
@@ -400,7 +398,7 @@ public class ProductsController extends AppContext implements TabContent {
 		for (MeasurementUnit u : list) {
 			cbMeasuringUnit.getItems().add(u.getName());
 		}
-		cbMeasuringUnit.getSelectionModel().select(0);
+		cbMeasuringUnit.getSelectionModel().selectFirst();
 	}
 
 	public void populateTaxtComboBox(List<Tax> list) {
@@ -409,7 +407,7 @@ public class ProductsController extends AppContext implements TabContent {
 		for (Tax u : list) {
 			cbTax.getItems().add(appUtils.getDecimalFormat(u.getValue()));
 		}
-		cbTax.getSelectionModel().select(0);
+		cbTax.getSelectionModel().selectFirst();
 	}
 
 	@FXML
@@ -886,12 +884,12 @@ public class ProductsController extends AppContext implements TabContent {
 		txtProductName.setText("");
 		productCode = "";
 		lblProductCode.setText(productCode);
-		cbProductCategory.getSelectionModel().select(0);
-		cbMeasuringUnit.getSelectionModel().select(0);
+		cbProductCategory.getSelectionModel().selectFirst();
+		cbMeasuringUnit.getSelectionModel().selectFirst();
 		txtQuantity.setText("");
 		txtQuantity.setDisable(false);
 		txtPurchaseRate.setText("");
-		cbTax.getSelectionModel().select(0);
+		cbTax.getSelectionModel().selectFirst();
 		lblPurchasePrice.setText("");
 		txtSellPrice.setText("");
 		txtDiscount.setText("");
