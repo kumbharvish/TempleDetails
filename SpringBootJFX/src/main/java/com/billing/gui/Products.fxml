@@ -114,24 +114,28 @@
 										<TextField fx:id="txtDiscount" GridPane.columnIndex="1" GridPane.rowIndex="9" />
 										<Label alignment="TOP_RIGHT" styleClass="nodeLabel" text="Barcode :" GridPane.halignment="RIGHT" GridPane.rowIndex="10" />
 										<TextField fx:id="txtBarcode" promptText="Scan Barcode here" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-										<Label styleClass="nodeLabel" text="HSN :" GridPane.halignment="RIGHT" GridPane.rowIndex="11" />
-										<TextField fx:id="txtHSN" GridPane.columnIndex="1" GridPane.rowIndex="11" />
-										<Label styleClass="nodeLabel" text="Low Stock Level :" GridPane.halignment="RIGHT" GridPane.rowIndex="12" />
-                              			<TextField fx:id="txtLowStockLevel" promptText="Ex : 5" GridPane.columnIndex="1" GridPane.rowIndex="12">
+										<Label styleClass="nodeLabel" text="MRP :" GridPane.halignment="RIGHT" GridPane.rowIndex="11" />
+										<TextField fx:id="txtMRP" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+										<Label styleClass="nodeLabel" text="Print Name :" GridPane.halignment="RIGHT" GridPane.rowIndex="12" />
+										<TextField fx:id="txtPrintName" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+										<Label styleClass="nodeLabel" text="HSN :" GridPane.halignment="RIGHT" GridPane.rowIndex="13" />
+										<TextField fx:id="txtHSN" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+										<Label styleClass="nodeLabel" text="Low Stock Level :" GridPane.halignment="RIGHT" GridPane.rowIndex="14" />
+                              			<TextField fx:id="txtLowStockLevel" promptText="Ex : 5" GridPane.columnIndex="1" GridPane.rowIndex="14">
                               			<tooltip>
 										<Tooltip prefWidth="400.0" text="The minimum quantity of product you wish to maintain in stock. We will show you this product in low stock category when stock falls below this level" wrapText="true" />
 										</tooltip>
 										</TextField>
-										<Label styleClass="nodeLabel" text="Entered By :" GridPane.halignment="RIGHT" GridPane.rowIndex="13" />
-										<TextField fx:id="lblEnteredBy" editable="false" focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="13" />
-										<Label styleClass="nodeLabel" text="Entry Date :" GridPane.halignment="RIGHT" GridPane.rowIndex="14" />
-										<TextField fx:id="lblEntryDate" editable="false" focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="14" />
 										<Label styleClass="nodeLabel" text="Description :" GridPane.halignment="RIGHT" GridPane.rowIndex="15" />
 										<TextField fx:id="txtDescription" GridPane.columnIndex="1" GridPane.rowIndex="15" />
+										<Label styleClass="nodeLabel" text="Entered By :" GridPane.halignment="RIGHT" GridPane.rowIndex="16" />
+										<TextField fx:id="lblEnteredBy" editable="false" focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="16" />
+										<Label styleClass="nodeLabel" text="Entry Date :" GridPane.halignment="RIGHT" GridPane.rowIndex="17" />
+										<TextField fx:id="lblEntryDate" editable="false" focusTraversable="false" styleClass="readOnlyField" GridPane.columnIndex="1" GridPane.rowIndex="17" />
 
-										<Separator GridPane.columnSpan="2" GridPane.rowIndex="16" />
+										<Separator GridPane.columnSpan="2" GridPane.rowIndex="18" />
 
-										<ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="17">
+										<ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="19">
 											<buttons>
 												<Button fx:id="btnAdd" mnemonicParsing="true" onAction="#onAddCommand" text="Add" />
 												<Button fx:id="btnUpdate" cancelButton="true" mnemonicParsing="true" onAction="#onUpdateCommand" text="Update" />
@@ -233,6 +237,8 @@
 								<TableColumn fx:id="tcPurchaseRate" minWidth="70" prefWidth="100.0" text="Purchase Rate" />
 								<TableColumn fx:id="tcTax" minWidth="60.0" prefWidth="60.0" text="Tax (%)" />
 								<TableColumn fx:id="tcDiscount" minWidth="90" prefWidth="90" text="Discount(%)" />
+								<TableColumn fx:id="tcPrintName" minWidth="70" prefWidth="120" text="Print Name" />
+								<TableColumn fx:id="tcMRP" minWidth="70" prefWidth="100" text="MRP" />
 								<TableColumn fx:id="tcHSN" minWidth="70" prefWidth="120" text="HSN" />
 								<TableColumn fx:id="tcDescription" minWidth="70" prefWidth="120" text="Description" />
 							</columns>

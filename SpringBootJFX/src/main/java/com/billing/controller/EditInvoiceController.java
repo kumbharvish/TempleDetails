@@ -768,6 +768,7 @@ public class EditInvoiceController extends AppContext implements TabContent {
 			item.setUnit(p.getMeasure());
 			item.setHsn(p.getHsn());
 			item.setCategoryName(p.getProductCategory());
+			item.setPrintName(p.getPrintName());
 			itemList.add(item);
 		}
 		return itemList;

@@ -9,6 +9,8 @@ public class Product {
 	private Long productBarCode;
 
 	private String productName;
+	
+	private String printName;
 
 	private String measure;
 
@@ -416,6 +418,14 @@ public class Product {
 
 	public void setLowStockLevel(Integer lowStockLevel) {
 		this.lowStockLevel = lowStockLevel;
+	}
+
+	public String getPrintName() {
+		return printName;
+	}
+
+	public void setPrintName(String printName) {
+		this.printName = printName;
 	}
 
 	public enum SortParameter {

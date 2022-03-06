@@ -47,17 +47,7 @@ public class PDFReportMapping {
 		for (ItemDetails item : bill.getItemDetails()) {
 			totalAmtForCashInvice += item.getItemAmount();
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("Name",
-					appUtils.getAppDataValues(AppConstants.SHOW_CATEGORY_NAME_ON_INVOICE).equalsIgnoreCase("N")
-							? item.getItemName().toUpperCase()
-							: item.getCategoryName().toUpperCase() + " # " + item.getItemNo());
-			//For Thermal Print append product wise discount in product name
-			if (item.getDiscountPercent() > 0 && bill.getDiscount() == 0 && jasperName.contains("_TH_")) {
-				String name = (String) map.get("Name");
-				name = name + " - DISC " + IndianCurrencyFormatting.applyFormatting(item.getDiscountAmount()) + " @ "
-						+ appUtils.getPercentValueForReport(item.getDiscountPercent()) + "%";
-				map.put("Name", name);
-			}
+			map.put("Name", getProductPrintName(item, bill, jasperName));
 			map.put("Qty", appUtils.getDecimalFormat(item.getQuantity()));
 			map.put("Rate", appUtils.getDecimalFormat(item.getRate()));
 			map.put("Amount", IndianCurrencyFormatting.applyFormatting(item.getAmount()));
@@ -92,6 +82,25 @@ public class PDFReportMapping {
 		}
 
 		return dataSourceMaps;
+	}
+
+	private String getProductPrintName(ItemDetails item, BillDetails bill, String jasperName) {
+		String printName = "";
+		if (appUtils.getAppDataValues(AppConstants.SHOW_CATEGORY_NAME_ON_INVOICE).equalsIgnoreCase("N")) {
+			if (item.getPrintName() != null && !item.getPrintName().equalsIgnoreCase("")) {
+				printName = item.getPrintName().toUpperCase();
+			} else {
+				printName = item.getItemName().toUpperCase();
+			}
+		} else {
+			printName = item.getCategoryName().toUpperCase() + " # " + item.getItemNo();
+		}
+		// For Thermal Print append product wise discount in product name
+		if (item.getDiscountPercent() > 0 && bill.getDiscount() == 0 && jasperName.contains("_TH_")) {
+			printName = printName + " - DISC " + IndianCurrencyFormatting.applyFormatting(item.getDiscountAmount())
+					+ " @ " + appUtils.getPercentValueForReport(item.getDiscountPercent()) + "%";
+		}
+		return printName;
 	}
 
 	// Sub Report Mapping
@@ -465,15 +474,23 @@ public class PDFReportMapping {
 			map.put("ProductName", "");
 			dataSourceMaps.add(map);
 		}
+		String printName = "";
+		if (appUtils.getAppDataValues(AppConstants.SHOW_CATEGORY_NAME_ON_INVOICE).equalsIgnoreCase("N")) {
+			if (barcode.getPrintName() != null && !barcode.getPrintName().equalsIgnoreCase("")) {
+				printName = barcode.getPrintName().toUpperCase();
+			} else {
+				printName = barcode.getProductName().toUpperCase();
+			}
+		} else {
+			printName = barcode.getCategoryName().toUpperCase() + " # " + barcode.getProductCode();
+		}
 
 		for (int i = 1; i <= noOfLabels; i++) {
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("ProductName",
-					appUtils.getAppDataValues(AppConstants.SHOW_CATEGORY_NAME_ON_INVOICE).equalsIgnoreCase("N")
-							? barcode.getProductName().toUpperCase()
-							: barcode.getCategoryName().toUpperCase() + " # " + barcode.getProductCode());
+			map.put("ProductName", printName);
 			map.put("Barcode", barcode.getBarcode());
 			map.put("Price", appUtils.getDecimalFormat(barcode.getPrice()));
+			map.put("MRP", appUtils.getDecimalFormat(barcode.getMrp()));
 			map.put("AmountLabel", barcode.getAmountLabel());
 			dataSourceMaps.add(map);
 		}

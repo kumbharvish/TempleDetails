@@ -180,6 +180,12 @@ public class ProductsController extends AppContext implements TabContent {
 	private TextField txtLowStockLevel;
 
 	@FXML
+	private TextField txtMRP;
+
+	@FXML
+	private TextField txtPrintName;
+
+	@FXML
 	private TableView<Product> tableView;
 
 	@FXML
@@ -215,6 +221,12 @@ public class ProductsController extends AppContext implements TabContent {
 	@FXML
 	private TableColumn<Product, String> tcDiscount;
 
+	@FXML
+	private TableColumn<Product, String> tcMRP;
+
+	@FXML
+	private TableColumn<Product, String> tcPrintName;
+
 	@Override
 	public void initialize() {
 		productCode = "";
@@ -241,6 +253,7 @@ public class ProductsController extends AppContext implements TabContent {
 		txtQuantity.textProperty().addListener(appUtils.getForceDecimalNumberListner());
 		txtBarcode.textProperty().addListener(appUtils.getForceNumberListner());
 		txtSellPrice.textProperty().addListener(appUtils.getForceDecimalNumberListner());
+		txtMRP.textProperty().addListener(appUtils.getForceDecimalNumberListner());
 		txtDiscount.textProperty().addListener(appUtils.getForceDecimalNumberListner());
 		// Table row selection
 		tableView.getSelectionModel().selectedItemProperty().addListener(this::onSelectedRowChanged);
@@ -320,6 +333,9 @@ public class ProductsController extends AppContext implements TabContent {
 				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getDiscount())));
 		tcDescription.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription()));
 		tcHSN.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getHsn()));
+		tcMRP.setCellValueFactory(
+				cellData -> new SimpleStringProperty(appUtils.getDecimalFormat(cellData.getValue().getProductMRP())));
+		tcPrintName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPrintName()));
 
 		// Set CSS
 		tcQuantity.getStyleClass().add("numeric-cell");
@@ -333,6 +349,8 @@ public class ProductsController extends AppContext implements TabContent {
 		tcDescription.getStyleClass().add("character-cell");
 		tcHSN.getStyleClass().add("character-cell");
 		tcProductCode.getStyleClass().add("character-cell");
+		tcPrintName.getStyleClass().add("character-cell");
+		tcMRP.getStyleClass().add("numeric-cell");
 	}
 
 	private void setPurchasePrice() {
@@ -380,6 +398,8 @@ public class ProductsController extends AppContext implements TabContent {
 			txtDescription.setText(newValue.getDescription());
 			txtLowStockLevel
 					.setText(newValue.getLowStockLevel() == null ? "0" : String.valueOf(newValue.getLowStockLevel()));
+			txtMRP.setText(newValue.getProductMRP() == 0 ? "" : appUtils.getDecimalFormat(newValue.getProductMRP()));
+			txtPrintName.setText(newValue.getPrintName());
 		}
 	}
 
@@ -624,7 +644,29 @@ public class ProductsController extends AppContext implements TabContent {
 			@Override
 			public void handle(KeyEvent ke) {
 				if (ke.getCode().equals(KeyCode.ENTER)) {
+					txtMRP.requestFocus();
+				}
+			}
+		});
+
+		// MRP
+		txtMRP.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (ke.getCode().equals(KeyCode.ENTER)) {
+					txtPrintName.requestFocus();
+					;
+				}
+			}
+		});
+
+		// Print Name
+		txtPrintName.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (ke.getCode().equals(KeyCode.ENTER)) {
 					txtHSN.requestFocus();
+					;
 				}
 			}
 		});
@@ -679,6 +721,7 @@ public class ProductsController extends AppContext implements TabContent {
 		Product productToSave = new Product();
 		productToSave.setProductCode(appUtils.getRandomCode());
 		productToSave.setProductName(txtProductName.getText());
+		productToSave.setPrintName(txtPrintName.getText());
 		productToSave.setDescription(txtDescription.getText());
 		productToSave.setMeasure(cbMeasuringUnit.getSelectionModel().getSelectedItem());
 		productToSave.setQuantity(Double.valueOf(txtQuantity.getText()));
@@ -693,6 +736,11 @@ public class ProductsController extends AppContext implements TabContent {
 		productToSave.setProductTax(Double.parseDouble(cbTax.getSelectionModel().getSelectedItem()));
 		productToSave.setPurcasePrice(Double.parseDouble(lblPurchasePrice.getText()));
 		productToSave.setSellPrice(Double.parseDouble(txtSellPrice.getText()));
+		if (txtMRP.getText().equals("")) {
+			productToSave.setProductMRP(Double.parseDouble(txtSellPrice.getText()));
+		} else {
+			productToSave.setProductMRP(Double.parseDouble(txtMRP.getText()));
+		}
 		productToSave.setEnterBy(userDetails.getFirstName() + " " + userDetails.getLastName());
 		productToSave.setEntryDate(appUtils.getCurrentTimestamp());
 		productToSave.setLastUpdateDate(appUtils.getCurrentTimestamp());
@@ -737,6 +785,7 @@ public class ProductsController extends AppContext implements TabContent {
 		Product productToUpdate = new Product();
 		productToUpdate.setProductCode(Integer.valueOf(productCode));
 		productToUpdate.setProductName(txtProductName.getText());
+		productToUpdate.setPrintName(txtPrintName.getText());
 		productToUpdate.setDescription(txtDescription.getText());
 		productToUpdate.setMeasure(cbMeasuringUnit.getSelectionModel().getSelectedItem());
 		productToUpdate.setQuantity(Double.valueOf(txtQuantity.getText()));
@@ -752,6 +801,11 @@ public class ProductsController extends AppContext implements TabContent {
 		productToUpdate.setProductTax(Double.parseDouble(cbTax.getSelectionModel().getSelectedItem()));
 		productToUpdate.setPurcasePrice(Double.parseDouble(lblPurchasePrice.getText()));
 		productToUpdate.setSellPrice(Double.parseDouble(txtSellPrice.getText()));
+		if (txtMRP.getText().equals("")) {
+			productToUpdate.setProductMRP(Double.parseDouble(txtSellPrice.getText()));
+		} else {
+			productToUpdate.setProductMRP(Double.parseDouble(txtMRP.getText()));
+		}
 		productToUpdate.setEnterBy(userDetails.getFirstName() + " " + userDetails.getLastName());
 		productToUpdate.setLastUpdateDate(appUtils.getCurrentTimestamp());
 		productToUpdate.setHsn(txtHSN.getText());
@@ -899,6 +953,8 @@ public class ProductsController extends AppContext implements TabContent {
 		lblEntryDate.setText("");
 		txtDescription.setText("");
 		txtLowStockLevel.setText("");
+		txtPrintName.setText("");
+		txtMRP.setText("");
 		// Reset Error msg
 		lblProductCategoryErrMsg.setText("");
 		lblProductNameErrMsg.setText("");

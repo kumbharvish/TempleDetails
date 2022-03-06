@@ -163,6 +163,8 @@ public class AppConstants {
 	public static final String BARCODE_24_JASPER = "Barcode_24.jasper";
 
 	public static final String BARCODE_THERMAL_SINGLE_5025_JASPER = "Barcode_50X25MM_Single.jasper";
+	
+	public static final String BARCODE_THERMAL_SINGLE_5025_JASPER_S2 = "Barcode_50X25MM_Single_Style_2.jasper";
 
 	public static final String BARCODE_THERMAL_DOUBLE_5025_JASPER = "Barcode_50X25MM_Double.jasper";
 

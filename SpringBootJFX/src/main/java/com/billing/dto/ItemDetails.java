@@ -35,6 +35,8 @@ public class ItemDetails {
 	//Fields for Purchase Entry
 	
 	private int purchaseEntryNo;
+	
+	private String printName;
 
 	public int getItemNo() {
 		return itemNo;
@@ -169,6 +171,14 @@ public class ItemDetails {
 
 	public void setCategoryName(String categoryName) {
 		this.categoryName = categoryName;
+	}
+
+	public String getPrintName() {
+		return printName;
+	}
+
+	public void setPrintName(String printName) {
+		this.printName = printName;
 	}
 
 }

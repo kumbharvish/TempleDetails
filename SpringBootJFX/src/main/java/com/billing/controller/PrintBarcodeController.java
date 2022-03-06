@@ -28,9 +28,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
@@ -83,7 +85,7 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 
 	@FXML
 	private Button btnPrint;
-	
+
 	@FXML
 	private Button btnSave;
 
@@ -102,9 +104,19 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 	@FXML
 	private ComboBox<String> cbBarcodeLabelPaperType;
 
+	@FXML
+	private RadioButton rbLblOption1;
+
+	@FXML
+	private RadioButton rbLblOption2;
+
 	@Override
 	public void initialize() {
 		barcode = 0;
+
+		ToggleGroup radioButtonGroupGSTType = new ToggleGroup();
+		rbLblOption1.setToggleGroup(radioButtonGroupGSTType);
+		rbLblOption2.setToggleGroup(radioButtonGroupGSTType);
 
 		txtCategory.textProperty().addListener((observable, oldValue, newValue) -> {
 			btnPreview.setDisable(newValue.isEmpty());
@@ -118,9 +130,13 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 		getProductsName();
 		txtName.createTextField(entries, () -> setProductDetails());
 		populateBarcdeTypes();
+		rbLblOption1.setSelected(true);
+		rbLblOption2.setVisible(false);
+		rbLblOption2.selectedProperty().addListener(e -> populateImageView());
 		cbBarcodeLabelPaperType.getSelectionModel().selectedItemProperty().addListener(e -> populateImageView());
 		cbBarcodeLabelPaperType.getSelectionModel().select(appUtils.getAppDataValues(AppConstants.BARCODE_LABEL_TYPE));
 		txtAmountLabel.setText(appUtils.getAppDataValues(AppConstants.BARCODE_AMOUNT_LABEL));
+		
 	}
 
 	private void populateBarcdeTypes() {
@@ -134,39 +150,51 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 	}
 
 	private void populateImageView() {
+		rbLblOption2.setVisible(false);
 		String imageName = "65_Labels.png";
 		String selectedType = cbBarcodeLabelPaperType.getSelectionModel().getSelectedItem();
 		if (selectedType.equalsIgnoreCase(AppConstants.A4_65)) {
+			rbLblOption1.setSelected(true);
 			txtStartPosition.setDisable(false);
 			imageName = "65_Labels.png";
 			txtStartPosition.setText("1");
 			txtNoOfBarcodes.setText("65");
 		} else if (selectedType.equalsIgnoreCase(AppConstants.A4_40)) {
+			rbLblOption1.setSelected(true);
 			txtStartPosition.setDisable(false);
 			imageName = "40_Labels.png";
 			txtStartPosition.setText("1");
 			txtNoOfBarcodes.setText("40");
 		} else if (selectedType.equalsIgnoreCase(AppConstants.A4_24)) {
+			rbLblOption1.setSelected(true);
 			txtStartPosition.setDisable(false);
 			imageName = "24_Labels.png";
 			txtStartPosition.setText("1");
 			txtNoOfBarcodes.setText("24");
 		} else if (selectedType.equalsIgnoreCase(AppConstants.TH_5025_1)) {
-			imageName = "Single_5025mm.png";
+			rbLblOption2.setVisible(true);
+			if (rbLblOption1.isSelected()) {
+				imageName = "Single_5025mm.png";
+			} else if (rbLblOption2.isSelected()) {
+				imageName = "Single_5025mm_S2.png";
+			}
 			txtStartPosition.setDisable(true);
 			txtStartPosition.setText("Not Applicable");
 			txtNoOfBarcodes.setText("1");
 		} else if (selectedType.equalsIgnoreCase(AppConstants.TH_5025_2)) {
+			rbLblOption1.setSelected(true);
 			imageName = "Double_5025mm.png";
 			txtStartPosition.setDisable(true);
 			txtStartPosition.setText("Not Applicable");
 			txtNoOfBarcodes.setText("2");
 		} else if (selectedType.equalsIgnoreCase(AppConstants.TH_3825_1)) {
+			rbLblOption1.setSelected(true);
 			imageName = "Single_3825mm.png";
 			txtStartPosition.setDisable(true);
 			txtStartPosition.setText("Not Applicable");
 			txtNoOfBarcodes.setText("1");
 		} else if (selectedType.equalsIgnoreCase(AppConstants.TH_3825_2)) {
+			rbLblOption1.setSelected(true);
 			imageName = "Double_3825mm.png";
 			txtStartPosition.setDisable(true);
 			txtStartPosition.setText("Not Applicable");
@@ -197,12 +225,11 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 		prepareSheet("PREVIEW");
 		imageView.setImage(appUtils.getBarcodeImage());
 	}
-	
+
 	@FXML
 	void onSave(ActionEvent event) {
 		prepareSheet("SAVE");
 	}
-
 
 	private void prepareSheet(String action) {
 		if (txtName.getText().equals("")) {
@@ -219,10 +246,12 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 				Barcode barcode = new Barcode();
 				barcode.setBarcode(String.valueOf(p.getProductBarCode()));
 				barcode.setPrice(p.getSellPrice());
+				barcode.setMrp(p.getProductMRP());
 				barcode.setProductName(txtName.getText());
 				barcode.setProductCode(p.getProductCode());
 				barcode.setCategoryName(p.getProductCategory());
 				barcode.setAmountLabel(txtAmountLabel.getText());
+				barcode.setPrintName(p.getPrintName());
 				String selectedType = cbBarcodeLabelPaperType.getSelectionModel().getSelectedItem();
 				if (selectedType.equalsIgnoreCase(AppConstants.A4_65)) {
 					JrxmlName = AppConstants.BARCODE_65_JASPER;
@@ -234,7 +263,11 @@ public class PrintBarcodeController extends AppContext implements TabContent {
 					JrxmlName = AppConstants.BARCODE_40_JASPER;
 					noOfLabels = 40;
 				} else if (selectedType.equalsIgnoreCase(AppConstants.TH_5025_1)) {
-					JrxmlName = AppConstants.BARCODE_THERMAL_SINGLE_5025_JASPER;
+					if (rbLblOption1.isSelected()) {
+						JrxmlName = AppConstants.BARCODE_THERMAL_SINGLE_5025_JASPER;
+					} else if (rbLblOption2.isSelected()) {
+						JrxmlName = AppConstants.BARCODE_THERMAL_SINGLE_5025_JASPER_S2;
+					}
 					noOfLabels = 1;
 				} else if (selectedType.equalsIgnoreCase(AppConstants.TH_5025_2)) {
 					JrxmlName = AppConstants.BARCODE_THERMAL_DOUBLE_5025_JASPER;

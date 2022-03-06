@@ -9,6 +9,8 @@ public class Barcode {
 	private String categoryName;
 	private int productCode;
 	private String amountLabel;
+	private String printName;
+	private double mrp;
 	
 	public String getProductName() {
 		return productName;
@@ -51,6 +53,18 @@ public class Barcode {
 	}
 	public void setAmountLabel(String amountLabel) {
 		this.amountLabel = amountLabel;
+	}
+	public String getPrintName() {
+		return printName;
+	}
+	public void setPrintName(String printName) {
+		this.printName = printName;
+	}
+	public double getMrp() {
+		return mrp;
+	}
+	public void setMrp(double mrp) {
+		this.mrp = mrp;
 	}
 
 }

@@ -54,8 +54,8 @@ public class ProductRepository {
 			+ "FROM PRODUCT_DETAILS PD,PRODUCT_CATEGORY_DETAILS PCD WHERE PD.CATEGORY_ID = PCD.CATEGORY_ID AND BAR_CODE=0;";
 
 	private static final String INS_PRODUCT = "INSERT INTO PRODUCT_DETAILS (PRODUCT_ID,PRODUCT_NAME,MEASURE,QUANTITY,PURCHASE_PRICE,"
-			+ "SELL_PRICE,PRODUCT_MRP,DISCOUNT,ENTRY_DATE,LAST_UPDATE_DATE,DESCRIPTION,ENTER_BY,CATEGORY_ID,PURCHASE_RATE,PRODUCT_TAX,BAR_CODE,HSN,LOW_STOCK_LEVEL)"
-			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			+ "SELL_PRICE,PRODUCT_MRP,DISCOUNT,ENTRY_DATE,LAST_UPDATE_DATE,DESCRIPTION,ENTER_BY,CATEGORY_ID,PURCHASE_RATE,PRODUCT_TAX,BAR_CODE,HSN,LOW_STOCK_LEVEL,PRINT_NAME)"
+			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static final String DELETE_PRODUCT = "DELETE FROM PRODUCT_DETAILS WHERE PRODUCT_ID=?";
 
@@ -64,7 +64,7 @@ public class ProductRepository {
 
 	private static final String UPDATE_PRODUCT = "UPDATE PRODUCT_DETAILS SET PRODUCT_NAME=?,MEASURE=?,QUANTITY=?,PURCHASE_PRICE=?,"
 			+ "SELL_PRICE=?,PRODUCT_MRP=?,DISCOUNT=?,LAST_UPDATE_DATE=?,DESCRIPTION=?,"
-			+ "ENTER_BY=?,CATEGORY_ID=?,PURCHASE_RATE=?,PRODUCT_TAX=?,BAR_CODE=?,HSN=?,LOW_STOCK_LEVEL=? WHERE PRODUCT_ID=?";
+			+ "ENTER_BY=?,CATEGORY_ID=?,PURCHASE_RATE=?,PRODUCT_TAX=?,BAR_CODE=?,HSN=?,LOW_STOCK_LEVEL=?,PRINT_NAME=? WHERE PRODUCT_ID=?";
 
 	private static final String UPDATE_PRODUCT_PURCHASE_HISTORY = "UPDATE PRODUCT_DETAILS SET PURCHASE_PRICE=?,LAST_UPDATE_DATE=?,PURCHASE_RATE=?,PRODUCT_TAX=? WHERE PRODUCT_ID=?";
 
@@ -116,6 +116,7 @@ public class ProductRepository {
 				pc.setProductBarCode(rs.getLong("BAR_CODE"));
 				pc.setHsn(rs.getString("HSN"));
 				pc.setLowStockLevel(rs.getInt("LOW_STOCK_LEVEL"));
+				pc.setPrintName(rs.getString("PRINT_NAME"));
 				
 				productList.add(pc);
 				Comparator<Product> cp = Product.getComparator(Product.SortParameter.CATEGORY_NAME_ASCENDING);
@@ -162,6 +163,7 @@ public class ProductRepository {
 				pc.setProductBarCode(rs.getLong("BAR_CODE"));
 				pc.setHsn(rs.getString("HSN"));
 				pc.setLowStockLevel(rs.getInt("LOW_STOCK_LEVEL"));
+				pc.setPrintName(rs.getString("PRINT_NAME"));
 
 			}
 			rs.close();
@@ -188,19 +190,19 @@ public class ProductRepository {
 				stmt.setDouble(4, product.getQuantity());
 				stmt.setDouble(5, product.getPurcasePrice());
 				stmt.setDouble(6, product.getSellPrice());
-				stmt.setDouble(7, product.getSellPrice());// MRP same as sell price
+				stmt.setDouble(7, product.getProductMRP());
 				stmt.setDouble(8, product.getDiscount());
 				stmt.setString(9, appUtils.getCurrentTimestamp());
 				stmt.setString(10, appUtils.getCurrentTimestamp());
 				stmt.setString(11, product.getDescription());
 				stmt.setString(12, product.getEnterBy());
-				// stmt.setString(13, product.getProductCategory());
 				stmt.setInt(13, product.getCategoryCode());
 				stmt.setDouble(14, product.getPurcaseRate());
 				stmt.setDouble(15, product.getProductTax());
 				stmt.setLong(16, product.getProductBarCode());
 				stmt.setString(17, product.getHsn());
 				stmt.setInt(18, product.getLowStockLevel());
+				stmt.setString(19, product.getPrintName());
 
 				int i = stmt.executeUpdate();
 				if (i > 0) {
@@ -266,19 +268,19 @@ public class ProductRepository {
 				stmt.setDouble(3, product.getQuantity());
 				stmt.setDouble(4, product.getPurcasePrice());
 				stmt.setDouble(5, product.getSellPrice());
-				stmt.setDouble(6, product.getSellPrice());
+				stmt.setDouble(6, product.getProductMRP());
 				stmt.setDouble(7, product.getDiscount());
 				stmt.setString(8, appUtils.getCurrentTimestamp());
 				stmt.setString(9, product.getDescription());
 				stmt.setString(10, product.getEnterBy());
-				// stmt.setString(11, product.getProductCategory());
 				stmt.setInt(11, product.getCategoryCode());
 				stmt.setDouble(12, product.getPurcaseRate());
 				stmt.setDouble(13, product.getProductTax());
 				stmt.setLong(14, product.getProductBarCode());
 				stmt.setString(15, product.getHsn());
 				stmt.setInt(16, product.getLowStockLevel());
-				stmt.setInt(17, product.getProductCode());
+				stmt.setString(17, product.getPrintName());
+				stmt.setInt(18, product.getProductCode());
 
 				int i = stmt.executeUpdate();
 				if (i > 0) {
@@ -327,6 +329,7 @@ public class ProductRepository {
 				pc.setProductBarCode(rs.getLong("BAR_CODE"));
 				pc.setHsn(rs.getString("HSN"));
 				pc.setLowStockLevel(rs.getInt("LOW_STOCK_LEVEL"));
+				pc.setPrintName(rs.getString("PRINT_NAME"));
 
 				productList.add(pc);
 				Comparator<Product> cp = Product.getComparator(Product.SortParameter.CATEGORY_NAME_ASCENDING);
@@ -372,6 +375,7 @@ public class ProductRepository {
 				pc.setProductCategory(rs.getString("CATEGORY_NAME"));
 				pc.setProductBarCode(rs.getLong("BAR_CODE"));
 				pc.setHsn(rs.getString("HSN"));
+				pc.setPrintName(rs.getString("PRINT_NAME"));
 
 				productList.add(pc);
 				Comparator<Product> cp = Product.getComparator(Product.SortParameter.CATEGORY_NAME_ASCENDING);
