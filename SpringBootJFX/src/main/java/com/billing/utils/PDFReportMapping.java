@@ -40,7 +40,7 @@ public class PDFReportMapping {
 	AppUtils appUtils;
 
 	// Invoice Data Source
-	public List<Map<String, ?>> getDatasourceForInvoice(BillDetails bill) {
+	public List<Map<String, ?>> getDatasourceForInvoice(BillDetails bill, String jasperName) {
 		List<Map<String, ?>> dataSourceMaps = new ArrayList<Map<String, ?>>();
 
 		double totalAmtForCashInvice = 0;
@@ -50,7 +50,14 @@ public class PDFReportMapping {
 			map.put("Name",
 					appUtils.getAppDataValues(AppConstants.SHOW_CATEGORY_NAME_ON_INVOICE).equalsIgnoreCase("N")
 							? item.getItemName().toUpperCase()
-							: item.getCategoryName().toUpperCase()+" # "+item.getItemNo());
+							: item.getCategoryName().toUpperCase() + " # " + item.getItemNo());
+			//For Thermal Print append product wise discount in product name
+			if (item.getDiscountPercent() > 0 && bill.getDiscount() == 0 && jasperName.contains("_TH_")) {
+				String name = (String) map.get("Name");
+				name = name + " - DISC " + IndianCurrencyFormatting.applyFormatting(item.getDiscountAmount()) + " @ "
+						+ appUtils.getPercentValueForReport(item.getDiscountPercent()) + "%";
+				map.put("Name", name);
+			}
 			map.put("Qty", appUtils.getDecimalFormat(item.getQuantity()));
 			map.put("Rate", appUtils.getDecimalFormat(item.getRate()));
 			map.put("Amount", IndianCurrencyFormatting.applyFormatting(item.getAmount()));
@@ -461,9 +468,10 @@ public class PDFReportMapping {
 
 		for (int i = 1; i <= noOfLabels; i++) {
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("ProductName", appUtils.getAppDataValues(AppConstants.SHOW_CATEGORY_NAME_ON_INVOICE).equalsIgnoreCase("N")
-					? barcode.getProductName().toUpperCase()
-					: barcode.getCategoryName().toUpperCase()+" # "+barcode.getProductCode());
+			map.put("ProductName",
+					appUtils.getAppDataValues(AppConstants.SHOW_CATEGORY_NAME_ON_INVOICE).equalsIgnoreCase("N")
+							? barcode.getProductName().toUpperCase()
+							: barcode.getCategoryName().toUpperCase() + " # " + barcode.getProductCode());
 			map.put("Barcode", barcode.getBarcode());
 			map.put("Price", appUtils.getDecimalFormat(barcode.getPrice()));
 			map.put("AmountLabel", barcode.getAmountLabel());

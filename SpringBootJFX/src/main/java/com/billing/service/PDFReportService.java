@@ -61,7 +61,7 @@ public class PDFReportService {
 			JasperReport jasperReport = (JasperReport) JRLoader.loadObject(bufferedInputStream);
 
 			// Get Data Source
-			List<Map<String, ?>> dataSourceMap = pdfReportMapping.getDatasourceForInvoice(bill);
+			List<Map<String, ?>> dataSourceMap = pdfReportMapping.getDatasourceForInvoice(bill,jasperName);
 
 			JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource(dataSourceMap);
 
