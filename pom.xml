@@ -9,8 +9,8 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.billing</groupId>
-	<artifactId>MyStore</artifactId>
-	<name>MyStore</name>
+	<artifactId>ManageTemple</artifactId>
+	<name>ManageTemple</name>
 	<description>Billing Application With Spring Boot and Java FX</description>
 	<packaging>jar</packaging>
 	<properties>

@@ -227,7 +227,7 @@ public class HomeController extends AppContext {
 
 	@FXML
 	void onExpenseTypeCommand(ActionEvent event) {
-		addTab("expenseType", "खर्चाचा प्रकार");
+		addTab("ExpenseType", "खर्चाचा प्रकार");
 	}
 
 	@FXML
